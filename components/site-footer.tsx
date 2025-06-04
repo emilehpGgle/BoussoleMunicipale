@@ -15,8 +15,8 @@ export default function SiteFooter() {
               <Image
                 src="/boussole-municipale-logo-footer.svg" // New SVG logo
                 alt="Boussole Municipale Logo Footer"
-                layout="fill"
-                objectFit="contain"
+                fill
+                style={{ objectFit: "contain" }}
               />
             </Link>
           </div>

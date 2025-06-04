@@ -27,8 +27,8 @@ export default function SiteHeader() {
               <Image
                 src="/logo-main.png" // Updated logo path
                 alt="Boussole Municipale Logo"
-                layout="fill"
-                objectFit="contain"
+                fill
+                style={{ objectFit: "contain" }}
                 priority
               />
             </div>
@@ -71,8 +71,8 @@ export default function SiteHeader() {
                           <Image
                             src="/logo-main.png" // Updated logo path
                             alt="Boussole Municipale Logo"
-                            layout="fill"
-                            objectFit="contain"
+                            fill
+                            style={{ objectFit: "contain" }}
                           />
                         </div>
                       </Link>

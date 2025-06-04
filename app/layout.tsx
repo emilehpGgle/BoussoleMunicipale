@@ -9,9 +9,41 @@ import SiteFooter from "@/components/site-footer"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "BoussoleMunicipale",
-  description: "Trouvez le candidat municipal qui vous ressemble.",
-    generator: 'v0.dev'
+  title: "Boussole Municipale - Trouvez votre parti municipal",
+  description: "Découvrez quel parti municipal de Québec partage vos idées. Questionnaire de 5 minutes sur les enjeux locaux : transport, logement, environnement, finances municipales.",
+  keywords: "élections municipales, Québec, politique municipale, questionnaire politique, boussole politique, partis municipaux, vote municipal",
+  authors: [{ name: "Boussole Municipale" }],
+  creator: "Boussole Municipale",
+  publisher: "Boussole Municipale",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "Boussole Municipale - Trouvez votre parti municipal",
+    description: "Découvrez quel parti municipal de Québec partage vos idées. Questionnaire gratuit et anonyme.",
+    url: "https://boussole-municipale.vercel.app",
+    siteName: "Boussole Municipale",
+    locale: "fr_CA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Boussole Municipale - Trouvez votre parti municipal", 
+    description: "Découvrez quel parti municipal de Québec partage vos idées.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 }
 
 export default function RootLayout({

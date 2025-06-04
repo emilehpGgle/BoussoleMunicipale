@@ -22,6 +22,13 @@ import {
   type ImportanceOptionKey,
   type PartyPosition,
 } from "@/lib/boussole-data"
+import {
+  calculatePoliticalDistance,
+  calculateUserPoliticalPosition,
+  partyPositions,
+  type UserAnswers as PoliticalUserAnswers,
+  type UserImportance as PoliticalUserImportance,
+} from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import PoliticalCompassChart from "@/components/political-compass-chart"
 
@@ -84,11 +91,54 @@ export default function ResultsPage() {
       setUserAnswers(parsedUserAnswers)
       setUserImportance(parsedUserImportance)
 
-      const newCalculatedScores = partiesData.map((party) => {
-        let totalWeightedScore = 0
-        let maxPossibleWeightedScore = 0
-        const scoreDetails: CalculatedPartyScore["details"] = []
+      // Calcul de la position politique de l'utilisateur
+      const userPosition = calculateUserPoliticalPosition(parsedUserAnswers, parsedUserImportance)
 
+      const newCalculatedScores = partiesData.map((party) => {
+        // Calculer la distance politique pour cette approche plus sophistiquée
+        const partyPosition = partyPositions[party.id]
+        let score = 0
+        let rawScore = 0
+        let maxPossibleRawScoreForParty = 100
+
+        if (partyPosition) {
+          // Calcul basé sur la distance politique (utilisé par la carte)
+          const distance = calculatePoliticalDistance(userPosition, partyPosition)
+          // Convertir la distance en score de compatibilité (distance max théorique = ~283 sur [-100,100] x [-100,100])
+          const maxDistance = Math.sqrt(200 * 200 + 200 * 200) // ≈ 283
+          score = Math.max(0, 100 - (distance / maxDistance) * 100)
+          rawScore = score
+        } else {
+          // Fallback : utiliser l'ancienne méthode si pas de position politique
+          let totalWeightedScore = 0
+          let maxPossibleWeightedScore = 0
+
+          boussoleQuestions.forEach((question) => {
+            const userAnswer = parsedUserAnswers[question.id]
+            const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
+            const currentImportance = parsedUserImportance[question.id] || 3
+            let questionMatchValue = 0
+            let weightedQuestionScore = 0
+
+            if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
+              const userScore = agreementScoreValues[userAnswer]
+              const partyScore = agreementScoreValues[partyPositionEntry.position]
+              const diff = Math.abs(userScore - partyScore)
+              questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
+              weightedQuestionScore = questionMatchValue * currentImportance
+            }
+            totalWeightedScore += weightedQuestionScore
+            maxPossibleWeightedScore += MAX_AGREEMENT_MAGNITUDE * currentImportance
+          })
+          
+          const normalizedScore = maxPossibleWeightedScore > 0 ? (totalWeightedScore / maxPossibleWeightedScore) * 100 : 0
+          score = Math.max(0, Math.min(100, normalizedScore))
+          rawScore = totalWeightedScore
+          maxPossibleRawScoreForParty = maxPossibleWeightedScore
+        }
+
+        // Détails pour l'affichage (garder l'ancienne logique pour les détails)
+        const scoreDetails: CalculatedPartyScore["details"] = []
         boussoleQuestions.forEach((question) => {
           const userAnswer = parsedUserAnswers[question.id]
           const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
@@ -103,8 +153,7 @@ export default function ResultsPage() {
             questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
             weightedQuestionScore = questionMatchValue * currentImportance
           }
-          totalWeightedScore += weightedQuestionScore
-          maxPossibleWeightedScore += MAX_AGREEMENT_MAGNITUDE * currentImportance
+          
           scoreDetails.push({
             question,
             userAnswer,
@@ -114,12 +163,12 @@ export default function ResultsPage() {
             weightedScore: weightedQuestionScore,
           })
         })
-        const normalizedScore = maxPossibleWeightedScore > 0 ? (totalWeightedScore / maxPossibleWeightedScore) * 100 : 0
+
         return {
           party,
-          score: Math.max(0, Math.min(100, normalizedScore)),
-          rawScore: totalWeightedScore,
-          maxPossibleRawScoreForParty: maxPossibleWeightedScore,
+          score: Math.round(score),
+          rawScore,
+          maxPossibleRawScoreForParty,
           details: scoreDetails,
         }
       })
