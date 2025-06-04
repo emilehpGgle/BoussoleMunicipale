@@ -62,8 +62,8 @@ export default function QuestionnairePage() {
     : answers[currentQuestion.id] !== undefined
 
   return (
-    <div className="container max-w-3xl py-12 px-4 md:px-6 animate-fadeIn">
-      <div className="mb-8">
+    <div className="container max-w-3xl py-4 px-4 md:px-6 animate-fadeIn min-h-screen flex flex-col">
+      <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-medium text-muted-foreground">
             Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
@@ -71,14 +71,14 @@ export default function QuestionnairePage() {
         </div>
         <Progress
           value={progress}
-          className="h-2.5 rounded-full bg-muted"
+          className="h-2 rounded-full bg-muted"
           indicatorClassName="bg-secondary transition-all duration-500 ease-out"
         />
       </div>
 
-      <Card className="p-6 md:p-10 shadow-soft rounded-2xl bg-card">
-        <div className="flex items-start gap-3 mb-6">
-          <h2 className="text-2xl text-foreground leading-tight">{currentQuestion.text}</h2>{" "}
+      <Card className="p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col">
+        <div className="flex items-start gap-3 mb-4">
+          <h2 className="text-xl text-foreground leading-tight">{currentQuestion.text}</h2>{" "}
           {/* font-semibold is now in globals.css for h2 */}
           {currentQuestion.description && (
             <TooltipProvider>
@@ -101,7 +101,7 @@ export default function QuestionnairePage() {
           )}
         </div>
 
-        <div className="grid gap-3 mb-8">
+        <div className="grid gap-2 mb-4 flex-1">
           {currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
             // Questions d'importance directe
             currentQuestion.importanceDirectOptions.map((optionKey) => {
@@ -112,7 +112,7 @@ export default function QuestionnairePage() {
                 <Button
                   key={optionKey}
                   variant={isSelected ? "default" : "outline"}
-                  className={`justify-start h-auto py-4 px-5 text-left rounded-xl 
+                  className={`justify-start h-auto py-3 px-4 text-left rounded-xl 
                     ${
                       isSelected
                         ? "bg-secondary text-secondary-foreground shadow-soft ring-2 ring-secondary/50"
@@ -137,7 +137,7 @@ export default function QuestionnairePage() {
                 <Button
                   key={optionKey}
                   variant={isSelected ? "default" : "outline"}
-                  className={`justify-start h-auto py-4 px-5 text-left rounded-xl 
+                  className={`justify-start h-auto py-3 px-4 text-left rounded-xl 
                     ${
                       isSelected
                         ? "bg-secondary text-secondary-foreground shadow-soft ring-2 ring-secondary/50"
@@ -156,16 +156,16 @@ export default function QuestionnairePage() {
         </div>
 
         {isAnswered && currentQuestion.responseType !== "importance_direct" && answers[currentQuestion.id] !== "IDK" && (
-          <div className="mb-8 animate-fadeIn">
-            <h3 className="text-lg font-medium text-foreground mb-3">
+          <div className="mb-4 animate-fadeIn">
+            <h3 className="text-base font-medium text-foreground mb-2">
               Quelle importance accordez-vous à cette question?
             </h3>
-            <div className="flex justify-between gap-2">
+            <div className="flex justify-between gap-1.5">
               {currentQuestion.importanceOptions.map((value) => (
                 <Button
                   key={value}
                   variant={importance[currentQuestion.id] === value ? "default" : "outline"}
-                  className={`flex-1 rounded-xl btn-base-effects ${
+                  className={`flex-1 rounded-xl btn-base-effects py-2 text-sm ${
                     // Added btn-base-effects
                     importance[currentQuestion.id] === value
                       ? "bg-accent text-accent-foreground shadow-soft"
@@ -177,19 +177,19 @@ export default function QuestionnairePage() {
                 </Button>
               ))}
             </div>
-            <div className="flex justify-between mt-1.5 text-xs text-muted-foreground px-1">
+            <div className="flex justify-between mt-1 text-xs text-muted-foreground px-1">
               <span>Peu important</span>
               <span>Très important</span>
             </div>
           </div>
         )}
 
-        <div className="flex flex-col sm:flex-row justify-between gap-3">
+        <div className="flex flex-col sm:flex-row justify-between gap-3 mt-auto">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
             disabled={currentQuestionIndex === 0}
-            className="flex items-center gap-2 rounded-xl px-6 py-3 text-muted-foreground hover:text-foreground hover:border-foreground/50 border-border btn-base-effects btn-hover-lift"
+            className="flex items-center gap-2 rounded-xl px-4 py-2 text-muted-foreground hover:text-foreground hover:border-foreground/50 border-border btn-base-effects btn-hover-lift"
           >
             <ArrowLeft className="h-4 w-4" />
             Précédent
@@ -198,7 +198,7 @@ export default function QuestionnairePage() {
           <Button
             onClick={goToNextQuestion}
             disabled={!isAnswered}
-            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 py-3 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects"
+            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects"
           >
             {currentQuestionIndex < boussoleQuestions.length - 1 ? (
               <>
@@ -212,7 +212,7 @@ export default function QuestionnairePage() {
         </div>
       </Card>
 
-      <div className="mt-8 text-center">
+      <div className="mt-4 text-center">
         <Button variant="link" asChild className="text-sm text-muted-foreground hover:text-primary btn-base-effects">
           <Link href="/">Quitter</Link>
         </Button>
