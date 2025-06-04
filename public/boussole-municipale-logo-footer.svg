@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500" width="400" height="500">
+  <!-- Étoiles de la boussole avec formes plus organiques -->
+  <!-- Étoile du haut -->
+  <path d="M200,15 L206,40 L230,45 L212,60 L218,85 L200,75 L182,85 L188,60 L170,45 L194,40 Z" fill="white"/>
+  
+  <!-- Étoile de droite -->
+  <path d="M335,150 L310,145 L305,120 L290,140 L265,135 L280,155 L265,175 L290,170 L305,190 L310,165 Z" fill="white"/>
+  
+  <!-- Étoile du bas -->
+  <path d="M200,285 L194,260 L170,255 L188,240 L182,215 L200,225 L218,215 L212,240 L230,255 L206,260 Z" fill="white"/>
+  
+  <!-- Étoile de gauche -->
+  <path d="M65,150 L90,155 L95,180 L110,160 L135,165 L120,145 L135,125 L110,130 L95,110 L90,135 Z" fill="white"/>
+  
+  <!-- Cercle principal avec trait plus fin -->
+  <circle cx="200" cy="150" r="95" fill="none" stroke="white" stroke-width="6"/>
+  
+  <!-- Urne/Maison plus arrondie -->
+  <g transform="translate(200, 150)">
+    <!-- Base de l'urne avec coins arrondis -->
+    <rect x="-22" y="-12" width="44" height="24" rx="3" ry="3" fill="white"/>
+    <!-- Fente de vote plus réaliste -->
+    <rect x="-18" y="-15" width="36" height="2" rx="1" fill="#13B8B8"/> {/* Updated fill to match secondary color */}
+    <!-- Bulletin qui sort avec forme plus naturelle -->
+    <path d="M-12,-20 L12,-20 Q15,-20 15,-17 L15,-8 Q15,-5 12,-5 L-12,-5 Q-15,-5 -15,-8 L-15,-17 Q-15,-20 -12,-20" fill="white"/>
+    <!-- Coche plus élégante -->
+    <path d="M-6,-15 L-3,-12 L6,-18" fill="none" stroke="#FF6B40" stroke-width="2" stroke-linecap="round"/> {/* Updated stroke to match primary color */}
+  </g>
+  
+  <!-- Personnages stylisés -->
+  <!-- Personnage de gauche -->
+  <g transform="translate(155, 150)">
+    <!-- Tête ronde -->
+    <circle cx="0" cy="-25" r="10" fill="white"/>
+    <!-- Corps avec forme plus naturelle -->
+    <ellipse cx="0" cy="-8" rx="8" ry="15" fill="white"/>
+    <!-- Bras arrondis -->
+    <ellipse cx="-12" cy="-10" rx="3" ry="8" fill="white"/>
+    <ellipse cx="12" cy="-10" rx="3" ry="8" fill="white"/>
+    <!-- Jambes -->
+    <ellipse cx="-5" cy="12" rx="3" ry="12" fill="white"/>
+    <ellipse cx="5" cy="12" rx="3" ry="12" fill="white"/>
+  </g>
+  
+  <!-- Personnage de droite -->
+  <g transform="translate(245, 150)">
+    <!-- Tête ronde -->
+    <circle cx="0" cy="-25" r="10" fill="white"/>
+    <!-- Corps avec forme plus naturelle -->
+    <ellipse cx="0" cy="-8" rx="8" ry="15" fill="white"/>
+    <!-- Bras arrondis -->
+    <ellipse cx="-12" cy="-10" rx="3" ry="8" fill="white"/>
+    <ellipse cx="12" cy="-10" rx="3" ry="8" fill="white"/>
+    <!-- Jambes -->
+    <ellipse cx="-5" cy="12" rx="3" ry="12" fill="white"/>
+    <ellipse cx="5" cy="12" rx="3" ry="12" fill="white"/>
+  </g>
+  
+  <!-- Texte avec espacement amélioré -->
+  <text x="200" y="350" font-family="Arial, sans-serif" font-size="46" font-weight="bold" text-anchor="middle" fill="white" letter-spacing="2px">BOUSSOLE</text>
+  
+  <text x="200" y="410" font-family="Arial, sans-serif" font-size="46" font-weight="bold" text-anchor="middle" fill="white" letter-spacing="3px">MUNICIPALE</text>
+</svg>

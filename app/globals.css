@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 45 100% 97%; /* Very light beige (FFFBEF) */
+    --foreground: 180 25% 25%; /* Dark Teal/Gray (2E4F4F) */
+
+    --card: 0 0% 100%; /* White for cards */
+    --card-foreground: 180 25% 25%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 180 25% 25%;
+
+    --primary: 14 100% 62%; /* Bolder Coral (#FF6B40) */
+    --primary-foreground: 0 0% 100%; /* White */
+
+    --secondary: 180 75% 35%; /* Brighter/Bolder Teal (#13B8B8) */
+    --secondary-foreground: 0 0% 100%; /* White */
+
+    --accent: 180 60% 50%; /* More vibrant accent Teal (#33CCCC) */
+    --accent-foreground: 0 0% 100%;
+
+    --muted: 45 50% 94%; /* Lighter beige */
+    --muted-foreground: 180 15% 40%; /* Medium gray/teal text */
+
+    --destructive: 0 70% 60%; /* A softer red */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 45 30% 88%; /* Light beige border */
+    --input: 45 30% 88%;
+    --ring: 14 100% 62%; /* Coral for focus rings (matches new primary) */
+
+    --radius: 0.75rem; /* Rounded corners (12px) */
+  }
+
+  .dark {
+    /* Dark mode variables can be defined here if needed */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply tracking-tight font-bold text-foreground; /* Bolder for H1-H3 */
+  }
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tight font-semibold text-foreground;
+  }
+
+  h1 {
+    @apply text-3xl md:text-4xl lg:text-h1-lg leading-tight;
+  }
+  h2 {
+    @apply text-2xl md:text-3xl;
+  }
+  h3 {
+    @apply text-xl md:text-2xl;
+  }
+
+  /* Smooth transitions for links */
+  a {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  /* General button enhancements (can be overridden by specific button styles) */
+  .btn-base-effects {
+    @apply transition-all duration-200 ease-in-out active:scale-[0.97];
+  }
+  .btn-hover-lift {
+    @apply hover:-translate-y-0.5 hover:shadow-md;
+  }
+  .btn-primary-hover-effects {
+    @apply hover:brightness-110 hover:shadow-primary-glow;
+  }
+
+  /* General card enhancements */
+  .card-interactive-effects {
+    @apply transition-all duration-300 ease-out hover:shadow-soft-md hover:-translate-y-1;
+  }
+}
