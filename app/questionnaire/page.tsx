@@ -94,7 +94,7 @@ export default function QuestionnairePage() {
     : answers[currentQuestion.id] !== undefined
 
   return (
-    <div className="container max-w-3xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col">
+    <div className="container max-w-3xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col min-h-screen">
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-medium text-muted-foreground">
@@ -108,7 +108,7 @@ export default function QuestionnairePage() {
         />
       </div>
 
-      <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
+      <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
         <div className="flex items-start gap-3 mb-4">
           <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>{currentQuestion.text}</h2>
           {currentQuestion.description && (
@@ -132,7 +132,7 @@ export default function QuestionnairePage() {
           )}
         </div>
 
-        <div className={`grid gap-3 mb-4 items-start ${!isTransitioning ? 'question-content-enter' : ''}`}>
+        <div className={`grid gap-2 mb-4 flex-1 ${!isTransitioning ? 'question-content-enter' : ''}`}>
           {currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
             // Questions d'importance directe
             currentQuestion.importanceDirectOptions.map((optionKey, index) => {
@@ -143,7 +143,7 @@ export default function QuestionnairePage() {
                 <Button
                   key={optionKey}
                   variant={isSelected ? "default" : "outline"}
-                  className={`justify-start py-3 px-4 text-left rounded-xl text-base font-medium min-h-0
+                  className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0
                     ${
                       isSelected
                         ? "bg-secondary text-secondary-foreground shadow-soft border-2 border-secondary"
@@ -168,7 +168,7 @@ export default function QuestionnairePage() {
                 <Button
                   key={optionKey}
                   variant={isSelected ? "default" : "outline"}
-                  className={`justify-start py-3 px-4 text-left rounded-xl text-base font-medium min-h-0
+                  className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0
                     ${
                       isSelected
                         ? "bg-secondary text-secondary-foreground shadow-soft border-2 border-secondary"
