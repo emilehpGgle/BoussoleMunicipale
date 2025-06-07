@@ -108,7 +108,12 @@ export default function ResultsPage() {
           const distance = calculatePoliticalDistance(userPosition, partyPosition)
           // Convertir la distance en score de compatibilité (distance max théorique = ~283 sur [-100,100] x [-100,100])
           const maxDistance = Math.sqrt(200 * 200 + 200 * 200) // ≈ 283
-          score = Math.max(0, 100 - (distance / maxDistance) * 100)
+          
+          // La formule est maintenant non-linéaire pour pénaliser plus sévèrement les grandes distances.
+          // On utilise une puissance (ex: 1.5) pour que la pénalité augmente exponentiellement.
+          const normalizedDistance = distance / maxDistance
+          const penalty = Math.pow(normalizedDistance, 1.5) * 100
+          score = Math.max(0, 100 - penalty)
           rawScore = score
         } else {
           // Fallback : utiliser l'ancienne méthode si pas de position politique
@@ -139,9 +144,8 @@ export default function ResultsPage() {
           maxPossibleRawScoreForParty = maxPossibleWeightedScore
         }
 
-        // Détails pour l'affichage (garder l'ancienne logique pour les détails)
-        const scoreDetails: CalculatedPartyScore["details"] = []
-        boussoleQuestions.forEach((question) => {
+        // Les détails pour l'accordéon sont maintenant calculés avec la même logique de base
+        const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
           const userAnswer = parsedUserAnswers[question.id]
           const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
           const currentImportance = parsedUserImportance[question.id] || 3
@@ -152,18 +156,19 @@ export default function ResultsPage() {
             const userScore = agreementScoreValues[userAnswer]
             const partyScore = agreementScoreValues[partyPositionEntry.position]
             const diff = Math.abs(userScore - partyScore)
+            // Note: ce calcul de "match" est conservé pour les détails mais n'influence plus le score principal
             questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
             weightedQuestionScore = questionMatchValue * currentImportance
           }
           
-          scoreDetails.push({
+          return {
             question,
             userAnswer,
             userImportance: currentImportance,
             partyPosition: partyPositionEntry,
             matchValue: questionMatchValue,
             weightedScore: weightedQuestionScore,
-          })
+          }
         })
 
         return {
@@ -758,36 +763,35 @@ export default function ResultsPage() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-soft rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl flex items-center gap-2">
-            <Info className="h-5 w-5 text-muted-foreground" /> Méthodologie (Simplifiée)
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-3">
-          <div>
-            <h4 className="font-medium text-foreground mb-2">🧭 Positionnement politique</h4>
-            <p>
-              Votre position politique est calculée sur deux axes indépendants basés sur vos réponses aux 20 questions :
-            </p>
-            <ul className="mt-2 space-y-1 text-xs">
-              <li><strong>Axe économique</strong> : De l'interventionnisme municipal (gauche) au libre marché (droite)</li>
-              <li><strong>Axe social/environnemental</strong> : Des positions conservatrices (bas) aux progressistes (haut)</li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="font-medium text-foreground mb-2">📊 Calcul des affinités</h4>
-            <p>
-              La distance entre votre position et celle de chaque parti détermine l'affinité. Plus vous êtes proches sur la carte politique, plus l'affinité est élevée. Les questions marquées comme importantes ont plus d'influence sur votre positionnement final.
-            </p>
-          </div>
-          
-          <div className="text-xs border-l-2 border-muted pl-3">
-            <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l'analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
-          </div>
-        </CardContent>
-      </Card>
+      <div className="mt-8">
+        <Card className="bg-muted/30 border-muted-foreground/20 shadow-none">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+              <Info className="h-5 w-5" />
+              Méthodologie (Simplifiée)
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground space-y-4">
+            <div>
+              <h4 className="font-semibold text-foreground mb-1">📍 Positionnement politique</h4>
+              <p>
+                Chacune des 20 questions influence votre score sur deux axes indépendants (économique et social). Votre position finale est la somme de ces influences, pondérée par l'importance que vous accordez à chaque question.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-foreground mb-1">📊 Calcul des affinités</h4>
+              <p>
+                L'affinité est calculée à partir de la distance qui vous sépare de chaque parti sur la carte politique. Plus un parti est proche de vous, plus l'affinité est élevée. La formule a été ajustée pour que les partis éloignés soient plus sévèrement pénalisés, rendant le score plus intuitif.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs italic pt-2 border-t border-muted-foreground/10">
+                <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l'analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
         <Button
