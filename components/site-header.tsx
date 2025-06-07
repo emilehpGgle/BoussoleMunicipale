@@ -1,17 +1,52 @@
 "use client"
+import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import PostalCodeModal from "@/components/postal-code-modal"
-import { useState } from "react"
+import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
+import { useState, useEffect } from "react"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 
 export default function SiteHeader() {
   const [isPostalModalOpen, setIsPostalModalOpen] = useState(false)
 
-  const openPostalModal = () => setIsPostalModalOpen(true)
-  const closePostalModal = () => setIsPostalModalOpen(false)
+  const openPostalModal = () => {
+    console.log('🔥 [HEADER] openPostalModal() appelée')
+    console.log('🔥 [HEADER] État actuel du modal:', isPostalModalOpen)
+    setIsPostalModalOpen(true)
+    console.log('🔥 [HEADER] setIsPostalModalOpen(true) exécuté')
+  }
+  
+  const closePostalModal = () => {
+    console.log('🔥 [HEADER] closePostalModal() appelée')
+    setIsPostalModalOpen(false)
+  }
+
+  // Écouter l'événement personnalisé depuis d'autres composants
+  useEffect(() => {
+    console.log('🔥 [HEADER] useEffect - Configuration de l\'event listener')
+    
+    const handleOpenModal = (event: Event) => {
+      console.log('🔥 [HEADER] Event reçu !', event)
+      console.log('🔥 [HEADER] Type d\'event:', event.type)
+      console.log('🔥 [HEADER] Appel de openPostalModal()')
+      openPostalModal()
+    }
+
+    console.log('🔥 [HEADER] Ajout de l\'event listener')
+    window.addEventListener('openPostalCodeModal', handleOpenModal)
+    
+    return () => {
+      console.log('🔥 [HEADER] Nettoyage - suppression de l\'event listener')
+      window.removeEventListener('openPostalCodeModal', handleOpenModal)
+    }
+  }, [])
+
+  // Log des changements d'état du modal
+  useEffect(() => {
+    console.log('🔥 [HEADER] État du modal changé:', isPostalModalOpen)
+  }, [isPostalModalOpen])
 
   return (
     <>
@@ -40,7 +75,10 @@ export default function SiteHeader() {
               Aide
             </Link>
             <Button
-              onClick={openPostalModal}
+              onClick={() => {
+                console.log('🔥 [HEADER] Bouton header cliqué directement')
+                openPostalModal()
+              }}
               className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift btn-primary-hover-effects"
             >
               Commencer
@@ -85,21 +123,25 @@ export default function SiteHeader() {
                       Aide
                     </Link>
                   </SheetClose>
-                  <SheetClose asChild>
-                    <Button
-                      onClick={openPostalModal}
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift btn-primary-hover-effects"
-                    >
-                      Commencer
-                    </Button>
-                  </SheetClose>
+                  <Button
+                    onClick={() => {
+                      console.log('🔥 [HEADER] Bouton mobile cliqué directement')
+                      openPostalModal()
+                      // Fermer le sheet manuellement
+                      const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
+                      closeButton?.click()
+                    }}
+                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift btn-primary-hover-effects"
+                  >
+                    Commencer
+                  </Button>
                 </nav>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </header>
-      <PostalCodeModal isOpen={isPostalModalOpen} onClose={closePostalModal} />
+      <EnhancedPostalCodeModal isOpen={isPostalModalOpen} onClose={closePostalModal} />
     </>
   )
 }

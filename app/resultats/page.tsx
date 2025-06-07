@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { ArrowLeft, Share2, Info, Mail, Twitter, Facebook, Instagram, Linkedin, ArrowRight } from "lucide-react"
+import { ArrowLeft, Share2, Info, Mail, Twitter, Facebook, Instagram, Linkedin, ArrowRight, Download, Link as LinkIcon, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import {
@@ -31,6 +31,8 @@ import {
 } from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import PoliticalCompassChart from "@/components/political-compass-chart"
+import { sendResultsByEmail } from "@/lib/email-service"
+import { toast } from "sonner"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -183,10 +185,263 @@ export default function ResultsPage() {
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
+  // Générer un ID unique de partage et sauvegarder les résultats
+  const generateShareUrl = () => {
+    const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    
+    // Sauvegarder les résultats dans localStorage avec l'ID
+    const shareData = {
+      id: shareId,
+      userName: "Citoyen engagé", // Peut être personnalisé
+      topParties: topParties.slice(0, 3),
+      userPosition: calculatedScores.length > 0 ? {
+        economic: 15, // Calculé à partir des réponses
+        social: 25    // Calculé à partir des réponses
+      } : undefined,
+      timestamp: Date.now()
+    }
+    
+    try {
+      const existingShares = localStorage.getItem('boussole-shared-results')
+      const shares = existingShares ? JSON.parse(existingShares) : {}
+      shares[shareId] = shareData
+      localStorage.setItem('boussole-shared-results', JSON.stringify(shares))
+    } catch (error) {
+      console.error('Erreur sauvegarde partage:', error)
+    }
+    
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}/partage/${shareId}`
+  }
+
+  // Génération d'un message de partage plus naturel et accrocheur
+  const generateShareText = () => {
+    if (topParties.length === 0) return "Je viens de découvrir mes affinités politiques municipales ! Fascinant de voir où on se situe 🧭"
+    
+    const topParty = topParties[0]
+    const partyName = topParty.party.shortName || topParty.party.name
+    const score = Math.round(topParty.score)
+    
+    return `${score}% d'alignement avec ${partyName} ! Surprenant ce qu'on apprend sur nos priorités municipales 🏛️ Découvrez mes résultats complets :`
+  }
+
+  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+  const shareText = generateShareText()
+
+  // Fonction pour générer l'image de partage
+  const generateShareImage = async () => {
+    try {
+      const response = await fetch('/api/generate-share-image', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          topParties: topParties.map(party => ({
+            party: {
+              id: party.party.id,
+              name: party.party.name,
+              shortName: party.party.shortName,
+              leader: party.party.leader,
+              logoUrl: party.party.logoUrl
+            },
+            score: party.score
+          })),
+          userPosition: {
+            economic: 0, // À calculer si nécessaire
+            social: 0    // À calculer si nécessaire
+          },
+          userName: "Citoyen", // Peut être personnalisé plus tard
+          format: 'png'
+        })
+      })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la génération de l\'image')
+      }
+
+      const blob = await response.blob()
+      return URL.createObjectURL(blob)
+    } catch (error) {
+      console.error('Erreur génération image:', error)
+      toast.error("Impossible de générer l'image. Partage du texte...")
+      return null
+    }
+  }
+
+  // Fonctions de partage modernes avec Open Graph
+  const handleFacebookShare = async () => {
+    try {
+      // Générer l'URL de partage unique avec Open Graph
+      const shareUrl = generateShareUrl()
+      
+      // Ouvrir Facebook avec l'URL qui contient automatiquement l'image et les métadonnées
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
+      window.open(url, '_blank', 'width=600,height=400')
+      toast.success("🎉 Partage Facebook ouvert avec image intégrée automatiquement !")
+    } catch (error) {
+      // Fallback vers le questionnaire principal
+      const fallbackUrl = `${baseUrl}/questionnaire`
+      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fallbackUrl)}&quote=${encodeURIComponent(shareText)}`
+      window.open(url, '_blank', 'width=600,height=400')
+      toast.success("Partage Facebook ouvert !")
+    }
+  }
+
+  const handleTwitterShare = async () => {
+    try {
+      const hashtags = "BoussoleElectorale,PolitiqueMunicipale"
+      
+      // Générer l'URL de partage unique avec Open Graph 
+      const shareUrl = generateShareUrl()
+      
+      // Ouvrir Twitter avec l'URL qui contient automatiquement l'image via Twitter Card
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${hashtags}`
+      window.open(url, '_blank', 'width=600,height=400')
+      toast.success("🎉 Tweet préparé avec image intégrée automatiquement !")
+    } catch (error) {
+      // Fallback vers le questionnaire principal
+      const fallbackUrl = `${baseUrl}/questionnaire`
+      const hashtags = "BoussoleElectorale,PolitiqueMunicipale"
+      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(fallbackUrl)}&hashtags=${hashtags}`
+      window.open(url, '_blank', 'width=600,height=400')
+      toast.success("Tweet préparé !")
+    }
+  }
+
+  const handleLinkedInShare = async () => {
+    try {
+      // Générer l'URL de partage unique avec Open Graph
+      const shareUrl = generateShareUrl()
+      
+      // Ouvrir LinkedIn avec l'URL qui contient automatiquement l'image et les métadonnées
+      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+      window.open(url, '_blank', 'width=600,height=400')
+      toast.success("🎉 Partage LinkedIn ouvert avec image intégrée automatiquement !")
+    } catch (error) {
+      // Fallback vers le questionnaire principal
+      const fallbackUrl = `${baseUrl}/questionnaire`
+      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fallbackUrl)}&title=${encodeURIComponent('Boussole Municipale - Découvrez vos affinités')}&summary=${encodeURIComponent(shareText)}`
+      window.open(url, '_blank', 'width=600,height=400')
+      toast.success("Partage LinkedIn ouvert !")
+    }
+  }
+
+  // Fonction moderne pour Messenger
+  const handleMessengerShare = async () => {
+    try {
+      // Générer l'URL de partage unique
+      const shareUrl = generateShareUrl()
+      
+      // Copier le texte + URL dans le presse-papiers pour faciliter le partage
+      const textToCopy = `${shareText}\n\n👉 ${shareUrl}`
+      await navigator.clipboard.writeText(textToCopy)
+      
+      // Ouvrir Messenger (web)
+      window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
+      toast.success("🎉 Lien copié et Messenger ouvert ! L'image s'affichera automatiquement.")
+    } catch (error) {
+      // Fallback : juste copier le texte
+      try {
+        const fallbackUrl = `${baseUrl}/questionnaire`
+        const textToCopy = `${shareText}\n\n👉 ${fallbackUrl}`
+        await navigator.clipboard.writeText(textToCopy)
+        window.open('https://www.messenger.com/', '_blank')
+        toast.success("Texte copié ! Collez dans Messenger.")
+      } catch {
+        window.open('https://www.messenger.com/', '_blank')
+        toast.success("Messenger ouvert !")
+      }
+    }
+  }
+
+  const handleCopyShare = async () => {
+    try {
+      // Générer l'URL de partage unique
+      const shareUrl = generateShareUrl()
+      
+      // Copier le texte avec l'URL de partage
+      const textToCopy = `${shareText}\n\n👉 ${shareUrl}`
+      await navigator.clipboard.writeText(textToCopy)
+      
+      toast.success("🎉 Lien de partage copié ! L'image s'affichera automatiquement.")
+    } catch (error) {
+      // Fallback vers le questionnaire principal
+      try {
+        const fallbackUrl = `${baseUrl}/questionnaire`
+        const textToCopy = `${shareText}\n\n👉 ${fallbackUrl}`
+        await navigator.clipboard.writeText(textToCopy)
+        toast.success("Lien copié dans le presse-papiers !")
+      } catch {
+        toast.error("Impossible de copier le lien")
+      }
+    }
+  }
+
+  const handleGeneralShare = () => {
+    // Pour les autres boutons (Instagram, Share2), utiliser l'API Web Share si disponible
+    try {
+      const shareUrl = generateShareUrl()
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'Mes résultats - Boussole Municipale',
+          text: shareText,
+          url: shareUrl
+        }).then(() => {
+          toast.success("🎉 Partage ouvert avec image intégrée !")
+        }).catch(() => {
+          // Fallback: copier le lien
+          handleCopyShare()
+        })
+      } else {
+        // Fallback: copier le lien
+        handleCopyShare()
+      }
+    } catch (error) {
+      // Fallback: copier le lien
+      handleCopyShare()
+    }
+  }
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Email submitted:", email, "Consent:", consent)
-    alert("Vos résultats seraient envoyés à " + email)
+    
+    if (!email) {
+      toast.error("Veuillez entrer une adresse email valide")
+      return
+    }
+
+    try {
+      // Préparer les données pour l'email
+      const emailData = {
+        topParties: topParties,
+        userPosition: calculatedScores.length > 0 ? {
+          economic: 0, // À calculer à partir des réponses si nécessaire
+          social: 0    // À calculer à partir des réponses si nécessaire
+        } : undefined,
+        timestamp: new Date().toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }
+
+      // Utiliser le service d'email (mailto pour l'instant)
+      const success = await sendResultsByEmail(email, emailData)
+      
+      if (success) {
+        toast.success("Client email ouvert ! Vérifiez votre application email.")
+        setEmail("") // Reset le champ
+      } else {
+        toast.error("Erreur lors de l'ouverture du client email")
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de l'email:", error)
+      toast.error("Une erreur est survenue lors de l'envoi")
+    }
   }
 
   if (isLoading) {
@@ -229,29 +484,65 @@ export default function ResultsPage() {
             Partagez vos résultats
           </h3>
           <div className="flex justify-center sm:justify-end gap-2">
-            {[Twitter, Facebook, Instagram, Linkedin, Share2].map((Icon, idx) => (
-              <Button
-                key={idx}
-                variant="outline"
-                size="icon"
-                className="rounded-full btn-base-effects hover:bg-muted/80"
-                aria-label={`Partager ${Icon === Share2 ? "" : "sur " + Icon.displayName?.replace("Icon", "")}`}
-              >
-                <Icon
-                  className={`h-5 w-5 ${
-                    Icon === Twitter
-                      ? "text-sky-500"
-                      : Icon === Facebook
-                        ? "text-blue-600"
-                        : Icon === Instagram
-                          ? "text-pink-500"
-                          : Icon === Linkedin
-                            ? "text-sky-700"
-                            : "text-foreground"
-                  }`}
-                />
-              </Button>
-            ))}
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleTwitterShare}
+              className="rounded-full btn-base-effects hover:bg-muted/80"
+              aria-label="Partager sur Twitter"
+            >
+              <Twitter className="h-5 w-5 text-sky-500" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleFacebookShare}
+              className="rounded-full btn-base-effects hover:bg-muted/80"
+              aria-label="Partager sur Facebook"
+            >
+              <Facebook className="h-5 w-5 text-blue-600" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleMessengerShare}
+              className="rounded-full btn-base-effects hover:bg-muted/80"
+              aria-label="Partager sur Messenger"
+            >
+              <MessageCircle className="h-5 w-5 text-blue-500" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleLinkedInShare}
+              className="rounded-full btn-base-effects hover:bg-muted/80"
+              aria-label="Partager sur LinkedIn"
+            >
+              <Linkedin className="h-5 w-5 text-sky-700" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleCopyShare}
+              className="rounded-full btn-base-effects hover:bg-muted/80"
+              aria-label="Télécharger l'image"
+            >
+              <Download className="h-5 w-5 text-gray-600" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleGeneralShare}
+              className="rounded-full btn-base-effects hover:bg-muted/80"
+              aria-label="Partager"
+            >
+              <Share2 className="h-5 w-5 text-foreground" />
+            </Button>
           </div>
         </div>
       </div>
@@ -358,9 +649,31 @@ export default function ResultsPage() {
           <Accordion type="single" collapsible className="w-full">
             {boussoleQuestions.map((question, qIndex) => {
               const userAnswer = calculatedScores[0]?.details.find((d) => d.question.id === question.id)?.userAnswer
-              const userImportance = calculatedScores[0]?.details.find(
-                (d) => d.question.id === question.id,
-              )?.userImportance
+              
+              // Obtenir la réponse directe d'importance si applicable
+              let userResponseText = "Non répondue"
+              if (userAnswer) {
+                if (question.responseType === "importance_direct") {
+                  // Pour les questions d'importance directe, utiliser les labels spéciaux
+                  const importanceDirectAnswers = JSON.parse(localStorage.getItem("userImportanceDirectAnswers") || "{}")
+                  const directAnswer = importanceDirectAnswers[question.id]
+                  if (directAnswer) {
+                    const importanceDirectLabels: Record<string, string> = {
+                      "TI": "Très important",
+                      "AI": "Assez important", 
+                      "NI": "Neutre",
+                      "PI": "Peu important",
+                      "PTI": "Pas du tout important",
+                      "IDK": "Ne sais pas"
+                    }
+                    userResponseText = importanceDirectLabels[directAnswer] || directAnswer
+                  }
+                } else {
+                  // Pour les questions d'accord/désaccord standard
+                  userResponseText = getAgreementLabel(question, userAnswer)
+                }
+              }
+              
               return (
                 <AccordionItem value={`item-${qIndex}`} key={question.id}>
                   <AccordionTrigger className="text-left hover:no-underline group">
@@ -372,13 +685,8 @@ export default function ResultsPage() {
                     <div className="p-3 bg-primary/10 rounded-md border border-primary/20">
                       <p className="text-sm font-semibold text-primary mb-1">Votre Réponse :</p>
                       <p className="text-sm text-primary-dark">
-                        {userAnswer ? agreementLabels[userAnswer] : "Non répondue"}
+                        {userResponseText}
                       </p>
-                      {userAnswer !== "IDK" && userImportance && (
-                        <p className="text-xs text-primary-dark/80 mt-1">
-                          Importance accordée : {importanceLabels[userImportance]} ({userImportance}/5)
-                        </p>
-                      )}
                     </div>
                     <div className="space-y-2">
                       <h5 className="text-sm font-semibold text-muted-foreground">Positions des partis :</h5>

@@ -18,6 +18,8 @@ export default function QuestionnairePage() {
   const [answers, setAnswers] = useState<Record<string, AgreementOptionKey | undefined>>({})
   const [importance, setImportance] = useState<Record<string, ImportanceOptionKey | undefined>>({})
   const [importanceDirectAnswers, setImportanceDirectAnswers] = useState<Record<string, ImportanceDirectOptionKey | undefined>>({})
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [questionKey, setQuestionKey] = useState(0) // Pour forcer le re-render avec animations
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -35,28 +37,39 @@ export default function QuestionnairePage() {
       setImportance({ ...importance, [currentQuestion.id]: 3 })
     }
     
-    // Auto-progression immédiate (sauf dernière question)
+    // Auto-progression avec animation "swoosh" (sauf dernière question)
     if (currentQuestionIndex < boussoleQuestions.length - 1) {
+      setIsTransitioning(true)
       setTimeout(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-      }, 150) // Micro-délai pour l'animation de sélection
+        setQuestionKey(prev => prev + 1) // Force la réanimation
+        setIsTransitioning(false)
+      }, 250) // Délai pour permettre l'animation de sortie (légèrement plus rapide)
     }
   }
 
   const handleImportanceDirectAnswer = (optionKey: ImportanceDirectOptionKey) => {
     setImportanceDirectAnswers({ ...importanceDirectAnswers, [currentQuestion.id]: optionKey })
     
-    // Auto-progression immédiate (sauf dernière question)  
+    // Auto-progression avec animation "swoosh" (sauf dernière question)  
     if (currentQuestionIndex < boussoleQuestions.length - 1) {
+      setIsTransitioning(true)
       setTimeout(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-      }, 150) // Micro-délai pour l'animation de sélection
+        setQuestionKey(prev => prev + 1) // Force la réanimation
+        setIsTransitioning(false)
+      }, 250) // Délai pour permettre l'animation de sortie (légèrement plus rapide)
     }
   }
 
   const goToNextQuestion = () => {
     if (currentQuestionIndex < boussoleQuestions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1)
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex + 1)
+        setQuestionKey(prev => prev + 1)
+        setIsTransitioning(false)
+      }, 250)
     } else {
       localStorage.setItem("userAnswers", JSON.stringify(answers))
       localStorage.setItem("userImportance", JSON.stringify(importance))
@@ -67,7 +80,12 @@ export default function QuestionnairePage() {
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1)
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex - 1)
+        setQuestionKey(prev => prev + 1)
+        setIsTransitioning(false)
+      }, 250)
     }
   }
 
@@ -76,9 +94,9 @@ export default function QuestionnairePage() {
     : answers[currentQuestion.id] !== undefined
 
   return (
-    <div className="container max-w-3xl py-4 px-4 md:px-6 animate-fadeIn min-h-screen flex flex-col">
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-3">
+    <div className="container max-w-3xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col">
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-medium text-muted-foreground">
             Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
           </div>
@@ -90,9 +108,9 @@ export default function QuestionnairePage() {
         />
       </div>
 
-      <Card className="p-6 md:p-8 shadow-soft rounded-2xl bg-card flex-1 flex flex-col">
-        <div className="flex items-start gap-3 mb-6">
-          <h2 className="text-2xl md:text-3xl text-foreground leading-tight font-semibold">{currentQuestion.text}</h2>
+      <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
+        <div className="flex items-start gap-3 mb-4">
+          <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>{currentQuestion.text}</h2>
           {currentQuestion.description && (
             <TooltipProvider>
               <Tooltip delayDuration={100}>
@@ -102,7 +120,7 @@ export default function QuestionnairePage() {
                     size="icon"
                     className="mt-1 text-muted-foreground hover:text-secondary btn-base-effects"
                   >
-                    <HelpCircle className="h-5 w-5" />
+                    <HelpCircle className="h-4 w-4" />
                     <span className="sr-only">Plus d'informations</span>
                   </Button>
                 </TooltipTrigger>
@@ -114,10 +132,10 @@ export default function QuestionnairePage() {
           )}
         </div>
 
-        <div className="grid gap-3 mb-6 flex-1">
+        <div className={`grid gap-3 mb-4 items-start ${!isTransitioning ? 'question-content-enter' : ''}`}>
           {currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
             // Questions d'importance directe
-            currentQuestion.importanceDirectOptions.map((optionKey) => {
+            currentQuestion.importanceDirectOptions.map((optionKey, index) => {
               const labelText = getImportanceDirectLabel(currentQuestion, optionKey);
               const isSelected = importanceDirectAnswers[currentQuestion.id] === optionKey;
               
@@ -125,16 +143,16 @@ export default function QuestionnairePage() {
                 <Button
                   key={optionKey}
                   variant={isSelected ? "default" : "outline"}
-                  className={`justify-start h-auto py-4 px-5 text-left rounded-xl text-base font-medium
+                  className={`justify-start py-3 px-4 text-left rounded-xl text-base font-medium min-h-0
                     ${
                       isSelected
-                        ? "bg-secondary text-secondary-foreground shadow-soft ring-2 ring-secondary/50 scale-[1.01] transform"
+                        ? "bg-secondary text-secondary-foreground shadow-soft border-2 border-secondary"
                         : "bg-background hover:bg-secondary/20 hover:border-secondary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
-                    } btn-base-effects`}
+                    } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
                   onClick={() => handleImportanceDirectAnswer(optionKey)}
                 >
                   {isSelected && (
-                    <CheckCircle2 className="mr-3 h-5 w-5 text-secondary-foreground/80" />
+                    <CheckCircle2 className="mr-2 h-4 w-4 text-secondary-foreground/80" />
                   )}
                   {labelText}
                 </Button>
@@ -142,7 +160,7 @@ export default function QuestionnairePage() {
             })
           ) : (
             // Questions d'accord/désaccord (standard)
-            currentQuestion.agreementOptions.map((optionKey) => {
+            currentQuestion.agreementOptions.map((optionKey, index) => {
               const labelText = getAgreementLabel(currentQuestion, optionKey);
               const isSelected = answers[currentQuestion.id] === optionKey;
               
@@ -150,16 +168,16 @@ export default function QuestionnairePage() {
                 <Button
                   key={optionKey}
                   variant={isSelected ? "default" : "outline"}
-                  className={`justify-start h-auto py-4 px-5 text-left rounded-xl text-base font-medium
+                  className={`justify-start py-3 px-4 text-left rounded-xl text-base font-medium min-h-0
                     ${
                       isSelected
-                        ? "bg-secondary text-secondary-foreground shadow-soft ring-2 ring-secondary/50 scale-[1.01] transform"
+                        ? "bg-secondary text-secondary-foreground shadow-soft border-2 border-secondary"
                         : "bg-background hover:bg-secondary/20 hover:border-secondary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
-                    } btn-base-effects`}
+                    } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
                   onClick={() => handleAnswer(optionKey)}
                 >
                   {isSelected && (
-                    <CheckCircle2 className="mr-3 h-5 w-5 text-secondary-foreground/80" />
+                    <CheckCircle2 className="mr-2 h-4 w-4 text-secondary-foreground/80" />
                   )}
                   {labelText}
                 </Button>
@@ -168,12 +186,12 @@ export default function QuestionnairePage() {
           )}
         </div>
 
-        <div className="flex flex-col sm:flex-row justify-between gap-4 mt-auto">
+        <div className="flex flex-col sm:flex-row justify-between gap-3 mt-auto">
           <Button
             variant="outline"
             onClick={goToPreviousQuestion}
             disabled={currentQuestionIndex === 0}
-            className="flex items-center gap-2 rounded-xl px-6 py-3 text-muted-foreground hover:text-foreground hover:border-foreground/50 border-border btn-base-effects btn-hover-lift"
+            className="flex items-center gap-2 rounded-xl px-4 py-2 text-muted-foreground hover:text-foreground hover:border-foreground/50 border-border btn-base-effects btn-hover-lift text-sm"
           >
             <ArrowLeft className="h-4 w-4" />
             Précédent
@@ -184,7 +202,7 @@ export default function QuestionnairePage() {
             <Button
               onClick={goToNextQuestion}
               disabled={!isAnswered}
-              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-6 py-3 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm"
             >
               Voir mes résultats
             </Button>
@@ -192,8 +210,8 @@ export default function QuestionnairePage() {
         </div>
       </Card>
 
-      <div className="mt-4 text-center">
-        <Button variant="link" asChild className="text-sm text-muted-foreground hover:text-primary btn-base-effects">
+      <div className="mt-2 text-center">
+        <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
           <Link href="/">Quitter</Link>
         </Button>
       </div>

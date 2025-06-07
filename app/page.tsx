@@ -3,14 +3,23 @@ import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
 import Image from "next/image"
 import Link from "next/link"
-import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
-import { useState } from "react"
 
 export default function HomePage() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-
-  const openModal = () => setIsModalOpen(true)
-  const closeModal = () => setIsModalOpen(false)
+  // Fonction pour déclencher l'ouverture du modal depuis le header
+  const openModal = () => {
+    console.log('🔥 [HERO] Bouton cliqué - Début de openModal()')
+    console.log('🔥 [HERO] window object:', typeof window)
+    console.log('🔥 [HERO] dispatchEvent function:', typeof window.dispatchEvent)
+    
+    try {
+      const event = new CustomEvent('openPostalCodeModal')
+      console.log('🔥 [HERO] Event créé:', event)
+      window.dispatchEvent(event)
+      console.log('🔥 [HERO] Event émis avec succès')
+    } catch (error) {
+      console.error('🔥 [HERO] Erreur lors de l\'émission de l\'événement:', error)
+    }
+  }
 
   return (
     <>
@@ -34,7 +43,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     onClick={openModal}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects animate-pulseScale"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
                   >
                     Commencer le questionnaire
                   </Button>
@@ -208,7 +217,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <EnhancedPostalCodeModal isOpen={isModalOpen} onClose={closeModal} />
     </>
   )
 }

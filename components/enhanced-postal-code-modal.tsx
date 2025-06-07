@@ -41,6 +41,20 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [districtInfo, setDistrictInfo] = useState<DistrictInfo | null>(null)
   const router = useRouter()
 
+  // Debug: Log when modal state changes
+  React.useEffect(() => {
+    console.log('🔥 [MODAL] Props reçues - isOpen:', isOpen, 'onClose:', typeof onClose)
+    console.log('🔥 [MODAL] Modal state changed:', isOpen)
+  }, [isOpen, onClose])
+
+  // Debug: Log when component mounts
+  React.useEffect(() => {
+    console.log('🔥 [MODAL] Composant EnhancedPostalCodeModal monté')
+    return () => {
+      console.log('🔥 [MODAL] Composant EnhancedPostalCodeModal démonté')
+    }
+  }, [])
+
   const handlePostalCodeSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError("")
@@ -99,8 +113,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] rounded-xl shadow-soft-md bg-card">
+    <>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
+      )}
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-[500px] rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
             <MapPin className="h-6 w-6 text-primary" />
@@ -262,5 +280,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         </div>
       </DialogContent>
     </Dialog>
+    </>
   )
 } 

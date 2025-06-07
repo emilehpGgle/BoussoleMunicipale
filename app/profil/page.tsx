@@ -9,155 +9,106 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ArrowLeft, ArrowRight, User, Home, Car, Target, X } from "lucide-react"
 
-// Data for profile questions (remains the same)
+// Données pour les questions de profil (optimisées pour valeur commerciale + pertinence municipale)
 const profileQuestions = [
   {
-    id: "federal_vote_today",
-    text: "Si une élection fédérale avait lieu aujourd’hui, pour quel parti voteriez-vous?",
+    id: "age_group",
+    text: "Dans quelle tranche d'âge vous situez-vous ?",
     type: "select",
-    options: ["Parti Libéral", "Parti Conservateur", "NPD", "Bloc Québécois", "Parti Vert", "Autre", "Ne sais pas"],
+    category: "Démographie",
+    icon: User,
+    placeholder: "Sélectionnez votre tranche d'âge",
+    options: ["18-24 ans", "25-34 ans", "35-44 ans", "45-54 ans", "55-64 ans", "65 ans et plus"],
   },
   {
-    id: "federal_vote_2021",
-    text: "Pour quel parti avez-vous voté lors des élections fédérales canadiennes de 2021?",
-    type: "select",
-    options: [
-      "Parti Libéral",
-      "Parti Conservateur",
-      "NPD",
-      "Bloc Québécois",
-      "Parti Vert",
-      "Autre",
-      "N'a pas voté",
-      "Ne sais pas",
-    ],
-  },
-  { id: "gender", text: "Quel est votre genre?", type: "radio", options: ["Masculin", "Féminin", "Autre"] },
-  {
-    id: "gender_identity",
-    text: "Vous identifiez-vous à l’une des identités de genre suivantes?",
-    type: "checkbox",
-    options: [
-      { id: "non_binary", label: "Non-binaire" },
-      { id: "transgender", label: "Transgenre" },
-      { id: "two_spirit", label: "Bispirituel" },
-      { id: "none", label: "Aucune de ces options" },
-    ],
-  },
-  { id: "birth_year", text: "En quelle année êtes-vous né(e)?", type: "year_select" },
-  {
-    id: "education_level",
-    text: "Quel est le plus haut niveau d’études que vous avez obtenu?",
-    type: "select",
-    options: [
-      "Moins que le diplôme d'études secondaires",
-      "Diplôme d'études secondaires",
-      "Formation professionnelle/métier",
-      "CÉGEP/Collège",
-      "Baccalauréat universitaire",
-      "Maîtrise/Doctorat",
-      "Autre",
-    ],
-  },
-  {
-    id: "attended_school_since_sep2024",
-    text: "Depuis septembre 2024, avez-vous fréquenté une école (par exemple, une école secondaire, un collège, un cégep ou une université) à un moment ou à un autre?",
-    type: "radio",
-    options: ["Oui", "Non"],
-  },
-  {
-    id: "employment_status",
-    text: "Quelle est votre situation professionnelle actuelle?",
-    type: "select",
-    options: [
-      "Employé(e) à temps plein",
-      "Employé(e) à temps partiel",
-      "Travailleur(se) autonome",
-      "Sans emploi, à la recherche de travail",
-      "Sans emploi, pas à la recherche de travail",
-      "Étudiant(e)",
-      "Retraité(e)",
-      "Autre",
-    ],
-  },
-  {
-    id: "religion",
-    text: "Quelle est votre religion?",
-    type: "select",
-    options: [
-      "Christianisme",
-      "Islam",
-      "Hindouisme",
-      "Sikhisme",
-      "Bouddhisme",
-      "Judaïsme",
-      "Aucune religion/Athée/Agnostique",
-      "Autre",
-    ],
-  },
-  {
-    id: "language_at_home",
-    text: "Quelle langue parlez-vous régulièrement à la maison?",
-    type: "select",
-    options: ["Français", "Anglais", "Les deux", "Autre"],
-  },
-  { id: "canadian_citizen", text: "Êtes-vous citoyen canadien?", type: "radio", options: ["Oui", "Non"] },
-  { id: "born_in_canada", text: "Êtes-vous né(e) au Canada?", type: "radio", options: ["Oui", "Non"] },
-  {
-    id: "indigenous_identity",
-    text: "Êtes-vous Première Nation, Métis ou Inuk (Inuit)?",
-    type: "radio",
-    options: ["Première Nation", "Inuk (Inuit)", "Métis", "Aucune de ces options"],
-  },
-  {
-    id: "ethnic_origins",
-    text: "Quelles sont les origines ethniques ou culturelles de vos ancêtres? (Séparez par des virgules)",
-    type: "textarea",
-  },
-  {
-    id: "describes_you_best",
-    text: "Laquelle des catégories suivantes vous décrit le mieux? (Séparez par des virgules)",
-    type: "textarea",
-  },
-  {
-    id: "sexual_orientation",
-    text: "Lequel des termes suivant défini le mieux votre orientation sexuelle?",
-    type: "radio",
-    options: ["Hétérosexuel(le)", "Gai ou lesbienne", "Bisexuel(le)", "Autre", "Préfère ne pas répondre"],
+    id: "gender",
+    text: "Comment vous identifiez-vous ?",
+    type: "select", 
+    category: "Démographie",
+    icon: User,
+    placeholder: "Sélectionnez votre identité",
+    options: ["Homme", "Femme", "Non-binaire", "Préfère ne pas dire"],
   },
   {
     id: "household_income",
-    text: "Laquelle des catégories suivantes décrit le mieux le salaire combiné des membres de votre ménage avant impôt?",
+    text: "Quel est le revenu annuel combiné de votre ménage (avant impôts) ?",
     type: "select",
+    category: "Démographie", 
+    icon: User,
+    placeholder: "Sélectionnez votre tranche de revenu",
     options: [
       "Moins de 30 000 $",
-      "30 000 $ à 59 999 $",
+      "30 000 $ à 59 999 $", 
       "60 000 $ à 89 999 $",
       "90 000 $ à 119 999 $",
       "120 000 $ à 149 999 $",
       "150 000 $ et plus",
-      "Préfère ne pas répondre",
+      "Préfère ne pas dire",
     ],
   },
   {
-    id: "political_spectrum",
-    text: "En politique, où vous placeriez-vous sur l'échelle suivante (0=gauche, 10=droite)?",
-    type: "scale",
-    options: Array.from({ length: 11 }, (_, i) => i.toString()),
+    id: "education_level",
+    text: "Quel est votre plus haut niveau de scolarité complété ?",
+    type: "select",
+    category: "Démographie",
+    icon: User,
+    placeholder: "Sélectionnez votre niveau de scolarité",
+    options: [
+      "Secondaire ou moins",
+      "Formation professionnelle/DEP",
+      "Cégep/DEC",
+      "Université (Baccalauréat)",
+      "Université (Maîtrise/Doctorat)",
+    ],
   },
   {
-    id: "political_interest",
-    text: "En général, quel intérêt accordez-vous à la politique?",
-    type: "radio",
-    options: ["Pas intéressé du tout", "Pas vraiment intéressé", "Un peu intéressé", "Très intéressé"],
+    id: "housing_status", 
+    text: "Quel est votre statut de logement ?",
+    type: "select",
+    category: "Contexte municipal",
+    icon: Home,
+    placeholder: "Sélectionnez votre statut de logement",
+    options: ["Propriétaire", "Locataire", "Logé chez famille/amis", "Autre"],
   },
-  { id: "most_important_issue", text: "Quel est l'enjeu politique le plus important, selon vous?", type: "textarea" },
   {
-    id: "contact_consent",
-    text: "Accepteriez-vous d’être contacté occasionnellement par les créateurs de la Boussole électorale afin de participer à certains de leurs futurs projets?",
-    type: "radio",
-    options: ["Oui", "Non"],
+    id: "main_transport",
+    text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
+    type: "checkbox_multiple",
+    category: "Contexte municipal", 
+    icon: Car,
+    options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
+  },
+  {
+    id: "municipal_priorities",
+    text: "Sélectionnez et classez vos 3 priorités municipales (cliquez pour sélectionner, re-cliquez pour désélectionner)",
+    type: "priority_ranking_enhanced",
+    category: "Contexte municipal",
+    icon: Target, 
+    options: [
+      "Transport et mobilité",
+      "Logement abordable", 
+      "Environnement et espaces verts",
+      "Sécurité publique",
+      "Développement économique",
+      "Services municipaux",
+      "Projet de tramway",
+      "Troisième lien routier",
+      "Lutte aux changements climatiques",
+      "Autres",
+    ],
+  },
+  {
+    id: "citizen_concerns",
+    text: "Partagez-nous ce qui vous préoccupe actuellement dans votre municipalité",
+    type: "text_area",
+    category: "Contexte municipal",
+    icon: Target,
+    placeholder: "Décrivez vos principales préoccupations municipales...",
+    description: "Ces informations nous aideront à mieux comprendre les enjeux qui préoccupent les citoyens.",
   },
 ]
 
@@ -165,14 +116,42 @@ export default function ProfilePage() {
   const [answers, setAnswers] = useState<Record<string, any>>({})
   const router = useRouter()
 
+  // Grouper les questions par catégorie pour l'affichage, mais tout afficher sur une page
+  const categorizedQuestions = profileQuestions.reduce((acc, question) => {
+    if (!acc[question.category]) acc[question.category] = []
+    acc[question.category].push(question)
+    return acc
+  }, {} as Record<string, typeof profileQuestions>)
+
   const handleAnswerChange = (questionId: string, value: any) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }))
   }
 
-  const handleCheckboxChange = (questionId: string, optionId: string, checked: boolean) => {
-    setAnswers((prev) => {
-      const currentSelection = { ...(prev[questionId] || {}) } // Ensure currentSelection is an object
-      return { ...prev, [questionId]: { ...currentSelection, [optionId]: checked } }
+  const handlePriorityRanking = (questionId: string, rankings: Record<string, number>) => {
+    setAnswers((prev) => ({ ...prev, [questionId]: rankings }))
+  }
+
+  const canSubmit = () => {
+    return profileQuestions.every(q => {
+      const answer = answers[q.id]
+      
+      // Pour les questions de sélection multiple, vérifier qu'au moins une option est sélectionnée
+      if (q.type === "checkbox_multiple") {
+        return Array.isArray(answer) && answer.length > 0
+      }
+      
+      // Pour les questions de priorité, vérifier qu'au moins une priorité est définie
+      if (q.type === "priority_ranking" || q.type === "priority_ranking_enhanced") {
+        return answer && typeof answer === "object" && Object.keys(answer).length > 0
+      }
+      
+      // Pour les text areas, permettre les réponses vides (optionnel)
+      if (q.type === "text_area") {
+        return true // Les préoccupations peuvent être optionnelles
+      }
+      
+      // Pour les autres types, s'assurer qu'une réponse existe
+      return answer !== undefined && answer !== ""
     })
   }
 
@@ -181,170 +160,381 @@ export default function ProfilePage() {
     router.push("/resultats")
   }
 
-  const skipProfile = () => {
-    localStorage.removeItem("userProfileData")
-    router.push("/resultats")
+  const renderPriorityRanking = (question: typeof profileQuestions[0]) => {
+    const currentRankings = answers[question.id] || {}
+    const rankedItems = Object.entries(currentRankings).sort(([,a], [,b]) => (a as number) - (b as number))
+    const unrankedItems = question.options?.filter(option => !currentRankings[option]) || []
+
+    const updateRanking = (item: string, rank: number) => {
+      const newRankings = { ...currentRankings }
+      
+      // Remove item from previous ranking
+      Object.keys(newRankings).forEach(key => {
+        if (newRankings[key] >= rank) {
+          newRankings[key] += 1
+        }
+      })
+      
+      // Clear item from any previous rank
+      delete newRankings[item]
+      
+      // Set new rank
+      newRankings[item] = rank
+      
+      // Clean up rankings to ensure 1,2,3
+      const sortedEntries = Object.entries(newRankings).sort(([,a], [,b]) => (a as number) - (b as number))
+      const cleanedRankings: Record<string, number> = {}
+      sortedEntries.slice(0, 3).forEach(([key], index) => {
+        cleanedRankings[key] = index + 1
+      })
+      
+      handlePriorityRanking(question.id, cleanedRankings)
+    }
+
+    return (
+      <div className="space-y-4 mt-4">
+        {/* Ranked items */}
+        <div className="space-y-2">
+          {[1, 2, 3].map(rank => {
+            const item = rankedItems.find(([, r]) => r === rank)?.[0]
+            return (
+              <div key={rank} className="flex items-center gap-3 p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
+                <Badge variant="secondary" className="min-w-6 h-6 flex items-center justify-center text-xs font-bold">
+                  {rank}
+                </Badge>
+                {item ? (
+                  <span className="flex-1 font-medium text-foreground">{item}</span>
+                ) : (
+                  <span className="flex-1 text-muted-foreground italic">Cliquez sur un enjeu ci-dessous</span>
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Available items */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-muted-foreground">Enjeux disponibles :</p>
+          <div className="grid gap-2">
+            {unrankedItems.map(item => (
+              <Button
+                key={item}
+                variant="outline"
+                className="justify-start h-auto py-3 px-4 text-left bg-background hover:bg-secondary/20 hover:border-secondary transition-all duration-150"
+                onClick={() => {
+                  const nextRank = Object.keys(currentRankings).length + 1
+                  if (nextRank <= 3) {
+                    updateRanking(item, nextRank)
+                  }
+                }}
+                disabled={Object.keys(currentRankings).length >= 3}
+              >
+                {item}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Reset button */}
+        {Object.keys(currentRankings).length > 0 && (
+          <Button 
+            variant="ghost" 
+            size="sm"
+            onClick={() => handlePriorityRanking(question.id, {})}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            Recommencer le classement
+          </Button>
+        )}
+      </div>
+    )
   }
 
-  const renderQuestionInput = (question: (typeof profileQuestions)[0]) => {
-    // Helper function to render individual question inputs
+  const renderEnhancedPriorityRanking = (question: typeof profileQuestions[0]) => {
+    const currentRankings = answers[question.id] || {}
+
+    const toggleItemRanking = (item: string) => {
+      const newRankings = { ...currentRankings }
+      
+      if (currentRankings[item]) {
+        // Item est déjà classé, le retirer
+        const removedRank = currentRankings[item]
+        delete newRankings[item]
+        
+        // Réajuster les rangs supérieurs
+        Object.keys(newRankings).forEach(key => {
+          if (newRankings[key] > removedRank) {
+            newRankings[key] = newRankings[key] - 1
+          }
+        })
+      } else {
+        // Item pas classé, l'ajouter au prochain rang disponible
+        const nextRank = Object.keys(currentRankings).length + 1
+        if (nextRank <= 3) {
+          newRankings[item] = nextRank
+        }
+      }
+      
+      handlePriorityRanking(question.id, newRankings)
+    }
+
+    return (
+      <div className="space-y-4 mt-4">
+        {/* Instructions améliorées */}
+        <div className="p-3 bg-muted/30 rounded-lg border border-muted">
+          <p className="text-sm text-muted-foreground">
+            Sélectionnez jusqu'à 3 priorités. Cliquez sur un enjeu pour le sélectionner (le numéro apparaîtra), re-cliquez pour le désélectionner.
+          </p>
+        </div>
+
+        {/* Items avec numéros */}
+        <div className="grid gap-2">
+          {question.options?.map((option) => {
+            const rank = currentRankings[option]
+            const isSelected = !!rank
+            const isDisabled = !isSelected && Object.keys(currentRankings).length >= 3
+            
+            return (
+              <Button
+                key={option}
+                variant={isSelected ? "default" : "outline"}
+                className={`justify-between h-auto py-3 px-4 text-left relative transition-all duration-200 ${
+                  isSelected 
+                    ? "bg-secondary text-secondary-foreground border-secondary shadow-sm" 
+                    : "bg-background hover:bg-secondary/10 hover:border-secondary"
+                } ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                onClick={() => !isDisabled && toggleItemRanking(option)}
+                disabled={isDisabled}
+              >
+                <span className="flex-1 font-medium">{option}</span>
+                {isSelected && (
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant="secondary" 
+                      className="bg-primary text-primary-foreground h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold"
+                    >
+                      {rank}
+                    </Badge>
+                  </div>
+                )}
+              </Button>
+            )
+          })}
+        </div>
+
+        {/* Summary */}
+        {Object.keys(currentRankings).length > 0 && (
+          <div className="flex items-center justify-between mt-4 p-3 bg-secondary/10 rounded-lg">
+            <span className="text-sm text-muted-foreground">
+              {Object.keys(currentRankings).length}/3 priorités sélectionnées
+            </span>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => handlePriorityRanking(question.id, {})}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-4 w-4 mr-1" />
+              Tout effacer
+            </Button>
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  const renderQuestionInput = (question: typeof profileQuestions[0]) => {
     switch (question.type) {
       case "select":
         return (
-          <Select value={answers[question.id] || ""} onValueChange={(value) => handleAnswerChange(question.id, value)}>
-            <SelectTrigger className="w-full rounded-lg mt-2">
-              <SelectValue placeholder="Sélectionnez une option" />
+          <Select
+            value={answers[question.id] || ""}
+            onValueChange={(value) => handleAnswerChange(question.id, value)}
+          >
+            <SelectTrigger className="w-full border-2 rounded-lg p-3 text-sm">
+              <SelectValue placeholder={question.placeholder} />
             </SelectTrigger>
             <SelectContent>
               {question.options?.map((option, index) => (
-                <SelectItem key={index} value={typeof option === "string" ? option : option.id}>
-                  {typeof option === "string" ? option : option.label}
+                <SelectItem key={index} value={option} className="text-sm">
+                  {option}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         )
       case "radio":
-      case "scale":
         return (
           <RadioGroup
             value={answers[question.id] || ""}
             onValueChange={(value) => handleAnswerChange(question.id, value)}
-            className="space-y-2 mt-2"
+            className="space-y-2"
           >
             {question.options?.map((option, index) => (
               <div
                 key={index}
-                className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer has-[:checked]:bg-secondary/10 has-[:checked]:border-secondary"
+                className="flex items-center space-x-3 p-3 border-2 rounded-lg hover:bg-secondary/10 transition-all duration-200 cursor-pointer has-[:checked]:bg-secondary/10 has-[:checked]:border-secondary"
+                onClick={(e) => {
+                  e.preventDefault()
+                  handleAnswerChange(question.id, option)
+                }}
               >
                 <RadioGroupItem
-                  value={typeof option === "string" ? option : option.id}
+                  value={option}
                   id={`${question.id}-${index}`}
+                  className="pointer-events-none"
                 />
-                <Label htmlFor={`${question.id}-${index}`} className="flex-1 cursor-pointer">
-                  {typeof option === "string" ? option : option.label}
+                <Label htmlFor={`${question.id}-${index}`} className="flex-1 cursor-pointer text-sm font-medium pointer-events-none">
+                  {option}
                 </Label>
               </div>
             ))}
           </RadioGroup>
         )
-      case "checkbox":
+      case "priority_ranking":
+        return renderPriorityRanking(question)
+      case "priority_ranking_enhanced":
+        return renderEnhancedPriorityRanking(question)
+      case "checkbox_multiple":
         return (
-          <div className="space-y-2 mt-2">
-            {question.options?.map((option: any, index: number) => (
-              <div
-                key={index}
-                className="flex items-center space-x-2 p-3 border rounded-lg hover:bg-muted/50 transition-colors cursor-pointer has-[:checked]:bg-secondary/10 has-[:checked]:border-secondary"
-              >
-                <Checkbox
-                  id={`${question.id}-${option.id}`}
-                  checked={!!(answers[question.id] && answers[question.id][option.id])}
-                  onCheckedChange={(checked) => handleCheckboxChange(question.id, option.id, !!checked)}
-                />
-                <Label htmlFor={`${question.id}-${option.id}`} className="flex-1 cursor-pointer">
-                  {option.label}
-                </Label>
-              </div>
-            ))}
+          <div className="space-y-2">
+            {question.options?.map((option, index) => {
+              const selectedOptions = Array.isArray(answers[question.id]) ? answers[question.id] : []
+              const isChecked = selectedOptions.includes(option)
+              
+              return (
+                <div
+                  key={index}
+                  className="flex items-center space-x-3 p-3 border-2 rounded-lg hover:bg-secondary/10 transition-all duration-200 cursor-pointer has-[:checked]:bg-secondary/10 has-[:checked]:border-secondary"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const current = Array.isArray(answers[question.id]) ? answers[question.id] : []
+                    const newSelected = current.includes(option)
+                      ? current.filter((item: string) => item !== option)
+                      : [...current, option]
+                    handleAnswerChange(question.id, newSelected)
+                  }}
+                >
+                  <Checkbox
+                    checked={isChecked}
+                    className="pointer-events-none"
+                  />
+                  <Label htmlFor={`${question.id}-${index}`} className="flex-1 cursor-pointer text-sm font-medium pointer-events-none">
+                    {option}
+                  </Label>
+                </div>
+              )
+            })}
           </div>
         )
-      case "year_select":
-        const currentYear = new Date().getFullYear()
-        const years = Array.from({ length: 100 }, (_, i) => (currentYear - 15 - i).toString())
+      case "text_area":
         return (
-          <Select value={answers[question.id] || ""} onValueChange={(value) => handleAnswerChange(question.id, value)}>
-            <SelectTrigger className="w-full rounded-lg mt-2">
-              <SelectValue placeholder="Sélectionnez une année" />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map((year) => (
-                <SelectItem key={year} value={year}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )
-      case "textarea":
-        return (
-          <Textarea
-            value={answers[question.id] || ""}
-            onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-            placeholder="Votre réponse..."
-            className="rounded-lg min-h-[100px] mt-2"
-          />
+          <div className="space-y-2">
+            {question.description && (
+              <p className="text-sm text-muted-foreground">
+                {question.description}
+              </p>
+            )}
+            <Textarea
+              id={question.id}
+              value={answers[question.id] || ""}
+              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+              placeholder={question.placeholder}
+              className="w-full min-h-[100px] p-3 border-2 rounded-lg resize-vertical text-sm"
+              rows={3}
+            />
+          </div>
         )
       default:
         return <p>Type de question non supporté.</p>
     }
   }
 
+  // Calculer le progrès basé sur les réponses complétées
+  const completedQuestions = profileQuestions.filter(q => {
+    const answer = answers[q.id]
+    if (q.type === "text_area") return true // Optionnel
+    return answer !== undefined && answer !== ""
+  }).length
+  const progress = (completedQuestions / profileQuestions.length) * 100
+
   return (
-    <div className="container max-w-3xl py-12 px-4 md:px-6 animate-fadeIn">
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-3">Votre profil (Facultatif)</h1>
-        <p className="text-muted-foreground text-base max-w-2xl mx-auto">
-          Les questions suivantes sont facultatives et n'auront aucun effet sur vos résultats. Elles sont utilisées pour
-          s'assurer que différents groupes de la société sont correctement représentés. Voir l'aide pour plus de détails
-          ou sautez cette section si vous préférez.
+    <div className="container max-w-4xl py-3 px-4 md:px-6 animate-fadeIn">
+      {/* Header - Ultra compact */}
+      <div className="mb-3 text-center">
+        <h1 className="text-xl md:text-2xl font-bold text-foreground mb-1">
+          Quelques questions sur vous
+        </h1>
+        <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+          Obligatoire pour des résultats précis.
         </p>
-        <Button variant="link" onClick={skipProfile} className="text-primary hover:text-primary/80 mt-4 text-base">
-          Sauter cette section et voir mes résultats
-        </Button>
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          handleSubmit()
-        }}
-      >
-        <div className="space-y-10">
-          {profileQuestions.map((question, index) => (
-            <div key={question.id} className="p-6 border rounded-xl shadow-sm bg-card">
-              <Label className="text-lg font-semibold text-foreground mb-1 block">
-                Question {index + 1} sur {profileQuestions.length}
-              </Label>
-              <p className="text-md text-muted-foreground mb-4">{question.text}</p>
-              {renderQuestionInput(question)}
-              {question.id === "contact_consent" && (
-                <p className="text-xs text-muted-foreground mt-3">
-                  Votre adresse électronique ne sera jamais communiquée à un tiers ni utilisée pour vous envoyer des
-                  courriers électroniques à caractère commercial ou promotionnel. Voir notre Politique de
-                  confidentialité pour plus de détails.
-                </p>
-              )}
-            </div>
-          ))}
+      {/* Progress - Ultra compact */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-1">
+          <span className="text-xs font-medium text-muted-foreground">
+            {completedQuestions}/{profileQuestions.length} questions
+          </span>
+          <span className="text-xs font-medium text-muted-foreground">
+            {Math.round(progress)}%
+          </span>
         </div>
-
-        <div className="mt-10 pt-6 border-t flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={skipProfile}
-            className="rounded-xl px-8 py-3 text-base w-full sm:w-auto"
-          >
-            Sauter et voir mes résultats
-          </Button>
-          <Button
-            type="submit"
-            className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base shadow-soft w-full sm:w-auto"
-          >
-            Enregistrer et voir mes résultats
-          </Button>
+        <div className="w-full bg-muted rounded-full h-1">
+          <div 
+            className="bg-secondary h-1 rounded-full transition-all duration-500 ease-out" 
+            style={{ width: `${progress}%` }}
+          ></div>
         </div>
-      </form>
+      </div>
 
-      <div className="mt-12 text-center space-x-4">
-        <Button variant="link" asChild className="text-sm text-muted-foreground hover:text-primary">
-          <Link href="/a-propos">À Propos</Link>
-        </Button>
-        <Button variant="link" asChild className="text-sm text-muted-foreground hover:text-primary">
-          <Link href="/aide">Aide</Link>
-        </Button>
-        <Button variant="link" asChild className="text-sm text-muted-foreground hover:text-primary">
-          <Link href="/confidentialite">Confidentialité</Link>
+      {/* Questions organisées en une seule colonne compacte pour fluidité de navigation */}
+      <div className="max-w-2xl mx-auto space-y-5">
+        {Object.entries(categorizedQuestions).map(([category, questions]) => (
+          <Card key={category} className="shadow-soft rounded-lg bg-card">
+            <CardHeader className="pb-3 pt-4">
+              <div className="flex items-center gap-2 mb-1">
+                {questions[0]?.icon && (() => {
+                  const IconComponent = questions[0].icon;
+                  return (
+                    <div className="p-1.5 bg-secondary/10 rounded-md">
+                      <IconComponent className="h-3.5 w-3.5 text-secondary" />
+                    </div>
+                  );
+                })()}
+                <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                  {category}
+                </Badge>
+              </div>
+              <CardTitle className="text-base font-semibold">
+                {category === "Démographie" && "Informations de base"}
+                {category === "Contexte municipal" && "Votre contexte à Québec"}
+              </CardTitle>
+            </CardHeader>
+
+            <CardContent className="space-y-4 pb-4">
+              {questions.map((question) => (
+                <div key={question.id} className="space-y-2">
+                  <Label className="text-sm font-medium text-foreground leading-snug">
+                    {question.text}
+                  </Label>
+                  {renderQuestionInput(question)}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Navigation - Ultra compact */}
+      <div className="flex justify-center mt-5">
+        <Button
+          onClick={handleSubmit}
+          disabled={!canSubmit()}
+          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 font-medium text-base"
+        >
+          Voir mes résultats
+          <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
     </div>
