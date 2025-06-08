@@ -171,9 +171,17 @@ export default function ProfilePage() {
           if (currentPage === 'basic') {
             setCurrentPage('municipal')
             setActiveQuestionIndex(0)
+            // Scroll vers le haut pour voir la première question de la nouvelle page
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, 400)
           } else if (currentPage === 'municipal') {
             setCurrentPage('issues')
             setActiveQuestionIndex(0)
+            // Scroll vers le haut pour voir la première question de la nouvelle page
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            }, 400)
           }
         }
       }, 300) // Petit délai pour voir la sélection
@@ -307,9 +315,17 @@ export default function ProfilePage() {
     if (currentPage === 'basic') {
       setCurrentPage('municipal')
       setActiveQuestionIndex(0)
+      // Scroll vers le haut pour voir la première question de la nouvelle page
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 100)
     } else if (currentPage === 'municipal') {
       setCurrentPage('issues')
       setActiveQuestionIndex(0)
+      // Scroll vers le haut pour voir la première question de la nouvelle page
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 100)
     }
   }
 
@@ -317,9 +333,17 @@ export default function ProfilePage() {
     if (currentPage === 'municipal') {
       setCurrentPage('basic')
       setActiveQuestionIndex(0)
+      // Scroll vers le haut pour voir la première question de la page précédente
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 100)
     } else if (currentPage === 'issues') {
       setCurrentPage('municipal')
       setActiveQuestionIndex(0)
+      // Scroll vers le haut pour voir la première question de la page précédente
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }, 100)
     }
   }
 

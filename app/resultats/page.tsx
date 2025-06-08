@@ -434,7 +434,7 @@ export default function ResultsPage() {
       {/* Images décoratives positionnées selon la hauteur */}
       <div className="hidden lg:block">
         {/* Chat qui dort - premier tiers de la page */}
-        <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-left">
+        <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
           <img 
             src="/Image_parc_chat_dort.png" 
             alt="" 
@@ -443,7 +443,7 @@ export default function ResultsPage() {
         </div>
         
         {/* Cerf-volant - troisième tiers de la page */}
-        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-96 h-auto decorative-frame-right kite-animation">
+        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-72 h-auto decorative-frame-right kite-animation">
           <img 
             src="/Image_parc_cerfvolant.png" 
             alt="" 
