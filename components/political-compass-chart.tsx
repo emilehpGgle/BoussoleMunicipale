@@ -140,38 +140,42 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
                 {axisConfiguration.social.leftLabel}
               </text>
 
-              {/* Quadrants colorés avec nouvelle palette */}
+              {/* Quadrants colorés avec couleurs vives et contrastées */}
+              {/* Quadrant Haut-Gauche: Progressiste + Interventionnisme (Vert émeraude) */}
               <rect
                 x={40}
                 y={40}
                 width={(svgWidth-80)/2}
                 height={(svgHeight-80)/2}
-                fill="hsl(var(--primary))"
-                opacity="0.03"
+                fill="#10b981"
+                opacity="0.15"
               />
+              {/* Quadrant Haut-Droite: Progressiste + Libre marché (Bleu cyan) */}
               <rect
                 x={svgWidth/2}
                 y={40}
                 width={(svgWidth-80)/2}
                 height={(svgHeight-80)/2}
-                fill="hsl(var(--primary))"
-                opacity="0.03"
+                fill="#0891b2"
+                opacity="0.15"
               />
+              {/* Quadrant Bas-Gauche: Conservateur + Interventionnisme (Orange amber) */}
               <rect
                 x={40}
                 y={svgHeight/2}
                 width={(svgWidth-80)/2}
                 height={(svgHeight-80)/2}
-                fill="hsl(var(--accent))"
-                opacity="0.05"
+                fill="#f59e0b"
+                opacity="0.12"
               />
+              {/* Quadrant Bas-Droite: Conservateur + Libre marché (Violet) */}
               <rect
                 x={svgWidth/2}
                 y={svgHeight/2}
                 width={(svgWidth-80)/2}
                 height={(svgHeight-80)/2}
-                fill="hsl(var(--muted))"
-                opacity="0.05"
+                fill="#8b5cf6"
+                opacity="0.12"
               />
 
               {/* Partis politiques */}
@@ -187,10 +191,10 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
                       cx={coords.x}
                       cy={coords.y}
                       r={isHovered ? 18 : 12}
-                      fill="hsl(var(--background))"
-                      stroke="hsl(var(--border))"
+                      fill="white"
+                      stroke="#1e40af"
                       strokeWidth={isHovered ? 3 : 2}
-                      className="transition-all duration-200 cursor-pointer"
+                      className="transition-all duration-200 cursor-pointer drop-shadow-md"
                       onMouseEnter={() => setHoveredParty(partyId)}
                       onMouseLeave={() => setHoveredParty(null)}
                     />
@@ -233,12 +237,12 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
                     <circle
                       cx={userCoords.x}
                       cy={userCoords.y}
-                      r="20"
+                      r="22"
                       fill="none"
-                      stroke="hsl(var(--primary))"
-                      strokeWidth="2"
-                      strokeDasharray="5,5"
-                      opacity="0.6"
+                      stroke="#1e40af"
+                      strokeWidth="3"
+                      strokeDasharray="8,4"
+                      opacity="0.8"
                     >
                       <animateTransform
                         attributeName="transform"
@@ -246,7 +250,7 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
                         type="rotate"
                         from={`0 ${userCoords.x} ${userCoords.y}`}
                         to={`360 ${userCoords.x} ${userCoords.y}`}
-                        dur="8s"
+                        dur="6s"
                         repeatCount="indefinite"
                       />
                     </circle>
@@ -255,10 +259,11 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
                     <circle
                       cx={userCoords.x}
                       cy={userCoords.y}
-                      r="8"
-                      fill="hsl(var(--primary))"
-                      stroke="hsl(var(--background))"
-                      strokeWidth="3"
+                      r="10"
+                      fill="#1e40af"
+                      stroke="white"
+                      strokeWidth="4"
+                      className="drop-shadow-lg"
                     />
                     
                     {/* Label utilisateur */}
