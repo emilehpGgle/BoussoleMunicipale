@@ -155,19 +155,39 @@ export default function ProfilePage() {
     const previousAnswers = answers[questionId] || {}
     setAnswers((prev) => ({ ...prev, [questionId]: rankings }))
     
-    // Si "Autres" vient d'être sélectionné, scroller vers la question des préoccupations
+    const previousCount = Object.keys(previousAnswers).length
+    const currentCount = Object.keys(rankings).length
     const wasOthersSelected = previousAnswers['Autres'] !== undefined
     const isOthersSelected = rankings['Autres'] !== undefined
     
-    if (!wasOthersSelected && isOthersSelected) {
-      // "Autres" vient d'être ajouté, scroller vers la zone de texte
+    // Si l'utilisateur vient de compléter ses 3 priorités (de 2 à 3)
+    if (previousCount === 2 && currentCount === 3) {
+      setTimeout(() => {
+        if (isOthersSelected) {
+          // Si "Autres" est sélectionné, scroller vers la zone de texte
+          citizenConcernsRef.current?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          })
+        } else {
+          // Sinon, scroller vers le bas de la page (bouton "Voir mes résultats")
+          window.scrollTo({ 
+            top: document.documentElement.scrollHeight,
+            behavior: 'smooth' 
+          })
+        }
+      }, 300) // Petit délai pour laisser le DOM se mettre à jour
+    }
+    // Si "Autres" vient d'être ajouté après avoir déjà 3 sélections
+    else if (!wasOthersSelected && isOthersSelected && currentCount === 3) {
       setTimeout(() => {
         citizenConcernsRef.current?.scrollIntoView({ 
           behavior: 'smooth', 
           block: 'start',
           inline: 'nearest'
         })
-      }, 300) // Petit délai pour laisser le DOM se mettre à jour
+      }, 300)
     }
   }
 
