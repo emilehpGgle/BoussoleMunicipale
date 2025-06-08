@@ -142,7 +142,12 @@ export default function ProfilePage() {
     const currentQuestions = getCurrentQuestions()
     const currentQuestion = currentQuestions[activeQuestionIndex]
     
-    if (currentQuestion && currentQuestion.type !== "text_area" && currentQuestion.type !== "priority_ranking_enhanced") {
+    if (
+      currentQuestion &&
+      !["text_area", "priority_ranking_enhanced", "checkbox_multiple"].includes(
+        currentQuestion.type
+      )
+    ) {
       setTimeout(() => {
         if (activeQuestionIndex < currentQuestions.length - 1) {
           setActiveQuestionIndex(activeQuestionIndex + 1)
