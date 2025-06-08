@@ -191,28 +191,30 @@ export default function ResultsPage() {
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
   // Générer un ID unique de partage et sauvegarder les résultats
-  const generateShareUrl = () => {
+  const generateShareUrl = async () => {
     const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     
-    // Sauvegarder les résultats dans localStorage avec l'ID
+    // Structure des données à partager
     const shareData = {
       id: shareId,
       userName: "Citoyen engagé", // Peut être personnalisé
-      topParties: topParties.slice(0, 3),
-      userPosition: calculatedScores.length > 0 ? {
-        economic: 15, // Calculé à partir des réponses
-        social: 25    // Calculé à partir des réponses
-      } : undefined,
+      topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
+      userPosition: calculatedScores.length > 0 ? calculateUserPoliticalPosition(userAnswers, userImportance) : undefined,
       timestamp: Date.now()
     }
     
     try {
-      const existingShares = localStorage.getItem('boussole-shared-results')
-      const shares = existingShares ? JSON.parse(existingShares) : {}
-      shares[shareId] = shareData
-      localStorage.setItem('boussole-shared-results', JSON.stringify(shares))
+      // Appeler l'API pour sauvegarder les résultats
+      await fetch('/api/save-share', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ shareId, data: shareData })
+      })
     } catch (error) {
-      console.error('Erreur sauvegarde partage:', error)
+      console.error('Erreur lors de l\'appel à l\'API de sauvegarde:', error)
+      // Gérer l'erreur si nécessaire
     }
     
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
@@ -276,135 +278,55 @@ export default function ResultsPage() {
 
   // Fonctions de partage modernes avec Open Graph
   const handleFacebookShare = async () => {
-    try {
-      // Générer l'URL de partage unique avec Open Graph
-      const shareUrl = generateShareUrl()
-      
-      // Ouvrir Facebook avec l'URL qui contient automatiquement l'image et les métadonnées
-      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`
-      window.open(url, '_blank', 'width=600,height=400')
-      toast.success("🎉 Partage Facebook ouvert avec image intégrée automatiquement !")
-    } catch (error) {
-      // Fallback vers le questionnaire principal
-      const fallbackUrl = `${baseUrl}/questionnaire`
-      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(fallbackUrl)}&quote=${encodeURIComponent(shareText)}`
-      window.open(url, '_blank', 'width=600,height=400')
-      toast.success("Partage Facebook ouvert !")
-    }
+    const shareUrl = await generateShareUrl()
+    const text = encodeURIComponent(`Découvrez mes affinités politiques municipales ! ${topParties[0]?.party.shortName}: ${Math.round(topParties[0]?.score || 0)}%`)
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${text}`, '_blank')
   }
 
   const handleTwitterShare = async () => {
-    try {
-      const hashtags = "BoussoleElectorale,PolitiqueMunicipale"
-      
-      // Générer l'URL de partage unique avec Open Graph 
-      const shareUrl = generateShareUrl()
-      
-      // Ouvrir Twitter avec l'URL qui contient automatiquement l'image via Twitter Card
-      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}&hashtags=${hashtags}`
-      window.open(url, '_blank', 'width=600,height=400')
-      toast.success("🎉 Tweet préparé avec image intégrée automatiquement !")
-    } catch (error) {
-      // Fallback vers le questionnaire principal
-      const fallbackUrl = `${baseUrl}/questionnaire`
-      const hashtags = "BoussoleElectorale,PolitiqueMunicipale"
-      const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(fallbackUrl)}&hashtags=${hashtags}`
-      window.open(url, '_blank', 'width=600,height=400')
-      toast.success("Tweet préparé !")
-    }
+    const shareUrl = await generateShareUrl()
+    const text = encodeURIComponent(`🗳️ Mes affinités politiques municipales révélées ! Top parti: ${topParties[0]?.party.shortName} (${Math.round(topParties[0]?.score || 0)}%) #BoussoleElectorale #PolitiqueMunicipale`)
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank')
   }
 
   const handleLinkedInShare = async () => {
-    try {
-      // Générer l'URL de partage unique avec Open Graph
-      const shareUrl = generateShareUrl()
-      
-      // Ouvrir LinkedIn avec l'URL qui contient automatiquement l'image et les métadonnées
-      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-      window.open(url, '_blank', 'width=600,height=400')
-      toast.success("🎉 Partage LinkedIn ouvert avec image intégrée automatiquement !")
-    } catch (error) {
-      // Fallback vers le questionnaire principal
-      const fallbackUrl = `${baseUrl}/questionnaire`
-      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(fallbackUrl)}&title=${encodeURIComponent('Boussole Municipale - Découvrez vos affinités')}&summary=${encodeURIComponent(shareText)}`
-      window.open(url, '_blank', 'width=600,height=400')
-      toast.success("Partage LinkedIn ouvert !")
-    }
+    const shareUrl = await generateShareUrl()
+    const title = encodeURIComponent('Mes résultats de la Boussole Municipale')
+    const summary = encodeURIComponent(`Découvrez mes affinités politiques locales ! Mon top parti: ${topParties[0]?.party.shortName} avec ${Math.round(topParties[0]?.score || 0)}% d'affinité.`)
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${title}&summary=${summary}`, '_blank')
   }
 
   // Fonction moderne pour Messenger
   const handleMessengerShare = async () => {
-    try {
-      // Générer l'URL de partage unique
-      const shareUrl = generateShareUrl()
-      
-      // Copier le texte + URL dans le presse-papiers pour faciliter le partage
-      const textToCopy = `${shareText}\n\n👉 ${shareUrl}`
-      await navigator.clipboard.writeText(textToCopy)
-      
-      // Ouvrir Messenger (web)
-      window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
-      toast.success("🎉 Lien copié et Messenger ouvert ! L'image s'affichera automatiquement.")
-    } catch (error) {
-      // Fallback : juste copier le texte
-      try {
-        const fallbackUrl = `${baseUrl}/questionnaire`
-        const textToCopy = `${shareText}\n\n👉 ${fallbackUrl}`
-        await navigator.clipboard.writeText(textToCopy)
-        window.open('https://www.messenger.com/', '_blank')
-        toast.success("Texte copié ! Collez dans Messenger.")
-      } catch {
-        window.open('https://www.messenger.com/', '_blank')
-        toast.success("Messenger ouvert !")
-      }
-    }
+    const shareUrl = await generateShareUrl()
+    window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
   }
 
   const handleCopyShare = async () => {
+    const shareUrl = await generateShareUrl()
     try {
-      // Générer l'URL de partage unique
-      const shareUrl = generateShareUrl()
-      
-      // Copier le texte avec l'URL de partage
-      const textToCopy = `${shareText}\n\n👉 ${shareUrl}`
-      await navigator.clipboard.writeText(textToCopy)
-      
-      toast.success("🎉 Lien de partage copié ! L'image s'affichera automatiquement.")
-    } catch (error) {
-      // Fallback vers le questionnaire principal
-      try {
-        const fallbackUrl = `${baseUrl}/questionnaire`
-        const textToCopy = `${shareText}\n\n👉 ${fallbackUrl}`
-        await navigator.clipboard.writeText(textToCopy)
-        toast.success("Lien copié dans le presse-papiers !")
-      } catch {
-        toast.error("Impossible de copier le lien")
-      }
+      await navigator.clipboard.writeText(shareUrl)
+      toast.success("Lien de partage copié dans le presse-papiers !")
+    } catch (err) {
+      toast.error("Impossible de copier le lien.")
+      console.error('Erreur de copie:', err)
     }
   }
 
-  const handleGeneralShare = () => {
-    // Pour les autres boutons (Instagram, Share2), utiliser l'API Web Share si disponible
-    try {
-      const shareUrl = generateShareUrl()
-      
-      if (navigator.share) {
-        navigator.share({
+  const handleGeneralShare = async () => {
+    const shareUrl = await generateShareUrl()
+    if (navigator.share) {
+      try {
+        await navigator.share({
           title: 'Mes résultats - Boussole Municipale',
-          text: shareText,
-          url: shareUrl
-        }).then(() => {
-          toast.success("🎉 Partage ouvert avec image intégrée !")
-        }).catch(() => {
-          // Fallback: copier le lien
-          handleCopyShare()
+          text: generateShareText(),
+          url: shareUrl,
         })
-      } else {
-        // Fallback: copier le lien
-        handleCopyShare()
+      } catch (error) {
+        console.error('Erreur partage natif:', error)
       }
-    } catch (error) {
-      // Fallback: copier le lien
+    } else {
+      // Fallback pour les navigateurs non compatibles (ex: desktop)
       handleCopyShare()
     }
   }
