@@ -56,22 +56,34 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
     return 'bg-gray-500'
   }
 
+  // Amélioration 1: Sécurisation fonction Facebook avec fallbacks robustes
   const shareToFacebook = () => {
     const url = encodeURIComponent(window.location.href)
-    const text = encodeURIComponent(`Découvrez mes affinités politiques municipales ! ${sharedResult?.topParties[0]?.party.shortName}: ${Math.round(sharedResult?.topParties[0]?.score || 0)}%`)
+    const topParty = sharedResult?.topParties?.[0]
+    const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti inconnu'
+    const score = Math.round(topParty?.score || 0)
+    const text = encodeURIComponent(`Découvrez mes affinités politiques municipales ! ${partyName}: ${score}%`)
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${text}`, '_blank')
   }
 
+  // Amélioration 2: Sécurisation fonction Twitter avec fallbacks robustes
   const shareToTwitter = () => {
     const url = encodeURIComponent(window.location.href)
-    const text = encodeURIComponent(`🗳️ Mes affinités politiques municipales révélées ! Top parti: ${sharedResult?.topParties[0]?.party.shortName} (${Math.round(sharedResult?.topParties[0]?.score || 0)}%) #BoussoleElectorale #PolitiqueMunicipale`)
+    const topParty = sharedResult?.topParties?.[0]
+    const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti inconnu'
+    const score = Math.round(topParty?.score || 0)
+    const text = encodeURIComponent(`🗳️ Mes affinités politiques municipales révélées ! Top parti: ${partyName} (${score}%) #BoussoleElectorale #PolitiqueMunicipale`)
     window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank')
   }
 
+  // Amélioration 3: Sécurisation fonction LinkedIn avec fallbacks robustes
   const shareToLinkedIn = () => {
     const url = encodeURIComponent(window.location.href)
     const title = encodeURIComponent('Mes résultats de la Boussole Municipale')
-    const summary = encodeURIComponent(`Découvrez mes affinités politiques locales ! Mon top parti: ${sharedResult?.topParties[0]?.party.shortName} avec ${Math.round(sharedResult?.topParties[0]?.score || 0)}% d'affinité.`)
+    const topParty = sharedResult?.topParties?.[0]
+    const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti inconnu'
+    const score = Math.round(topParty?.score || 0)
+    const summary = encodeURIComponent(`Découvrez mes affinités politiques locales ! Mon top parti: ${partyName} avec ${score}% d'affinité.`)
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}&title=${title}&summary=${summary}`, '_blank')
   }
 
@@ -149,45 +161,51 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
             </p>
           </div>
 
-          {/* Top 3 des affinités */}
+          {/* Top 3 des affinités - Ajout sécurisation pour éviter crash si array vide */}
           <div className="mb-8">
             <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
               🏆 Top 3 des affinités
             </h3>
             <div className="space-y-4">
-              {sharedResult.topParties.slice(0, 3).map((party, index) => (
-                <div 
-                  key={party.party.id}
-                  className="bg-gray-50 rounded-xl p-6 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-4">
-                    <div 
-                      className={`w-10 h-10 ${getScoreBackground(party.score)} rounded-full flex items-center justify-center text-white font-bold text-lg`}
-                    >
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h4 className="text-lg font-bold text-gray-800">
-                        {party.party.shortName || party.party.name}
-                      </h4>
-                      {party.party.shortName && (
-                        <p className="text-sm text-gray-600">{party.party.name}</p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className={`text-2xl font-bold ${getScoreColor(party.score)}`}>
-                      {Math.round(party.score)}%
-                    </span>
-                    <div className="w-24 bg-gray-200 rounded-full h-2 mt-2">
+              {sharedResult.topParties && sharedResult.topParties.length > 0 ? (
+                sharedResult.topParties.slice(0, 3).map((party, index) => (
+                  <div 
+                    key={party.party.id}
+                    className="bg-gray-50 rounded-xl p-6 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-4">
                       <div 
-                        className={`${getScoreBackground(party.score)} h-2 rounded-full`}
-                        style={{ width: `${Math.max(party.score, 5)}%` }}
-                      ></div>
+                        className={`w-10 h-10 ${getScoreBackground(party.score)} rounded-full flex items-center justify-center text-white font-bold text-lg`}
+                      >
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-gray-800">
+                          {party.party.shortName || party.party.name}
+                        </h4>
+                        {party.party.shortName && (
+                          <p className="text-sm text-gray-600">{party.party.name}</p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className={`text-2xl font-bold ${getScoreColor(party.score)}`}>
+                        {Math.round(party.score)}%
+                      </span>
+                      <div className="w-24 bg-gray-200 rounded-full h-2 mt-2">
+                        <div 
+                          className={`${getScoreBackground(party.score)} h-2 rounded-full`}
+                          style={{ width: `${Math.max(party.score, 5)}%` }}
+                        ></div>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <p>Aucun résultat disponible</p>
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
