@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -11,148 +11,235 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ArrowRight, User, Home, Car, Target, X } from "lucide-react"
+import { ArrowLeft, ArrowRight, User, Home, Car, Target, X, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 
-// Données pour les questions de profil (optimisées pour valeur commerciale + pertinence municipale)
-const profileQuestions = [
-  {
-    id: "age_group",
-    text: "Dans quelle tranche d'âge vous situez-vous ?",
-    type: "select",
-    category: "Démographie",
-    icon: User,
-    placeholder: "Sélectionnez votre tranche d'âge",
-    options: ["18-24 ans", "25-34 ans", "35-44 ans", "45-54 ans", "55-64 ans", "65 ans et plus"],
-  },
-  {
-    id: "gender",
-    text: "Comment vous identifiez-vous ?",
-    type: "select", 
-    category: "Démographie",
-    icon: User,
-    placeholder: "Sélectionnez votre identité",
-    options: ["Homme", "Femme", "Non-binaire", "Préfère ne pas dire"],
-  },
-  {
-    id: "household_income",
-    text: "Quel est le revenu annuel combiné de votre ménage (avant impôts) ?",
-    type: "select",
-    category: "Démographie", 
-    icon: User,
-    placeholder: "Sélectionnez votre tranche de revenu",
-    options: [
-      "Moins de 30 000 $",
-      "30 000 $ à 59 999 $", 
-      "60 000 $ à 89 999 $",
-      "90 000 $ à 119 999 $",
-      "120 000 $ à 149 999 $",
-      "150 000 $ et plus",
-      "Préfère ne pas dire",
-    ],
-  },
-  {
-    id: "education_level",
-    text: "Quel est votre plus haut niveau de scolarité complété ?",
-    type: "select",
-    category: "Démographie",
-    icon: User,
-    placeholder: "Sélectionnez votre niveau de scolarité",
-    options: [
-      "Secondaire ou moins",
-      "Formation professionnelle/DEP",
-      "Cégep/DEC",
-      "Université (Baccalauréat)",
-      "Université (Maîtrise/Doctorat)",
-    ],
-  },
-  {
-    id: "housing_status", 
-    text: "Quel est votre statut de logement ?",
-    type: "select",
-    category: "Contexte municipal",
-    icon: Home,
-    placeholder: "Sélectionnez votre statut de logement",
-    options: ["Propriétaire", "Locataire", "Logé chez famille/amis", "Autre"],
-  },
-  {
-    id: "main_transport",
-    text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
-    type: "checkbox_multiple",
-    category: "Contexte municipal", 
-    icon: Car,
-    options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
-  },
-  {
-    id: "municipal_priorities",
-    text: "Sélectionnez et classez vos 3 priorités municipales (cliquez pour sélectionner, re-cliquez pour désélectionner)",
-    type: "priority_ranking_enhanced",
-    category: "Contexte municipal",
-    icon: Target, 
-    options: [
-      "Transport et mobilité",
-      "Logement abordable", 
-      "Environnement et espaces verts",
-      "Sécurité publique",
-      "Développement économique",
-      "Services municipaux",
-      "Projet de tramway",
-      "Troisième lien routier",
-      "Lutte aux changements climatiques",
-      "Autres",
-    ],
-  },
-  {
-    id: "citizen_concerns",
-    text: "Partagez-nous ce qui vous préoccupe actuellement dans votre municipalité",
-    type: "text_area",
-    category: "Contexte municipal",
-    icon: Target,
-    placeholder: "Décrivez vos principales préoccupations municipales...",
-    description: "Ces informations nous aideront à mieux comprendre les enjeux qui préoccupent les citoyens.",
-  },
-]
+// Données pour les questions de profil (organisées par page)
+const profileQuestions = {
+  // Page 1 - Informations de base
+  basic: [
+    {
+      id: "age_group",
+      text: "Dans quelle tranche d'âge vous situez-vous ?",
+      type: "button_horizontal",
+      category: "Informations de base",
+      icon: User,
+      options: ["18-24 ans", "25-34 ans", "35-44 ans", "45-54 ans", "55-64 ans", "65 ans et plus"],
+    },
+    {
+      id: "gender",
+      text: "Comment vous identifiez-vous ?",
+      type: "button_horizontal", 
+      category: "Informations de base",
+      icon: User,
+      options: ["Homme", "Femme", "Non-binaire", "Préfère ne pas dire"],
+    },
+    {
+      id: "household_income",
+      text: "Quel est le revenu annuel combiné de votre ménage (avant impôts) ?",
+      type: "button_horizontal",
+      category: "Informations de base", 
+      icon: User,
+      options: [
+        "Moins de 30 000 $",
+        "30 000 $ à 59 999 $", 
+        "60 000 $ à 89 999 $",
+        "90 000 $ à 119 999 $",
+        "120 000 $ à 149 999 $",
+        "150 000 $ et plus",
+        "Préfère ne pas dire",
+      ],
+    },
+    {
+      id: "education_level",
+      text: "Quel est votre plus haut niveau de scolarité complété ?",
+      type: "button_horizontal",
+      category: "Informations de base",
+      icon: User,
+      options: [
+        "Secondaire ou moins",
+        "Formation professionnelle/DEP",
+        "Cégep/DEC",
+        "Université (Baccalauréat)",
+        "Université (Maîtrise/Doctorat)",
+      ],
+    },
+  ],
+  
+  // Page 2 - Contexte municipal
+  municipal: [
+    {
+      id: "housing_status", 
+      text: "Quel est votre statut de logement ?",
+      type: "button_horizontal",
+      category: "Contexte municipal",
+      icon: Home,
+      options: ["Propriétaire", "Locataire", "Logé chez famille/amis", "Autre"],
+    },
+    {
+      id: "main_transport",
+      text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
+      type: "checkbox_multiple",
+      category: "Contexte municipal", 
+      icon: Car,
+      options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
+    },
+  ],
+  
+  // Page 3 - Enjeux
+  issues: [
+    {
+      id: "municipal_priorities",
+      text: "Sélectionnez et classez vos 3 priorités municipales (cliquez pour sélectionner, re-cliquez pour désélectionner)",
+      type: "priority_ranking_enhanced",
+      category: "Enjeux",
+      icon: Target, 
+      options: [
+        "Transport et mobilité",
+        "Logement abordable", 
+        "Environnement et espaces verts",
+        "Sécurité publique",
+        "Développement économique",
+        "Services municipaux",
+        "Projet de tramway",
+        "Troisième lien routier",
+        "Lutte aux changements climatiques",
+        "Autres",
+      ],
+    },
+    {
+      id: "citizen_concerns",
+      text: "Précisez vos autres priorités municipales",
+      type: "text_area",
+      category: "Enjeux",
+      icon: Target,
+      placeholder: "Décrivez les autres enjeux municipaux qui vous tiennent à cœur...",
+      description: "Puisque vous avez sélectionné 'Autres', aidez-nous à comprendre quelles sont vos priorités spécifiques.",
+    },
+  ]
+}
 
 export default function ProfilePage() {
+  const [currentPage, setCurrentPage] = useState<'basic' | 'municipal' | 'issues'>('basic')
   const [answers, setAnswers] = useState<Record<string, any>>({})
+  const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const router = useRouter()
+  const citizenConcernsRef = useRef<HTMLDivElement>(null)
 
-  // Grouper les questions par catégorie pour l'affichage, mais tout afficher sur une page
-  const categorizedQuestions = profileQuestions.reduce((acc, question) => {
-    if (!acc[question.category]) acc[question.category] = []
-    acc[question.category].push(question)
-    return acc
-  }, {} as Record<string, typeof profileQuestions>)
+  // Obtenir les questions de la page actuelle
+  const getCurrentQuestions = () => profileQuestions[currentPage]
+  
+  // Obtenir toutes les questions pour la validation
+  const getAllQuestions = () => [
+    ...profileQuestions.basic,
+    ...profileQuestions.municipal,
+    ...profileQuestions.issues
+  ]
 
   const handleAnswerChange = (questionId: string, value: any) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }))
+    
+    // Auto-passer à la question suivante après une réponse (sauf pour les text areas et questions multiples)
+    const currentQuestions = getCurrentQuestions()
+    const currentQuestion = currentQuestions[activeQuestionIndex]
+    
+    if (currentQuestion && currentQuestion.type !== "text_area" && currentQuestion.type !== "priority_ranking_enhanced") {
+      setTimeout(() => {
+        if (activeQuestionIndex < currentQuestions.length - 1) {
+          setActiveQuestionIndex(activeQuestionIndex + 1)
+        }
+      }, 300) // Petit délai pour voir la sélection
+    }
   }
 
   const handlePriorityRanking = (questionId: string, rankings: Record<string, number>) => {
+    const previousAnswers = answers[questionId] || {}
     setAnswers((prev) => ({ ...prev, [questionId]: rankings }))
+    
+    // Si "Autres" vient d'être sélectionné, scroller vers la question des préoccupations
+    const wasOthersSelected = previousAnswers['Autres'] !== undefined
+    const isOthersSelected = rankings['Autres'] !== undefined
+    
+    if (!wasOthersSelected && isOthersSelected) {
+      // "Autres" vient d'être ajouté, scroller vers la zone de texte
+      setTimeout(() => {
+        citizenConcernsRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start',
+          inline: 'nearest'
+        })
+      }, 300) // Petit délai pour laisser le DOM se mettre à jour
+    }
   }
 
+  // Vérifier si une question est complétée (pour l'affichage visuel)
+  const isQuestionComplete = (question: any) => {
+    const answer = answers[question.id]
+    
+    if (question.type === "checkbox_multiple") {
+      return Array.isArray(answer) && answer.length > 0
+    }
+    
+    if (question.type === "priority_ranking_enhanced") {
+      return answer && typeof answer === "object" && Object.keys(answer).length > 0
+    }
+    
+    if (question.type === "text_area") {
+      // Pour l'affichage visuel : complété seulement si il y a du contenu
+      return answer && answer.trim().length > 0
+    }
+    
+    return answer !== undefined && answer !== ""
+  }
+
+  // Vérifier si une question est requise pour la progression (différent de l'affichage visuel)
+  const isQuestionRequiredForProgression = (question: any) => {
+    const answer = answers[question.id]
+    
+    if (question.type === "checkbox_multiple") {
+      return Array.isArray(answer) && answer.length > 0
+    }
+    
+    if (question.type === "priority_ranking_enhanced") {
+      return answer && typeof answer === "object" && Object.keys(answer).length > 0
+    }
+    
+    if (question.type === "text_area") {
+      return true // Toujours optionnel pour la progression
+    }
+    
+    return answer !== undefined && answer !== ""
+  }
+
+  // Vérifier si la page actuelle est complète
+  const isCurrentPageComplete = () => {
+    const currentQuestions = getCurrentQuestions()
+    return currentQuestions.every(q => isQuestionRequiredForProgression(q))
+  }
+
+  // Vérifier si tout le questionnaire est complété
   const canSubmit = () => {
-    return profileQuestions.every(q => {
-      const answer = answers[q.id]
-      
-      // Pour les questions de sélection multiple, vérifier qu'au moins une option est sélectionnée
-      if (q.type === "checkbox_multiple") {
-        return Array.isArray(answer) && answer.length > 0
-      }
-      
-      // Pour les questions de priorité, vérifier qu'au moins une priorité est définie
-      if (q.type === "priority_ranking" || q.type === "priority_ranking_enhanced") {
-        return answer && typeof answer === "object" && Object.keys(answer).length > 0
-      }
-      
-      // Pour les text areas, permettre les réponses vides (optionnel)
-      if (q.type === "text_area") {
-        return true // Les préoccupations peuvent être optionnelles
-      }
-      
-      // Pour les autres types, s'assurer qu'une réponse existe
-      return answer !== undefined && answer !== ""
-    })
+    const allQuestions = getAllQuestions()
+    return allQuestions.every(q => isQuestionRequiredForProgression(q))
+  }
+
+  const handleNext = () => {
+    if (currentPage === 'basic') {
+      setCurrentPage('municipal')
+      setActiveQuestionIndex(0)
+    } else if (currentPage === 'municipal') {
+      setCurrentPage('issues')
+      setActiveQuestionIndex(0)
+    }
+  }
+
+  const handlePrevious = () => {
+    if (currentPage === 'municipal') {
+      setCurrentPage('basic')
+      setActiveQuestionIndex(0)
+    } else if (currentPage === 'issues') {
+      setCurrentPage('municipal')
+      setActiveQuestionIndex(0)
+    }
   }
 
   const handleSubmit = () => {
@@ -160,273 +247,208 @@ export default function ProfilePage() {
     router.push("/resultats")
   }
 
-  const renderPriorityRanking = (question: typeof profileQuestions[0]) => {
-    const currentRankings = answers[question.id] || {}
-    const rankedItems = Object.entries(currentRankings).sort(([,a], [,b]) => (a as number) - (b as number))
-    const unrankedItems = question.options?.filter(option => !currentRankings[option]) || []
-
-    const updateRanking = (item: string, rank: number) => {
-      const newRankings = { ...currentRankings }
-      
-      // Remove item from previous ranking
-      Object.keys(newRankings).forEach(key => {
-        if (newRankings[key] >= rank) {
-          newRankings[key] += 1
-        }
-      })
-      
-      // Clear item from any previous rank
-      delete newRankings[item]
-      
-      // Set new rank
-      newRankings[item] = rank
-      
-      // Clean up rankings to ensure 1,2,3
-      const sortedEntries = Object.entries(newRankings).sort(([,a], [,b]) => (a as number) - (b as number))
-      const cleanedRankings: Record<string, number> = {}
-      sortedEntries.slice(0, 3).forEach(([key], index) => {
-        cleanedRankings[key] = index + 1
-      })
-      
-      handlePriorityRanking(question.id, cleanedRankings)
+  // Obtenir l'aperçu d'une réponse pour affichage compact
+  const getAnswerPreview = (question: any) => {
+    const answer = answers[question.id]
+    
+    if (!answer) return "Non répondu"
+    
+    if (question.type === "checkbox_multiple") {
+      return Array.isArray(answer) ? `${answer.length} sélection(s)` : "Non répondu"
     }
+    
+    if (question.type === "priority_ranking_enhanced") {
+      const count = Object.keys(answer).length
+      return count > 0 ? `${count} priorité(s) classée(s)` : "Non répondu"
+    }
+    
+    if (question.type === "text_area") {
+      return answer && answer.trim().length > 0 ? "Réponse fournie" : "Pas encore rempli"
+    }
+    
+    return answer.toString()
+  }
 
+  // Composant pour les boutons horizontaux
+  const renderHorizontalButtons = (question: any) => {
+    const selectedValue = answers[question.id]
+    
     return (
-      <div className="space-y-4 mt-4">
-        {/* Ranked items */}
-        <div className="space-y-2">
-          {[1, 2, 3].map(rank => {
-            const item = rankedItems.find(([, r]) => r === rank)?.[0]
-            return (
-              <div key={rank} className="flex items-center gap-3 p-3 bg-secondary/10 rounded-lg border-2 border-secondary/30">
-                <Badge variant="secondary" className="min-w-6 h-6 flex items-center justify-center text-xs font-bold">
-                  {rank}
-                </Badge>
-                {item ? (
-                  <span className="flex-1 font-medium text-foreground">{item}</span>
-                ) : (
-                  <span className="flex-1 text-muted-foreground italic">Cliquez sur un enjeu ci-dessous</span>
-                )}
-              </div>
-            )
-          })}
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {question.options.map((option: string, index: number) => (
+            <Button
+              key={index}
+              variant={selectedValue === option ? "default" : "outline"}
+              onClick={() => handleAnswerChange(question.id, option)}
+              className={`
+                p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+                ${selectedValue === option 
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                  : "hover:bg-secondary/50 hover:border-secondary"
+                }
+              `}
+            >
+              {option}
+            </Button>
+          ))}
         </div>
-
-        {/* Available items */}
-        <div className="space-y-2">
-          <p className="text-sm font-medium text-muted-foreground">Enjeux disponibles :</p>
-          <div className="grid gap-2">
-            {unrankedItems.map(item => (
-              <Button
-                key={item}
-                variant="outline"
-                className="justify-start h-auto py-3 px-4 text-left bg-background hover:bg-secondary/20 hover:border-secondary transition-all duration-150"
-                onClick={() => {
-                  const nextRank = Object.keys(currentRankings).length + 1
-                  if (nextRank <= 3) {
-                    updateRanking(item, nextRank)
-                  }
-                }}
-                disabled={Object.keys(currentRankings).length >= 3}
-              >
-                {item}
-              </Button>
-            ))}
-          </div>
-        </div>
-
-        {/* Reset button */}
-        {Object.keys(currentRankings).length > 0 && (
-          <Button 
-            variant="ghost" 
-            size="sm"
-            onClick={() => handlePriorityRanking(question.id, {})}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            Recommencer le classement
-          </Button>
-        )}
       </div>
     )
   }
 
-  const renderEnhancedPriorityRanking = (question: typeof profileQuestions[0]) => {
+  const renderEnhancedPriorityRanking = (question: any) => {
     const currentRankings = answers[question.id] || {}
-
+    
     const toggleItemRanking = (item: string) => {
       const newRankings = { ...currentRankings }
       
-      if (currentRankings[item]) {
-        // Item est déjà classé, le retirer
-        const removedRank = currentRankings[item]
+      if (newRankings[item]) {
+        // Remove item and shift others down
+        const removedRank = newRankings[item]
         delete newRankings[item]
         
-        // Réajuster les rangs supérieurs
         Object.keys(newRankings).forEach(key => {
           if (newRankings[key] > removedRank) {
-            newRankings[key] = newRankings[key] - 1
+            newRankings[key] -= 1
           }
         })
       } else {
-        // Item pas classé, l'ajouter au prochain rang disponible
-        const nextRank = Object.keys(currentRankings).length + 1
-        if (nextRank <= 3) {
-          newRankings[item] = nextRank
+        // Add item with next available rank (max 3)
+        const existingRanks = Object.values(newRankings) as number[]
+        const maxRank = Math.max(0, ...existingRanks)
+        
+        if (maxRank < 3) {
+          newRankings[item] = maxRank + 1
         }
       }
       
       handlePriorityRanking(question.id, newRankings)
     }
 
-    return (
-      <div className="space-y-4 mt-4">
-        {/* Instructions améliorées */}
-        <div className="p-3 bg-muted/30 rounded-lg border border-muted">
-          <p className="text-sm text-muted-foreground">
-            Sélectionnez jusqu'à 3 priorités. Cliquez sur un enjeu pour le sélectionner (le numéro apparaîtra), re-cliquez pour le désélectionner.
-          </p>
-        </div>
+    const getRankForItem = (item: string): number | null => {
+      return currentRankings[item] || null
+    }
 
-        {/* Items avec numéros */}
-        <div className="grid gap-2">
-          {question.options?.map((option) => {
-            const rank = currentRankings[option]
-            const isSelected = !!rank
-            const isDisabled = !isSelected && Object.keys(currentRankings).length >= 3
+    const getRankColor = (rank: number) => {
+      switch (rank) {
+        case 1: return "bg-yellow-500 text-white"
+        case 2: return "bg-gray-400 text-white"  
+        case 3: return "bg-amber-600 text-white"
+        default: return "bg-muted"
+      }
+    }
+
+    const getRankEmoji = (rank: number) => {
+      switch (rank) {
+        case 1: return "🥇"
+        case 2: return "🥈"
+        case 3: return "🥉"
+        default: return ""
+      }
+    }
+
+    const selectedCount = Object.keys(currentRankings).length
+
+    return (
+      <div className="space-y-4">
+        <div className="text-sm text-muted-foreground">
+          {selectedCount}/3 priorités sélectionnées
+        </div>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {question.options.map((option: string, index: number) => {
+            const rank = getRankForItem(option)
+            const isSelected = rank !== null
             
             return (
               <Button
-                key={option}
+                key={index}
                 variant={isSelected ? "default" : "outline"}
-                className={`justify-between h-auto py-3 px-4 text-left relative transition-all duration-200 ${
-                  isSelected 
-                    ? "bg-secondary text-secondary-foreground border-secondary shadow-sm" 
-                    : "bg-background hover:bg-secondary/10 hover:border-secondary"
-                } ${isDisabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
-                onClick={() => !isDisabled && toggleItemRanking(option)}
-                disabled={isDisabled}
+                onClick={() => toggleItemRanking(option)}
+                className={`
+                  p-3 h-auto text-left justify-between text-sm font-medium transition-all duration-200 relative
+                  ${isSelected 
+                    ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                    : "hover:bg-secondary/50 hover:border-secondary"
+                  }
+                `}
               >
-                <span className="flex-1 font-medium">{option}</span>
+                <span className="flex-1">{option}</span>
                 {isSelected && (
-                  <div className="flex items-center gap-2">
-                    <Badge 
-                      variant="secondary" 
-                      className="bg-primary text-primary-foreground h-6 w-6 rounded-full flex items-center justify-center text-xs font-bold"
-                    >
-                      {rank}
-                    </Badge>
+                  <div className={`
+                    inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ml-2
+                    ${getRankColor(rank!)}
+                  `}>
+                    {rank}
                   </div>
                 )}
               </Button>
             )
           })}
         </div>
-
-        {/* Summary */}
-        {Object.keys(currentRankings).length > 0 && (
-          <div className="flex items-center justify-between mt-4 p-3 bg-secondary/10 rounded-lg">
-            <span className="text-sm text-muted-foreground">
-              {Object.keys(currentRankings).length}/3 priorités sélectionnées
-            </span>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => handlePriorityRanking(question.id, {})}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-4 w-4 mr-1" />
-              Tout effacer
-            </Button>
+        
+        {selectedCount > 0 && (
+          <div className="mt-4 p-3 bg-secondary/10 rounded-lg">
+            <p className="text-sm font-medium text-foreground mb-2">Vos priorités :</p>
+            <div className="space-y-1">
+              {Object.entries(currentRankings)
+                .sort(([,a], [,b]) => (a as number) - (b as number))
+                .map(([item, rank]) => (
+                  <div key={item} className="flex items-center gap-2 text-sm">
+                    <span className="font-medium">{getRankEmoji(rank as number)}</span>
+                    <span>{item}</span>
+                  </div>
+                ))
+              }
+            </div>
           </div>
         )}
       </div>
     )
   }
 
-  const renderQuestionInput = (question: typeof profileQuestions[0]) => {
+  const renderQuestionInput = (question: any) => {
     switch (question.type) {
-      case "select":
-        return (
-          <Select
-            value={answers[question.id] || ""}
-            onValueChange={(value) => handleAnswerChange(question.id, value)}
-          >
-            <SelectTrigger className="w-full border-2 rounded-lg p-3 text-sm">
-              <SelectValue placeholder={question.placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {question.options?.map((option, index) => (
-                <SelectItem key={index} value={option} className="text-sm">
-                  {option}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        )
-      case "radio":
-        return (
-          <RadioGroup
-            value={answers[question.id] || ""}
-            onValueChange={(value) => handleAnswerChange(question.id, value)}
-            className="space-y-2"
-          >
-            {question.options?.map((option, index) => (
-              <div
-                key={index}
-                className="flex items-center space-x-3 p-3 border-2 rounded-lg hover:bg-secondary/10 transition-all duration-200 cursor-pointer has-[:checked]:bg-secondary/10 has-[:checked]:border-secondary"
-                onClick={(e) => {
-                  e.preventDefault()
-                  handleAnswerChange(question.id, option)
-                }}
-              >
-                <RadioGroupItem
-                  value={option}
-                  id={`${question.id}-${index}`}
-                  className="pointer-events-none"
-                />
-                <Label htmlFor={`${question.id}-${index}`} className="flex-1 cursor-pointer text-sm font-medium pointer-events-none">
-                  {option}
-                </Label>
-              </div>
-            ))}
-          </RadioGroup>
-        )
-      case "priority_ranking":
-        return renderPriorityRanking(question)
-      case "priority_ranking_enhanced":
-        return renderEnhancedPriorityRanking(question)
+      case "button_horizontal":
+        return renderHorizontalButtons(question)
+        
       case "checkbox_multiple":
         return (
-          <div className="space-y-2">
-            {question.options?.map((option, index) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {question.options?.map((option: string, index: number) => {
               const selectedOptions = Array.isArray(answers[question.id]) ? answers[question.id] : []
               const isChecked = selectedOptions.includes(option)
               
               return (
-                <div
+                <Button
                   key={index}
-                  className="flex items-center space-x-3 p-3 border-2 rounded-lg hover:bg-secondary/10 transition-all duration-200 cursor-pointer has-[:checked]:bg-secondary/10 has-[:checked]:border-secondary"
-                  onClick={(e) => {
-                    e.preventDefault()
+                  variant={isChecked ? "default" : "outline"}
+                  onClick={() => {
                     const current = Array.isArray(answers[question.id]) ? answers[question.id] : []
                     const newSelected = current.includes(option)
                       ? current.filter((item: string) => item !== option)
                       : [...current, option]
                     handleAnswerChange(question.id, newSelected)
                   }}
+                  className={`
+                    p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+                    ${isChecked 
+                      ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                      : "hover:bg-secondary/50 hover:border-secondary"
+                    }
+                  `}
                 >
-                  <Checkbox
-                    checked={isChecked}
-                    className="pointer-events-none"
-                  />
-                  <Label htmlFor={`${question.id}-${index}`} className="flex-1 cursor-pointer text-sm font-medium pointer-events-none">
-                    {option}
-                  </Label>
-                </div>
+                  {option}
+                </Button>
               )
             })}
           </div>
         )
+        
+      case "priority_ranking_enhanced":
+        return renderEnhancedPriorityRanking(question)
+        
       case "text_area":
         return (
           <div className="space-y-2">
@@ -445,97 +467,231 @@ export default function ProfilePage() {
             />
           </div>
         )
+        
       default:
         return <p>Type de question non supporté.</p>
     }
   }
 
-  // Calculer le progrès basé sur les réponses complétées
-  const completedQuestions = profileQuestions.filter(q => {
-    const answer = answers[q.id]
-    if (q.type === "text_area") return true // Optionnel
-    return answer !== undefined && answer !== ""
-  }).length
-  const progress = (completedQuestions / profileQuestions.length) * 100
+  // Calculer le progrès global
+  const allQuestions = getAllQuestions()
+  const completedQuestions = allQuestions.filter(q => isQuestionComplete(q)).length
+  const globalProgress = (completedQuestions / allQuestions.length) * 100
+
+  // Définir les titres et descriptions pour chaque page
+  const pageInfo = {
+    basic: {
+      title: "Informations de base",
+      description: "Quelques questions rapides pour mieux vous connaître",
+      step: "1/3"
+    },
+    municipal: {
+      title: "Contexte municipal", 
+      description: "Parlons de votre situation à Québec",
+      step: "2/3"
+    },
+    issues: {
+      title: "Enjeux",
+      description: "Exprimez vos priorités et préoccupations municipales",
+      step: "3/3" 
+    }
+  }
+
+  const currentInfo = pageInfo[currentPage]
+  const currentQuestions = getCurrentQuestions()
 
   return (
-    <div className="container max-w-4xl py-3 px-4 md:px-6 animate-fadeIn">
-      {/* Header - Ultra compact */}
-      <div className="mb-3 text-center">
-        <h1 className="text-xl md:text-2xl font-bold text-foreground mb-1">
-          Quelques questions sur vous
+    <div className="container max-w-3xl py-6 px-4 md:px-6 animate-fadeIn">
+      {/* Header */}
+      <div className="mb-6 text-center">
+        <div className="flex items-center justify-center gap-2 mb-2">
+          <Badge variant="secondary" className="text-xs px-2 py-1">
+            Étape {currentInfo.step}
+          </Badge>
+        </div>
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+          {currentInfo.title}
         </h1>
         <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-          Obligatoire pour des résultats précis.
+          {currentInfo.description}
         </p>
       </div>
 
-      {/* Progress - Ultra compact */}
-      <div className="mb-4">
-        <div className="flex justify-between items-center mb-1">
-          <span className="text-xs font-medium text-muted-foreground">
-            {completedQuestions}/{profileQuestions.length} questions
+      {/* Progress global */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium text-muted-foreground">
+            Progression globale: {completedQuestions}/{allQuestions.length} questions
           </span>
-          <span className="text-xs font-medium text-muted-foreground">
-            {Math.round(progress)}%
+          <span className="text-sm font-medium text-muted-foreground">
+            {Math.round(globalProgress)}%
           </span>
         </div>
-        <div className="w-full bg-muted rounded-full h-1">
+        <div className="w-full bg-muted rounded-full h-2">
           <div 
-            className="bg-secondary h-1 rounded-full transition-all duration-500 ease-out" 
-            style={{ width: `${progress}%` }}
+            className="bg-primary h-2 rounded-full transition-all duration-500 ease-out" 
+            style={{ width: `${globalProgress}%` }}
           ></div>
         </div>
       </div>
 
-      {/* Questions organisées en une seule colonne compacte pour fluidité de navigation */}
-      <div className="max-w-2xl mx-auto space-y-5">
-        {Object.entries(categorizedQuestions).map(([category, questions]) => (
-          <Card key={category} className="shadow-soft rounded-lg bg-card">
-            <CardHeader className="pb-3 pt-4">
-              <div className="flex items-center gap-2 mb-1">
-                {questions[0]?.icon && (() => {
-                  const IconComponent = questions[0].icon;
-                  return (
-                    <div className="p-1.5 bg-secondary/10 rounded-md">
-                      <IconComponent className="h-3.5 w-3.5 text-secondary" />
-                    </div>
-                  );
-                })()}
-                <Badge variant="secondary" className="text-xs px-2 py-0.5">
-                  {category}
-                </Badge>
-              </div>
-              <CardTitle className="text-base font-semibold">
-                {category === "Démographie" && "Informations de base"}
-                {category === "Contexte municipal" && "Votre contexte à Québec"}
-              </CardTitle>
-            </CardHeader>
-
-            <CardContent className="space-y-4 pb-4">
-              {questions.map((question) => (
-                <div key={question.id} className="space-y-2">
-                  <Label className="text-sm font-medium text-foreground leading-snug">
+      {/* Questions - Accordéon intelligent pour pages 1-2, affichage simple pour page 3 */}
+      {currentPage === 'issues' ? (
+        // Page 3 : Affichage simple sans accordéon
+        <div className="space-y-6 mb-6">
+          {currentQuestions.map((question, index) => {
+            // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
+            if (question.id === 'citizen_concerns') {
+              const prioritiesAnswer = answers['municipal_priorities'] || {}
+              const hasSelectedOthers = prioritiesAnswer['Autres'] !== undefined
+              
+              if (!hasSelectedOthers) {
+                return null // Ne pas afficher cette question
+              }
+            }
+            
+            return (
+              <Card 
+                key={question.id} 
+                className="shadow-soft rounded-xl bg-card"
+                ref={question.id === 'citizen_concerns' ? citizenConcernsRef : undefined}
+              >
+                <CardContent className="p-6 space-y-4">
+                  <Label className="text-base font-medium text-foreground leading-snug block">
                     {question.text}
                   </Label>
                   {renderQuestionInput(question)}
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+                </CardContent>
+              </Card>
+            )
+          })}
+        </div>
+      ) : (
+        // Pages 1-2 : Accordéon intelligent
+        <div className="space-y-3 mb-6">
+          {currentQuestions.map((question, index) => {
+            const isCompleted = isQuestionComplete(question)
+            const isActive = index === activeQuestionIndex
+            const isFuture = index > activeQuestionIndex && !isCompleted
+            
+            return (
+              <Card 
+                key={question.id} 
+                className={`shadow-soft rounded-xl transition-all duration-300 ${
+                  isActive 
+                    ? "bg-card border-primary/50 shadow-lg" 
+                    : isCompleted 
+                      ? "bg-secondary/10 border-secondary/30" 
+                      : "bg-muted/30 border-muted"
+                }`}
+              >
+                {/* En-tête de question (toujours visible) */}
+                <CardHeader 
+                  className={`pb-3 pt-4 cursor-pointer transition-all duration-200 ${
+                    !isFuture ? "hover:bg-secondary/10" : ""
+                  }`}
+                  onClick={() => !isFuture && setActiveQuestionIndex(index)}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      {/* Icône d'état */}
+                      <div className={`
+                        w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200
+                        ${isCompleted 
+                          ? "bg-green-500 text-white" 
+                          : isActive 
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-muted text-muted-foreground"
+                        }
+                      `}>
+                        {isCompleted ? (
+                          <Check className="h-4 w-4" />
+                        ) : isActive ? (
+                          <span className="text-sm font-bold">{index + 1}</span>
+                        ) : (
+                          <span className="text-sm">{index + 1}</span>
+                        )}
+                      </div>
+                      
+                      {/* Titre de la question */}
+                      <div className="flex-1">
+                        <h3 className={`text-sm font-medium transition-all duration-200 ${
+                          isActive ? "text-foreground" : isFuture ? "text-muted-foreground" : "text-foreground/80"
+                        }`}>
+                          {question.text}
+                        </h3>
+                        
+                        {/* Aperçu de la réponse si complétée et pas active */}
+                        {isCompleted && !isActive && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {getAnswerPreview(question)}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Indicateurs visuels */}
+                    <div className="flex items-center gap-2">
+                      {isCompleted && !isActive && (
+                        <Edit3 className="h-3 w-3 text-muted-foreground" />
+                      )}
+                      {!isFuture && (
+                        isActive ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                      )}
+                    </div>
+                  </div>
+                </CardHeader>
 
-      {/* Navigation - Ultra compact */}
-      <div className="flex justify-center mt-5">
-        <Button
-          onClick={handleSubmit}
-          disabled={!canSubmit()}
-          className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg px-6 py-2 font-medium text-base"
-        >
-          Voir mes résultats
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+                {/* Contenu de la question (accordéon) */}
+                {isActive && (
+                  <CardContent className="p-6 pt-0 animate-fadeIn">
+                    <div className="space-y-3">
+                      {renderQuestionInput(question)}
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Navigation */}
+      <div className="flex justify-between items-center">
+        <div>
+          {currentPage !== 'basic' && (
+            <Button
+              variant="outline"
+              onClick={handlePrevious}
+              className="flex items-center gap-2"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              Précédent
+            </Button>
+          )}
+        </div>
+        
+        <div>
+          {currentPage === 'issues' ? (
+            <Button
+              onClick={handleSubmit}
+              disabled={!canSubmit()}
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Voir mes résultats
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleNext}
+              disabled={!isCurrentPageComplete()}
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+            >
+              Suivant
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )
