@@ -1,12 +1,26 @@
 /* eslint-disable */
 import React from 'react'
 import { ImageResponse } from 'next/og'
+// Importer les types existants pour une meilleure cohérence
+import type { Party } from '@/lib/boussole-data'
 
 // Important: next/og fonctionne sur l'Edge Runtime, pas nodejs
 export const runtime = 'edge'
 
+// Interface pour les résultats de parti avec score
+interface TopParty {
+  party: Party
+  score: number
+}
+
+// Interface pour les données partagées
+interface SharedResult {
+  userName: string
+  topParties: TopParty[]
+}
+
 // Fonction pour récupérer les données partagées
-async function getSharedResult(id: string) {
+async function getSharedResult(id: string): Promise<SharedResult | null> {
   try {
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
     const response = await fetch(`${baseUrl}/partage/${id}.json`, { next: { revalidate: 3600 } })
@@ -57,7 +71,7 @@ export async function GET(request: Request) {
             Résultats de {userName}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '90%' }}>
-            {topParties.slice(0, 3).map((p: any, index: number) => (
+            {topParties.slice(0, 3).map((p: TopParty, index: number) => (
               <div
                 key={index}
                 style={{
@@ -88,8 +102,9 @@ export async function GET(request: Request) {
         height: 630,
       },
     );
-  } catch (e: any) {
-    console.error(`Erreur de génération d'image: ${e.message}`)
+  } catch (e: unknown) {
+    const errorMessage = e instanceof Error ? e.message : 'Erreur inconnue'
+    console.error(`Erreur de génération d'image: ${errorMessage}`)
     return new Response('Échec de la génération de l\'image', { status: 500 })
   }
 } 
