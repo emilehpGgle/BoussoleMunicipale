@@ -190,7 +190,7 @@ export default function ResultsPage() {
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
-  // Générer un ID unique de partage et sauvegarder les résultats
+  // Amélioration 6: Gestion d'erreurs API et feedback utilisateur pour generateShareUrl
   const generateShareUrl = async () => {
     const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
     
@@ -205,16 +205,20 @@ export default function ResultsPage() {
     
     try {
       // Appeler l'API pour sauvegarder les résultats
-      await fetch('/api/save-share', {
+      const response = await fetch('/api/save-share', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ shareId, data: shareData })
       })
+      
+      if (!response.ok) {
+        throw new Error(`API returned ${response.status}`)
+      }
     } catch (error) {
       console.error('Erreur lors de l\'appel à l\'API de sauvegarde:', error)
-      // Gérer l'erreur si nécessaire
+      toast.error("Erreur lors de la sauvegarde. Le partage pourrait ne pas fonctionner.")
     }
     
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
@@ -231,9 +235,6 @@ export default function ResultsPage() {
     
     return `${score}% d'alignement avec ${partyName} ! Surprenant ce qu'on apprend sur nos priorités municipales 🏛️ Découvrez mes résultats complets :`
   }
-
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-  const shareText = generateShareText()
 
   // Fonction pour générer l'image de partage
   const generateShareImage = async () => {
@@ -276,30 +277,61 @@ export default function ResultsPage() {
     }
   }
 
-  // Fonctions de partage modernes avec Open Graph
+  // Amélioration 3: Gestion d'erreurs Facebook avec extraction sécurisée
   const handleFacebookShare = async () => {
-    const shareUrl = await generateShareUrl()
-    const text = encodeURIComponent(`Découvrez mes affinités politiques municipales ! ${topParties[0]?.party.shortName}: ${Math.round(topParties[0]?.score || 0)}%`)
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${text}`, '_blank')
+    try {
+      const shareUrl = await generateShareUrl()
+      const topParty = topParties[0]
+      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
+      const score = Math.round(topParty?.score || 0)
+      const text = encodeURIComponent(`Découvrez mes affinités politiques municipales ! ${partyName}: ${score}%`)
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${text}`, '_blank')
+    } catch (error) {
+      console.error('Erreur lors du partage Facebook:', error)
+      toast.error("Impossible de partager sur Facebook")
+    }
   }
 
+  // Amélioration 2: Gestion d'erreurs Twitter avec extraction sécurisée
   const handleTwitterShare = async () => {
-    const shareUrl = await generateShareUrl()
-    const text = encodeURIComponent(`🗳️ Mes affinités politiques municipales révélées ! Top parti: ${topParties[0]?.party.shortName} (${Math.round(topParties[0]?.score || 0)}%) #BoussoleElectorale #PolitiqueMunicipale`)
-    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+    try {
+      const shareUrl = await generateShareUrl()
+      const topParty = topParties[0]
+      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
+      const score = Math.round(topParty?.score || 0)
+      const text = encodeURIComponent(`🗳️ Mes affinités politiques municipales révélées ! Top parti: ${partyName} (${score}%) #BoussoleElectorale #PolitiqueMunicipale`)
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank')
+    } catch (error) {
+      console.error('Erreur lors du partage Twitter:', error)
+      toast.error("Impossible de partager sur Twitter")
+    }
   }
 
+  // Amélioration 1: Gestion d'erreurs LinkedIn avec extraction sécurisée
   const handleLinkedInShare = async () => {
-    const shareUrl = await generateShareUrl()
-    const title = encodeURIComponent('Mes résultats de la Boussole Municipale')
-    const summary = encodeURIComponent(`Découvrez mes affinités politiques locales ! Mon top parti: ${topParties[0]?.party.shortName} avec ${Math.round(topParties[0]?.score || 0)}% d'affinité.`)
-    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${title}&summary=${summary}`, '_blank')
+    try {
+      const shareUrl = await generateShareUrl()
+      const title = encodeURIComponent('Mes résultats de la Boussole Municipale')
+      const topParty = topParties[0]
+      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
+      const score = Math.round(topParty?.score || 0)
+      const summary = encodeURIComponent(`Découvrez mes affinités politiques locales ! Mon top parti: ${partyName} avec ${score}% d'affinité.`)
+      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${title}&summary=${summary}`, '_blank')
+    } catch (error) {
+      console.error('Erreur lors du partage LinkedIn:', error)
+      toast.error("Impossible de partager sur LinkedIn")
+    }
   }
 
-  // Fonction moderne pour Messenger
+  // Amélioration 4: Gestion d'erreurs Messenger
   const handleMessengerShare = async () => {
-    const shareUrl = await generateShareUrl()
-    window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
+    try {
+      const shareUrl = await generateShareUrl()
+      window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
+    } catch (error) {
+      console.error('Erreur lors du partage Messenger:', error)
+      toast.error("Impossible de partager sur Messenger")
+    }
   }
 
   const handleCopyShare = async () => {
@@ -456,7 +488,7 @@ export default function ResultsPage() {
               size="icon"
               onClick={handleCopyShare}
               className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Télécharger l'image"
+              aria-label="Copier le lien"
             >
               <Download className="h-5 w-5 text-gray-600" />
             </Button>
