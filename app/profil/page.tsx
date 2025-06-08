@@ -124,6 +124,7 @@ export default function ProfilePage() {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const router = useRouter()
   const citizenConcernsRef = useRef<HTMLDivElement>(null)
+  const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   // Obtenir les questions de la page actuelle
   const getCurrentQuestions = () => profileQuestions[currentPage]
@@ -150,7 +151,21 @@ export default function ProfilePage() {
     ) {
       setTimeout(() => {
         if (activeQuestionIndex < currentQuestions.length - 1) {
-          setActiveQuestionIndex(activeQuestionIndex + 1)
+          const nextIndex = activeQuestionIndex + 1
+          setActiveQuestionIndex(nextIndex)
+          
+          // Scroll doux vers la question suivante après un petit délai
+          setTimeout(() => {
+            const nextQuestion = currentQuestions[nextIndex]
+            const nextQuestionElement = questionRefs.current[nextQuestion.id]
+            if (nextQuestionElement) {
+              nextQuestionElement.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center', // Centre la question dans la vue
+                inline: 'nearest'
+              })
+            }
+          }, 100) // Délai pour laisser l'accordéon s'ouvrir
         }
       }, 300) // Petit délai pour voir la sélection
     }
@@ -602,6 +617,7 @@ export default function ProfilePage() {
             return (
               <Card 
                 key={question.id} 
+                ref={(el) => { questionRefs.current[question.id] = el }}
                 className={`shadow-soft rounded-xl transition-all duration-300 ${
                   isActive 
                     ? "bg-card border-primary/50 shadow-lg" 
