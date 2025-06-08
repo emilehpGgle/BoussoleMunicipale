@@ -5,7 +5,7 @@ export default function SiteFooter() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-secondary text-secondary-foreground py-10">
+    <footer className="bg-primary text-primary-foreground py-10">
       <div className="container max-w-screen-2xl">
         <div className="grid md:grid-cols-3 gap-8 items-center">
           <div className="flex justify-center md:justify-start">
@@ -13,7 +13,7 @@ export default function SiteFooter() {
               {" "}
               {/* Aspect ratio 4:5 */}
               <Image
-                src="/boussole-municipale-logo-footer.svg" // New SVG logo
+                src="/logo-main-inversé.png"
                 alt="Boussole Municipale Logo Footer"
                 fill
                 style={{ objectFit: "contain" }}
@@ -36,7 +36,7 @@ export default function SiteFooter() {
             </Link>
           </nav>
 
-          <div className="text-center md:text-right text-sm text-secondary-foreground/80">
+          <div className="text-center md:text-right text-sm text-primary-foreground/80">
             &copy; {currentYear} BoussoleMunicipale.
             <br />
             Tous droits réservés.

@@ -430,7 +430,29 @@ export default function ResultsPage() {
   )
 
   return (
-    <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn">
+    <div className="relative min-h-screen">
+      {/* Images décoratives positionnées selon la hauteur */}
+      <div className="hidden lg:block">
+        {/* Chat qui dort - premier tiers de la page */}
+        <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-left">
+          <img 
+            src="/Image_parc_chat_dort.png" 
+            alt="" 
+            className="w-full h-full object-cover decorative-image-left"
+          />
+        </div>
+        
+        {/* Cerf-volant - troisième tiers de la page */}
+        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-96 h-auto decorative-frame-right kite-animation">
+          <img 
+            src="/Image_parc_cerfvolant.png" 
+            alt="" 
+            className="w-full h-full object-cover decorative-image-right"
+          />
+        </div>
+      </div>
+
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10">
       <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
         <div className="flex-1">
           <h1 className="text-foreground mb-3">Vos Résultats</h1> {/* font-bold is now in globals.css for h1 */}
@@ -534,7 +556,7 @@ export default function ResultsPage() {
                   style={{ width: `${score.toFixed(0)}%` }}
                 ></div>
               </div>
-              <p className="text-lg font-bold text-primary mb-4">{score.toFixed(0)}% d'affinité</p>
+              <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d'affinité</p>
               <Button
                 asChild
                 variant="outline"
@@ -757,6 +779,7 @@ export default function ResultsPage() {
             <ArrowLeft className="h-4 w-4" /> Refaire le questionnaire
           </Link>
         </Button>
+      </div>
       </div>
     </div>
   )

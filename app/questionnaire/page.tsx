@@ -94,7 +94,19 @@ export default function QuestionnairePage() {
     : answers[currentQuestion.id] !== undefined
 
   return (
-    <div className="container max-w-3xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col min-h-screen">
+    <div className="relative min-h-screen">
+      {/* Image décorative - jardinage centrée à droite */}
+      <div className="hidden lg:block">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-right">
+          <img 
+            src="/Image_parc_jardinage.png" 
+            alt="" 
+            className="w-full h-full object-cover decorative-image-right"
+          />
+        </div>
+      </div>
+
+      <div className="container max-w-3xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col min-h-screen relative z-10">
       <div className="mb-4">
         <div className="flex justify-between items-center mb-2">
           <div className="text-sm font-medium text-muted-foreground">
@@ -104,7 +116,7 @@ export default function QuestionnairePage() {
         <Progress
           value={progress}
           className="h-2 rounded-full bg-muted"
-          indicatorClassName="bg-secondary transition-all duration-500 ease-out"
+          indicatorClassName="bg-primary transition-all duration-500 ease-out"
         />
       </div>
 
@@ -146,13 +158,13 @@ export default function QuestionnairePage() {
                   className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0
                     ${
                       isSelected
-                        ? "bg-secondary text-secondary-foreground shadow-soft border-2 border-secondary"
-                        : "bg-background hover:bg-secondary/20 hover:border-secondary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
+                        ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
+                        : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
                     } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
                   onClick={() => handleImportanceDirectAnswer(optionKey)}
                 >
                   {isSelected && (
-                    <CheckCircle2 className="mr-2 h-4 w-4 text-secondary-foreground/80" />
+                    <CheckCircle2 className="mr-2 h-4 w-4 text-primary-foreground/80" />
                   )}
                   {labelText}
                 </Button>
@@ -171,13 +183,13 @@ export default function QuestionnairePage() {
                   className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0
                     ${
                       isSelected
-                        ? "bg-secondary text-secondary-foreground shadow-soft border-2 border-secondary"
-                        : "bg-background hover:bg-secondary/20 hover:border-secondary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
+                        ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
+                        : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
                     } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
                   onClick={() => handleAnswer(optionKey)}
                 >
                   {isSelected && (
-                    <CheckCircle2 className="mr-2 h-4 w-4 text-secondary-foreground/80" />
+                    <CheckCircle2 className="mr-2 h-4 w-4 text-primary-foreground/80" />
                   )}
                   {labelText}
                 </Button>
@@ -214,6 +226,7 @@ export default function QuestionnairePage() {
         <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
           <Link href="/">Quitter</Link>
         </Button>
+      </div>
       </div>
     </div>
   )

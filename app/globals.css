@@ -4,39 +4,39 @@
 
 @layer base {
   :root {
-    --background: 45 100% 97%; /* Very light beige (FFFBEF) */
-    --foreground: 180 25% 25%; /* Dark Teal/Gray (2E4F4F) */
+    /* Nouvelle palette optimisée - Bleu primary, Teal accent spécial */
+    --background: 0 0% 100%; /* Blanc pur */
+    --foreground: 222 84% 5%; /* Bleu nuit profond pour texte */
 
-    --card: 0 0% 100%; /* White for cards */
-    --card-foreground: 180 25% 25%;
+    --card: 0 0% 100%; /* Cartes blanches */
+    --card-foreground: 222 84% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 180 25% 25%;
+    --popover-foreground: 222 84% 5%;
 
-    --primary: 14 100% 62%; /* Bolder Coral (#FF6B40) */
-    --primary-foreground: 0 0% 100%; /* White */
+    --primary: 212 84% 45%; /* Bleu confiance principal (#1E40AF) */
+    --primary-foreground: 0 0% 100%; /* Blanc */
 
-    --secondary: 180 75% 35%; /* Brighter/Bolder Teal (#13B8B8) */
-    --secondary-foreground: 0 0% 100%; /* White */
+    --secondary: 214 32% 91%; /* Gris bleu très subtil pour secondary (#E2E8F0) */
+    --secondary-foreground: 222 84% 5%; /* Texte sombre sur secondary */
 
-    --accent: 180 60% 50%; /* More vibrant accent Teal (#33CCCC) */
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 20% 98%; /* Blanc bleuté très subtil (#F8FAFC) */
+    --accent-foreground: 222 84% 5%;
 
-    --muted: 45 50% 94%; /* Lighter beige */
-    --muted-foreground: 180 15% 40%; /* Medium gray/teal text */
+    --teal-special: 181 84% 28%; /* Teal du logo pour effets spéciaux (#0D7377) */
+    --teal-special-foreground: 0 0% 100%;
 
-    --destructive: 0 70% 60%; /* A softer red */
+    --muted: 210 20% 98%; /* Blanc bleuté très léger */
+    --muted-foreground: 215 16% 47%; /* Gris bleu équilibré */
+
+    --destructive: 0 84% 60%; /* Rouge doux pour erreurs */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 45 30% 88%; /* Light beige border */
-    --input: 45 30% 88%;
-    --ring: 14 100% 62%; /* Coral for focus rings (matches new primary) */
+    --border: 214 32% 91%; /* Bordures ultra-subtiles (#E2E8F0) */
+    --input: 214 32% 91%;
+    --ring: 212 84% 45%; /* Bleu pour focus rings */
 
-    --radius: 0.75rem; /* Rounded corners (12px) */
-  }
-
-  .dark {
-    /* Dark mode variables can be defined here if needed */
+    --radius: 0.75rem; /* Coins arrondis (12px) */
   }
 }
 
@@ -53,7 +53,7 @@
   h1,
   h2,
   h3 {
-    @apply tracking-tight font-bold text-foreground; /* Bolder for H1-H3 */
+    @apply tracking-tight font-bold text-foreground;
   }
   h4,
   h5,
@@ -76,7 +76,7 @@
     @apply transition-colors duration-200 ease-in-out;
   }
 
-  /* General button enhancements (can be overridden by specific button styles) */
+  /* General button enhancements */
   .btn-base-effects {
     @apply transition-all duration-200 ease-in-out;
   }
@@ -90,6 +90,17 @@
   /* General card enhancements */
   .card-interactive-effects {
     @apply transition-all duration-300 ease-out hover:shadow-soft-md hover:-translate-y-1;
+  }
+
+  /* Classes utilitaires pour teal spécial */
+  .bg-teal-special {
+    background-color: hsl(var(--teal-special));
+  }
+  .text-teal-special {
+    color: hsl(var(--teal-special));
+  }
+  .border-teal-special {
+    border-color: hsl(var(--teal-special));
   }
 
   /* Animations pour les transitions "swoosh" du questionnaire */
@@ -148,4 +159,53 @@
   .option-button-enter:nth-child(3) { animation-delay: 0.16s; }
   .option-button-enter:nth-child(4) { animation-delay: 0.2s; }
   .option-button-enter:nth-child(5) { animation-delay: 0.24s; }
+
+  /* Animation douce style nuage pour le cerf-volant */
+  @keyframes kiteFloat {
+    0% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+    25% {
+      transform: translateY(-3px) translateX(2px) rotate(0.3deg);
+    }
+    50% {
+      transform: translateY(-5px) translateX(0px) rotate(0deg);
+    }
+    75% {
+      transform: translateY(-3px) translateX(-2px) rotate(-0.3deg);
+    }
+    100% {
+      transform: translateY(0px) translateX(0px) rotate(0deg);
+    }
+  }
+
+  .kite-animation {
+    animation: kiteFloat 12s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+  }
+
+  /* Conteneurs avec bordure dessin d'enfant */
+  .decorative-frame-left {
+    border-radius: 60% 40% 65% 35% / 45% 70% 30% 55%;
+    border: 3px solid #1e3a8a;
+    box-shadow: 0 0 0 1px rgba(30, 58, 138, 0.3);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .decorative-frame-right {
+    border-radius: 55% 65% 40% 60% / 70% 30% 75% 25%;
+    border: 3px solid #1e40af;
+    box-shadow: 0 0 0 1px rgba(30, 64, 175, 0.3);
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Images à l'intérieur des cadres */
+  .decorative-image-left {
+    border-radius: 60% 40% 65% 35% / 45% 70% 30% 55%;
+  }
+
+  .decorative-image-right {
+    border-radius: 55% 65% 40% 60% / 70% 30% 75% 25%;
+  }
 }

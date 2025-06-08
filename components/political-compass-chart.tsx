@@ -107,7 +107,7 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
               {/* Grille de fond */}
               <defs>
                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--muted))" strokeWidth="0.5" opacity="0.3"/>
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.5" opacity="0.2"/>
                 </pattern>
               </defs>
               <rect width="100%" height="100%" fill="url(#grid)" />
@@ -140,11 +140,39 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
                 {axisConfiguration.social.leftLabel}
               </text>
 
-              {/* Quadrants colorés */}
-              <rect x={40} y={40} width={(svgWidth-80)/2} height={(svgHeight-80)/2} fill="hsl(var(--primary))" opacity="0.05" />
-              <rect x={svgWidth/2} y={40} width={(svgWidth-80)/2} height={(svgHeight-80)/2} fill="hsl(var(--secondary))" opacity="0.05" />
-              <rect x={40} y={svgHeight/2} width={(svgWidth-80)/2} height={(svgHeight-80)/2} fill="hsl(var(--accent))" opacity="0.05" />
-              <rect x={svgWidth/2} y={svgHeight/2} width={(svgWidth-80)/2} height={(svgHeight-80)/2} fill="hsl(var(--muted))" opacity="0.05" />
+              {/* Quadrants colorés avec nouvelle palette */}
+              <rect
+                x={40}
+                y={40}
+                width={(svgWidth-80)/2}
+                height={(svgHeight-80)/2}
+                fill="hsl(var(--primary))"
+                opacity="0.03"
+              />
+              <rect
+                x={svgWidth/2}
+                y={40}
+                width={(svgWidth-80)/2}
+                height={(svgHeight-80)/2}
+                fill="hsl(var(--primary))"
+                opacity="0.03"
+              />
+              <rect
+                x={40}
+                y={svgHeight/2}
+                width={(svgWidth-80)/2}
+                height={(svgHeight-80)/2}
+                fill="hsl(var(--accent))"
+                opacity="0.05"
+              />
+              <rect
+                x={svgWidth/2}
+                y={svgHeight/2}
+                width={(svgWidth-80)/2}
+                height={(svgHeight-80)/2}
+                fill="hsl(var(--muted))"
+                opacity="0.05"
+              />
 
               {/* Partis politiques */}
               {partyDistances.map(({ party, position, partyId }) => {

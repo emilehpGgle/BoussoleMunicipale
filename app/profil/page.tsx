@@ -65,16 +65,8 @@ const profileQuestions = {
     },
   ],
   
-  // Page 2 - Contexte municipal
+  // Page 2 - Contexte municipal (ordre inversé)
   municipal: [
-    {
-      id: "housing_status", 
-      text: "Quel est votre statut de logement ?",
-      type: "button_horizontal",
-      category: "Contexte municipal",
-      icon: Home,
-      options: ["Propriétaire", "Locataire", "Logé chez famille/amis", "Autre"],
-    },
     {
       id: "main_transport",
       text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
@@ -82,6 +74,14 @@ const profileQuestions = {
       category: "Contexte municipal", 
       icon: Car,
       options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
+    },
+    {
+      id: "housing_status", 
+      text: "Quel est votre statut de logement ?",
+      type: "button_horizontal",
+      category: "Contexte municipal",
+      icon: Home,
+      options: ["Propriétaire", "Locataire", "Logé chez famille/amis", "Autre"],
     },
   ],
   
@@ -139,7 +139,7 @@ export default function ProfilePage() {
   const handleAnswerChange = (questionId: string, value: any) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }))
     
-    // Auto-passer à la question suivante après une réponse (sauf pour les text areas et questions multiples)
+    // Auto-passer à la question suivante après une réponse (sauf pour les text areas, questions multiples et checkbox_multiple)
     const currentQuestions = getCurrentQuestions()
     const currentQuestion = currentQuestions[activeQuestionIndex]
     
@@ -166,8 +166,49 @@ export default function ProfilePage() {
               })
             }
           }, 100) // Délai pour laisser l'accordéon s'ouvrir
+        } else {
+          // C'est la dernière question de la page, passer à la page suivante
+          if (currentPage === 'basic') {
+            setCurrentPage('municipal')
+            setActiveQuestionIndex(0)
+          } else if (currentPage === 'municipal') {
+            setCurrentPage('issues')
+            setActiveQuestionIndex(0)
+          }
         }
       }, 300) // Petit délai pour voir la sélection
+    }
+  }
+
+  // Fonction pour passer à la question suivante (utilisée par le bouton)
+  const handleNextQuestion = () => {
+    const currentQuestions = getCurrentQuestions()
+    
+    if (activeQuestionIndex < currentQuestions.length - 1) {
+      const nextIndex = activeQuestionIndex + 1
+      setActiveQuestionIndex(nextIndex)
+      
+      // Scroll doux vers la question suivante
+      setTimeout(() => {
+        const nextQuestion = currentQuestions[nextIndex]
+        const nextQuestionElement = questionRefs.current[nextQuestion.id]
+        if (nextQuestionElement) {
+          nextQuestionElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'nearest'
+          })
+        }
+      }, 100)
+    } else {
+      // C'est la dernière question de la page, passer à la page suivante
+      if (currentPage === 'basic') {
+        setCurrentPage('municipal')
+        setActiveQuestionIndex(0)
+      } else if (currentPage === 'municipal') {
+        setCurrentPage('issues')
+        setActiveQuestionIndex(0)
+      }
     }
   }
 
@@ -372,9 +413,9 @@ export default function ProfilePage() {
 
     const getRankColor = (rank: number) => {
       switch (rank) {
-        case 1: return "bg-yellow-500 text-white"
-        case 2: return "bg-gray-400 text-white"  
-        case 3: return "bg-amber-600 text-white"
+        case 1: return "bg-primary text-primary-foreground"
+        case 2: return "bg-secondary text-secondary-foreground"  
+        case 3: return "bg-accent-foreground text-accent"
         default: return "bg-muted"
       }
     }
@@ -470,6 +511,22 @@ export default function ProfilePage() {
                       ? current.filter((item: string) => item !== option)
                       : [...current, option]
                     handleAnswerChange(question.id, newSelected)
+                    
+                    // Auto-progression pour les questions checkbox quand c'est la dernière question de la page
+                    const currentQuestions = getCurrentQuestions()
+                    const currentQuestionIndex = currentQuestions.findIndex(q => q.id === question.id)
+                    
+                    if (currentQuestionIndex === currentQuestions.length - 1 && newSelected.length > 0) {
+                      setTimeout(() => {
+                        if (currentPage === 'basic') {
+                          setCurrentPage('municipal')
+                          setActiveQuestionIndex(0)
+                        } else if (currentPage === 'municipal') {
+                          setCurrentPage('issues')
+                          setActiveQuestionIndex(0)
+                        }
+                      }, 800) // Délai plus long pour laisser voir la sélection
+                    }
                   }}
                   className={`
                     p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
@@ -541,7 +598,19 @@ export default function ProfilePage() {
   const currentQuestions = getCurrentQuestions()
 
   return (
-    <div className="container max-w-3xl py-6 px-4 md:px-6 animate-fadeIn">
+    <div className="relative min-h-screen">
+      {/* Image décorative - chien et maître centrée à gauche */}
+      <div className="hidden lg:block">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-left">
+          <img 
+            src="/Image_parc_chien_maitre.png" 
+            alt="" 
+            className="w-full h-full object-cover decorative-image-left"
+          />
+        </div>
+      </div>
+
+      <div className="container max-w-3xl py-6 px-4 md:px-6 animate-fadeIn relative z-10">
       {/* Header */}
       <div className="mb-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">
@@ -688,6 +757,20 @@ export default function ProfilePage() {
                   <CardContent className="p-6 pt-0 animate-fadeIn">
                     <div className="space-y-3">
                       {renderQuestionInput(question)}
+                      
+                      {/* Bouton "Question suivante" spécifique pour la question de transport */}
+                      {question.id === 'main_transport' && currentPage === 'municipal' && (
+                        <div className="flex justify-end mt-4">
+                          <Button
+                            onClick={handleNextQuestion}
+                            disabled={!answers[question.id] || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)}
+                            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+                          >
+                            Question suivante
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   </CardContent>
                 )}
@@ -733,6 +816,7 @@ export default function ProfilePage() {
             </Button>
           )}
         </div>
+      </div>
       </div>
     </div>
   )

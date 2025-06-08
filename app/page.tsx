@@ -24,7 +24,7 @@ export default function HomePage() {
   return (
     <>
       {/* Section Hero */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-br from-background via-amber-50 to-teal-50 overflow-hidden">
+      <section className="w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50 overflow-hidden">
         <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
@@ -53,7 +53,7 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-secondary text-secondary hover:bg-secondary/10 hover:text-secondary rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift"
+                  className="border-primary text-primary hover:bg-primary/10 hover:text-primary rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift"
                 >
                   <Link href="#comment-ca-marche">Comment ça marche ?</Link>
                 </Button>
@@ -61,7 +61,10 @@ export default function HomePage() {
             </div>
             <div
               className="relative h-[350px] md:h-[450px] w-full rounded-2xl overflow-hidden animate-fadeIn"
-              style={{ animationDelay: "0.3s" }}
+              style={{ 
+                animationDelay: "0.3s",
+                boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
+              }}
             >
               <Image
                 src="/hero-illustration.png"
@@ -90,8 +93,8 @@ export default function HomePage() {
                 icon: FileText,
                 title: "1. Répondez aux questions",
                 description: "Partagez vos opinions sur une série d'enjeux municipaux clés.",
-                color: "text-secondary",
-                bgColor: "bg-secondary/10",
+                color: "text-primary",
+                bgColor: "bg-primary/10",
               },
               {
                 icon: BarChart3,
@@ -112,8 +115,8 @@ export default function HomePage() {
                 icon: Share2, // New icon for sharing
                 title: "4. Partagez (si vous voulez!)", // New step
                 description: "Discutez de vos résultats avec vos amis et votre famille pour encourager le débat.",
-                color: "text-accent", // Using accent color
-                bgColor: "bg-accent/10", // Using accent color
+                color: "text-primary",
+                bgColor: "bg-primary/10",
               },
             ].map((item, index) => (
               <div
@@ -133,7 +136,7 @@ export default function HomePage() {
       </section>
 
       {/* Section éducative */}
-      <section className="w-full py-16 md:py-20 bg-gradient-to-br from-primary/5 to-secondary/5">
+      <section className="w-full py-16 md:py-20 bg-gradient-to-br from-primary/5 to-teal-special/5">
         <div className="container px-4 md:px-6 max-w-screen-lg mx-auto text-center">
           <div
             className="animate-slideInUp"
@@ -195,25 +198,43 @@ export default function HomePage() {
               <Button
                 asChild
                 variant="outline"
-                className="border-secondary text-secondary hover:bg-secondary/10 hover:text-secondary rounded-xl px-7 py-3 btn-base-effects btn-hover-lift"
+                className="border-primary text-primary hover:bg-primary/10 hover:text-primary rounded-xl px-7 py-3 btn-base-effects btn-hover-lift"
               >
                 <Link href="/confidentialite">Lire notre politique de confidentialité</Link>
               </Button>
             </div>
-            
-            {/* Image du parc */}
+            {/* Image */}
             <div
               className="relative h-[300px] md:h-[400px] w-full rounded-2xl overflow-hidden animate-fadeIn"
               style={{ animationDelay: "0.6s" }}
             >
               <Image
-                src="/Image_parc.png"
-                alt="Parc municipal paisible avec des citoyens profitant d'un espace vert"
+                src="/Image_parc_crisp.png"
+                alt="Illustration d'un parc municipal avec des citoyens"
                 fill
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Section Call-to-Action */}
+      <section className="w-full py-16 md:py-20 bg-gradient-to-r from-primary to-teal-special">
+        <div className="container px-4 md:px-6 max-w-screen-lg mx-auto text-center">
+          <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
+            <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
+            <p className="text-lg text-primary-foreground/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
+            </p>
+            <Button
+              size="lg"
+              onClick={openModal}
+              className="bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+            >
+              Commencer maintenant
+            </Button>
           </div>
         </div>
       </section>
