@@ -33,6 +33,9 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import PoliticalCompassChart from "@/components/political-compass-chart"
 import { sendResultsByEmail } from "@/lib/email-service"
 import { toast } from "sonner"
+import { useResults } from "@/hooks/useResults"
+import { useUserResponses } from "@/hooks/useUserResponses"
+import { useSession } from "@/hooks/useSession"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -68,87 +71,46 @@ const agreementScoreValues: Record<AgreementOptionKey, number> = {
 const MAX_AGREEMENT_MAGNITUDE = 2
 
 export default function ResultsPage() {
-  const [calculatedScores, setCalculatedScores] = useState<CalculatedPartyScore[]>([])
   const [email, setEmail] = useState("")
   const [consent, setConsent] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [userAnswers, setUserAnswers] = useState<UserAnswers>({})
-  const [userImportance, setUserImportance] = useState<UserImportance>({})
 
-  useEffect(() => {
-    const userAnswersJSON = localStorage.getItem("userAnswers")
-    const userImportanceJSON = localStorage.getItem("userImportance")
+  // Intégration des hooks sécurisés
+  const { sessionToken } = useSession()
+  const { 
+    userAnswers, 
+    userImportance, 
+    isLoading: responsesLoading,
+    error: responsesError 
+  } = useUserResponses()
+  const {
+    results,
+    isLoading: resultsLoading,
+    isCalculating,
+    error: resultsError,
+    calculateAndSaveResults,
+    hasResults
+  } = useResults()
 
-    if (!userAnswersJSON || !userImportanceJSON) {
-      console.warn("User answers or importance not found in localStorage.")
-      setIsLoading(false)
-      return
+  // État consolidé de chargement
+  const isLoading = responsesLoading || resultsLoading
+
+  // Calculer les scores localement (logique existante adaptée)
+  const calculatedScores = useMemo(() => {
+    if (!userAnswers || Object.keys(userAnswers).length === 0) {
+      return []
     }
 
-    try {
-      const parsedUserAnswers: UserAnswers = JSON.parse(userAnswersJSON)
-      const parsedUserImportance: UserImportance = JSON.parse(userImportanceJSON)
-      
-      // Sauvegarder les données pour la carte politique
-      setUserAnswers(parsedUserAnswers)
-      setUserImportance(parsedUserImportance)
+    // Si on a des résultats sauvegardés et récents, les utiliser
+    if (results && results.sortedParties) {
+      return results.sortedParties.map(partyScore => {
+        const party = partiesData.find(p => p.id === partyScore.partyId)
+        if (!party) return null
 
-      // Calcul de la position politique de l'utilisateur
-      const userPosition = calculateUserPoliticalPosition(parsedUserAnswers, parsedUserImportance)
-
-      const newCalculatedScores = partiesData.map((party) => {
-        // Calculer la distance politique pour cette approche plus sophistiquée
-        const partyPosition = partyPositions[party.id]
-        let score = 0
-        let rawScore = 0
-        let maxPossibleRawScoreForParty = 100
-
-        if (partyPosition) {
-          // Calcul basé sur la distance politique (utilisé par la carte)
-          const distance = calculatePoliticalDistance(userPosition, partyPosition)
-          // Convertir la distance en score de compatibilité (distance max théorique = ~283 sur [-100,100] x [-100,100])
-          const maxDistance = Math.sqrt(200 * 200 + 200 * 200) // ≈ 283
-          
-          // La formule est maintenant non-linéaire pour pénaliser plus sévèrement les grandes distances.
-          // On utilise une puissance (ex: 1.5) pour que la pénalité augmente exponentiellement.
-          const normalizedDistance = distance / maxDistance
-          const penalty = Math.pow(normalizedDistance, 1.5) * 100
-          score = Math.max(0, 100 - penalty)
-          rawScore = score
-        } else {
-          // Fallback : utiliser l'ancienne méthode si pas de position politique
-          let totalWeightedScore = 0
-          let maxPossibleWeightedScore = 0
-
-          boussoleQuestions.forEach((question) => {
-            const userAnswer = parsedUserAnswers[question.id]
-            const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-            const currentImportance = parsedUserImportance[question.id] || 3
-            let questionMatchValue = 0
-            let weightedQuestionScore = 0
-
-            if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
-              const userScore = agreementScoreValues[userAnswer]
-              const partyScore = agreementScoreValues[partyPositionEntry.position]
-              const diff = Math.abs(userScore - partyScore)
-              questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
-              weightedQuestionScore = questionMatchValue * currentImportance
-            }
-            totalWeightedScore += weightedQuestionScore
-            maxPossibleWeightedScore += MAX_AGREEMENT_MAGNITUDE * currentImportance
-          })
-          
-          const normalizedScore = maxPossibleWeightedScore > 0 ? (totalWeightedScore / maxPossibleWeightedScore) * 100 : 0
-          score = Math.max(0, Math.min(100, normalizedScore))
-          rawScore = totalWeightedScore
-          maxPossibleRawScoreForParty = maxPossibleWeightedScore
-        }
-
-        // Les détails pour l'accordéon sont maintenant calculés avec la même logique de base
+        // Calculer les détails pour l'accordéon
         const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
-          const userAnswer = parsedUserAnswers[question.id]
+          const userAnswer = userAnswers[question.id]
           const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-          const currentImportance = parsedUserImportance[question.id] || 3
+          const currentImportance = userImportance[question.id] || 3
           let questionMatchValue = 0
           let weightedQuestionScore = 0
 
@@ -156,7 +118,6 @@ export default function ResultsPage() {
             const userScore = agreementScoreValues[userAnswer]
             const partyScore = agreementScoreValues[partyPositionEntry.position]
             const diff = Math.abs(userScore - partyScore)
-            // Note: ce calcul de "match" est conservé pour les détails mais n'influence plus le score principal
             questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
             weightedQuestionScore = questionMatchValue * currentImportance
           }
@@ -173,20 +134,111 @@ export default function ResultsPage() {
 
         return {
           party,
-          score: Math.round(score),
-          rawScore,
-          maxPossibleRawScoreForParty,
+          score: partyScore.score,
+          rawScore: partyScore.score,
+          maxPossibleRawScoreForParty: 100,
           details: scoreDetails,
+        }
+      }).filter(Boolean) as CalculatedPartyScore[]
+    }
+
+    // Sinon, calculer localement (logique existante)
+    const userPosition = calculateUserPoliticalPosition(userAnswers, userImportance)
+
+    const newCalculatedScores = partiesData.map((party) => {
+      // Calculer la distance politique pour cette approche plus sophistiquée
+      const partyPosition = partyPositions[party.id]
+      let score = 0
+      let rawScore = 0
+      let maxPossibleRawScoreForParty = 100
+
+      if (partyPosition) {
+        // Calcul basé sur la distance politique (utilisé par la carte)
+        const distance = calculatePoliticalDistance(userPosition, partyPosition)
+        // Convertir la distance en score de compatibilité (distance max théorique = ~283 sur [-100,100] x [-100,100])
+        const maxDistance = Math.sqrt(200 * 200 + 200 * 200) // ≈ 283
+        
+        // La formule est maintenant non-linéaire pour pénaliser plus sévèrement les grandes distances.
+        // On utilise une puissance (ex: 1.5) pour que la pénalité augmente exponentiellement.
+        const normalizedDistance = distance / maxDistance
+        const penalty = Math.pow(normalizedDistance, 1.5) * 100
+        score = Math.max(0, 100 - penalty)
+        rawScore = score
+      } else {
+        // Fallback : utiliser l'ancienne méthode si pas de position politique
+        let totalWeightedScore = 0
+        let maxPossibleWeightedScore = 0
+
+        boussoleQuestions.forEach((question) => {
+          const userAnswer = userAnswers[question.id]
+          const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
+          const currentImportance = userImportance[question.id] || 3
+          let questionMatchValue = 0
+          let weightedQuestionScore = 0
+
+          if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
+            const userScore = agreementScoreValues[userAnswer]
+            const partyScore = agreementScoreValues[partyPositionEntry.position]
+            const diff = Math.abs(userScore - partyScore)
+            questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
+            weightedQuestionScore = questionMatchValue * currentImportance
+          }
+          totalWeightedScore += weightedQuestionScore
+          maxPossibleWeightedScore += MAX_AGREEMENT_MAGNITUDE * currentImportance
+        })
+        
+        const normalizedScore = maxPossibleWeightedScore > 0 ? (totalWeightedScore / maxPossibleWeightedScore) * 100 : 0
+        score = Math.max(0, Math.min(100, normalizedScore))
+        rawScore = totalWeightedScore
+        maxPossibleRawScoreForParty = maxPossibleWeightedScore
+      }
+
+      // Les détails pour l'accordéon sont maintenant calculés avec la même logique de base
+      const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
+        const userAnswer = userAnswers[question.id]
+        const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
+        const currentImportance = userImportance[question.id] || 3
+        let questionMatchValue = 0
+        let weightedQuestionScore = 0
+
+        if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
+          const userScore = agreementScoreValues[userAnswer]
+          const partyScore = agreementScoreValues[partyPositionEntry.position]
+          const diff = Math.abs(userScore - partyScore)
+          // Note: ce calcul de "match" est conservé pour les détails mais n'influence plus le score principal
+          questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
+          weightedQuestionScore = questionMatchValue * currentImportance
+        }
+        
+        return {
+          question,
+          userAnswer,
+          userImportance: currentImportance,
+          partyPosition: partyPositionEntry,
+          matchValue: questionMatchValue,
+          weightedScore: weightedQuestionScore,
         }
       })
 
-      newCalculatedScores.sort((a, b) => b.score - a.score)
-      setCalculatedScores(newCalculatedScores)
-    } catch (error) {
-      console.error("Error processing results:", error)
+      return {
+        party,
+        score: Math.round(score),
+        rawScore,
+        maxPossibleRawScoreForParty,
+        details: scoreDetails,
+      }
+    })
+
+    newCalculatedScores.sort((a, b) => b.score - a.score)
+    return newCalculatedScores
+  }, [userAnswers, userImportance, results])
+
+  // Calculer et sauvegarder les résultats si pas encore fait
+  useEffect(() => {
+    if (!isLoading && !hasResults && Object.keys(userAnswers).length > 0) {
+      calculateAndSaveResults()
     }
-    setIsLoading(false)
-  }, [])
+  }, [isLoading, hasResults, userAnswers, calculateAndSaveResults])
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
@@ -405,19 +457,41 @@ export default function ResultsPage() {
 
   if (isLoading) {
     return (
-      <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
-        <p>Calcul de vos résultats...</p>
+      <div className="container max-w-4xl py-12 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">
+            {responsesLoading ? 'Chargement de vos réponses...' : 
+             isCalculating ? 'Calcul de vos résultats...' : 
+             'Chargement...'}
+          </p>
+          {sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
+        </div>
       </div>
     )
   }
+
+  if (!isLoading && Object.keys(userAnswers).length === 0) {
+    return (
+      <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
+        <p className="text-xl text-muted-foreground mb-4">
+          Nous n'avons pas pu trouver vos réponses. Avez-vous complété le questionnaire ?
+        </p>
+        <Button asChild>
+          <Link href="/questionnaire">Répondre au questionnaire</Link>
+        </Button>
+      </div>
+    )
+  }
+
   if (!isLoading && calculatedScores.length === 0) {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p className="text-xl text-muted-foreground mb-4">
-          Nous n'avons pas pu calculer vos résultats. Avez-vous complété le questionnaire ?
+          Nous n'avons pas pu calculer vos résultats. Veuillez réessayer.
         </p>
-        <Button asChild>
-          <Link href="/questionnaire">Répondre au questionnaire</Link>
+        <Button onClick={() => calculateAndSaveResults()} disabled={isCalculating}>
+          {isCalculating ? 'Calcul en cours...' : 'Recalculer'}
         </Button>
       </div>
     )
@@ -431,6 +505,22 @@ export default function ResultsPage() {
 
   return (
     <div className="relative min-h-screen">
+      {/* Affichage d'erreur si problème de synchronisation */}
+      {(responsesError || resultsError) && (
+        <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
+          <p>⚠️ Problème de synchronisation</p>
+          <p className="text-xs opacity-80">Affichage des données locales</p>
+        </div>
+      )}
+
+      {/* Indicateur de calcul */}
+      {isCalculating && (
+        <div className="fixed top-4 left-4 bg-primary/10 border border-primary/20 text-primary px-3 py-2 rounded-lg text-sm z-50 flex items-center gap-2">
+          <div className="animate-spin rounded-full h-3 w-3 border-b border-primary"></div>
+          <span>Calcul des résultats...</span>
+        </div>
+      )}
+
       {/* Images décoratives positionnées selon la hauteur */}
       <div className="hidden lg:block">
         {/* Chat qui dort - premier tiers de la page */}
@@ -459,6 +549,12 @@ export default function ResultsPage() {
           <p className="text-muted-foreground">
             Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
           </p>
+          {/* Affichage du pourcentage de complétion si disponible */}
+          {results && (
+            <p className="text-sm text-muted-foreground mt-2">
+              Basé sur {results.answeredQuestions}/{results.totalQuestions} réponses ({results.completionPercentage}% complété)
+            </p>
+          )}
         </div>
         <div className="sm:ml-auto sm:text-right">
           <h3 className="text-lg font-semibold text-foreground mb-2 text-center sm:text-right">

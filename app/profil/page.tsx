@@ -12,6 +12,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ArrowRight, User, Home, Car, Target, X, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
+import { useProfile } from "@/hooks/useProfile"
+import { useSession } from "@/hooks/useSession"
 
 // Données pour les questions de profil (organisées par page)
 const profileQuestions = {
@@ -120,11 +122,33 @@ const profileQuestions = {
 
 export default function ProfilePage() {
   const [currentPage, setCurrentPage] = useState<'basic' | 'municipal' | 'issues'>('basic')
-  const [answers, setAnswers] = useState<Record<string, any>>({})
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const router = useRouter()
   const citizenConcernsRef = useRef<HTMLDivElement>(null)
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+
+  // Intégration des hooks sécurisés
+  const { sessionToken } = useSession()
+  const {
+    // État du profil
+    profile,
+    isLoading,
+    isSaving,
+    error,
+    
+    // Actions pour sauvegarder
+    updateProfileField,
+    updateProfileFields,
+    
+    // Utilitaires
+    getProfileField,
+    hasProfileField,
+    getCompletionPercentage,
+    isProfileComplete,
+    
+    // Alias pour compatibilité
+    userProfile
+  } = useProfile()
 
   // Obtenir les questions de la page actuelle
   const getCurrentQuestions = () => profileQuestions[currentPage]
@@ -136,55 +160,61 @@ export default function ProfilePage() {
     ...profileQuestions.issues
   ]
 
-  const handleAnswerChange = (questionId: string, value: any) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }))
-    
-    // Auto-passer à la question suivante après une réponse (sauf pour les text areas, questions multiples et checkbox_multiple)
-    const currentQuestions = getCurrentQuestions()
-    const currentQuestion = currentQuestions[activeQuestionIndex]
-    
-    if (
-      currentQuestion &&
-      !["text_area", "priority_ranking_enhanced", "checkbox_multiple"].includes(
-        currentQuestion.type
-      )
-    ) {
-      setTimeout(() => {
-        if (activeQuestionIndex < currentQuestions.length - 1) {
-          const nextIndex = activeQuestionIndex + 1
-          setActiveQuestionIndex(nextIndex)
-          
-          // Scroll doux vers la question suivante après un petit délai
-          setTimeout(() => {
-            const nextQuestion = currentQuestions[nextIndex]
-            const nextQuestionElement = questionRefs.current[nextQuestion.id]
-            if (nextQuestionElement) {
-              nextQuestionElement.scrollIntoView({ 
-                behavior: 'smooth', 
-                block: 'center', // Centre la question dans la vue
-                inline: 'nearest'
-              })
+  const handleAnswerChange = async (questionId: string, value: any) => {
+    try {
+      // Sauvegarder via notre hook sécurisé
+      await updateProfileField(questionId, value)
+      
+      // Auto-passer à la question suivante après une réponse (sauf pour les text areas, questions multiples et checkbox_multiple)
+      const currentQuestions = getCurrentQuestions()
+      const currentQuestion = currentQuestions[activeQuestionIndex]
+      
+      if (
+        currentQuestion &&
+        !["text_area", "priority_ranking_enhanced", "checkbox_multiple"].includes(
+          currentQuestion.type
+        )
+      ) {
+        setTimeout(() => {
+          if (activeQuestionIndex < currentQuestions.length - 1) {
+            const nextIndex = activeQuestionIndex + 1
+            setActiveQuestionIndex(nextIndex)
+            
+            // Scroll doux vers la question suivante après un petit délai
+            setTimeout(() => {
+              const nextQuestion = currentQuestions[nextIndex]
+              const nextQuestionElement = questionRefs.current[nextQuestion.id]
+              if (nextQuestionElement) {
+                nextQuestionElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'center', // Centre la question dans la vue
+                  inline: 'nearest'
+                })
+              }
+            }, 100) // Délai pour laisser l'accordéon s'ouvrir
+          } else {
+            // C'est la dernière question de la page, passer à la page suivante
+            if (currentPage === 'basic') {
+              setCurrentPage('municipal')
+              setActiveQuestionIndex(0)
+              // Scroll vers le haut pour voir la première question de la nouvelle page
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }, 400)
+            } else if (currentPage === 'municipal') {
+              setCurrentPage('issues')
+              setActiveQuestionIndex(0)
+              // Scroll vers le haut pour voir la première question de la nouvelle page
+              setTimeout(() => {
+                window.scrollTo({ top: 0, behavior: 'smooth' })
+              }, 400)
             }
-          }, 100) // Délai pour laisser l'accordéon s'ouvrir
-        } else {
-          // C'est la dernière question de la page, passer à la page suivante
-          if (currentPage === 'basic') {
-            setCurrentPage('municipal')
-            setActiveQuestionIndex(0)
-            // Scroll vers le haut pour voir la première question de la nouvelle page
-            setTimeout(() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' })
-            }, 400)
-          } else if (currentPage === 'municipal') {
-            setCurrentPage('issues')
-            setActiveQuestionIndex(0)
-            // Scroll vers le haut pour voir la première question de la nouvelle page
-            setTimeout(() => {
-              window.scrollTo({ top: 0, behavior: 'smooth' })
-            }, 400)
           }
-        }
-      }, 300) // Petit délai pour voir la sélection
+        }, 300) // Petit délai pour voir la sélection
+      }
+    } catch (err) {
+      console.error('Erreur lors de la sauvegarde du profil:', err)
+      // L'erreur est déjà gérée par le hook, on peut continuer l'UI
     }
   }
 
@@ -220,49 +250,56 @@ export default function ProfilePage() {
     }
   }
 
-  const handlePriorityRanking = (questionId: string, rankings: Record<string, number>) => {
-    const previousAnswers = answers[questionId] || {}
-    setAnswers((prev) => ({ ...prev, [questionId]: rankings }))
+  const handlePriorityRanking = async (questionId: string, rankings: Record<string, number>) => {
+    const previousAnswers = profile[questionId] || {}
     
-    const previousCount = Object.keys(previousAnswers).length
-    const currentCount = Object.keys(rankings).length
-    const wasOthersSelected = previousAnswers['Autres'] !== undefined
-    const isOthersSelected = rankings['Autres'] !== undefined
-    
-    // Si l'utilisateur vient de compléter ses 3 priorités (de 2 à 3)
-    if (previousCount === 2 && currentCount === 3) {
-      setTimeout(() => {
-        if (isOthersSelected) {
-          // Si "Autres" est sélectionné, scroller vers la zone de texte
+    try {
+      // Sauvegarder via notre hook sécurisé
+      await updateProfileField(questionId, rankings)
+      
+      const previousCount = Object.keys(previousAnswers).length
+      const currentCount = Object.keys(rankings).length
+      const wasOthersSelected = previousAnswers['Autres'] !== undefined
+      const isOthersSelected = rankings['Autres'] !== undefined
+      
+      // Si l'utilisateur vient de compléter ses 3 priorités (de 2 à 3)
+      if (previousCount === 2 && currentCount === 3) {
+        setTimeout(() => {
+          if (isOthersSelected) {
+            // Si "Autres" est sélectionné, scroller vers la zone de texte
+            citizenConcernsRef.current?.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'start',
+              inline: 'nearest'
+            })
+          } else {
+            // Sinon, scroller vers le bas de la page (bouton "Voir mes résultats")
+            window.scrollTo({ 
+              top: document.documentElement.scrollHeight,
+              behavior: 'smooth' 
+            })
+          }
+        }, 300) // Petit délai pour laisser le DOM se mettre à jour
+      }
+      // Si "Autres" vient d'être ajouté après avoir déjà 3 sélections
+      else if (!wasOthersSelected && isOthersSelected && currentCount === 3) {
+        setTimeout(() => {
           citizenConcernsRef.current?.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'start',
             inline: 'nearest'
           })
-        } else {
-          // Sinon, scroller vers le bas de la page (bouton "Voir mes résultats")
-          window.scrollTo({ 
-            top: document.documentElement.scrollHeight,
-            behavior: 'smooth' 
-          })
-        }
-      }, 300) // Petit délai pour laisser le DOM se mettre à jour
-    }
-    // Si "Autres" vient d'être ajouté après avoir déjà 3 sélections
-    else if (!wasOthersSelected && isOthersSelected && currentCount === 3) {
-      setTimeout(() => {
-        citizenConcernsRef.current?.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'start',
-          inline: 'nearest'
-        })
-      }, 300)
+        }, 300)
+      }
+    } catch (err) {
+      console.error('Erreur lors de la sauvegarde du ranking:', err)
+      // L'erreur est déjà gérée par le hook, on peut continuer l'UI
     }
   }
 
   // Vérifier si une question est complétée (pour l'affichage visuel)
   const isQuestionComplete = (question: any) => {
-    const answer = answers[question.id]
+    const answer = profile[question.id]
     
     if (question.type === "checkbox_multiple") {
       return Array.isArray(answer) && answer.length > 0
@@ -282,7 +319,7 @@ export default function ProfilePage() {
 
   // Vérifier si une question est requise pour la progression (différent de l'affichage visuel)
   const isQuestionRequiredForProgression = (question: any) => {
-    const answer = answers[question.id]
+    const answer = profile[question.id]
     
     if (question.type === "checkbox_multiple") {
       return Array.isArray(answer) && answer.length > 0
@@ -348,13 +385,13 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    localStorage.setItem("userProfileData", JSON.stringify(answers))
+    localStorage.setItem("userProfileData", JSON.stringify(profile))
     router.push("/resultats")
   }
 
   // Obtenir l'aperçu d'une réponse pour affichage compact
   const getAnswerPreview = (question: any) => {
-    const answer = answers[question.id]
+    const answer = profile[question.id]
     
     if (!answer) return "Non répondu"
     
@@ -376,7 +413,7 @@ export default function ProfilePage() {
 
   // Composant pour les boutons horizontaux
   const renderHorizontalButtons = (question: any) => {
-    const selectedValue = answers[question.id]
+    const selectedValue = profile[question.id]
     
     return (
       <div className="space-y-3">
@@ -403,7 +440,7 @@ export default function ProfilePage() {
   }
 
   const renderEnhancedPriorityRanking = (question: any) => {
-    const currentRankings = answers[question.id] || {}
+    const currentRankings = profile[question.id] || {}
     
     const toggleItemRanking = (item: string) => {
       const newRankings = { ...currentRankings }
@@ -522,7 +559,7 @@ export default function ProfilePage() {
         return (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {question.options?.map((option: string, index: number) => {
-              const selectedOptions = Array.isArray(answers[question.id]) ? answers[question.id] : []
+              const selectedOptions = Array.isArray(profile[question.id]) ? profile[question.id] : []
               const isChecked = selectedOptions.includes(option)
               
               return (
@@ -530,7 +567,7 @@ export default function ProfilePage() {
                   key={index}
                   variant={isChecked ? "default" : "outline"}
                   onClick={() => {
-                    const current = Array.isArray(answers[question.id]) ? answers[question.id] : []
+                    const current = Array.isArray(profile[question.id]) ? profile[question.id] : []
                     const newSelected = current.includes(option)
                       ? current.filter((item: string) => item !== option)
                       : [...current, option]
@@ -580,7 +617,7 @@ export default function ProfilePage() {
             )}
             <Textarea
               id={question.id}
-              value={answers[question.id] || ""}
+              value={profile[question.id] || ""}
               onChange={(e) => handleAnswerChange(question.id, e.target.value)}
               placeholder={question.placeholder}
               className="w-full min-h-[100px] p-3 border-2 rounded-lg resize-vertical text-sm"
@@ -621,8 +658,37 @@ export default function ProfilePage() {
   const currentInfo = pageInfo[currentPage]
   const currentQuestions = getCurrentQuestions()
 
+  // État de chargement pendant l'initialisation
+  if (isLoading) {
+    return (
+      <div className="container max-w-3xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement de votre profil...</p>
+          {sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="relative min-h-screen">
+      {/* Affichage d'erreur si problème de synchronisation */}
+      {error && (
+        <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
+          <p>⚠️ Synchronisation échouée</p>
+          <p className="text-xs opacity-80">Vos données sont sauvegardées localement</p>
+        </div>
+      )}
+
+      {/* Indicateur de sauvegarde */}
+      {isSaving && (
+        <div className="fixed top-4 left-4 bg-primary/10 border border-primary/20 text-primary px-3 py-2 rounded-lg text-sm z-50 flex items-center gap-2">
+          <div className="animate-spin rounded-full h-3 w-3 border-b border-primary"></div>
+          <span>Sauvegarde...</span>
+        </div>
+      )}
+
       {/* Image décorative - chien et maître centrée à gauche */}
       <div className="hidden lg:block">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-left">
@@ -640,6 +706,10 @@ export default function ProfilePage() {
         <div className="flex items-center justify-center gap-2 mb-2">
           <Badge variant="secondary" className="text-xs px-2 py-1">
             Étape {currentInfo.step}
+          </Badge>
+          {/* Affichage du pourcentage de complétion */}
+          <Badge variant="outline" className="text-xs px-2 py-1">
+            {getCompletionPercentage()}% complété
           </Badge>
         </div>
         <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
@@ -675,7 +745,7 @@ export default function ProfilePage() {
           {currentQuestions.map((question, index) => {
             // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
             if (question.id === 'citizen_concerns') {
-              const prioritiesAnswer = answers['municipal_priorities'] || {}
+              const prioritiesAnswer = profile['municipal_priorities'] || {}
               const hasSelectedOthers = prioritiesAnswer['Autres'] !== undefined
               
               if (!hasSelectedOthers) {
@@ -787,7 +857,7 @@ export default function ProfilePage() {
                         <div className="flex justify-end mt-4">
                           <Button
                             onClick={handleNextQuestion}
-                            disabled={!answers[question.id] || (Array.isArray(answers[question.id]) && answers[question.id].length === 0)}
+                            disabled={!profile[question.id] || (Array.isArray(profile[question.id]) && profile[question.id].length === 0)}
                             className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
                           >
                             Question suivante
