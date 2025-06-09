@@ -13,7 +13,7 @@ export default function SiteFooter() {
               {" "}
               {/* Aspect ratio 4:5 */}
               <Image
-                src="/logo-main-inversé.png"
+                src="/boussole-municipale-logo-footer.svg"
                 alt="Boussole Municipale Logo Footer"
                 fill
                 style={{ objectFit: "contain" }}

@@ -28,7 +28,7 @@ export default function HomePage() {
         <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
-              <span className="text-sm font-semibold text-secondary flex items-center">
+              <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
                 <Compass className="w-5 h-5 mr-2" /> Votre boussole citoyenne
               </span>
               <h1 className="tracking-tight text-foreground">
@@ -70,7 +70,7 @@ export default function HomePage() {
                 src="/hero-illustration.png"
                 alt="Illustration de citoyens diversifiés autour d'une boussole"
                 fill
-                style={{ objectFit: "contain" }}
+                style={{ objectFit: "cover" }}
                 className="rounded-2xl"
                 priority
               />
