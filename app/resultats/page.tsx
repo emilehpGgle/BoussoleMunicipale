@@ -548,8 +548,11 @@ export default function ResultsPage() {
                   style={{ objectFit: "contain" }}
                 />
               </LogoContainer>
-              <h3 className="text-lg font-semibold text-foreground">{party.shortName || party.name}</h3>
-              <p className="text-sm text-muted-foreground mb-3">{party.name}</p>
+              {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
+              <div className="min-h-[4rem] flex flex-col justify-center mb-3">
+                <h3 className="text-lg font-semibold text-foreground leading-tight">{party.shortName || party.name}</h3>
+                <p className="text-sm text-muted-foreground leading-tight">{party.name}</p>
+              </div>
               <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
                 <div
                   className="bg-primary h-4 rounded-full transition-all duration-500 ease-out"
