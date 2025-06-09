@@ -12,6 +12,16 @@ export class ProfilesAPI {
    * Sauvegarde ou met à jour le profil utilisateur pour une session
    */
   async saveProfile(sessionId: string, profileData: Record<string, any>) {
+    // Validate sessionId format
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.length < 10) {
+      throw new Error('Invalid session ID format')
+    }
+    
+    // Validate profile data structure
+    if (!profileData || typeof profileData !== 'object') {
+      throw new Error('Profile data must be a valid object')
+    }
+
     const profile: UserProfileInsert = {
       session_id: sessionId,
       profile_data: profileData,
@@ -157,23 +167,28 @@ export class ProfilesAPI {
     }
 
     profiles.forEach(profile => {
+      // Skip null or invalid profiles
+      if (!profile || typeof profile !== 'object') {
+        return
+      }
+
       // Analyser l'âge
-      if (profile.age) {
+      if (profile.age && typeof profile.age === 'string') {
         demographics.age[profile.age] = (demographics.age[profile.age] || 0) + 1
       }
 
       // Analyser la région
-      if (profile.region) {
+      if (profile.region && typeof profile.region === 'string') {
         demographics.region[profile.region] = (demographics.region[profile.region] || 0) + 1
       }
 
       // Analyser l'éducation
-      if (profile.education) {
+      if (profile.education && typeof profile.education === 'string') {
         demographics.education[profile.education] = (demographics.education[profile.education] || 0) + 1
       }
 
       // Analyser l'emploi
-      if (profile.employment) {
+      if (profile.employment && typeof profile.employment === 'string') {
         demographics.employment[profile.employment] = (demographics.employment[profile.employment] || 0) + 1
       }
     })

@@ -60,9 +60,9 @@ localStorage: {
 - [x] **Configuration des variables d'environnement**
   ```bash
   # .env.local
-  NEXT_PUBLIC_SUPABASE_URL=https://cnvlxsstxnrnijifnqnz.supabase.co
-  NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNudmx4c3N0eG5ybmlqaWZucW56Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk0NzI1MjEsImV4cCI6MjA2NTA0ODUyMX0.5cYi10WuoBiMv5Smw-g2_DR0_EtW-mEl8UbSEjiHG9A
-  SUPABASE_SERVICE_ROLE_KEY=...
+  NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+  NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+  SUPABASE_SERVICE_ROLE_KEY=<your-service-role-key>
   ```
 
 ### ✅ 1.2 Structure des Fichiers
@@ -209,48 +209,30 @@ localStorage: {
   CREATE INDEX idx_user_sessions_expires ON user_sessions(expires_at);
   ```
 
-### ✅ 2.3 Sécurité RLS (Row Level Security)
+### ✅ 2.3 Sécurité et Authentification
 
-- [x] **Activer RLS**
+**⚠️ Note importante sur l'approche RLS :**
+L'approche initiale avec des politiques RLS personnalisées s'est révélée non-standard pour Supabase. La solution adoptée utilise :
+
+- **Validation côté API** : Les API routes Next.js valident les sessions directement
+- **Service role key** : Les opérations en base utilisent la clé de service pour contourner RLS
+- **Sécurité applicative** : La validation des sessions est centralisée dans les API routes
+
+Cette approche est plus simple et plus fiable que les politiques RLS personnalisées.
+
+- [x] **Tables publiques (lecture seule)**
   ```sql
-  ALTER TABLE user_sessions ENABLE ROW LEVEL SECURITY;
-  ALTER TABLE user_responses ENABLE ROW LEVEL SECURITY;
-  ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
-  ALTER TABLE user_results ENABLE ROW LEVEL SECURITY;
-  ```
-
-- [x] **Politiques RLS**
-  ```sql
-  -- Sessions : accès uniquement avec le bon token
-  CREATE POLICY "Users can access their own session" ON user_sessions
-    FOR ALL USING (session_token = current_setting('request.jwt.claims', true)::json->>'session_token');
-
-  -- Réponses : accès uniquement à sa propre session
-  CREATE POLICY "Users can access their own responses" ON user_responses
-    FOR ALL USING (session_id IN (
-      SELECT id FROM user_sessions 
-      WHERE session_token = current_setting('request.jwt.claims', true)::json->>'session_token'
-    ));
-
-  -- Profils : accès uniquement à son propre profil
-  CREATE POLICY "Users can access their own profile" ON user_profiles
-    FOR ALL USING (session_id IN (
-      SELECT id FROM user_sessions 
-      WHERE session_token = current_setting('request.jwt.claims', true)::json->>'session_token'
-    ));
-
-  -- Résultats : accès uniquement à ses propres résultats
-  CREATE POLICY "Users can access their own results" ON user_results
-    FOR ALL USING (session_id IN (
-      SELECT id FROM user_sessions 
-      WHERE session_token = current_setting('request.jwt.claims', true)::json->>'session_token'
-    ));
-
-  -- Tables publiques en lecture seule
+  -- Tables de référence publiques
   CREATE POLICY "Public read access" ON questions FOR SELECT USING (true);
   CREATE POLICY "Public read access" ON parties FOR SELECT USING (true);
   CREATE POLICY "Public read access" ON party_positions FOR SELECT USING (true);
   ```
+
+- [x] **Sécurité applicative**
+  - Validation des sessions dans chaque API route
+  - Tokens UUID cryptographiquement sécurisés  
+  - Expiration automatique des sessions (24h)
+  - Validation des formats et structures de données
 
 ---
 
@@ -289,9 +271,10 @@ localStorage: {
 
 ### ✅ 4.4 Hooks Personnalisés
 
-- [ ] **Hook pour les réponses utilisateur**
-- [ ] **Hook pour les profils**
-- [ ] **Hook pour les résultats**
+- [x] **Hook pour les réponses utilisateur** ✅ **TERMINÉ** - useUserResponses complet
+- [x] **Hook pour les profils** ✅ **TERMINÉ** - useProfile avec analytics
+- [x] **Hook pour les résultats** ✅ **TERMINÉ** - useResults avec calculs
+- [x] **Index des hooks** ✅ **TERMINÉ** - hooks/index.ts exporté
 
 ### ✅ 4.5 Refactoring des Composants
 

@@ -2,15 +2,26 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResponsesAPI } from '@/lib/api/responses'
+import { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
+
+// Helper function for session validation
+async function validateSession(sessionToken: string) {
+  const sessionsAPI = new SessionsAPI()
+  const session = await sessionsAPI.getSessionByToken(sessionToken)
+  if (!session) {
+    throw new Error('Session invalide ou expirée')
+  }
+  return { session, sessionsAPI }
+}
 
 // Types pour les requêtes
 interface SaveResponseRequest {
   sessionToken: string
   questionId: string
   responseType: 'agreement' | 'importance' | 'importance_direct'
-  agreementValue?: string
-  importanceValue?: number
-  importanceDirectValue?: string
+  agreementValue?: AgreementOptionKey
+  importanceValue?: ImportanceOptionKey
+  importanceDirectValue?: ImportanceDirectOptionKey
 }
 
 interface GetResponsesRequest {
@@ -31,27 +42,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
+    // Valider et récupérer la session
+    const { session, sessionsAPI } = await validateSession(sessionToken)
     const responsesAPI = new ResponsesAPI()
-
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
 
     // Sauvegarder la réponse selon le type
     let response
     if (responseType === 'agreement' && agreementValue) {
-      response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue as any)
+      response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue)
     } else if (responseType === 'importance' && importanceValue) {
-      response = await responsesAPI.saveImportanceResponse(session.id, questionId, importanceValue as any)
+      response = await responsesAPI.saveImportanceResponse(session.id, questionId, importanceValue)
     } else if (responseType === 'importance_direct' && importanceDirectValue) {
-      response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue as any)
+      response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue)
     } else {
       return NextResponse.json(
         { error: 'Valeur de réponse manquante pour le type spécifié' },
@@ -69,6 +71,12 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    if (error instanceof Error && error.message === 'Session invalide ou expirée') {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la sauvegarde de la réponse:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -90,18 +98,9 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
+    // Valider et récupérer la session
+    const { session, sessionsAPI } = await validateSession(sessionToken)
     const responsesAPI = new ResponsesAPI()
-
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
 
     // Récupérer toutes les réponses de la session
     const responses = await responsesAPI.getSessionResponses(session.id)
@@ -116,6 +115,12 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
+    if (error instanceof Error && error.message === 'Session invalide ou expirée') {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la récupération des réponses:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -139,18 +144,9 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
+    // Valider et récupérer la session
+    const { session, sessionsAPI } = await validateSession(sessionToken)
     const responsesAPI = new ResponsesAPI()
-
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
 
     // Supprimer la réponse spécifique (à implémenter ou supprimer toute la session)
     // Pour l'instant, on peut supprimer toutes les réponses de la session
@@ -160,6 +156,12 @@ export async function DELETE(request: NextRequest) {
     }, { status: 501 })
 
   } catch (error) {
+    if (error instanceof Error && error.message === 'Session invalide ou expirée') {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la suppression de la réponse:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },

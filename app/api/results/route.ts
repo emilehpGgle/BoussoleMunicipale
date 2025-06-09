@@ -3,10 +3,49 @@ import { SessionsAPI } from '@/lib/api/sessions'
 import { ResultsAPI } from '@/lib/api/results'
 import { ResponsesAPI } from '@/lib/api/responses'
 
+// Helper function for session validation
+const validateSession = async (sessionToken: string) => {
+  const sessionsAPI = new SessionsAPI()
+  const session = await sessionsAPI.getSessionByToken(sessionToken)
+  
+  if (!session) {
+    return {
+      error: NextResponse.json(
+        { error: 'Session invalide ou expirée' },
+        { status: 401 }
+      ),
+      session: null
+    }
+  }
+  
+  return { error: null, session }
+}
+
+// Utility function for results metadata generation
+const createResultsMetadata = () => ({
+  calculatedAt: new Date().toISOString(),
+  version: '1.0',
+  algorithm: 'standard'
+})
+
+// Proper interfaces for type safety
+interface CalculatedResults {
+  [key: string]: unknown
+}
+
+interface FormattedResultsData {
+  calculatedResults: CalculatedResults
+  metadata: {
+    calculatedAt: string
+    version: string
+    algorithm: string
+  }
+}
+
 // Types pour les requêtes
 interface SaveResultsRequest {
   sessionToken: string
-  resultsData: Record<string, any>
+  resultsData: CalculatedResults
   politicalPosition?: { x: number; y: number }
 }
 
@@ -24,38 +63,29 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
-    const resultsAPI = new ResultsAPI()
+    // Valider la session
+    const { error, session } = await validateSession(sessionToken)
+    if (error) return error
 
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
+    // Créer les instances d'API
+    const resultsAPI = new ResultsAPI()
+    const sessionsAPI = new SessionsAPI()
 
     // Construire l'objet ResultsData avec la structure requise
-    const formattedResultsData = {
-      calculatedResults: resultsData as any,
-      metadata: {
-        calculatedAt: new Date().toISOString(),
-        version: '1.0',
-        algorithm: 'standard'
-      }
+    const formattedResultsData: FormattedResultsData = {
+      calculatedResults: resultsData,
+      metadata: createResultsMetadata()
     }
 
     // Sauvegarder les résultats
     const results = await resultsAPI.saveResults(
-      session.id, 
-      formattedResultsData as any,
+      session!.id, 
+      formattedResultsData as any, // Note: API expects specific format, keeping minimal casting
       'completed'
     )
 
     // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    await sessionsAPI.updateSessionActivity(session!.id)
 
     return NextResponse.json({ 
       success: true, 
@@ -85,29 +115,24 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
-    const resultsAPI = new ResultsAPI()
+    // Valider la session
+    const { error, session } = await validateSession(sessionToken)
+    if (error) return error
 
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
+    // Créer les instances d'API
+    const resultsAPI = new ResultsAPI()
+    const sessionsAPI = new SessionsAPI()
 
     // Récupérer les résultats de la session
-    const results = await resultsAPI.getResults(session.id)
+    const results = await resultsAPI.getResults(session!.id)
 
     // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    await sessionsAPI.updateSessionActivity(session!.id)
 
     return NextResponse.json({
       success: true,
       results,
-      sessionId: session.id
+      sessionId: session!.id
     })
 
   } catch (error) {
@@ -132,37 +157,28 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
-    const resultsAPI = new ResultsAPI()
+    // Valider la session
+    const { error, session } = await validateSession(sessionToken)
+    if (error) return error
 
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
+    // Créer les instances d'API
+    const resultsAPI = new ResultsAPI()
+    const sessionsAPI = new SessionsAPI()
 
     // Mettre à jour les résultats
-    const formattedResultsData = {
-      calculatedResults: resultsData as any,
-      metadata: {
-        calculatedAt: new Date().toISOString(),
-        version: '1.0',
-        algorithm: 'standard'
-      }
+    const formattedResultsData: FormattedResultsData = {
+      calculatedResults: resultsData,
+      metadata: createResultsMetadata()
     }
 
     const results = await resultsAPI.saveResults(
-      session.id, 
-      formattedResultsData as any,
+      session!.id, 
+      formattedResultsData as any, // Note: API expects specific format, keeping minimal casting
       'completed'
     )
 
     // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    await sessionsAPI.updateSessionActivity(session!.id)
 
     return NextResponse.json({
       success: true,

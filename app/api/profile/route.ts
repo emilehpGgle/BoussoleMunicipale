@@ -22,6 +22,22 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Validate sessionToken format
+    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
+      return NextResponse.json(
+        { error: 'Format de sessionToken invalide' },
+        { status: 400 }
+      )
+    }
+
+    // Validate profileData structure
+    if (typeof profileData !== 'object' || Array.isArray(profileData)) {
+      return NextResponse.json(
+        { error: 'profileData doit être un objet valide' },
+        { status: 400 }
+      )
+    }
+
     // Créer les instances d'API
     const sessionsAPI = new SessionsAPI()
     const profilesAPI = new ProfilesAPI()
@@ -65,6 +81,14 @@ export async function GET(request: NextRequest) {
     if (!sessionToken) {
       return NextResponse.json(
         { error: 'sessionToken est requis' },
+        { status: 400 }
+      )
+    }
+
+    // Validate sessionToken format
+    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
+      return NextResponse.json(
+        { error: 'Format de sessionToken invalide' },
         { status: 400 }
       )
     }
@@ -113,6 +137,22 @@ export async function PUT(request: NextRequest) {
     if (!sessionToken || !profileData) {
       return NextResponse.json(
         { error: 'sessionToken et profileData sont requis' },
+        { status: 400 }
+      )
+    }
+
+    // Validate sessionToken format
+    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
+      return NextResponse.json(
+        { error: 'Format de sessionToken invalide' },
+        { status: 400 }
+      )
+    }
+
+    // Validate profileData structure
+    if (typeof profileData !== 'object' || Array.isArray(profileData)) {
+      return NextResponse.json(
+        { error: 'profileData doit être un objet valide' },
         { status: 400 }
       )
     }

@@ -24,8 +24,48 @@ export interface ResultsData {
   }
 }
 
+// Interface pour les statistiques de résultats
+export interface ResultsStats {
+  totalResults: number
+  completedResults: number
+  partialResults: number
+  averageCompletion: number
+  politicalDistribution: {
+    averageX: number
+    averageY: number
+    totalPositions: number
+  }
+  partyPopularity: Array<{
+    party: string
+    averageScore: number
+    totalResponses: number
+  }>
+}
+
 export class ResultsAPI {
   private supabase = createClient()
+
+  /**
+   * Valide et convertit les données de résultats depuis la base de données
+   */
+  private parseResultsData(data: any): ResultsData | null {
+    try {
+      // Vérifier la structure de base
+      if (!data || typeof data !== 'object') {
+        return null
+      }
+
+      // Valider la présence des champs requis
+      if (!data.calculatedResults || typeof data.calculatedResults !== 'object') {
+        return null
+      }
+
+      return data as ResultsData
+    } catch (error) {
+      console.error('Erreur lors du parsing des données de résultats:', error)
+      return null
+    }
+  }
 
   /**
    * Sauvegarde les résultats calculés pour une session
@@ -37,8 +77,8 @@ export class ResultsAPI {
   ) {
     const result: UserResultInsert = {
       session_id: sessionId,
-      results_data: resultsData as any,
-      political_position: resultsData.calculatedResults.politicalPosition as any || null,
+      results_data: resultsData as any, // Cast nécessaire pour la compatibilité avec le type Json de Supabase
+      political_position: resultsData.calculatedResults.politicalPosition || null,
       completion_status: completionStatus,
     }
 
@@ -86,7 +126,11 @@ export class ResultsAPI {
    */
   async getResultsData(sessionId: string): Promise<ResultsData | null> {
     const result = await this.getResults(sessionId)
-    return (result?.results_data as unknown as ResultsData) || null
+    if (!result?.results_data) {
+      return null
+    }
+
+    return this.parseResultsData(result.results_data)
   }
 
   /**
@@ -169,7 +213,7 @@ export class ResultsAPI {
   /**
    * Récupère les statistiques sur les résultats (pour analytics)
    */
-  async getResultsStats() {
+  async getResultsStats(): Promise<ResultsStats> {
     const { data, error } = await this.supabase
       .from('user_results')
       .select('results_data, political_position, completion_status, created_at')
@@ -180,7 +224,7 @@ export class ResultsAPI {
     }
 
     // Analyser les données pour créer des statistiques
-    const stats = {
+    const stats: ResultsStats = {
       totalResults: data.length,
       completedResults: data.filter(r => r.completion_status === 'completed').length,
       partialResults: data.filter(r => r.completion_status === 'partial').length,
@@ -195,11 +239,12 @@ export class ResultsAPI {
   /**
    * Calcule le pourcentage moyen de complétion des questionnaires
    */
-  private calculateAverageCompletion(results: any[]) {
+  private calculateAverageCompletion(results: any[]): number {
     const completions = results
-      .map(r => r.results_data as ResultsData)
-      .filter(rd => rd?.calculatedResults?.completionPercentage)
+      .map(r => this.parseResultsData(r.results_data))
+      .filter((rd): rd is ResultsData => rd !== null)
       .map(rd => rd.calculatedResults.completionPercentage)
+      .filter(comp => typeof comp === 'number' && !isNaN(comp))
 
     if (completions.length === 0) return 0
 
@@ -211,8 +256,9 @@ export class ResultsAPI {
    */
   private analyzePoliticalDistribution(results: any[]) {
     const positions = results
-      .filter(r => r.political_position)
+      .filter(r => r.political_position && typeof r.political_position === 'object')
       .map(r => r.political_position as { x: number; y: number })
+      .filter(pos => typeof pos.x === 'number' && typeof pos.y === 'number' && !isNaN(pos.x) && !isNaN(pos.y))
 
     if (positions.length === 0) {
       return {
@@ -235,17 +281,23 @@ export class ResultsAPI {
   /**
    * Analyse la popularité des partis politiques
    */
-  private analyzePartyPopularity(results: any[]) {
+  private analyzePartyPopularity(results: any[]): Array<{
+    party: string
+    averageScore: number
+    totalResponses: number
+  }> {
     const partyScores: Record<string, number[]> = {}
 
     results.forEach(result => {
-      const data = result.results_data as ResultsData
+      const data = this.parseResultsData(result.results_data)
       if (data?.calculatedResults?.partyScores) {
         Object.entries(data.calculatedResults.partyScores).forEach(([party, score]) => {
-          if (!partyScores[party]) {
-            partyScores[party] = []
+          if (typeof score === 'number' && !isNaN(score)) {
+            if (!partyScores[party]) {
+              partyScores[party] = []
+            }
+            partyScores[party].push(score)
           }
-          partyScores[party].push(score as number)
         })
       }
     })

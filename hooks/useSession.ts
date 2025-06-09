@@ -12,6 +12,7 @@ interface SessionState {
   session: Session | null
   isLoading: boolean
   error: string | null
+  isInitializing: boolean
 }
 
 const SESSION_STORAGE_KEY = 'boussole_session_token'
@@ -20,7 +21,8 @@ export function useSession() {
   const [state, setState] = useState<SessionState>({
     session: null,
     isLoading: true,
-    error: null
+    error: null,
+    isInitializing: false
   })
 
   // Créer une nouvelle session
@@ -42,8 +44,10 @@ export function useSession() {
       const data = await response.json()
       
       if (data.success) {
-        // Sauvegarder le token dans localStorage
-        localStorage.setItem(SESSION_STORAGE_KEY, data.session.sessionToken)
+        // Sauvegarder le token dans localStorage (avec vérification SSR)
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(SESSION_STORAGE_KEY, data.session.sessionToken)
+        }
         
         setState(prev => ({ 
           ...prev, 
@@ -87,15 +91,21 @@ export function useSession() {
     }
   }
 
-  // Supprimer la session
+  // Supprimer la session avec gestion d'erreur améliorée
   const deleteSession = async (): Promise<void> => {
     try {
+      if (typeof window === 'undefined') return
+
       const currentToken = localStorage.getItem(SESSION_STORAGE_KEY)
       
       if (currentToken) {
-        await fetch(`/api/sessions?sessionToken=${encodeURIComponent(currentToken)}`, {
+        const response = await fetch(`/api/sessions?sessionToken=${encodeURIComponent(currentToken)}`, {
           method: 'DELETE'
         })
+        
+        if (!response.ok) {
+          console.warn('Failed to delete session on server, continuing with local cleanup')
+        }
       }
       
       // Nettoyer le localStorage et l'état
@@ -107,37 +117,72 @@ export function useSession() {
       }))
     } catch (error) {
       console.error('Erreur lors de la suppression de la session:', error)
+      // Continuer avec le nettoyage local même en cas d'erreur serveur
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(SESSION_STORAGE_KEY)
+      }
+      setState(prev => ({ 
+        ...prev, 
+        session: null, 
+        error: null 
+      }))
     }
   }
 
-  // Obtenir ou créer une session
+  // Obtenir ou créer une session avec prévention des race conditions
   const getOrCreateSession = async (): Promise<Session | null> => {
+    // Prévenir les appels concurrents
+    if (state.isInitializing) {
+      return new Promise((resolve) => {
+        const checkState = () => {
+          if (!state.isInitializing) {
+            resolve(state.session)
+          } else {
+            setTimeout(checkState, 100)
+          }
+        }
+        checkState()
+      })
+    }
+
     // Vérifier d'abord si on a déjà une session en mémoire
     if (state.session) {
       return state.session
     }
 
-    // Vérifier le localStorage
-    const storedToken = localStorage.getItem(SESSION_STORAGE_KEY)
-    
-    if (storedToken) {
-      // Valider la session existante
-      const validSession = await validateSession(storedToken)
-      if (validSession) {
-        setState(prev => ({ 
-          ...prev, 
-          session: validSession, 
-          isLoading: false 
-        }))
-        return validSession
-      } else {
-        // Session expirée, la supprimer du localStorage
-        localStorage.removeItem(SESSION_STORAGE_KEY)
-      }
-    }
+    setState(prev => ({ ...prev, isInitializing: true }))
 
-    // Créer une nouvelle session
-    return await createSession()
+    try {
+      // Vérifier le localStorage (avec protection SSR)
+      if (typeof window !== 'undefined') {
+        const storedToken = localStorage.getItem(SESSION_STORAGE_KEY)
+        
+        if (storedToken) {
+          // Valider la session existante
+          const validSession = await validateSession(storedToken)
+          if (validSession) {
+            setState(prev => ({ 
+              ...prev, 
+              session: validSession, 
+              isLoading: false,
+              isInitializing: false
+            }))
+            return validSession
+          } else {
+            // Session expirée, la supprimer du localStorage
+            localStorage.removeItem(SESSION_STORAGE_KEY)
+          }
+        }
+      }
+
+      // Créer une nouvelle session
+      const newSession = await createSession()
+      setState(prev => ({ ...prev, isInitializing: false }))
+      return newSession
+    } catch (error) {
+      setState(prev => ({ ...prev, isInitializing: false }))
+      throw error
+    }
   }
 
   // Initialiser la session au chargement du composant
@@ -145,8 +190,9 @@ export function useSession() {
     getOrCreateSession()
   }, [])
 
-  // Obtenir le token de session actuel
+  // Obtenir le token de session actuel avec protection SSR
   const getSessionToken = (): string | null => {
+    if (typeof window === 'undefined') return null
     return state.session?.sessionToken || localStorage.getItem(SESSION_STORAGE_KEY)
   }
 
@@ -156,6 +202,7 @@ export function useSession() {
     sessionToken: getSessionToken(),
     isLoading: state.isLoading,
     error: state.error,
+    isInitializing: state.isInitializing,
     
     // Actions
     createSession,
@@ -163,8 +210,8 @@ export function useSession() {
     deleteSession,
     getOrCreateSession,
     
-    // Utilitaires
+    // Utilitaires avec protection SSR
     isSessionValid: !!state.session,
-    hasStoredSession: !!localStorage.getItem(SESSION_STORAGE_KEY)
+    hasStoredSession: typeof window !== 'undefined' ? !!localStorage.getItem(SESSION_STORAGE_KEY) : false
   }
 } 

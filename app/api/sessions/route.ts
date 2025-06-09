@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 
+// Utility function for standardized error handling
+const handleAPIError = (error: unknown, context: string) => {
+  console.error(`Erreur lors de ${context}:`, error)
+  return NextResponse.json(
+    { error: 'Erreur interne du serveur' },
+    { status: 500 }
+  )
+}
+
 // POST - Créer une nouvelle session
 export async function POST(request: NextRequest) {
   try {
-    // Récupérer l'user agent depuis les headers
-    const userAgent = request.headers.get('user-agent') || undefined
+    // Récupérer et valider l'user agent depuis les headers
+    const rawUserAgent = request.headers.get('user-agent')
+    const userAgent = rawUserAgent 
+      ? rawUserAgent.slice(0, 255) // Truncate to reasonable length
+      : undefined
 
     // Créer l'instance d'API
     const sessionsAPI = new SessionsAPI()
@@ -24,11 +36,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la création de la session:', error)
-    return NextResponse.json(
-      { error: 'Erreur interne du serveur' },
-      { status: 500 }
-    )
+    return handleAPIError(error, 'la création de la session')
   }
 }
 
@@ -75,11 +83,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la vérification de la session:', error)
-    return NextResponse.json(
-      { error: 'Erreur interne du serveur' },
-      { status: 500 }
-    )
+    return handleAPIError(error, 'la vérification de la session')
   }
 }
 
@@ -108,10 +112,6 @@ export async function DELETE(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la suppression de la session:', error)
-    return NextResponse.json(
-      { error: 'Erreur interne du serveur' },
-      { status: 500 }
-    )
+    return handleAPIError(error, 'la suppression de la session')
   }
 } 

@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/client'
 import { Database } from '@/lib/supabase/types'
+import { v4 as uuidv4 } from 'uuid'
 
 type UserSession = Database['public']['Tables']['user_sessions']['Row']
 type UserSessionInsert = Database['public']['Tables']['user_sessions']['Insert']
@@ -11,7 +12,7 @@ export class SessionsAPI {
    * Crée une nouvelle session utilisateur avec un token unique
    */
   async createSession(userAgent?: string): Promise<UserSession> {
-    // Générer un token de session unique
+    // Générer un token de session unique et sécurisé
     const sessionToken = this.generateSessionToken()
     
     const session: UserSessionInsert = {
@@ -35,7 +36,7 @@ export class SessionsAPI {
   }
 
   /**
-   * Récupère une session par son token
+   * Récupère une session par son token sans side effects
    */
   async getSessionByToken(sessionToken: string): Promise<UserSession | null> {
     const { data, error } = await this.supabase
@@ -53,14 +54,31 @@ export class SessionsAPI {
       throw new Error(`Erreur lors de la récupération de la session: ${error.message}`)
     }
 
-    // Vérifier si la session n'est pas expirée
+    // Vérifier si la session n'est pas expirée (sans la supprimer)
     if (data.expires_at && new Date(data.expires_at) < new Date()) {
-      // Session expirée, la supprimer
-      await this.deleteSession(data.id)
       return null
     }
 
     return data
+  }
+
+  /**
+   * Récupère une session active et supprime les sessions expirées (méthode explicite)
+   */
+  async getActiveSessionByToken(sessionToken: string): Promise<UserSession | null> {
+    const session = await this.getSessionByToken(sessionToken)
+    
+    if (!session) {
+      return null
+    }
+
+    // Si la session est expirée, la supprimer
+    if (session.expires_at && new Date(session.expires_at) < new Date()) {
+      await this.deleteSession(session.id)
+      return null
+    }
+
+    return session
   }
 
   /**
@@ -159,20 +177,11 @@ export class SessionsAPI {
   }
 
   /**
-   * Génère un token de session unique
+   * Génère un token de session cryptographiquement sécurisé
    */
   private generateSessionToken(): string {
-    // Utiliser crypto.randomUUID si disponible, sinon fallback
-    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
-      return crypto.randomUUID()
-    }
-    
-    // Fallback pour générer un UUID v4 simple
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      const r = Math.random() * 16 | 0
-      const v = c === 'x' ? r : (r & 0x3 | 0x8)
-      return v.toString(16)
-    })
+    // Utiliser la bibliothèque uuid pour une génération sécurisée
+    return uuidv4()
   }
 
   /**
@@ -185,27 +194,40 @@ export class SessionsAPI {
   }
 
   /**
-   * Analyse les user agents pour des statistiques
+   * Analyse les user agents pour des statistiques avec détection améliorée
    */
   private analyzeUserAgents(userAgents: string[]) {
     const browsers: Record<string, number> = {}
     const os: Record<string, number> = {}
 
     userAgents.forEach(ua => {
-      // Analyser le navigateur
-      if (ua.includes('Chrome')) browsers.Chrome = (browsers.Chrome || 0) + 1
-      else if (ua.includes('Firefox')) browsers.Firefox = (browsers.Firefox || 0) + 1
-      else if (ua.includes('Safari') && !ua.includes('Chrome')) browsers.Safari = (browsers.Safari || 0) + 1
-      else if (ua.includes('Edge')) browsers.Edge = (browsers.Edge || 0) + 1
-      else browsers.Other = (browsers.Other || 0) + 1
+      // Analyser le navigateur (ordre important : vérifier les plus spécifiques d'abord)
+      if (ua.includes('Edg/')) {
+        browsers.Edge = (browsers.Edge || 0) + 1
+      } else if (ua.includes('Chrome') && !ua.includes('Edg/')) {
+        browsers.Chrome = (browsers.Chrome || 0) + 1
+      } else if (ua.includes('Firefox')) {
+        browsers.Firefox = (browsers.Firefox || 0) + 1
+      } else if (ua.includes('Safari') && !ua.includes('Chrome') && !ua.includes('Edg/')) {
+        browsers.Safari = (browsers.Safari || 0) + 1
+      } else {
+        browsers.Other = (browsers.Other || 0) + 1
+      }
 
       // Analyser le système d'exploitation
-      if (ua.includes('Windows')) os.Windows = (os.Windows || 0) + 1
-      else if (ua.includes('Mac')) os.macOS = (os.macOS || 0) + 1
-      else if (ua.includes('Linux')) os.Linux = (os.Linux || 0) + 1
-      else if (ua.includes('Android')) os.Android = (os.Android || 0) + 1
-      else if (ua.includes('iOS')) os.iOS = (os.iOS || 0) + 1
-      else os.Other = (os.Other || 0) + 1
+      if (ua.includes('Windows')) {
+        os.Windows = (os.Windows || 0) + 1
+      } else if (ua.includes('Mac')) {
+        os.macOS = (os.macOS || 0) + 1
+      } else if (ua.includes('Linux')) {
+        os.Linux = (os.Linux || 0) + 1
+      } else if (ua.includes('Android')) {
+        os.Android = (os.Android || 0) + 1
+      } else if (ua.includes('iOS')) {
+        os.iOS = (os.iOS || 0) + 1
+      } else {
+        os.Other = (os.Other || 0) + 1
+      }
     })
 
     return { browsers, os }

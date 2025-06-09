@@ -8,18 +8,34 @@ export class ResponsesAPI {
   private supabase = createClient()
 
   /**
-   * Sauvegarde une réponse utilisateur (accord/désaccord) pour une question
+   * Méthode générique pour sauvegarder une réponse
    */
-  async saveAgreementResponse(
+  private async saveResponse(
     sessionId: string,
     questionId: string,
-    agreementValue: AgreementOptionKey
+    responseType: 'agreement' | 'importance' | 'importance_direct',
+    value: AgreementOptionKey | ImportanceOptionKey | ImportanceDirectOptionKey
   ) {
+    // Validate inputs
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
+      throw new Error('Session ID est requis et doit être une chaîne non vide')
+    }
+
+    if (!questionId || typeof questionId !== 'string' || questionId.trim().length === 0) {
+      throw new Error('Question ID est requis et doit être une chaîne non vide')
+    }
+
+    if (!value) {
+      throw new Error('Une valeur de réponse est requise')
+    }
+
     const response: UserResponseInsert = {
       session_id: sessionId,
       question_id: questionId,
-      response_type: 'agreement',
-      agreement_value: agreementValue,
+      response_type: responseType,
+      ...(responseType === 'agreement' && { agreement_value: value as AgreementOptionKey }),
+      ...(responseType === 'importance' && { importance_value: value as ImportanceOptionKey }),
+      ...(responseType === 'importance_direct' && { importance_direct_value: value as ImportanceDirectOptionKey }),
     }
 
     const { data, error } = await this.supabase
@@ -32,11 +48,22 @@ export class ResponsesAPI {
       .single()
 
     if (error) {
-      console.error('Erreur lors de la sauvegarde de la réponse d\'accord:', error)
+      console.error(`Erreur lors de la sauvegarde de la réponse ${responseType}:`, error)
       throw new Error(`Erreur lors de la sauvegarde: ${error.message}`)
     }
 
     return data
+  }
+
+  /**
+   * Sauvegarde une réponse utilisateur (accord/désaccord) pour une question
+   */
+  async saveAgreementResponse(
+    sessionId: string,
+    questionId: string,
+    agreementValue: AgreementOptionKey
+  ) {
+    return this.saveResponse(sessionId, questionId, 'agreement', agreementValue)
   }
 
   /**
@@ -47,28 +74,7 @@ export class ResponsesAPI {
     questionId: string,
     importanceValue: ImportanceOptionKey
   ) {
-    const response: UserResponseInsert = {
-      session_id: sessionId,
-      question_id: questionId,
-      response_type: 'importance',
-      importance_value: importanceValue,
-    }
-
-    const { data, error } = await this.supabase
-      .from('user_responses')
-      .upsert(response, { 
-        onConflict: 'session_id,question_id,response_type',
-        ignoreDuplicates: false 
-      })
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Erreur lors de la sauvegarde de la réponse d\'importance:', error)
-      throw new Error(`Erreur lors de la sauvegarde: ${error.message}`)
-    }
-
-    return data
+    return this.saveResponse(sessionId, questionId, 'importance', importanceValue)
   }
 
   /**
@@ -79,34 +85,18 @@ export class ResponsesAPI {
     questionId: string,
     importanceDirectValue: ImportanceDirectOptionKey
   ) {
-    const response: UserResponseInsert = {
-      session_id: sessionId,
-      question_id: questionId,
-      response_type: 'importance_direct',
-      importance_direct_value: importanceDirectValue,
-    }
-
-    const { data, error } = await this.supabase
-      .from('user_responses')
-      .upsert(response, { 
-        onConflict: 'session_id,question_id,response_type',
-        ignoreDuplicates: false 
-      })
-      .select()
-      .single()
-
-    if (error) {
-      console.error('Erreur lors de la sauvegarde de la réponse d\'importance directe:', error)
-      throw new Error(`Erreur lors de la sauvegarde: ${error.message}`)
-    }
-
-    return data
+    return this.saveResponse(sessionId, questionId, 'importance_direct', importanceDirectValue)
   }
 
   /**
    * Récupère toutes les réponses d'une session
    */
   async getSessionResponses(sessionId: string): Promise<UserResponse[]> {
+    // Validate sessionId
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
+      throw new Error('Session ID est requis et doit être une chaîne non vide')
+    }
+
     const { data, error } = await this.supabase
       .from('user_responses')
       .select('*')
@@ -173,6 +163,11 @@ export class ResponsesAPI {
    * Supprime toutes les réponses d'une session
    */
   async clearSessionResponses(sessionId: string) {
+    // Validate sessionId
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
+      throw new Error('Session ID est requis et doit être une chaîne non vide')
+    }
+
     const { error } = await this.supabase
       .from('user_responses')
       .delete()
