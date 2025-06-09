@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useProfile } from "@/hooks/useProfile"
 import {
   Dialog,
   DialogContent,
@@ -40,6 +41,9 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [confirmedDistrict, setConfirmedDistrict] = useState<string>("")
   const [districtInfo, setDistrictInfo] = useState<DistrictInfo | null>(null)
   const router = useRouter()
+  
+  // Intégration du hook useProfile pour sauvegarde centralisée
+  const { updateProfileFields, isSaving } = useProfile()
 
   // Debug: Log when modal state changes
   React.useEffect(() => {
@@ -90,13 +94,36 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     setIsLoading(false)
   }
 
-  const handleDistrictConfirmation = () => {
-    // Sauvegarder les données dans localStorage
-    localStorage.setItem("userPostalCode", formatPostalCode(postalCode))
-    localStorage.setItem("userDistrict", confirmedDistrict)
-    
-    onClose()
-    router.push("/questionnaire")
+  const handleDistrictConfirmation = async () => {
+    try {
+      // Sauvegarder dans le profil unifié (Supabase + localStorage)
+      await updateProfileFields({
+        postalCode: formatPostalCode(postalCode),
+        district: confirmedDistrict,
+        // Informations supplémentaires utiles pour le partage
+        districtName: confirmedDistrict,
+        location: {
+          postalCode: formatPostalCode(postalCode),
+          district: confirmedDistrict,
+          coordinates: districtInfo?.coordinates
+        }
+      })
+      
+      // Maintenir la compatibilité avec l'ancien système
+      localStorage.setItem("userPostalCode", formatPostalCode(postalCode))
+      localStorage.setItem("userDistrict", confirmedDistrict)
+      
+      onClose()
+      router.push("/questionnaire")
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde:', error)
+      // En cas d'erreur, utiliser le fallback localStorage
+      localStorage.setItem("userPostalCode", formatPostalCode(postalCode))
+      localStorage.setItem("userDistrict", confirmedDistrict)
+      
+      onClose()
+      router.push("/questionnaire")
+    }
   }
 
   const handleDistrictChange = (newDistrict: string) => {
@@ -257,8 +284,9 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 type="button"
                 onClick={handleDistrictConfirmation}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
-                disabled={!confirmedDistrict}
+                disabled={!confirmedDistrict || isSaving}
               >
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Confirmer et continuer
               </Button>
             </DialogFooter>

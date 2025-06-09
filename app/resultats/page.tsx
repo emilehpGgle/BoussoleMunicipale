@@ -36,6 +36,7 @@ import { toast } from "sonner"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
+import EnhancedShareCard from "@/components/enhanced-share-card"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -573,6 +574,16 @@ export default function ResultsPage() {
           <h3 className="text-lg font-semibold text-foreground mb-2 text-center sm:text-right">
             Partagez vos résultats
           </h3>
+          
+          {/* Nouvelle carte de partage moderne - affichée sur mobile */}
+          <div className="md:hidden mb-4">
+            <EnhancedShareCard 
+              topParties={topParties.map(p => ({ ...p, rank: topParties.indexOf(p) + 1 }))}
+              userPosition={results?.politicalPosition}
+              className="max-w-sm mx-auto"
+            />
+          </div>
+          
           <div className="flex justify-center sm:justify-end gap-2">
             <Button
               variant="outline"
@@ -635,6 +646,15 @@ export default function ResultsPage() {
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Nouvelle carte de partage moderne - affichée sur desktop */}
+      <div className="hidden md:block">
+        <EnhancedShareCard 
+          topParties={topParties.map(p => ({ ...p, rank: topParties.indexOf(p) + 1 }))}
+          userPosition={results?.politicalPosition}
+          className="max-w-md mx-auto mb-8"
+        />
       </div>
 
       <Card className="shadow-soft rounded-2xl">
