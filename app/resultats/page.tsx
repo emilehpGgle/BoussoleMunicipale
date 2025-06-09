@@ -442,10 +442,10 @@ export default function ResultsPage() {
           />
         </div>
         
-        {/* Cerf-volant - troisième tiers de la page */}
-        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-72 h-auto decorative-frame-right kite-animation">
+        {/* Famille - troisième tiers de la page */}
+        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-72 h-auto decorative-frame-right">
           <img 
-            src="/Image_parc_cerfvolant.png" 
+            src="/Image_famille.png" 
             alt="" 
             className="w-full h-full object-cover decorative-image-right"
           />

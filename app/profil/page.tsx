@@ -437,9 +437,9 @@ export default function ProfilePage() {
 
     const getRankColor = (rank: number) => {
       switch (rank) {
-        case 1: return "bg-primary text-primary-foreground"
-        case 2: return "bg-secondary text-secondary-foreground"  
-        case 3: return "bg-accent-foreground text-accent"
+        case 1: return "bg-amber-400 text-black font-bold"  // Or
+        case 2: return "bg-gray-300 text-gray-800 font-bold"  // Argent
+        case 3: return "bg-amber-600 text-white font-bold"  // Bronze
         default: return "bg-muted"
       }
     }
