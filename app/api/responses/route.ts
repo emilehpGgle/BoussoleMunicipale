@@ -26,9 +26,8 @@ async function validateSession(sessionToken: string) {
 // Types pour les requêtes (sessionToken retiré du body)
 interface SaveResponseRequest {
   questionId: string
-  responseType: 'agreement' | 'importance' | 'importance_direct'
+  responseType: 'agreement' | 'importance_direct'
   agreementValue?: AgreementOptionKey
-  importanceValue?: ImportanceOptionKey
   importanceDirectValue?: ImportanceDirectOptionKey
 }
 
@@ -45,7 +44,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: SaveResponseRequest = await request.json()
-    const { questionId, responseType, agreementValue, importanceValue, importanceDirectValue } = body
+    const { questionId, responseType, agreementValue, importanceDirectValue } = body
 
     // Validation des paramètres requis
     if (!questionId || !responseType) {
@@ -63,8 +62,6 @@ export async function POST(request: NextRequest) {
     let response
     if (responseType === 'agreement' && agreementValue) {
       response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue)
-    } else if (responseType === 'importance' && importanceValue) {
-      response = await responsesAPI.saveImportanceResponse(session.id, questionId, importanceValue)
     } else if (responseType === 'importance_direct' && importanceDirectValue) {
       response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue)
     } else {

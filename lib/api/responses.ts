@@ -13,8 +13,8 @@ export class ResponsesAPI {
   private async saveResponse(
     sessionId: string,
     questionId: string,
-    responseType: 'agreement' | 'importance' | 'importance_direct',
-    value: AgreementOptionKey | ImportanceOptionKey | ImportanceDirectOptionKey
+    responseType: 'agreement' | 'importance_direct',
+    value: AgreementOptionKey | ImportanceDirectOptionKey
   ) {
     // Validate inputs
     if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
@@ -34,7 +34,6 @@ export class ResponsesAPI {
       question_id: questionId,
       response_type: responseType,
       ...(responseType === 'agreement' && { agreement_value: value as AgreementOptionKey }),
-      ...(responseType === 'importance' && { importance_value: value as ImportanceOptionKey }),
       ...(responseType === 'importance_direct' && { importance_direct_value: value as ImportanceDirectOptionKey }),
     }
 
@@ -64,17 +63,6 @@ export class ResponsesAPI {
     agreementValue: AgreementOptionKey
   ) {
     return this.saveResponse(sessionId, questionId, 'agreement', agreementValue)
-  }
-
-  /**
-   * Sauvegarde une réponse d'importance (1-5) pour une question
-   */
-  async saveImportanceResponse(
-    sessionId: string,
-    questionId: string,
-    importanceValue: ImportanceOptionKey
-  ) {
-    return this.saveResponse(sessionId, questionId, 'importance', importanceValue)
   }
 
   /**
@@ -125,22 +113,6 @@ export class ResponsesAPI {
       })
 
     return userAnswers
-  }
-
-  /**
-   * Récupère les réponses d'importance pour une session (format compatible localStorage)
-   */
-  async getUserImportance(sessionId: string): Promise<Record<string, ImportanceOptionKey>> {
-    const responses = await this.getSessionResponses(sessionId)
-    const userImportance: Record<string, ImportanceOptionKey> = {}
-
-    responses
-      .filter(r => r.response_type === 'importance' && r.importance_value)
-      .forEach(response => {
-        userImportance[response.question_id] = response.importance_value as ImportanceOptionKey
-      })
-
-    return userImportance
   }
 
   /**

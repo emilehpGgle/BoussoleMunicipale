@@ -33,7 +33,6 @@ export default function QuestionnairePage() {
     
     // Actions pour sauvegarder
     saveAgreementResponse,
-    saveImportanceResponse,
     saveImportanceDirectResponse,
     
     // Utilitaires
@@ -41,7 +40,6 @@ export default function QuestionnairePage() {
     
     // Aliases pour compatibilité
     userAnswers,
-    userImportance,
     userImportanceDirectAnswers
   } = useUserResponses()
 
@@ -56,11 +54,6 @@ export default function QuestionnairePage() {
     try {
       // Sauvegarder via notre hook sécurisé
       await saveAgreementResponse(currentQuestion.id, optionKey)
-      
-      // Définir automatiquement l'importance à une valeur par défaut pour simplifier l'UX
-      if (!userImportance[currentQuestion.id]) {
-        await saveImportanceResponse(currentQuestion.id, 3)
-      }
       
       // Auto-progression avec animation "swoosh" (sauf dernière question)
       if (currentQuestionIndex < boussoleQuestions.length - 1) {

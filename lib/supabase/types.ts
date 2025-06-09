@@ -181,9 +181,8 @@ export interface Database {
           id: string
           session_id: string
           question_id: string
-          response_type: 'agreement' | 'importance' | 'importance_direct'
+          response_type: 'agreement' | 'importance_direct'
           agreement_value: AgreementOptionKey | null
-          importance_value: ImportanceOptionKey | null
           importance_direct_value: ImportanceDirectOptionKey | null
           created_at: string
           updated_at: string
@@ -192,9 +191,8 @@ export interface Database {
           id?: string
           session_id: string
           question_id: string
-          response_type: 'agreement' | 'importance' | 'importance_direct'
+          response_type: 'agreement' | 'importance_direct'
           agreement_value?: AgreementOptionKey | null
-          importance_value?: ImportanceOptionKey | null
           importance_direct_value?: ImportanceDirectOptionKey | null
           created_at?: string
           updated_at?: string
@@ -203,9 +201,8 @@ export interface Database {
           id?: string
           session_id?: string
           question_id?: string
-          response_type?: 'agreement' | 'importance' | 'importance_direct'
+          response_type?: 'agreement' | 'importance_direct'
           agreement_value?: AgreementOptionKey | null
-          importance_value?: ImportanceOptionKey | null
           importance_direct_value?: ImportanceDirectOptionKey | null
           created_at?: string
           updated_at?: string

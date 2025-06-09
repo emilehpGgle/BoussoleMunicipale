@@ -12,8 +12,11 @@ export class SessionsAPI {
    * Crée une nouvelle session utilisateur avec un token unique
    */
   async createSession(userAgent?: string): Promise<UserSession> {
+    console.log('🎯 [SESSIONS API] createSession - Début')
+    
     // Générer un token de session unique et sécurisé
     const sessionToken = this.generateSessionToken()
+    console.log('🔑 [SESSIONS API] Token généré:', sessionToken?.substring(0, 8) + '...')
     
     const session: UserSessionInsert = {
       session_token: sessionToken,
@@ -21,17 +24,53 @@ export class SessionsAPI {
       expires_at: this.getExpirationDate(),
     }
 
+    console.log('📦 [SESSIONS API] Session à insérer:', {
+      token: session.session_token?.substring(0, 8) + '...',
+      userAgent: session.user_agent,
+      expires: session.expires_at,
+      fullObject: session
+    })
+
+    console.log('🔗 [SESSIONS API] Test de connexion Supabase...')
+    
+    // Test de connexion simple
+    try {
+      const { data: testData, error: testError } = await this.supabase
+        .from('user_sessions')
+        .select('count')
+        .limit(1)
+      
+      console.log('✅ [SESSIONS API] Test de connexion:', { testData, testError })
+    } catch (testErr) {
+      console.error('❌ [SESSIONS API] Erreur de connexion:', testErr)
+    }
+
+    console.log('💾 [SESSIONS API] Insertion en base...')
     const { data, error } = await this.supabase
       .from('user_sessions')
       .insert(session)
       .select()
       .single()
 
+    console.log('📊 [SESSIONS API] Résultat de l\'insertion:', { data, error })
+
     if (error) {
-      console.error('Erreur lors de la création de la session:', error)
+      console.error('❌ [SESSIONS API] Erreur lors de la création de la session:', {
+        error,
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL?.substring(0, 30) + '...',
+        hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+      })
       throw new Error(`Erreur lors de la création de la session: ${error.message}`)
     }
 
+    console.log('✅ [SESSIONS API] Session créée avec succès!', {
+      id: data.id,
+      token: data.session_token?.substring(0, 8) + '...'
+    })
     return data
   }
 

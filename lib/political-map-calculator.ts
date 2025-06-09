@@ -1,4 +1,4 @@
-import { type AgreementOptionKey, type ImportanceOptionKey, boussoleQuestions, agreementLabels } from './boussole-data'
+import { type AgreementOptionKey, boussoleQuestions, agreementLabels } from './boussole-data'
 
 // Définition des axes politiques
 export interface PoliticalPosition {
@@ -52,16 +52,11 @@ export interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
 }
 
-export interface UserImportance {
-  [questionId: string]: ImportanceOptionKey | undefined
-}
-
 /**
  * Calcule la position politique sur un axe donné
  */
 function calculateAxisPosition(
   userAnswers: UserAnswers, 
-  userImportance: UserImportance,
   axisConfig: typeof axisConfiguration.economic | typeof axisConfiguration.social
 ): number {
   let totalWeightedScore = 0
@@ -69,7 +64,6 @@ function calculateAxisPosition(
 
   axisConfig.questions.forEach(({ id, weight }) => {
     const userAnswer = userAnswers[id]
-    const importance = userImportance[id] || 3 // Default importance = 3
 
     if (userAnswer && userAnswer !== 'IDK') {
       let score = agreementScoreValues[userAnswer]
@@ -93,7 +87,7 @@ function calculateAxisPosition(
         // Questions "libre marché" (q4, q14, q15) : être d'accord = libre marché (score positif)
       }
 
-      const questionWeight = weight * importance
+      const questionWeight = weight
       totalWeightedScore += score * questionWeight
       totalWeight += questionWeight
     }
@@ -110,11 +104,10 @@ function calculateAxisPosition(
  * Calcule la position politique complète d'un utilisateur
  */
 export function calculateUserPoliticalPosition(
-  userAnswers: UserAnswers,
-  userImportance: UserImportance
+  userAnswers: UserAnswers
 ): PoliticalPosition {
-  const x = calculateAxisPosition(userAnswers, userImportance, axisConfiguration.economic)
-  const y = calculateAxisPosition(userAnswers, userImportance, axisConfiguration.social)
+  const x = calculateAxisPosition(userAnswers, axisConfiguration.economic)
+  const y = calculateAxisPosition(userAnswers, axisConfiguration.social)
 
   return { x, y }
 }
@@ -321,20 +314,13 @@ export const partyAnswers: Record<string, UserAnswers> = {
 }
 
 /**
- * Importance par défaut pour tous les partis (toutes les questions sont importantes)
- */
-const defaultPartyImportance: UserImportance = Object.fromEntries(
-  boussoleQuestions.map(q => [q.id, 4]) // Importance élevée pour tous
-)
-
-/**
  * Calcule les positions des partis basées sur leurs réponses aux questions
  */
 export function calculatePartyPositions(): Record<string, PoliticalPosition> {
   const positions: Record<string, PoliticalPosition> = {}
   
   Object.entries(partyAnswers).forEach(([partyId, answers]) => {
-    positions[partyId] = calculateUserPoliticalPosition(answers, defaultPartyImportance)
+    positions[partyId] = calculateUserPoliticalPosition(answers)
   })
   
   return positions

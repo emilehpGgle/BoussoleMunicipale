@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from './useSession'
 import { useUserResponses } from './useUserResponses'
+import { ImportanceOptionKey } from '@/lib/supabase/types'
 
 // Types pour les résultats
 export interface PartyScore {
@@ -49,7 +50,6 @@ export function useResults() {
 
   // Constantes pour le calcul de complétion
   const TOTAL_QUESTIONS = 20
-  const RESPONSE_TYPES_COUNT = 2 // agreement + importance (importanceDirect est optionnel)
 
   // Charger les résultats depuis Supabase ou localStorage
   const loadResults = useCallback(async () => {
@@ -133,56 +133,75 @@ export function useResults() {
       }
 
       // Calcul correct du pourcentage de complétion
-      // Utilise uniquement les réponses agreement et importance pour éviter > 100%
-      const primaryResponsesCount = counts.agreement + counts.importance
-      const maxExpectedResponses = TOTAL_QUESTIONS * RESPONSE_TYPES_COUNT
+      // Utilise uniquement les réponses agreement et importanceDirect 
+      const primaryResponsesCount = counts.agreement + counts.importanceDirect
+      const maxExpectedResponses = TOTAL_QUESTIONS
       const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 
-      // TODO: Implémenter l'algorithme de calcul des résultats
-      // Pour l'instant, créons un exemple de résultats
-      const mockResults: CalculatedResults = {
-        partyScores: {
-          'quebec_forte_et_fiere': 85,
-          'transition_quebec': 78,
-          'alliance_citoyenne': 65,
-          'quebec_dabord': 58,
-          'equipe_priorite_quebec': 45,
-          'leadership_quebec': 32,
-          'respect_citoyens': 28
-        },
-        sortedParties: [
-          { partyId: 'quebec_forte_et_fiere', score: 85, percentage: 85, rank: 1 },
-          { partyId: 'transition_quebec', score: 78, percentage: 78, rank: 2 },
-          { partyId: 'alliance_citoyenne', score: 65, percentage: 65, rank: 3 },
-          { partyId: 'quebec_dabord', score: 58, percentage: 58, rank: 4 },
-          { partyId: 'equipe_priorite_quebec', score: 45, percentage: 45, rank: 5 },
-          { partyId: 'leadership_quebec', score: 32, percentage: 32, rank: 6 },
-          { partyId: 'respect_citoyens', score: 28, percentage: 28, rank: 7 }
-        ],
-        topMatches: [
-          { partyId: 'quebec_forte_et_fiere', score: 85, percentage: 85, rank: 1 },
-          { partyId: 'transition_quebec', score: 78, percentage: 78, rank: 2 },
-          { partyId: 'alliance_citoyenne', score: 65, percentage: 65, rank: 3 }
-        ],
-        politicalPosition: { x: -0.2, y: 0.4 }, // Centre-gauche légèrement
+      // NOUVEAU: Vrai algorithme de calcul basé sur les réponses utilisateur
+      const { calculateUserPoliticalPosition, partyAnswers, calculatePoliticalDistance } = await import('../lib/political-map-calculator')
+      
+      // Convertir les réponses au format attendu par l'algorithme
+      const userAnswers = responses.agreement
+      
+      // Calculer la position politique de l'utilisateur (sans importance)
+      const politicalPosition = calculateUserPoliticalPosition(userAnswers)
+      
+      // Calculer les positions des partis (sans importance)
+      const partyPositions: Record<string, { x: number; y: number }> = {}
+      Object.entries(partyAnswers).forEach(([partyId, answers]) => {
+        partyPositions[partyId] = calculateUserPoliticalPosition(answers)
+      })
+      
+      // Calculer les distances et scores de compatibilité
+      const partyScores: Record<string, number> = {}
+      const partyDistances: { partyId: string; distance: number; score: number }[] = []
+      
+      Object.entries(partyPositions).forEach(([partyId, partyPos]) => {
+        const distance = calculatePoliticalDistance(politicalPosition, partyPos)
+        // Convertir distance en pourcentage de compatibilité (100% = distance 0, 0% = distance max ~283)
+        const maxDistance = 283 // Distance maximale théorique sqrt(200^2 + 200^2)
+        const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
+        
+        partyScores[partyId] = compatibility
+        partyDistances.push({ partyId, distance, score: compatibility })
+      })
+      
+      // Trier les partis par score de compatibilité
+      partyDistances.sort((a, b) => b.score - a.score)
+      
+      const sortedParties = partyDistances.map((item, index) => ({
+        partyId: item.partyId,
+        score: item.score,
+        percentage: item.score,
+        rank: index + 1
+      }))
+      
+      const topMatches = sortedParties.slice(0, 3)
+
+      const calculatedResults: CalculatedResults = {
+        partyScores,
+        sortedParties,
+        topMatches,
+        politicalPosition: { x: politicalPosition.x, y: politicalPosition.y },
         completionPercentage,
         totalQuestions: TOTAL_QUESTIONS,
-        answeredQuestions: counts.agreement,
+        answeredQuestions: counts.total,
         calculatedAt: new Date().toISOString()
       }
 
       // Mettre à jour l'état local
       setState(prev => ({
         ...prev,
-        results: mockResults,
+        results: calculatedResults,
         isCalculating: false,
         hasResults: true
       }))
 
       // Sauvegarder dans localStorage
-      localStorage.setItem(RESULTS_STORAGE_KEY, JSON.stringify(mockResults))
+      localStorage.setItem(RESULTS_STORAGE_KEY, JSON.stringify(calculatedResults))
 
-      return mockResults
+      return calculatedResults
 
     } catch (error) {
       console.error('Erreur lors du calcul des résultats:', error)
@@ -193,7 +212,7 @@ export function useResults() {
       }))
       return null
     }
-  }, [getResponseCounts])
+  }, [getResponseCounts, responses])
 
   // Sauvegarder les résultats
   const saveResults = useCallback(async (resultsData: CalculatedResults) => {

@@ -1,17 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 
-// Utility function for standardized error handling
+// Utility function for standardized error handling avec logs détaillés
 const handleAPIError = (error: unknown, context: string) => {
-  console.error(`Erreur lors de ${context}:`, error)
+  console.error(`❌ [API SESSIONS] Erreur lors de ${context}:`, {
+    error,
+    message: error instanceof Error ? error.message : String(error),
+    stack: error instanceof Error ? error.stack : undefined,
+    timestamp: new Date().toISOString()
+  })
+  
   return NextResponse.json(
-    { error: 'Erreur interne du serveur' },
+    { 
+      error: 'Erreur interne du serveur',
+      details: error instanceof Error ? error.message : String(error),
+      context 
+    },
     { status: 500 }
   )
 }
 
 // POST - Créer une nouvelle session
 export async function POST(request: NextRequest) {
+  console.log('🚀 [API SESSIONS] POST /api/sessions - Début de la requête')
+  
   try {
     // Récupérer et valider l'user agent depuis les headers
     const rawUserAgent = request.headers.get('user-agent')
@@ -19,11 +31,32 @@ export async function POST(request: NextRequest) {
       ? rawUserAgent.slice(0, 255) // Truncate to reasonable length
       : undefined
 
+    console.log('📝 [API SESSIONS] User Agent traité:', { rawUserAgent, userAgent })
+
+    // Vérifier les variables d'environnement
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    
+    console.log('🔑 [API SESSIONS] Variables d\'environnement:', {
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseKey,
+      urlPrefix: supabaseUrl?.substring(0, 20) + '...',
+      keyPrefix: supabaseKey?.substring(0, 20) + '...'
+    })
+
     // Créer l'instance d'API
+    console.log('🏗️ [API SESSIONS] Création de l\'instance SessionsAPI...')
     const sessionsAPI = new SessionsAPI()
 
     // Créer une nouvelle session
+    console.log('💾 [API SESSIONS] Appel à createSession...')
     const session = await sessionsAPI.createSession(userAgent)
+
+    console.log('✅ [API SESSIONS] Session créée avec succès:', {
+      id: session.id,
+      token: session.session_token?.substring(0, 8) + '...',
+      expires: session.expires_at
+    })
 
     return NextResponse.json({ 
       success: true, 
@@ -36,6 +69,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
+    console.error('💥 [API SESSIONS] Erreur attrapée dans POST:', error)
     return handleAPIError(error, 'la création de la session')
   }
 }

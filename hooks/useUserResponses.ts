@@ -4,17 +4,15 @@ import { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } fr
 
 // Interface pour les réponses Supabase
 interface SupabaseResponseRow {
-  response_type: 'agreement' | 'importance' | 'importance_direct'
+  response_type: 'agreement' | 'importance_direct'
   question_id: string
   agreement_value?: AgreementOptionKey
-  importance_value?: ImportanceOptionKey
   importance_direct_value?: ImportanceDirectOptionKey
 }
 
-// Types pour les réponses
+// Types pour les réponses (simplifiés)
 interface UserResponses {
   agreement: Record<string, AgreementOptionKey>
-  importance: Record<string, ImportanceOptionKey>
   importanceDirect: Record<string, ImportanceDirectOptionKey>
 }
 
@@ -26,10 +24,9 @@ interface ResponsesState {
   lastSaved: Date | null
 }
 
-// Clés localStorage pour fallback
+// Clés localStorage pour fallback (importance supprimé)
 const STORAGE_KEYS = {
   agreement: 'userAnswers',
-  importance: 'userImportance', 
   importanceDirect: 'userImportanceDirectAnswers'
 }
 
@@ -39,7 +36,6 @@ export function useUserResponses() {
   const [state, setState] = useState<ResponsesState>({
     responses: {
       agreement: {},
-      importance: {},
       importanceDirect: {}
     },
     isLoading: true,
@@ -53,7 +49,6 @@ export function useUserResponses() {
     try {
       const localResponses: UserResponses = {
         agreement: JSON.parse(localStorage.getItem(STORAGE_KEYS.agreement) || '{}'),
-        importance: JSON.parse(localStorage.getItem(STORAGE_KEYS.importance) || '{}'),
         importanceDirect: JSON.parse(localStorage.getItem(STORAGE_KEYS.importanceDirect) || '{}')
       }
 
@@ -68,7 +63,6 @@ export function useUserResponses() {
         ...prev,
         responses: {
           agreement: {},
-          importance: {},
           importanceDirect: {}
         },
         isLoading: false
@@ -103,15 +97,12 @@ export function useUserResponses() {
           // Convertir les réponses au format attendu avec typage strict
           const formattedResponses: UserResponses = {
             agreement: {},
-            importance: {},
             importanceDirect: {}
           }
 
           data.responses.forEach((resp: SupabaseResponseRow) => {
             if (resp.response_type === 'agreement' && resp.agreement_value) {
               formattedResponses.agreement[resp.question_id] = resp.agreement_value
-            } else if (resp.response_type === 'importance' && resp.importance_value) {
-              formattedResponses.importance[resp.question_id] = resp.importance_value
             } else if (resp.response_type === 'importance_direct' && resp.importance_direct_value) {
               formattedResponses.importanceDirect[resp.question_id] = resp.importance_direct_value
             }
@@ -146,8 +137,8 @@ export function useUserResponses() {
   // Sauvegarder une réponse
   const saveResponse = useCallback(async (
     questionId: string,
-    responseType: 'agreement' | 'importance' | 'importance_direct',
-    value: AgreementOptionKey | ImportanceOptionKey | ImportanceDirectOptionKey
+    responseType: 'agreement' | 'importance_direct',
+    value: AgreementOptionKey | ImportanceDirectOptionKey
   ) => {
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
@@ -176,7 +167,6 @@ export function useUserResponses() {
           questionId: string
           responseType: string
           agreementValue?: AgreementOptionKey
-          importanceValue?: ImportanceOptionKey
           importanceDirectValue?: ImportanceDirectOptionKey
         } = {
           questionId,
@@ -185,8 +175,6 @@ export function useUserResponses() {
 
         if (responseType === 'agreement') {
           requestBody.agreementValue = value as AgreementOptionKey
-        } else if (responseType === 'importance') {
-          requestBody.importanceValue = value as ImportanceOptionKey
         } else if (responseType === 'importance_direct') {
           requestBody.importanceDirectValue = value as ImportanceDirectOptionKey
         }
@@ -231,10 +219,6 @@ export function useUserResponses() {
     return saveResponse(questionId, 'agreement', value)
   }, [saveResponse])
 
-  const saveImportanceResponse = useCallback((questionId: string, value: ImportanceOptionKey) => {
-    return saveResponse(questionId, 'importance', value)
-  }, [saveResponse])
-
   const saveImportanceDirectResponse = useCallback((questionId: string, value: ImportanceDirectOptionKey) => {
     return saveResponse(questionId, 'importance_direct', value)
   }, [saveResponse])
@@ -252,7 +236,6 @@ export function useUserResponses() {
         ...prev,
         responses: {
           agreement: {},
-          importance: {},
           importanceDirect: {}
         },
         lastSaved: null
@@ -268,18 +251,25 @@ export function useUserResponses() {
 
   // Obtenir le nombre de réponses par type
   const getResponseCounts = useCallback(() => {
+    // Compteur de questions uniques (corrigé)
+    const uniqueQuestions = new Set([
+      ...Object.keys(state.responses.agreement),
+      ...Object.keys(state.responses.importanceDirect)
+    ])
+
     return {
       agreement: Object.keys(state.responses.agreement).length,
-      importance: Object.keys(state.responses.importance).length,
       importanceDirect: Object.keys(state.responses.importanceDirect).length,
-      total: Object.keys(state.responses.agreement).length + 
-             Object.keys(state.responses.importance).length + 
-             Object.keys(state.responses.importanceDirect).length
+      // CORRIGÉ: Compter les questions uniques, pas la somme des types de réponses
+      total: uniqueQuestions.size,
+      // Nouveau: Compter le nombre total de réponses individuelles
+      totalResponses: Object.keys(state.responses.agreement).length + 
+                     Object.keys(state.responses.importanceDirect).length
     }
   }, [state.responses])
 
   // Vérifier si une question a été répondue
-  const hasResponse = useCallback((questionId: string, responseType?: 'agreement' | 'importance' | 'importance_direct') => {
+  const hasResponse = useCallback((questionId: string, responseType?: 'agreement' | 'importance_direct') => {
     if (responseType) {
       const key = responseType === 'importance_direct' ? 'importanceDirect' : responseType
       return questionId in state.responses[key]
@@ -287,7 +277,6 @@ export function useUserResponses() {
     
     // Vérifier tous les types
     return questionId in state.responses.agreement ||
-           questionId in state.responses.importance ||
            questionId in state.responses.importanceDirect
   }, [state.responses])
 
@@ -306,7 +295,6 @@ export function useUserResponses() {
 
     // Actions
     saveAgreementResponse,
-    saveImportanceResponse,
     saveImportanceDirectResponse,
     clearAllResponses,
     loadResponses,
@@ -317,7 +305,6 @@ export function useUserResponses() {
     
     // Getters pour compatibilité avec le code existant
     userAnswers: state.responses.agreement,
-    userImportance: state.responses.importance,
     userImportanceDirectAnswers: state.responses.importanceDirect
   }
 } 
