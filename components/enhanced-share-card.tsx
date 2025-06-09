@@ -44,7 +44,7 @@ export default function EnhancedShareCard({ topParties, userPosition, className 
   
   // Données formatées pour le partage
   const topMatch = topParties[0]
-  const district = profile.district || "Ville de Québec"
+  const district = profile?.district || "Ville de Québec"
   const shareData = {
     topParty: {
       name: topMatch?.party.shortName || topMatch?.party.name || "Parti",
@@ -67,8 +67,8 @@ export default function EnhancedShareCard({ topParties, userPosition, className 
           topParties: topParties.slice(0, 3),
           userPosition,
           userProfile: {
-            district: profile.district,
-            postalCode: profile.postalCode
+            district: profile?.district,
+            postalCode: profile?.postalCode
           },
           metadata: {
             createdAt: new Date().toISOString(),
@@ -80,6 +80,9 @@ export default function EnhancedShareCard({ topParties, userPosition, className 
       if (!response.ok) throw new Error('Erreur API')
       
       const { shareId } = await response.json()
+      if (!shareId) {
+        throw new Error('ShareId manquant dans la réponse API')
+      }
       const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
       return `${baseUrl}/partage/${shareId}`
     } catch (error) {
@@ -174,7 +177,7 @@ export default function EnhancedShareCard({ topParties, userPosition, className 
             score: p.score
           })),
           userProfile: {
-            district: profile.district || "Citoyen de Québec",
+            district: profile?.district || "Citoyen de Québec",
             name: "Citoyen" // Anonyme par défaut
           },
           format: 'png'
