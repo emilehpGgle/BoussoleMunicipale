@@ -3,6 +3,15 @@ import { SessionsAPI } from '@/lib/api/sessions'
 import { ResultsAPI } from '@/lib/api/results'
 import { ResponsesAPI } from '@/lib/api/responses'
 
+// Helper function to extract sessionToken from Authorization header
+function extractSessionToken(request: NextRequest): string | null {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null
+  }
+  return authHeader.substring(7) // Remove 'Bearer ' prefix
+}
+
 // Helper function for session validation
 const validateSession = async (sessionToken: string) => {
   const sessionsAPI = new SessionsAPI()
@@ -42,9 +51,8 @@ interface FormattedResultsData {
   }
 }
 
-// Types pour les requêtes
+// Types pour les requêtes (sessionToken retiré du body)
 interface SaveResultsRequest {
-  sessionToken: string
   resultsData: CalculatedResults
   politicalPosition?: { x: number; y: number }
 }
@@ -52,13 +60,22 @@ interface SaveResultsRequest {
 // POST - Calculer et sauvegarder les résultats
 export async function POST(request: NextRequest) {
   try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
     const body: SaveResultsRequest = await request.json()
-    const { sessionToken, resultsData, politicalPosition } = body
+    const { resultsData, politicalPosition } = body
 
     // Validation des paramètres requis
-    if (!sessionToken || !resultsData) {
+    if (!resultsData) {
       return NextResponse.json(
-        { error: 'sessionToken et resultsData sont requis' },
+        { error: 'resultsData est requis' },
         { status: 400 }
       )
     }
@@ -105,13 +122,12 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer les résultats d'une session
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const sessionToken = searchParams.get('sessionToken')
-
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
     if (!sessionToken) {
       return NextResponse.json(
-        { error: 'sessionToken est requis' },
-        { status: 400 }
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
       )
     }
 
@@ -147,12 +163,21 @@ export async function GET(request: NextRequest) {
 // PUT - Mettre à jour les résultats existants
 export async function PUT(request: NextRequest) {
   try {
-    const body: SaveResultsRequest = await request.json()
-    const { sessionToken, resultsData } = body
-
-    if (!sessionToken || !resultsData) {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
       return NextResponse.json(
-        { error: 'sessionToken et resultsData sont requis' },
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
+    const body: SaveResultsRequest = await request.json()
+    const { resultsData } = body
+
+    if (!resultsData) {
+      return NextResponse.json(
+        { error: 'resultsData est requis' },
         { status: 400 }
       )
     }

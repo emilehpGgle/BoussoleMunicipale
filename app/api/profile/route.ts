@@ -2,22 +2,39 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ProfilesAPI } from '@/lib/api/profiles'
 
-// Types pour les requêtes
+// Helper function to extract sessionToken from Authorization header
+function extractSessionToken(request: NextRequest): string | null {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null
+  }
+  return authHeader.substring(7) // Remove 'Bearer ' prefix
+}
+
+// Types pour les requêtes (sessionToken retiré du body)
 interface SaveProfileRequest {
-  sessionToken: string
   profileData: Record<string, any>
 }
 
 // POST - Sauvegarder un profil utilisateur
 export async function POST(request: NextRequest) {
   try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
     const body: SaveProfileRequest = await request.json()
-    const { sessionToken, profileData } = body
+    const { profileData } = body
 
     // Validation des paramètres requis
-    if (!sessionToken || !profileData) {
+    if (!profileData) {
       return NextResponse.json(
-        { error: 'sessionToken et profileData sont requis' },
+        { error: 'profileData est requis' },
         { status: 400 }
       )
     }
@@ -75,13 +92,12 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer le profil d'une session
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const sessionToken = searchParams.get('sessionToken')
-
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
     if (!sessionToken) {
       return NextResponse.json(
-        { error: 'sessionToken est requis' },
-        { status: 400 }
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
       )
     }
 
@@ -130,13 +146,22 @@ export async function GET(request: NextRequest) {
 // PUT - Mettre à jour un profil existant
 export async function PUT(request: NextRequest) {
   try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
     const body: SaveProfileRequest = await request.json()
-    const { sessionToken, profileData } = body
+    const { profileData } = body
 
     // Validation des paramètres requis
-    if (!sessionToken || !profileData) {
+    if (!profileData) {
       return NextResponse.json(
-        { error: 'sessionToken et profileData sont requis' },
+        { error: 'profileData est requis' },
         { status: 400 }
       )
     }

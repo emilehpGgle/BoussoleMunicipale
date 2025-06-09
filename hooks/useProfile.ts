@@ -40,30 +40,45 @@ export function useProfile() {
 
   // Charger le profil depuis Supabase ou localStorage
   const loadProfile = useCallback(async () => {
-    if (!sessionToken) return
-
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
-      if (isSessionValid) {
-        // Charger depuis Supabase
-        const response = await fetch(`/api/profile?sessionToken=${encodeURIComponent(sessionToken)}`)
+      // Si pas de session ou session invalide, charger depuis localStorage directement
+      if (!sessionToken || !isSessionValid) {
+        const localProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}')
+
+        setState(prev => ({
+          ...prev,
+          profile: localProfile,
+          isLoading: false,
+          hasProfile: Object.keys(localProfile).length > 0
+        }))
+        return
+      }
+
+      // Charger depuis Supabase avec header Authorization sécurisé
+      const response = await fetch('/api/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
         
-        if (response.ok) {
-          const data = await response.json()
+        if (data.success && data.profile) {
+          const profileData = data.profile.profile_data || {}
           
-          if (data.success && data.profile) {
-            const profileData = data.profile.profile_data || {}
-            
-            setState(prev => ({
-              ...prev,
-              profile: profileData,
-              isLoading: false,
-              hasProfile: Object.keys(profileData).length > 0,
-              lastSaved: new Date(data.profile.updated_at)
-            }))
-            return
-          }
+          setState(prev => ({
+            ...prev,
+            profile: profileData,
+            isLoading: false,
+            hasProfile: Object.keys(profileData).length > 0,
+            lastSaved: new Date(data.profile.updated_at)
+          }))
+          return
         }
       }
 
@@ -79,10 +94,16 @@ export function useProfile() {
 
     } catch (error) {
       console.error('Erreur lors du chargement du profil:', error)
+      
+      // En cas d'erreur, fallback vers localStorage
+      const localProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}')
+      
       setState(prev => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Erreur inconnue',
-        isLoading: false
+        profile: localProfile,
+        isLoading: false,
+        hasProfile: Object.keys(localProfile).length > 0,
+        error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
   }, [sessionToken, isSessionValid])
@@ -92,15 +113,17 @@ export function useProfile() {
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
 
+      // Calculer le profil mis à jour AVANT la mise à jour de l'état (fix bug state stale)
+      const updatedProfile = { ...state.profile, ...profileData }
+
       // Mettre à jour l'état local immédiatement
       setState(prev => ({
         ...prev,
-        profile: { ...prev.profile, ...profileData },
+        profile: updatedProfile,
         hasProfile: true
       }))
 
       // Sauvegarder dans localStorage comme fallback
-      const updatedProfile = { ...state.profile, ...profileData }
       localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedProfile))
 
       // Sauvegarder vers Supabase si possible
@@ -108,10 +131,10 @@ export function useProfile() {
         const response = await fetch('/api/profile', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${sessionToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sessionToken,
             profileData: updatedProfile
           })
         })

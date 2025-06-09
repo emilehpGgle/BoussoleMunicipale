@@ -2,6 +2,15 @@ import { useState, useEffect, useCallback } from 'react'
 import { useSession } from './useSession'
 import { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
 
+// Interface pour les réponses Supabase
+interface SupabaseResponseRow {
+  response_type: 'agreement' | 'importance' | 'importance_direct'
+  question_id: string
+  agreement_value?: AgreementOptionKey
+  importance_value?: ImportanceOptionKey
+  importance_direct_value?: ImportanceDirectOptionKey
+}
+
 // Types pour les réponses
 interface UserResponses {
   agreement: Record<string, AgreementOptionKey>
@@ -39,50 +48,9 @@ export function useUserResponses() {
     lastSaved: null
   })
 
-  // Charger les réponses depuis Supabase ou localStorage
-  const loadResponses = useCallback(async () => {
-    if (!sessionToken) return
-
+  // Fonction helper pour charger depuis localStorage
+  const loadFromLocalStorage = useCallback(() => {
     try {
-      setState(prev => ({ ...prev, isLoading: true, error: null }))
-
-      if (isSessionValid) {
-        // Charger depuis Supabase
-        const response = await fetch(`/api/responses?sessionToken=${encodeURIComponent(sessionToken)}`)
-        
-        if (response.ok) {
-          const data = await response.json()
-          
-          if (data.success) {
-            // Convertir les réponses au format attendu
-            const formattedResponses: UserResponses = {
-              agreement: {},
-              importance: {},
-              importanceDirect: {}
-            }
-
-            data.responses.forEach((resp: any) => {
-              if (resp.response_type === 'agreement' && resp.agreement_value) {
-                formattedResponses.agreement[resp.question_id] = resp.agreement_value
-              } else if (resp.response_type === 'importance' && resp.importance_value) {
-                formattedResponses.importance[resp.question_id] = resp.importance_value
-              } else if (resp.response_type === 'importance_direct' && resp.importance_direct_value) {
-                formattedResponses.importanceDirect[resp.question_id] = resp.importance_direct_value
-              }
-            })
-
-            setState(prev => ({
-              ...prev,
-              responses: formattedResponses,
-              isLoading: false,
-              lastSaved: new Date()
-            }))
-            return
-          }
-        }
-      }
-
-      // Fallback : charger depuis localStorage
       const localResponses: UserResponses = {
         agreement: JSON.parse(localStorage.getItem(STORAGE_KEYS.agreement) || '{}'),
         importance: JSON.parse(localStorage.getItem(STORAGE_KEYS.importance) || '{}'),
@@ -94,16 +62,86 @@ export function useUserResponses() {
         responses: localResponses,
         isLoading: false
       }))
-
     } catch (error) {
-      console.error('Erreur lors du chargement des réponses:', error)
+      console.error('Erreur localStorage:', error)
       setState(prev => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Erreur inconnue',
+        responses: {
+          agreement: {},
+          importance: {},
+          importanceDirect: {}
+        },
         isLoading: false
       }))
     }
-  }, [sessionToken, isSessionValid])
+  }, [])
+
+  // Charger les réponses depuis Supabase ou localStorage
+  const loadResponses = useCallback(async () => {
+    try {
+      setState(prev => ({ ...prev, isLoading: true, error: null }))
+
+      // Si pas de session ou session invalide, charger depuis localStorage directement
+      if (!sessionToken || !isSessionValid) {
+        loadFromLocalStorage()
+        return
+      }
+
+      // Charger depuis Supabase avec header Authorization sécurisé
+      const response = await fetch('/api/responses', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        
+        if (data.success && Array.isArray(data.responses)) {
+          // Convertir les réponses au format attendu avec typage strict
+          const formattedResponses: UserResponses = {
+            agreement: {},
+            importance: {},
+            importanceDirect: {}
+          }
+
+          data.responses.forEach((resp: SupabaseResponseRow) => {
+            if (resp.response_type === 'agreement' && resp.agreement_value) {
+              formattedResponses.agreement[resp.question_id] = resp.agreement_value
+            } else if (resp.response_type === 'importance' && resp.importance_value) {
+              formattedResponses.importance[resp.question_id] = resp.importance_value
+            } else if (resp.response_type === 'importance_direct' && resp.importance_direct_value) {
+              formattedResponses.importanceDirect[resp.question_id] = resp.importance_direct_value
+            }
+          })
+
+          setState(prev => ({
+            ...prev,
+            responses: formattedResponses,
+            isLoading: false,
+            lastSaved: new Date()
+          }))
+          return
+        }
+      }
+
+      // Fallback : charger depuis localStorage
+      loadFromLocalStorage()
+
+    } catch (error) {
+      console.error('Erreur lors du chargement des réponses:', error)
+      
+      // En cas d'erreur, fallback vers localStorage
+      loadFromLocalStorage()
+      
+      setState(prev => ({
+        ...prev,
+        error: error instanceof Error ? error.message : 'Erreur inconnue'
+      }))
+    }
+  }, [sessionToken, isSessionValid, loadFromLocalStorage])
 
   // Sauvegarder une réponse
   const saveResponse = useCallback(async (
@@ -134,23 +172,29 @@ export function useUserResponses() {
 
       // Sauvegarder vers Supabase si possible
       if (sessionToken && isSessionValid) {
-        const requestBody: any = {
-          sessionToken,
+        const requestBody: {
+          questionId: string
+          responseType: string
+          agreementValue?: AgreementOptionKey
+          importanceValue?: ImportanceOptionKey
+          importanceDirectValue?: ImportanceDirectOptionKey
+        } = {
           questionId,
           responseType
         }
 
         if (responseType === 'agreement') {
-          requestBody.agreementValue = value
+          requestBody.agreementValue = value as AgreementOptionKey
         } else if (responseType === 'importance') {
-          requestBody.importanceValue = value
+          requestBody.importanceValue = value as ImportanceOptionKey
         } else if (responseType === 'importance_direct') {
-          requestBody.importanceDirectValue = value
+          requestBody.importanceDirectValue = value as ImportanceDirectOptionKey
         }
 
         const response = await fetch('/api/responses', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${sessionToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(requestBody)

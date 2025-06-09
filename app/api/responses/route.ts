@@ -4,6 +4,15 @@ import { SessionsAPI } from '@/lib/api/sessions'
 import { ResponsesAPI } from '@/lib/api/responses'
 import { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
 
+// Helper function to extract sessionToken from Authorization header
+function extractSessionToken(request: NextRequest): string | null {
+  const authHeader = request.headers.get('authorization')
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null
+  }
+  return authHeader.substring(7) // Remove 'Bearer ' prefix
+}
+
 // Helper function for session validation
 async function validateSession(sessionToken: string) {
   const sessionsAPI = new SessionsAPI()
@@ -14,9 +23,8 @@ async function validateSession(sessionToken: string) {
   return { session, sessionsAPI }
 }
 
-// Types pour les requêtes
+// Types pour les requêtes (sessionToken retiré du body)
 interface SaveResponseRequest {
-  sessionToken: string
   questionId: string
   responseType: 'agreement' | 'importance' | 'importance_direct'
   agreementValue?: AgreementOptionKey
@@ -24,20 +32,25 @@ interface SaveResponseRequest {
   importanceDirectValue?: ImportanceDirectOptionKey
 }
 
-interface GetResponsesRequest {
-  sessionToken: string
-}
-
 // POST - Sauvegarder une réponse
 export async function POST(request: NextRequest) {
   try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
     const body: SaveResponseRequest = await request.json()
-    const { sessionToken, questionId, responseType, agreementValue, importanceValue, importanceDirectValue } = body
+    const { questionId, responseType, agreementValue, importanceValue, importanceDirectValue } = body
 
     // Validation des paramètres requis
-    if (!sessionToken || !questionId || !responseType) {
+    if (!questionId || !responseType) {
       return NextResponse.json(
-        { error: 'sessionToken, questionId et responseType sont requis' },
+        { error: 'questionId et responseType sont requis' },
         { status: 400 }
       )
     }
@@ -88,13 +101,12 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer toutes les réponses d'une session
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const sessionToken = searchParams.get('sessionToken')
-
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
     if (!sessionToken) {
       return NextResponse.json(
-        { error: 'sessionToken est requis' },
-        { status: 400 }
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
       )
     }
 
@@ -132,14 +144,22 @@ export async function GET(request: NextRequest) {
 // DELETE - Supprimer une réponse spécifique
 export async function DELETE(request: NextRequest) {
   try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
     const { searchParams } = new URL(request.url)
-    const sessionToken = searchParams.get('sessionToken')
     const questionId = searchParams.get('questionId')
     const responseType = searchParams.get('responseType')
 
-    if (!sessionToken || !questionId || !responseType) {
+    if (!questionId || !responseType) {
       return NextResponse.json(
-        { error: 'sessionToken, questionId et responseType sont requis' },
+        { error: 'questionId et responseType sont requis' },
         { status: 400 }
       )
     }

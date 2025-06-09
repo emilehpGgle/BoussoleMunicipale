@@ -47,32 +47,51 @@ export function useResults() {
     hasResults: false
   })
 
+  // Constantes pour le calcul de complétion
+  const TOTAL_QUESTIONS = 20
+  const RESPONSE_TYPES_COUNT = 2 // agreement + importance (importanceDirect est optionnel)
+
   // Charger les résultats depuis Supabase ou localStorage
   const loadResults = useCallback(async () => {
-    if (!sessionToken) return
-
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
-      if (isSessionValid) {
-        // Charger depuis Supabase
-        const response = await fetch(`/api/results?sessionToken=${encodeURIComponent(sessionToken)}`)
+      // Si pas de session ou session invalide, charger depuis localStorage directement
+      if (!sessionToken || !isSessionValid) {
+        const localResults = JSON.parse(localStorage.getItem(RESULTS_STORAGE_KEY) || 'null')
+
+        setState(prev => ({
+          ...prev,
+          results: localResults,
+          isLoading: false,
+          hasResults: !!localResults
+        }))
+        return
+      }
+
+      // Charger depuis Supabase avec header Authorization sécurisé
+      const response = await fetch('/api/results', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
         
-        if (response.ok) {
-          const data = await response.json()
+        if (data.success && data.results) {
+          const resultsData = data.results.results_data?.calculatedResults || null
           
-          if (data.success && data.results) {
-            const resultsData = data.results.results_data?.calculatedResults || null
-            
-            setState(prev => ({
-              ...prev,
-              results: resultsData,
-              isLoading: false,
-              hasResults: !!resultsData,
-              lastSaved: new Date(data.results.updated_at)
-            }))
-            return
-          }
+          setState(prev => ({
+            ...prev,
+            results: resultsData,
+            isLoading: false,
+            hasResults: !!resultsData,
+            lastSaved: new Date(data.results.updated_at)
+          }))
+          return
         }
       }
 
@@ -88,10 +107,16 @@ export function useResults() {
 
     } catch (error) {
       console.error('Erreur lors du chargement des résultats:', error)
+      
+      // En cas d'erreur, fallback vers localStorage
+      const localResults = JSON.parse(localStorage.getItem(RESULTS_STORAGE_KEY) || 'null')
+      
       setState(prev => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Erreur inconnue',
-        isLoading: false
+        results: localResults,
+        isLoading: false,
+        hasResults: !!localResults,
+        error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
   }, [sessionToken, isSessionValid])
@@ -106,6 +131,12 @@ export function useResults() {
       if (counts.total === 0) {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
+
+      // Calcul correct du pourcentage de complétion
+      // Utilise uniquement les réponses agreement et importance pour éviter > 100%
+      const primaryResponsesCount = counts.agreement + counts.importance
+      const maxExpectedResponses = TOTAL_QUESTIONS * RESPONSE_TYPES_COUNT
+      const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 
       // TODO: Implémenter l'algorithme de calcul des résultats
       // Pour l'instant, créons un exemple de résultats
@@ -134,8 +165,8 @@ export function useResults() {
           { partyId: 'alliance_citoyenne', score: 65, percentage: 65, rank: 3 }
         ],
         politicalPosition: { x: -0.2, y: 0.4 }, // Centre-gauche légèrement
-        completionPercentage: Math.round((counts.total / 40) * 100), // 40 = 20 questions × 2 types de réponses
-        totalQuestions: 20,
+        completionPercentage,
+        totalQuestions: TOTAL_QUESTIONS,
         answeredQuestions: counts.agreement,
         calculatedAt: new Date().toISOString()
       }
@@ -184,10 +215,10 @@ export function useResults() {
         const response = await fetch('/api/results', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${sessionToken}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            sessionToken,
             resultsData,
             politicalPosition: resultsData.politicalPosition
           })
