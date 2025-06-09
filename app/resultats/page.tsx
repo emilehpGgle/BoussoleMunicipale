@@ -20,6 +20,7 @@ import {
   type Question,
   type AgreementOptionKey,
   type ImportanceOptionKey,
+  type ImportanceDirectOptionKey,
   type PartyPosition,
 } from "@/lib/boussole-data"
 import {
@@ -27,7 +28,6 @@ import {
   calculateUserPoliticalPosition,
   partyPositions,
   type UserAnswers as PoliticalUserAnswers,
-  type UserImportance as PoliticalUserImportance,
 } from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import PoliticalCompassChart from "@/components/political-compass-chart"
@@ -42,7 +42,7 @@ interface UserAnswers {
 }
 
 interface UserImportance {
-  [questionId: string]: ImportanceOptionKey | undefined
+  [questionId: string]: ImportanceDirectOptionKey | undefined
 }
 
 interface CalculatedPartyScore {
@@ -53,7 +53,7 @@ interface CalculatedPartyScore {
   details: Array<{
     question: Question
     userAnswer?: AgreementOptionKey
-    userImportance?: ImportanceOptionKey
+    userImportance?: ImportanceDirectOptionKey
     partyPosition?: PartyPosition
     matchValue: number
     weightedScore: number
@@ -70,6 +70,19 @@ const agreementScoreValues: Record<AgreementOptionKey, number> = {
 }
 const MAX_AGREEMENT_MAGNITUDE = 2
 
+// Fonction de conversion des valeurs d'importance directe en valeurs numériques
+const convertImportanceDirectToNumeric = (importance: ImportanceDirectOptionKey): number => {
+  switch (importance) {
+    case "TI": return 5  // Très important
+    case "AI": return 4  // Assez important  
+    case "NI": return 3  // Neutre
+    case "PI": return 2  // Peu important
+    case "PTI": return 1 // Pas du tout important
+    case "IDK": return 3 // Neutre par défaut
+    default: return 3
+  }
+}
+
 export default function ResultsPage() {
   const [email, setEmail] = useState("")
   const [consent, setConsent] = useState(false)
@@ -78,7 +91,7 @@ export default function ResultsPage() {
   const { sessionToken } = useSession()
   const { 
     userAnswers, 
-    userImportance, 
+    userImportanceDirectAnswers: userImportance, 
     isLoading: responsesLoading,
     error: responsesError 
   } = useUserResponses()
@@ -110,7 +123,7 @@ export default function ResultsPage() {
         const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
           const userAnswer = userAnswers[question.id]
           const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-          const currentImportance = userImportance[question.id] || 3
+          const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
           let questionMatchValue = 0
           let weightedQuestionScore = 0
 
@@ -125,7 +138,7 @@ export default function ResultsPage() {
           return {
             question,
             userAnswer,
-            userImportance: currentImportance,
+            userImportance: userImportance[question.id],
             partyPosition: partyPositionEntry,
             matchValue: questionMatchValue,
             weightedScore: weightedQuestionScore,
@@ -143,7 +156,7 @@ export default function ResultsPage() {
     }
 
     // Sinon, calculer localement (logique existante)
-    const userPosition = calculateUserPoliticalPosition(userAnswers, userImportance)
+    const userPosition = calculateUserPoliticalPosition(userAnswers)
 
     const newCalculatedScores = partiesData.map((party) => {
       // Calculer la distance politique pour cette approche plus sophistiquée
@@ -172,7 +185,7 @@ export default function ResultsPage() {
         boussoleQuestions.forEach((question) => {
           const userAnswer = userAnswers[question.id]
           const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-          const currentImportance = userImportance[question.id] || 3
+          const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
           let questionMatchValue = 0
           let weightedQuestionScore = 0
 
@@ -197,7 +210,7 @@ export default function ResultsPage() {
       const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
         const userAnswer = userAnswers[question.id]
         const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-        const currentImportance = userImportance[question.id] || 3
+        const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
         let questionMatchValue = 0
         let weightedQuestionScore = 0
 
@@ -213,7 +226,7 @@ export default function ResultsPage() {
         return {
           question,
           userAnswer,
-          userImportance: currentImportance,
+          userImportance: userImportance[question.id],
           partyPosition: partyPositionEntry,
           matchValue: questionMatchValue,
           weightedScore: weightedQuestionScore,
@@ -251,7 +264,7 @@ export default function ResultsPage() {
       id: shareId,
       userName: "Citoyen engagé", // Peut être personnalisé
       topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
-      userPosition: calculatedScores.length > 0 ? calculateUserPoliticalPosition(userAnswers, userImportance) : undefined,
+      userPosition: calculatedScores.length > 0 ? calculateUserPoliticalPosition(userAnswers) : undefined,
       timestamp: Date.now()
     }
     
