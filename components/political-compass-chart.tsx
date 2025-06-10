@@ -2,9 +2,8 @@
 
 import React, { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Info, RefreshCw } from "lucide-react"
+import { Info } from "lucide-react"
 import { 
   type PoliticalPosition, 
   calculateUserPoliticalPosition, 
@@ -12,25 +11,23 @@ import {
   calculatePoliticalDistance,
   partyPositions,
   axisConfiguration,
-  type UserAnswers,
-  type UserImportance
+  type UserAnswers
 } from '@/lib/political-map-calculator'
 import { partiesData } from '@/lib/boussole-data'
 import Image from 'next/image'
 
 interface PoliticalCompassChartProps {
   userAnswers: UserAnswers
-  userImportance: UserImportance
+  userImportance?: Record<string, any> // Paramètre optionnel pour compatibilité, mais non utilisé
 }
 
-export default function PoliticalCompassChart({ userAnswers, userImportance }: PoliticalCompassChartProps) {
-  const [selectedAxis, setSelectedAxis] = useState<'default' | 'alternative'>('default')
+export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassChartProps) {
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
 
   // Calcul de la position de l'utilisateur
   const userPosition = useMemo(() => {
-    return calculateUserPoliticalPosition(userAnswers, userImportance)
-  }, [userAnswers, userImportance])
+    return calculateUserPoliticalPosition(userAnswers)
+  }, [userAnswers])
 
   // Description de la position politique
   const positionDescription = useMemo(() => {
@@ -65,25 +62,14 @@ export default function PoliticalCompassChart({ userAnswers, userImportance }: P
   return (
     <Card className="shadow-soft rounded-2xl">
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <span>Votre position dans le paysage politique</span>
-              <Info className="h-5 w-5 text-muted-foreground" />
-            </CardTitle>
-            <CardDescription>
-              Positionnement basé sur vos réponses aux enjeux municipaux
-            </CardDescription>
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => setSelectedAxis(selectedAxis === 'default' ? 'alternative' : 'default')}
-            className="hidden md:flex items-center gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            Changer d'axes
-          </Button>
+        <div>
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <span>Votre position dans le paysage politique</span>
+            <Info className="h-5 w-5 text-muted-foreground" />
+          </CardTitle>
+          <CardDescription>
+            Positionnement basé sur vos réponses aux enjeux municipaux
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="space-y-6">

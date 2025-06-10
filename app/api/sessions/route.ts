@@ -22,8 +22,6 @@ const handleAPIError = (error: unknown, context: string) => {
 
 // POST - Créer une nouvelle session
 export async function POST(request: NextRequest) {
-  console.log('🚀 [API SESSIONS] POST /api/sessions - Début de la requête')
-  
   try {
     // Récupérer et valider l'user agent depuis les headers
     const rawUserAgent = request.headers.get('user-agent')
@@ -31,32 +29,21 @@ export async function POST(request: NextRequest) {
       ? rawUserAgent.slice(0, 255) // Truncate to reasonable length
       : undefined
 
-    console.log('📝 [API SESSIONS] User Agent traité:', { rawUserAgent, userAgent })
-
     // Vérifier les variables d'environnement
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     
-    console.log('🔑 [API SESSIONS] Variables d\'environnement:', {
-      hasUrl: !!supabaseUrl,
-      hasKey: !!supabaseKey,
-      urlPrefix: supabaseUrl?.substring(0, 20) + '...',
-      keyPrefix: supabaseKey?.substring(0, 20) + '...'
-    })
+    if (!supabaseUrl || !supabaseKey) {
+      console.error('[API SESSIONS] Variables d\'environnement Supabase manquantes')
+      return NextResponse.json(
+        { success: false, message: 'Configuration serveur invalide' },
+        { status: 500 }
+      )
+    }
 
-    // Créer l'instance d'API
-    console.log('🏗️ [API SESSIONS] Création de l\'instance SessionsAPI...')
+    // Créer l'instance d'API et une nouvelle session
     const sessionsAPI = new SessionsAPI()
-
-    // Créer une nouvelle session
-    console.log('💾 [API SESSIONS] Appel à createSession...')
     const session = await sessionsAPI.createSession(userAgent)
-
-    console.log('✅ [API SESSIONS] Session créée avec succès:', {
-      id: session.id,
-      token: session.session_token?.substring(0, 8) + '...',
-      expires: session.expires_at
-    })
 
     return NextResponse.json({ 
       success: true, 

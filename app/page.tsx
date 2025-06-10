@@ -7,17 +7,11 @@ import Link from "next/link"
 export default function HomePage() {
   // Fonction pour déclencher l'ouverture du modal depuis le header
   const openModal = () => {
-    console.log('🔥 [HERO] Bouton cliqué - Début de openModal()')
-    console.log('🔥 [HERO] window object:', typeof window)
-    console.log('🔥 [HERO] dispatchEvent function:', typeof window.dispatchEvent)
-    
     try {
       const event = new CustomEvent('openPostalCodeModal')
-      console.log('🔥 [HERO] Event créé:', event)
       window.dispatchEvent(event)
-      console.log('🔥 [HERO] Event émis avec succès')
     } catch (error) {
-      console.error('🔥 [HERO] Erreur lors de l\'émission de l\'événement:', error)
+      console.error('Erreur lors de l\'émission de l\'événement:', error)
     }
   }
 
@@ -25,7 +19,7 @@ export default function HomePage() {
     <>
       {/* Section Hero */}
       <section className="w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50 overflow-hidden">
-        <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
+        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
@@ -81,7 +75,7 @@ export default function HomePage() {
 
       {/* Section d'explication */}
       <section id="comment-ca-marche" className="w-full py-16 md:py-24 bg-background">
-        <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
+        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <h2 className="text-center mb-12 text-foreground animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             Comment ça fonctionne ?
           </h2>
@@ -137,13 +131,13 @@ export default function HomePage() {
 
       {/* Section éducative */}
       <section className="w-full py-16 md:py-20 bg-gradient-to-br from-primary/5 to-teal-special/5">
-        <div className="container px-4 md:px-6 max-w-screen-lg mx-auto text-center">
+        <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div
             className="animate-slideInUp"
             style={{ animationDelay: "0.2s" }}
           >
             <h2 className="mb-6 text-foreground">Pourquoi les élections municipales sont-elles importantes ?</h2>
-            <p className="text-lg text-muted-foreground mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
               Votre ville influence directement votre quotidien : transports, parcs, taxes, services de proximité. 
               Pourtant, seulement <span className="font-semibold text-primary">40% des citoyens</span> votent aux municipales. 
               Votre voix compte encore plus !
@@ -183,7 +177,7 @@ export default function HomePage() {
 
       {/* Section de confidentialité avec image */}
       <section className="w-full py-16 md:py-24 bg-muted/30">
-        <div className="container px-4 md:px-6 max-w-screen-xl mx-auto">
+        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             {/* Contenu textuel */}
             <div
@@ -222,10 +216,10 @@ export default function HomePage() {
 
       {/* Section Call-to-Action */}
       <section className="w-full py-16 md:py-20 bg-gradient-to-r from-primary to-teal-special">
-        <div className="container px-4 md:px-6 max-w-screen-lg mx-auto text-center">
+        <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
-            <p className="text-lg text-primary-foreground/90 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <Button

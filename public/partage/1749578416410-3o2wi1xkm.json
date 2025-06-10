@@ -1,0 +1,372 @@
+{
+  "id": "1749578416410-3o2wi1xkm",
+  "userName": "Citoyen engagé",
+  "topParties": [
+    {
+      "party": {
+        "id": "respect_citoyens",
+        "name": "Respect citoyens",
+        "shortName": "RC",
+        "leader": "Stéphane Lachance",
+        "logoUrl": "/logos/respect-citoyens-new.png",
+        "websiteUrl": "https://www.respectcitoyens.org/",
+        "orientation": "Droite conservatrice",
+        "strengths": [
+          "Réduction des taxes",
+          "Développement économique"
+        ],
+        "reserves": [
+          "Projets environnementaux",
+          "Interventions municipales"
+        ],
+        "mainIdeasSummary": "Orientation générale : Droite conservatrice.\nForces : Réduction des taxes, Développement économique.\nRéserves : Projets environnementaux, Interventions municipales.",
+        "positions": [
+          {
+            "questionId": "q1_tramway",
+            "position": "FD",
+            "source": "Nom et orientation générale du parti",
+            "note": "Critique les grands projets coûteux"
+          },
+          {
+            "questionId": "q2_pistes_cyclables",
+            "position": "PD",
+            "source": "Orientation générale",
+            "note": "Semble privilégier les infrastructures pour automobiles"
+          },
+          {
+            "questionId": "q3_troisieme_lien",
+            "position": "FA",
+            "source": "Orientation générale pro-automobile",
+            "note": "Considère ce projet comme prioritaire"
+          },
+          {
+            "questionId": "q4_secteur_prive_transport",
+            "position": "FA",
+            "source": "Orientation générale",
+            "note": "Favorable à la privatisation de certains services"
+          },
+          {
+            "questionId": "q5_quotas_logements_abordables",
+            "position": "FD",
+            "source": "Orientation générale pro-marché",
+            "note": "Contre les interventions réglementaires dans le marché immobilier"
+          },
+          {
+            "questionId": "q6_densification_quartiers",
+            "position": "FD"
+          },
+          {
+            "questionId": "q7_restrictions_airbnb",
+            "position": "FD"
+          },
+          {
+            "questionId": "q8_assouplissement_zonage",
+            "position": "FA"
+          },
+          {
+            "questionId": "q9_protection_espaces_verts",
+            "position": "FD"
+          },
+          {
+            "questionId": "q10_transition_carboneutre",
+            "position": "FD"
+          },
+          {
+            "questionId": "q11_reduction_dechets",
+            "position": "FD"
+          },
+          {
+            "questionId": "q12_augmentation_taxes",
+            "position": "FD"
+          },
+          {
+            "questionId": "q13_pouvoir_conseils_quartier",
+            "position": "FD"
+          },
+          {
+            "questionId": "q14_reduction_dette",
+            "position": "FA"
+          },
+          {
+            "questionId": "q15_avantages_fiscaux_entreprises",
+            "position": "FA"
+          },
+          {
+            "questionId": "q16_limitation_touristes",
+            "position": "FD"
+          },
+          {
+            "questionId": "q17_soutien_organismes_communautaires",
+            "position": "PD"
+          },
+          {
+            "questionId": "q18_augmentation_effectifs_policiers",
+            "position": "FA"
+          },
+          {
+            "questionId": "q19_investissement_infrastructures_culturelles_sportives",
+            "position": "PD"
+          },
+          {
+            "questionId": "q20_protection_patrimoine",
+            "position": "PD"
+          }
+        ]
+      },
+      "score": 83
+    },
+    {
+      "party": {
+        "id": "quebec_dabord",
+        "name": "Québec d'abord",
+        "shortName": "QD",
+        "leader": "Claude Villeneuve",
+        "logoUrl": "/logos/quebec-dabord-new.png",
+        "websiteUrl": "https://quebecdabord.com/",
+        "orientation": "Centre, pragmatique",
+        "strengths": [
+          "Équilibre entre services et fiscalité"
+        ],
+        "reserves": [
+          "Grands projets sans bénéfices directs pour les citoyens"
+        ],
+        "mainIdeasSummary": "Orientation générale : Centre, pragmatique.\nForces : Équilibre entre services et fiscalité.\nRéserves : Grands projets sans bénéfices directs pour les citoyens.",
+        "positions": [
+          {
+            "questionId": "q1_tramway",
+            "position": "N",
+            "source": "Discours d'annonce de candidature",
+            "note": "Je suis ce gars-là qui n'est pas capable d'avoir des cours de piscines pour ses deux filles. Mais qui se fait dire que sa rue va être transformée en sens unique pour faire passer une piste cyclable pour favoriser sa santé."
+          },
+          {
+            "questionId": "q2_pistes_cyclables",
+            "position": "PD",
+            "source": "Discours d'annonce de candidature",
+            "note": "Je suis ce gars-là qui ne déteste pas les pistes cyclables, mais qui est stressé quand il roule sur le chemin Ste-Foy, parce que j'ai peur de blesser un cycliste qui roule sur le corridor vélo mal foutu qui a été mis là."
+          },
+          {
+            "questionId": "q3_troisieme_lien",
+            "position": "PA",
+            "source": "Orientation générale sur la mobilité",
+            "note": "Semble favorable à améliorer les connexions routières"
+          },
+          {
+            "questionId": "q4_secteur_prive_transport",
+            "position": "PA",
+            "source": "Orientation générale pro-entreprise",
+            "note": "Notre ville a besoin d'un maire qui, à chaque étape, à chaque fois, va se demander comment il peut rendre Québec plus simple."
+          },
+          {
+            "questionId": "q5_quotas_logements_abordables",
+            "position": "N",
+            "source": "Peu d'informations spécifiques disponibles",
+            "note": "Semble préoccupé par l'accessibilité au logement sans position claire sur les quotas"
+          },
+          {
+            "questionId": "q6_densification_quartiers",
+            "position": "N"
+          },
+          {
+            "questionId": "q7_restrictions_airbnb",
+            "position": "PA"
+          },
+          {
+            "questionId": "q8_assouplissement_zonage",
+            "position": "PA"
+          },
+          {
+            "questionId": "q9_protection_espaces_verts",
+            "position": "PA"
+          },
+          {
+            "questionId": "q10_transition_carboneutre",
+            "position": "N"
+          },
+          {
+            "questionId": "q11_reduction_dechets",
+            "position": "N"
+          },
+          {
+            "questionId": "q12_augmentation_taxes",
+            "position": "PD"
+          },
+          {
+            "questionId": "q13_pouvoir_conseils_quartier",
+            "position": "PA"
+          },
+          {
+            "questionId": "q14_reduction_dette",
+            "position": "PA"
+          },
+          {
+            "questionId": "q15_avantages_fiscaux_entreprises",
+            "position": "PA"
+          },
+          {
+            "questionId": "q16_limitation_touristes",
+            "position": "PD"
+          },
+          {
+            "questionId": "q17_soutien_organismes_communautaires",
+            "position": "PA"
+          },
+          {
+            "questionId": "q18_augmentation_effectifs_policiers",
+            "position": "PA"
+          },
+          {
+            "questionId": "q19_investissement_infrastructures_culturelles_sportives",
+            "position": "PA"
+          },
+          {
+            "questionId": "q20_protection_patrimoine",
+            "position": "PA"
+          }
+        ]
+      },
+      "score": 68
+    },
+    {
+      "party": {
+        "id": "leadership_quebec",
+        "name": "Leadership Québec - Équipe Sam Hamad",
+        "shortName": "LQ",
+        "leader": "André Simard",
+        "logoUrl": "/logos/leadership-quebec-new.png",
+        "websiteUrl": "https://leadershipquebec.ca/",
+        "orientation": "Droite économique, pro-entreprise",
+        "strengths": [
+          "Développement économique",
+          "Réduction de la dette"
+        ],
+        "reserves": [
+          "Interventions réglementaires",
+          "Dépenses sociales"
+        ],
+        "mainIdeasSummary": "Orientation générale : Droite économique, pro-entreprise.\nForces : Développement économique, Réduction de la dette.\nRéserves : Interventions réglementaires, Dépenses sociales.",
+        "positions": [
+          {
+            "questionId": "q1_tramway",
+            "position": "PD",
+            "source": "Site officiel et déclarations publiques",
+            "note": "Critique le coût et propose des alternatives"
+          },
+          {
+            "questionId": "q2_pistes_cyclables",
+            "position": "N",
+            "source": "Peu d'informations disponibles",
+            "note": "Semble soutenir un développement modéré sans priorité particulière"
+          },
+          {
+            "questionId": "q3_troisieme_lien",
+            "position": "PA",
+            "source": "Orientation pro-développement économique",
+            "note": "Considère ce projet comme important pour la fluidité du transport"
+          },
+          {
+            "questionId": "q4_secteur_prive_transport",
+            "position": "FA",
+            "source": "Orientation générale pro-entreprise",
+            "note": "Favorable à une plus grande implication du secteur privé"
+          },
+          {
+            "questionId": "q5_quotas_logements_abordables",
+            "position": "PD",
+            "source": "Orientation générale favorable au marché libre",
+            "note": "Préfère des incitatifs au secteur privé plutôt que des quotas"
+          },
+          {
+            "questionId": "q6_densification_quartiers",
+            "position": "N"
+          },
+          {
+            "questionId": "q7_restrictions_airbnb",
+            "position": "PD"
+          },
+          {
+            "questionId": "q8_assouplissement_zonage",
+            "position": "FA"
+          },
+          {
+            "questionId": "q9_protection_espaces_verts",
+            "position": "PD"
+          },
+          {
+            "questionId": "q10_transition_carboneutre",
+            "position": "PD"
+          },
+          {
+            "questionId": "q11_reduction_dechets",
+            "position": "PD"
+          },
+          {
+            "questionId": "q12_augmentation_taxes",
+            "position": "FD"
+          },
+          {
+            "questionId": "q13_pouvoir_conseils_quartier",
+            "position": "PD"
+          },
+          {
+            "questionId": "q14_reduction_dette",
+            "position": "FA"
+          },
+          {
+            "questionId": "q15_avantages_fiscaux_entreprises",
+            "position": "FA"
+          },
+          {
+            "questionId": "q16_limitation_touristes",
+            "position": "FD"
+          },
+          {
+            "questionId": "q17_soutien_organismes_communautaires",
+            "position": "PD"
+          },
+          {
+            "questionId": "q18_augmentation_effectifs_policiers",
+            "position": "FA"
+          },
+          {
+            "questionId": "q19_investissement_infrastructures_culturelles_sportives",
+            "position": "N"
+          },
+          {
+            "questionId": "q20_protection_patrimoine",
+            "position": "N"
+          }
+        ]
+      },
+      "score": 61
+    }
+  ],
+  "userPosition": {
+    "x": 92.06349206349206,
+    "y": -80
+  },
+  "timestamp": 1749578416410,
+  "userAnswers": {
+    "q1_tramway": "FD",
+    "q3_troisieme_lien": "FA",
+    "q4_secteur_prive_transport": "PA",
+    "q5_quotas_logements_abordables": "FD",
+    "q7_restrictions_airbnb": "FD",
+    "q8_assouplissement_zonage": "FA",
+    "q10_transition_carboneutre": "PD",
+    "q11_reduction_dechets": "PD",
+    "q12_augmentation_taxes": "FD",
+    "q14_reduction_dette": "FA",
+    "q15_avantages_fiscaux_entreprises": "FA",
+    "q17_soutien_organismes_communautaires": "FD",
+    "q18_augmentation_effectifs_policiers": "PA",
+    "q20_protection_patrimoine": "PD"
+  },
+  "userImportance": {
+    "q2_pistes_cyclables": "PTI",
+    "q6_densification_quartiers": "PTI",
+    "q9_protection_espaces_verts": "PTI",
+    "q13_pouvoir_conseils_quartier": "PI",
+    "q16_limitation_touristes": "PTI",
+    "q19_investissement_infrastructures_culturelles_sportives": "AI"
+  }
+}

@@ -4,9 +4,6 @@ import type React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
 import { ArrowLeft, Share2, Info, Mail, Twitter, Facebook, Instagram, Linkedin, ArrowRight, Download, Link as LinkIcon, MessageCircle } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
@@ -37,7 +34,6 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
-import DebugDataCleaner from "@/components/debug-data-cleaner"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -86,9 +82,9 @@ const convertImportanceDirectToNumeric = (importance: ImportanceDirectOptionKey)
 }
 
 export default function ResultsPage() {
-  const [email, setEmail] = useState("")
-  const [consent, setConsent] = useState(false)
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [hoveredParty, setHoveredParty] = useState<string | null>(null)
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -199,7 +195,10 @@ export default function ResultsPage() {
       userName: "Citoyen engagé", // Peut être personnalisé
       topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
       userPosition: calculatedScores.length > 0 ? calculateUserPoliticalPosition(userAnswers) : undefined,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      // Ajouter les réponses utilisateur pour permettre l'affichage de la carte politique
+      userAnswers: userAnswers,
+      userImportance: userImportance
     }
     
     try {
@@ -359,46 +358,6 @@ export default function ResultsPage() {
     } else {
       // Fallback pour les navigateurs non compatibles (ex: desktop)
       handleCopyShare()
-    }
-  }
-
-  const handleEmailSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (!email) {
-      toast.error("Veuillez entrer une adresse email valide")
-      return
-    }
-
-    try {
-      // Préparer les données pour l'email
-      const emailData = {
-        topParties: topParties,
-        userPosition: calculatedScores.length > 0 ? {
-          economic: 0, // À calculer à partir des réponses si nécessaire
-          social: 0    // À calculer à partir des réponses si nécessaire
-        } : undefined,
-        timestamp: new Date().toLocaleDateString('fr-FR', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }
-
-      // Utiliser le service d'email (mailto pour l'instant)
-      const success = await sendResultsByEmail(email, emailData)
-      
-      if (success) {
-        toast.success("Client email ouvert ! Vérifiez votre application email.")
-        setEmail("") // Reset le champ
-      } else {
-        toast.error("Erreur lors de l'ouverture du client email")
-      }
-    } catch (error) {
-      console.error("Erreur lors de l'envoi de l'email:", error)
-      toast.error("Une erreur est survenue lors de l'envoi")
     }
   }
 
@@ -690,43 +649,6 @@ export default function ResultsPage() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-soft rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl">Sauvegardez vos résultats</CardTitle>
-          <CardDescription>Conservez une trace de vos résultats en vous les envoyant par courriel.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleEmailSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="email-results" className="text-foreground">
-                Votre adresse courriel
-              </Label>
-              <Input
-                type="email"
-                id="email-results"
-                placeholder="email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="mt-1 rounded-lg"
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="consent-results" checked={consent} onCheckedChange={(checked) => setConsent(!!checked)} />
-              <Label htmlFor="consent-results" className="text-sm text-muted-foreground">
-                J'aimerais être invité(e) à participer aux futures initiatives de la Boussole électorale.
-              </Label>
-            </div>
-            <Button
-              type="submit"
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg btn-base-effects btn-hover-lift btn-primary-hover-effects"
-            >
-              <Mail className="mr-2 h-4 w-4" /> M'envoyer mes résultats par courriel
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
       <div className="mt-8">
         <Card className="bg-muted/30 border-muted-foreground/20 shadow-none">
           <CardHeader>
@@ -768,13 +690,6 @@ export default function ResultsPage() {
           </Link>
         </Button>
       </div>
-
-      {/* Outil de debug pour le développement */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="mt-8">
-          <DebugDataCleaner />
-        </div>
-      )}
 
       {/* Modal de partage */}
       <ShareModal

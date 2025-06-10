@@ -45,18 +45,14 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   // Intégration du hook useProfile pour sauvegarde centralisée
   const { updateProfileFields, isSaving } = useProfile()
 
-  // Debug: Log when modal state changes
+  // Gérer les changements d'état du modal
   React.useEffect(() => {
-    console.log('🔥 [MODAL] Props reçues - isOpen:', isOpen, 'onClose:', typeof onClose)
-    console.log('🔥 [MODAL] Modal state changed:', isOpen)
+    // Modal state logic if needed
   }, [isOpen, onClose])
 
-  // Debug: Log when component mounts
+  // Nettoyage du composant
   React.useEffect(() => {
-    console.log('🔥 [MODAL] Composant EnhancedPostalCodeModal monté')
-    return () => {
-      console.log('🔥 [MODAL] Composant EnhancedPostalCodeModal démonté')
-    }
+    // Component cleanup logic if needed
   }, [])
 
   const handlePostalCodeSubmit = async (e: React.FormEvent) => {

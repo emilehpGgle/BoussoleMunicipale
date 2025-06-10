@@ -4,7 +4,7 @@ import SharePageClient from './share-page-client'
 import type { Party } from '@/lib/boussole-data'
 
 interface SharePageProps {
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 // Utiliser la définition existante de SharedResult (cohérente avec share-page-client.tsx)
@@ -48,7 +48,8 @@ async function getSharedResult(id: string): Promise<SharedResult | null> {
 
 // Génération des métadonnées dynamiques pour le partage
 export async function generateMetadata({ params }: SharePageProps): Promise<Metadata> {
-  const result = await getSharedResult(params.id)
+  const { id } = await params
+  const result = await getSharedResult(id)
   
   const title = result ? `Résultats de ${result.userName} | Boussole Municipale` : 'Résultats | Boussole Municipale'
   
@@ -60,7 +61,7 @@ export async function generateMetadata({ params }: SharePageProps): Promise<Meta
   
   // Amélioration 1: URL absolue pour Open Graph (CRITIQUE pour les réseaux sociaux)
   const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
-  const imageUrl = `${baseUrl}/api/generate-share-image?id=${params.id}`
+  const imageUrl = `${baseUrl}/api/generate-share-image?id=${id}`
 
   return {
     title,
@@ -88,7 +89,8 @@ export async function generateMetadata({ params }: SharePageProps): Promise<Meta
 
 // La page principale est maintenant un composant serveur
 export default async function SharePage({ params }: SharePageProps) {
-  const sharedResult = await getSharedResult(params.id)
+  const { id } = await params
+  const sharedResult = await getSharedResult(id)
   
   return <SharePageClient sharedResult={sharedResult} />
 } 

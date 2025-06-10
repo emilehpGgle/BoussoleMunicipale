@@ -5,7 +5,7 @@ export default function SiteFooter() {
 
   return (
     <footer className="bg-white border-t border-border">
-      <div className="container max-w-screen-2xl py-6">
+      <div className="container max-w-7xl py-6">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           {/* Navigation links */}
           <nav className="flex flex-wrap justify-center md:justify-start gap-x-6 gap-y-2 text-sm">

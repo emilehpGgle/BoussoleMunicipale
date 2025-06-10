@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useEffect, useState } from "react"
-import { useParams, useRouter } from "next/navigation"
+import { useParams, useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -22,8 +22,14 @@ const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }>
 export default function PartyDetailPage() {
   const params = useParams()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [party, setParty] = useState<Party | null>(null)
   const [partyQuestionsMap, setPartyQuestionsMap] = useState<Map<string, PartyPosition>>(new Map())
+
+  // Détecter la source (page de partage ou page de résultats)
+  const source = searchParams.get('source')
+  const shareId = searchParams.get('shareId')
+  const isFromSharePage = source === 'partage' && shareId
 
   useEffect(() => {
     if (params.id) {
@@ -46,7 +52,9 @@ export default function PartyDetailPage() {
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p>Chargement des informations du parti...</p>
         <Button asChild className="mt-4">
-          <Link href="/resultats">Retour aux résultats</Link>
+          <Link href={isFromSharePage ? `/partage/${shareId}` : "/resultats"}>
+            Retour {isFromSharePage ? 'au partage' : 'aux résultats'}
+          </Link>
         </Button>
       </div>
     )
@@ -56,9 +64,9 @@ export default function PartyDetailPage() {
     <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8">
       <div>
         <Button asChild variant="outline" className="mb-8 flex items-center gap-2">
-          <Link href="/resultats">
+          <Link href={isFromSharePage ? `/partage/${shareId}` : "/resultats"}>
             <ArrowLeft className="h-4 w-4" />
-            Retour aux résultats
+            Retour {isFromSharePage ? 'au partage' : 'aux résultats'}
           </Link>
         </Button>
       </div>

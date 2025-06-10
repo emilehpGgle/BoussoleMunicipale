@@ -4,10 +4,14 @@ import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Twitter, Facebook, Linkedin, Link as LinkIcon, MessageCircle, ArrowRight } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Twitter, Link as LinkIcon, Mail } from "lucide-react"
 import { toast } from "sonner"
 import { partiesData, type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
 import PoliticalCompassChart from "@/components/political-compass-chart"
+import { sendResultsByEmail } from '@/lib/email-service'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -48,6 +52,9 @@ export default function ShareModal({
   topParties
 }: ShareModalProps) {
   const [isSharing, setIsSharing] = useState(false)
+  const [email, setEmail] = useState("")
+  const [consent, setConsent] = useState(false)
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false)
 
   // Générer le texte de partage simple et clair
   const generateShareText = () => {
@@ -67,7 +74,9 @@ export default function ShareModal({
       userName: "Citoyen engagé",
       topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
       userPosition: politicalPosition,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      userAnswers: userAnswers,
+      userImportance: userImportance
     }
     
     try {
@@ -106,45 +115,6 @@ export default function ShareModal({
     setIsSharing(false)
   }
 
-  const handleFacebookShare = async () => {
-    setIsSharing(true)
-    try {
-      const shareUrl = await generateShareUrl()
-      const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(generateShareText())}`
-      window.open(url, '_blank')
-      toast.success("Partagé sur Facebook !")
-    } catch (error) {
-      toast.error("Erreur lors du partage sur Facebook")
-    }
-    setIsSharing(false)
-  }
-
-  const handleLinkedInShare = async () => {
-    setIsSharing(true)
-    try {
-      const shareUrl = await generateShareUrl()
-      const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${encodeURIComponent('Ma Boussole Municipale')}&summary=${encodeURIComponent(generateShareText())}`
-      window.open(url, '_blank')
-      toast.success("Partagé sur LinkedIn !")
-    } catch (error) {
-      toast.error("Erreur lors du partage sur LinkedIn")
-    }
-    setIsSharing(false)
-  }
-
-  const handleMessengerShare = async () => {
-    setIsSharing(true)
-    try {
-      const shareUrl = await generateShareUrl()
-      const url = `https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`
-      window.open(url, '_blank')
-      toast.success("Partagé sur Messenger !")
-    } catch (error) {
-      toast.error("Erreur lors du partage sur Messenger")
-    }
-    setIsSharing(false)
-  }
-
   const handleCopyLink = async () => {
     setIsSharing(true)
     try {
@@ -153,6 +123,52 @@ export default function ShareModal({
       toast.success("Lien copié dans le presse-papiers !")
     } catch (error) {
       toast.error("Erreur lors de la copie")
+    }
+    setIsSharing(false)
+  }
+
+  const handleEmailSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!email) {
+      toast.error("Veuillez entrer une adresse email valide")
+      return
+    }
+
+    setIsSharing(true)
+    try {
+      // Générer l'URL de partage des résultats
+      const shareUrl = await generateShareUrl()
+      
+      // Préparer les données pour l'email
+      const emailData = {
+        topParties: topParties,
+        userPosition: politicalPosition ? {
+          economic: politicalPosition.x,
+          social: politicalPosition.y
+        } : undefined,
+        timestamp: new Date().toLocaleDateString('fr-FR', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }
+
+      // Utiliser le service d'email avec l'URL de partage
+      const success = await sendResultsByEmail(email, emailData, shareUrl)
+      
+      if (success) {
+        toast.success("Client email ouvert ! Vérifiez votre application email.")
+        setEmail("") // Reset le champ
+        setConsent(false) // Reset le consentement
+      } else {
+        toast.error("Erreur lors de l'ouverture du client email")
+      }
+    } catch (error) {
+      console.error("Erreur lors de l'envoi de l'email:", error)
+      toast.error("Une erreur est survenue lors de l'envoi")
     }
     setIsSharing(false)
   }
@@ -169,6 +185,7 @@ export default function ShareModal({
   )
 
   return (
+    <>
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -194,39 +211,21 @@ export default function ShareModal({
             </button>
             
             <button
-              onClick={handleFacebookShare}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#4267B2] hover:bg-[#365899] text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
-            >
-              <Facebook className="w-4 h-4" />
-              <span className="text-sm font-medium">Facebook</span>
-            </button>
-            
-            <button
-              onClick={handleLinkedInShare}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0077B5] hover:bg-[#006199] text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
-            >
-              <Linkedin className="w-4 h-4" />
-              <span className="text-sm font-medium">LinkedIn</span>
-            </button>
-            
-            <button
-              onClick={handleMessengerShare}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#00B2FF] hover:bg-[#0099e5] text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span className="text-sm font-medium">Messenger</span>
-            </button>
-            
-            <button
               onClick={handleCopyLink}
               disabled={isSharing}
               className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
             >
               <LinkIcon className="w-4 h-4" />
               <span className="text-sm font-medium">Copier</span>
+            </button>
+
+            <button
+              onClick={() => setIsEmailModalOpen(true)}
+              disabled={isSharing}
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
+            >
+              <Mail className="w-4 h-4" />
+              <span className="text-sm font-medium">Email</span>
             </button>
           </div>
         </div>
@@ -289,5 +288,55 @@ export default function ShareModal({
         </div>
       </DialogContent>
     </Dialog>
+
+    {/* Modal séparé pour l'envoi par email */}
+    <Dialog open={isEmailModalOpen} onOpenChange={setIsEmailModalOpen}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle className="text-center text-xl font-bold text-gray-800">
+            📧 Sauvegardez vos résultats
+          </DialogTitle>
+          <p className="text-center text-sm text-muted-foreground">
+            Conservez une trace de vos résultats en vous les envoyant par courriel.
+          </p>
+        </DialogHeader>
+        
+        <form onSubmit={handleEmailSubmit} className="space-y-4">
+          <div>
+            <Label htmlFor="email-results" className="text-foreground">
+              Votre adresse courriel
+            </Label>
+            <Input
+              type="email"
+              id="email-results"
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="mt-1 rounded-lg"
+            />
+          </div>
+          <div className="flex items-center space-x-2">
+            <Checkbox 
+              id="consent-results" 
+              checked={consent} 
+              onCheckedChange={(checked) => setConsent(!!checked)} 
+            />
+            <Label htmlFor="consent-results" className="text-sm text-muted-foreground">
+              J'aimerais être invité(e) à participer aux futures initiatives de la Boussole électorale.
+            </Label>
+          </div>
+          <Button
+            type="submit"
+            disabled={isSharing}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
+          >
+            <Mail className="mr-2 h-4 w-4" /> 
+            {isSharing ? "Envoi en cours..." : "M'envoyer mes résultats par courriel"}
+          </Button>
+        </form>
+      </DialogContent>
+    </Dialog>
+    </>
   )
 } 

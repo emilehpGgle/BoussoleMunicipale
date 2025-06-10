@@ -661,7 +661,7 @@ export default function ProfilePage() {
   // État de chargement pendant l'initialisation
   if (isLoading) {
     return (
-      <div className="container max-w-3xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
+      <div className="container max-w-4xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Chargement de votre profil...</p>
@@ -700,7 +700,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="container max-w-3xl py-6 px-4 md:px-6 animate-fadeIn relative z-10">
+      <div className="container max-w-4xl py-6 px-4 md:px-6 animate-fadeIn relative z-10">
       {/* Header */}
       <div className="mb-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">

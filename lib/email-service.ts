@@ -12,8 +12,9 @@ interface EmailResultsData {
   timestamp: string
 }
 
-export const generateEmailTemplate = (data: EmailResultsData): string => {
+export const generateEmailTemplate = (data: EmailResultsData, shareUrl?: string): string => {
   const { topParties, userPosition, timestamp } = data
+  const resultUrl = shareUrl || 'https://boussole-municipale.vercel.app/resultats'
   
   return `
 <!DOCTYPE html>
@@ -172,10 +173,10 @@ export const generateEmailTemplate = (data: EmailResultsData): string => {
     ` : ''}
 
     <div class="footer">
-        <h3 style="margin-top: 0; color: #1f2937;">Partagez avec vos proches !</h3>
-        <p style="color: #6b7280;">Encouragez votre famille et vos amis à découvrir leurs affinités politiques.</p>
-        <a href="${typeof window !== 'undefined' ? window.location.origin : 'https://boussole-municipale.com'}/questionnaire" class="cta-button">
-            Refaire le test
+        <h3 style="margin-top: 0; color: #1f2937;">Consulter à nouveau vos résultats</h3>
+        <p style="color: #6b7280;">Vous pouvez consulter à nouveau vos résultats complets à tout moment.</p>
+        <a href="${resultUrl}" class="cta-button">
+            Voir mes résultats
         </a>
         <div class="timestamp">
             Résultats générés le ${timestamp}
@@ -187,35 +188,36 @@ export const generateEmailTemplate = (data: EmailResultsData): string => {
 }
 
 export const generateEmailSubject = (topParty?: { party: { name: string; shortName?: string }, score: number }): string => {
-  if (!topParty) return "Mes résultats - Boussole Municipale"
+  if (!topParty) return "🏛️ Mes résultats Boussole Municipale"
   
   const partyName = topParty.party.shortName || topParty.party.name
   const score = Math.round(topParty.score)
   
-  return `🧭 ${score}% d'affinité avec ${partyName} - Mes résultats Boussole Municipale`
+  return `🏛️ ${score}% d'affinité avec ${partyName} - Mes résultats Boussole Municipale`
 }
 
-export const generateEmailBody = (data: EmailResultsData): string => {
+export const generateEmailBody = (data: EmailResultsData, shareUrl?: string): string => {
   const { topParties } = data
   const topParty = topParties[0]
+  
+  // URL par défaut si shareUrl n'est pas fourni
+  const resultUrl = shareUrl || 'https://boussole-municipale.vercel.app/resultats'
   
   const textContent = `
 Bonjour !
 
-Voici vos résultats de la Boussole Municipale :
+🏛️ Ma Boussole Municipale révèle: ${topParty ? `${Math.round(topParty.score)}% d'affinité avec ${topParty.party.shortName || topParty.party.name} !` : 'Découvrez vos affinités politiques !'}
 
 🏆 TOP 3 DE VOS AFFINITÉS :
 ${topParties.slice(0, 3).map((party, index) => 
   `${index + 1}. ${party.party.shortName || party.party.name} : ${Math.round(party.score)}%`
 ).join('\n')}
 
-${topParty ? `Votre plus grande affinité est avec ${topParty.party.shortName || topParty.party.name} à ${Math.round(topParty.score)}% !` : ''}
-
 🗳️ POURQUOI C'EST IMPORTANT ?
 Les élections municipales impactent directement votre quotidien : transports, environnement, logement, taxes...
 
-👥 PARTAGEZ AVEC VOS PROCHES !
-Encouragez votre famille et vos amis à découvrir leurs affinités : ${typeof window !== 'undefined' ? window.location.origin : 'https://boussole-municipale.com'}/questionnaire
+📊 CONSULTER À NOUVEAU VOS RÉSULTATS
+Consultez à nouveau vos résultats à l'adresse suivante : ${resultUrl}
 
 ---
 Boussole Municipale - Votez en connaissance de cause
@@ -229,6 +231,7 @@ Résultats générés le ${data.timestamp}
 export const sendResultsByEmail = async (
   email: string, 
   data: EmailResultsData,
+  shareUrl?: string,
   useHTML: boolean = false
 ): Promise<boolean> => {
   try {
@@ -236,7 +239,7 @@ export const sendResultsByEmail = async (
     
     if (useHTML) {
       // Pour une future intégration avec un service d'email (SendGrid, Mailgun, etc.)
-      const htmlContent = generateEmailTemplate(data)
+      const htmlContent = generateEmailTemplate(data, shareUrl)
       console.log('HTML Email ready:', { email, subject, htmlContent })
       
       // TODO: Intégrer avec un vrai service d'email
@@ -250,7 +253,7 @@ export const sendResultsByEmail = async (
       return true
     } else {
       // Utilisation du client email par défaut (mailto)
-      const body = generateEmailBody(data)
+      const body = generateEmailBody(data, shareUrl)
       const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
       
       if (typeof window !== 'undefined') {

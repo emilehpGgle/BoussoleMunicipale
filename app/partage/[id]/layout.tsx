@@ -3,12 +3,12 @@ import { Metadata } from 'next'
 // Interface pour les props
 interface LayoutProps {
   children: React.ReactNode
-  params: { id: string }
+  params: Promise<{ id: string }>
 }
 
 // Fonction pour générer les métadonnées dynamiques
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const shareId = params.id
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id: shareId } = await params
   
   // URL de l'image générée dynamiquement
   const imageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/generate-share-image?shareId=${shareId}&userName=Citoyen&topParties=${encodeURIComponent(JSON.stringify([
