@@ -31,15 +31,23 @@ interface SharedResult {
 // Fonction pour récupérer les données partagées
 async function getSharedResult(id: string): Promise<SharedResult | null> {
   try {
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/partage/${id}.json`, { next: { revalidate: 3600 } })
+    // En développement et production, utiliser le chemin absolu vers le fichier
+    const fs = await import('fs').then(m => m.promises)
+    const path = await import('path')
     
-    if (!response.ok) {
-      console.warn(`Données de partage non trouvées pour ${id}, statut: ${response.status}`)
+    const filePath = path.join(process.cwd(), 'public', 'partage', `${id}.json`)
+    
+    // Vérifier si le fichier existe
+    try {
+      await fs.access(filePath)
+    } catch {
+      console.warn(`Fichier de partage non trouvé: ${filePath}`)
       return null
     }
     
-    return await response.json()
+    // Lire le fichier directement depuis le système de fichiers
+    const fileContent = await fs.readFile(filePath, 'utf8')
+    return JSON.parse(fileContent)
   } catch (error) {
     console.error(`Erreur lors de la récupération des données de partage pour ${id}:`, error)
     return null

@@ -689,9 +689,9 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Image décorative - chien et maître centrée à gauche */}
+      {/* Image décorative - chien et maître centrée à gauche (réduite) */}
       <div className="hidden lg:block">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-left">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
           <img 
             src="/Image_parc_chien_maitre.png" 
             alt="" 
