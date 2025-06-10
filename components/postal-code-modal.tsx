@@ -39,7 +39,8 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    localStorage.setItem("userPostalCode", postalCode.toUpperCase().replace(/\s+/g, ""))
+    // ATTENTION: Ce composant est obsolète - utiliser enhanced-postal-code-modal.tsx
+    // localStorage.setItem("userPostalCode", postalCode.toUpperCase().replace(/\s+/g, ""))
     setIsLoading(false)
     onClose()
     router.push("/questionnaire")

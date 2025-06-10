@@ -35,6 +35,8 @@ export default function QuestionnairePage() {
     saveAgreementResponse,
     saveImportanceDirectResponse,
     
+    // Plus besoin des actions de nettoyage ici
+    
     // Utilitaires
     getResponseCounts,
     
@@ -99,7 +101,7 @@ export default function QuestionnairePage() {
         setIsTransitioning(false)
       }, 250)
     } else {
-      // Plus besoin de sauvegarder dans localStorage manuellement
+      // Sauvegarde automatique dans Supabase via les hooks
       // Les données sont déjà synchronisées via nos hooks
       router.push("/profil")
     }

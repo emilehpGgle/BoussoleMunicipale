@@ -96,12 +96,14 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
 
   const handleDistrictConfirmation = async () => {
     try {
-      // Sauvegarder dans le profil unifié (Supabase + localStorage)
+      console.log('💾 Sauvegarde du code postal dans le profil...')
+      
+      // Sauvegarder dans le profil unifié (Supabase uniquement)
       await updateProfileFields({
         postalCode: formatPostalCode(postalCode),
         district: confirmedDistrict,
-        // Informations supplémentaires utiles pour le partage
-        districtName: confirmedDistrict,
+        // Informations supplémentaires utiles pour l'analyse
+        residenceArea: confirmedDistrict, // Compatible avec les autres champs de profil
         location: {
           postalCode: formatPostalCode(postalCode),
           district: confirmedDistrict,
@@ -109,17 +111,17 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         }
       })
       
-      // Maintenir la compatibilité avec l'ancien système
-      localStorage.setItem("userPostalCode", formatPostalCode(postalCode))
-      localStorage.setItem("userDistrict", confirmedDistrict)
+      console.log('✅ Code postal sauvegardé dans le profil utilisateur')
+      
+      // Fini localStorage! Tout est maintenant dans Supabase via le profil utilisateur
       
       onClose()
       router.push("/questionnaire")
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde:', error)
-      // En cas d'erreur, utiliser le fallback localStorage
-      localStorage.setItem("userPostalCode", formatPostalCode(postalCode))
-      localStorage.setItem("userDistrict", confirmedDistrict)
+      console.error('❌ Erreur lors de la sauvegarde du profil:', error)
+      
+      // Plus de localStorage - session obligatoire pour sauvegarder
+      console.warn('⚠️ Impossible de sauvegarder le code postal sans session valide')
       
       onClose()
       router.push("/questionnaire")

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+// Import retiré car non utilisé - les APIs utilisent leurs propres clients
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResponsesAPI } from '@/lib/api/responses'
 import { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// DELETE - Supprimer une réponse spécifique
+// DELETE - Supprimer toutes les réponses d'une session
 export async function DELETE(request: NextRequest) {
   try {
     // Extraire le sessionToken depuis le header Authorization
@@ -150,27 +150,20 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const { searchParams } = new URL(request.url)
-    const questionId = searchParams.get('questionId')
-    const responseType = searchParams.get('responseType')
-
-    if (!questionId || !responseType) {
-      return NextResponse.json(
-        { error: 'questionId et responseType sont requis' },
-        { status: 400 }
-      )
-    }
-
     // Valider et récupérer la session
     const { session, sessionsAPI } = await validateSession(sessionToken)
     const responsesAPI = new ResponsesAPI()
 
-    // Supprimer la réponse spécifique (à implémenter ou supprimer toute la session)
-    // Pour l'instant, on peut supprimer toutes les réponses de la session
-    // TODO: Implémenter deleteSpecificResponse si nécessaire
+    // Supprimer toutes les réponses de la session
+    await responsesAPI.clearSessionResponses(session.id)
+
+    // Mettre à jour l'activité de la session
+    await sessionsAPI.updateSessionActivity(session.id)
+
     return NextResponse.json({ 
-      error: 'Suppression de réponse spécifique non implémentée' 
-    }, { status: 501 })
+      success: true,
+      message: 'Toutes les réponses ont été supprimées avec succès' 
+    })
 
   } catch (error) {
     if (error instanceof Error && error.message === 'Session invalide ou expirée') {
@@ -179,7 +172,7 @@ export async function DELETE(request: NextRequest) {
         { status: 401 }
       )
     }
-    console.error('Erreur lors de la suppression de la réponse:', error)
+    console.error('Erreur lors de la suppression des réponses:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }

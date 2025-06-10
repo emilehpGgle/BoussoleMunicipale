@@ -12,6 +12,13 @@ export interface UserProfile {
   previousVoting?: string
   mainConcerns?: string[]
   informationSources?: string[]
+  postalCode?: string
+  district?: string
+  location?: {
+    postalCode: string
+    district: string
+    coordinates?: { lat: number; lng: number }
+  }
   [key: string]: any // Pour permettre d'autres champs dynamiques
 }
 
@@ -23,8 +30,6 @@ interface ProfileState {
   lastSaved: Date | null
   hasProfile: boolean
 }
-
-const PROFILE_STORAGE_KEY = 'userProfile'
 
 export function useProfile() {
   const { sessionToken, isSessionValid } = useSession()
@@ -38,25 +43,24 @@ export function useProfile() {
     hasProfile: false
   })
 
-  // Charger le profil depuis Supabase ou localStorage
+  // Charger le profil depuis Supabase uniquement
   const loadProfile = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
-      // Si pas de session ou session invalide, charger depuis localStorage directement
+      // Session obligatoire pour charger le profil
       if (!sessionToken || !isSessionValid) {
-        const localProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}')
-
         setState(prev => ({
           ...prev,
-          profile: localProfile,
+          profile: {},
           isLoading: false,
-          hasProfile: Object.keys(localProfile).length > 0
+          hasProfile: false,
+          error: 'Session requise pour charger votre profil'
         }))
         return
       }
 
-      // Charger depuis Supabase avec header Authorization sécurisé
+      // Charger depuis Supabase
       const response = await fetch('/api/profile', {
         method: 'GET',
         headers: {
@@ -76,84 +80,89 @@ export function useProfile() {
             profile: profileData,
             isLoading: false,
             hasProfile: Object.keys(profileData).length > 0,
-            lastSaved: new Date(data.profile.updated_at)
+            lastSaved: new Date(data.profile.updated_at),
+            error: null
           }))
           return
         }
       }
 
-      // Fallback : charger depuis localStorage
-      const localProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}')
-
+      // En cas d'erreur API ou profil vide
       setState(prev => ({
         ...prev,
-        profile: localProfile,
+        profile: {},
         isLoading: false,
-        hasProfile: Object.keys(localProfile).length > 0
+        hasProfile: false,
+        error: null // Pas d'erreur si le profil n'existe pas encore
       }))
 
     } catch (error) {
       console.error('Erreur lors du chargement du profil:', error)
-      
-      // En cas d'erreur, fallback vers localStorage
-      const localProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY) || '{}')
-      
       setState(prev => ({
         ...prev,
-        profile: localProfile,
+        profile: {},
         isLoading: false,
-        hasProfile: Object.keys(localProfile).length > 0,
+        hasProfile: false,
         error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
   }, [sessionToken, isSessionValid])
 
-  // Sauvegarder le profil complet
+  // Sauvegarder le profil (Supabase uniquement)
   const saveProfile = useCallback(async (profileData: UserProfile) => {
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
 
-      // Calculer le profil mis à jour AVANT la mise à jour de l'état (fix bug state stale)
+      // Session obligatoire pour sauvegarder
+      if (!sessionToken || !isSessionValid) {
+        setState(prev => ({
+          ...prev,
+          isSaving: false,
+          error: 'Session requise pour sauvegarder votre profil'
+        }))
+        return
+      }
+
+      // Calculer le profil mis à jour
       const updatedProfile = { ...state.profile, ...profileData }
 
-      // Mettre à jour l'état local immédiatement
+      // Mettre à jour l'état local immédiatement pour l'UX
       setState(prev => ({
         ...prev,
         profile: updatedProfile,
         hasProfile: true
       }))
 
-      // Sauvegarder dans localStorage comme fallback
-      localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(updatedProfile))
-
-      // Sauvegarder vers Supabase si possible
-      if (sessionToken && isSessionValid) {
-        const response = await fetch('/api/profile', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            profileData: updatedProfile
-          })
+      // Sauvegarder vers Supabase
+      const response = await fetch('/api/profile', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          profileData: updatedProfile
         })
+      })
 
-        if (response.ok) {
-          const data = await response.json()
-          if (data.success) {
-            setState(prev => ({
-              ...prev,
-              isSaving: false,
-              lastSaved: new Date()
-            }))
-            return
-          }
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setState(prev => ({
+            ...prev,
+            isSaving: false,
+            lastSaved: new Date()
+          }))
+          return
         }
       }
 
-      // Si la sauvegarde Supabase échoue, on garde juste le localStorage
-      setState(prev => ({ ...prev, isSaving: false }))
+      // En cas d'erreur API
+      setState(prev => ({
+        ...prev,
+        isSaving: false,
+        error: 'Erreur lors de la sauvegarde du profil'
+      }))
 
     } catch (error) {
       console.error('Erreur lors de la sauvegarde du profil:', error)
@@ -175,27 +184,39 @@ export function useProfile() {
     return saveProfile(fields)
   }, [saveProfile])
 
-  // Effacer le profil
+  // Effacer le profil (Supabase uniquement)
   const clearProfile = useCallback(async () => {
     try {
-      // Effacer localStorage
-      localStorage.removeItem(PROFILE_STORAGE_KEY)
+      if (!sessionToken || !isSessionValid) {
+        console.warn('Session requise pour effacer le profil')
+        return
+      }
 
-      // Effacer l'état local
-      setState(prev => ({
-        ...prev,
-        profile: {},
-        hasProfile: false,
-        lastSaved: null
-      }))
-
-      // TODO: Effacer sur Supabase si nécessaire
-      // (nécessiterait un endpoint DELETE spécifique)
+      // Effacer sur Supabase
+      const response = await fetch('/api/profile', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      if (response.ok) {
+        setState(prev => ({
+          ...prev,
+          profile: {},
+          hasProfile: false,
+          lastSaved: null
+        }))
+        console.log('✅ Profil effacé sur Supabase')
+      } else {
+        console.warn('⚠️ Impossible d\'effacer le profil sur Supabase')
+      }
 
     } catch (error) {
       console.error('Erreur lors de l\'effacement du profil:', error)
     }
-  }, [])
+  }, [sessionToken, isSessionValid])
 
   // Obtenir un champ spécifique du profil
   const getProfileField = useCallback((field: string, defaultValue?: any) => {
@@ -231,6 +252,7 @@ export function useProfile() {
     if (state.profile.gender) summary['Genre'] = state.profile.gender
     if (state.profile.occupation) summary['Profession'] = state.profile.occupation
     if (state.profile.residenceArea) summary['Secteur'] = state.profile.residenceArea
+    if (state.profile.postalCode) summary['Code postal'] = state.profile.postalCode
     if (state.profile.politicalInterest) summary['Intérêt politique'] = state.profile.politicalInterest
     
     return summary

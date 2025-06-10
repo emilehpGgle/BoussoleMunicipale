@@ -385,7 +385,7 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    localStorage.setItem("userProfileData", JSON.stringify(profile))
+          // Plus de localStorage - tout est maintenant dans Supabase via useProfile
     router.push("/resultats")
   }
 

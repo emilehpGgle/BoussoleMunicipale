@@ -218,4 +218,44 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// DELETE - Supprimer les résultats d'une session
+export async function DELETE(request: NextRequest) {
+  try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
+    // Valider la session
+    const { error, session } = await validateSession(sessionToken)
+    if (error) return error
+
+    // Créer les instances d'API
+    const resultsAPI = new ResultsAPI()
+    const sessionsAPI = new SessionsAPI()
+
+    // Supprimer les résultats de la session
+    await resultsAPI.deleteResults(session!.id)
+
+    // Mettre à jour l'activité de la session
+    await sessionsAPI.updateSessionActivity(session!.id)
+
+    return NextResponse.json({ 
+      success: true,
+      message: 'Résultats supprimés avec succès' 
+    })
+
+  } catch (error) {
+    console.error('Erreur lors de la suppression des résultats:', error)
+    return NextResponse.json(
+      { error: 'Erreur interne du serveur' },
+      { status: 500 }
+    )
+  }
 } 

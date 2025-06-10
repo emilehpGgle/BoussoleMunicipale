@@ -100,7 +100,7 @@ export class ResponsesAPI {
   }
 
   /**
-   * Récupère les réponses d'accord pour une session (format compatible localStorage)
+   * Récupère les réponses d'accord pour une session
    */
   async getUserAnswers(sessionId: string): Promise<Record<string, AgreementOptionKey>> {
     const responses = await this.getSessionResponses(sessionId)
@@ -116,7 +116,7 @@ export class ResponsesAPI {
   }
 
   /**
-   * Récupère les réponses d'importance directe pour une session (format compatible localStorage)
+   * Récupère les réponses d'importance directe pour une session
    */
   async getUserImportanceDirectAnswers(sessionId: string): Promise<Record<string, ImportanceDirectOptionKey>> {
     const responses = await this.getSessionResponses(sessionId)

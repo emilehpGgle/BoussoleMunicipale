@@ -1,0 +1,351 @@
+{
+  "id": "1749569574521-mla4bq6q7",
+  "userName": "Citoyen engagé",
+  "topParties": [
+    {
+      "party": {
+        "id": "quebec_forte_et_fiere",
+        "name": "Québec forte et fière",
+        "shortName": "QFF",
+        "leader": "Bruno Marchand",
+        "logoUrl": "/logos/quebec-forte-et-fiere-new.png",
+        "websiteUrl": "https://quebecforteetfiere.org/",
+        "orientation": "Centre-gauche, progressiste",
+        "strengths": [
+          "Environnement",
+          "Transport collectif",
+          "Logement"
+        ],
+        "reserves": [
+          "Développement économique traditionnel"
+        ],
+        "mainIdeasSummary": "Orientation générale : Centre-gauche, progressiste.\nForces : Environnement, Transport collectif, Logement.\nRéserves : Développement économique traditionnel.",
+        "positions": [
+          {
+            "questionId": "q1_tramway",
+            "position": "FA",
+            "source": "Positions publiques du maire sortant",
+            "note": "A défendu le projet de tramway comme essentiel pour la ville"
+          },
+          {
+            "questionId": "q2_pistes_cyclables",
+            "position": "FA",
+            "source": "Réalisations de l'administration actuelle",
+            "note": "A augmenté significativement le réseau cyclable pendant son mandat"
+          },
+          {
+            "questionId": "q3_troisieme_lien",
+            "position": "N",
+            "source": "Déclarations publiques nuancées",
+            "note": "A exprimé des réserves tout en reconnaissant certains besoins"
+          },
+          {
+            "questionId": "q4_secteur_prive_transport",
+            "position": "PD",
+            "source": "Gestion actuelle du RTC",
+            "note": "Privilégie le modèle public avec certains partenariats ciblés"
+          },
+          {
+            "questionId": "q5_quotas_logements_abordables",
+            "position": "FA",
+            "source": "Politiques mises en place pendant le mandat",
+            "note": "A instauré des exigences pour les nouveaux développements"
+          },
+          {
+            "questionId": "q6_densification_quartiers",
+            "position": "FA"
+          },
+          {
+            "questionId": "q7_restrictions_airbnb",
+            "position": "FA"
+          },
+          {
+            "questionId": "q8_assouplissement_zonage",
+            "position": "N"
+          },
+          {
+            "questionId": "q9_protection_espaces_verts",
+            "position": "FA"
+          },
+          {
+            "questionId": "q10_transition_carboneutre",
+            "position": "FA"
+          },
+          {
+            "questionId": "q11_reduction_dechets",
+            "position": "PA"
+          },
+          {
+            "questionId": "q12_augmentation_taxes",
+            "position": "PA"
+          },
+          {
+            "questionId": "q13_pouvoir_conseils_quartier",
+            "position": "PA"
+          },
+          {
+            "questionId": "q14_reduction_dette",
+            "position": "PD"
+          },
+          {
+            "questionId": "q15_avantages_fiscaux_entreprises",
+            "position": "N"
+          },
+          {
+            "questionId": "q16_limitation_touristes",
+            "position": "N"
+          },
+          {
+            "questionId": "q17_soutien_organismes_communautaires",
+            "position": "PA"
+          },
+          {
+            "questionId": "q18_augmentation_effectifs_policiers",
+            "position": "N"
+          },
+          {
+            "questionId": "q19_investissement_infrastructures_culturelles_sportives",
+            "position": "FA"
+          },
+          {
+            "questionId": "q20_protection_patrimoine",
+            "position": "FA"
+          }
+        ]
+      },
+      "score": 85
+    },
+    {
+      "party": {
+        "id": "transition_quebec",
+        "name": "Transition Québec",
+        "shortName": "TQ",
+        "leader": "Jacquelyn Smith",
+        "logoUrl": "/logos/transition-quebec-new.png",
+        "websiteUrl": "https://transitionqc.org/",
+        "orientation": "Gauche écologiste",
+        "strengths": [
+          "Environnement",
+          "Transport collectif",
+          "Justice sociale"
+        ],
+        "reserves": [
+          "Développement économique traditionnel",
+          "Projets routiers"
+        ],
+        "mainIdeasSummary": "Orientation générale : Gauche écologiste.\nForces : Environnement, Transport collectif, Justice sociale.\nRéserves : Développement économique traditionnel, Projets routiers.",
+        "positions": [
+          {
+            "questionId": "q1_tramway",
+            "position": "FA",
+            "source": "Site officiel, section \"Pour notre environnement!\"",
+            "note": "Soutient fermement les transports en commun structurants"
+          },
+          {
+            "questionId": "q2_pistes_cyclables",
+            "position": "FA",
+            "source": "Orientation écologique du parti",
+            "note": "Priorité claire aux modes de transport actifs"
+          },
+          {
+            "questionId": "q3_troisieme_lien",
+            "position": "FD",
+            "source": "Site officiel, bannière principale",
+            "note": "J'affirme mon opposition au troisième lien"
+          },
+          {
+            "questionId": "q4_secteur_prive_transport",
+            "position": "FD",
+            "source": "Orientation générale du parti",
+            "note": "Favorable à une gestion publique des services essentiels"
+          },
+          {
+            "questionId": "q5_quotas_logements_abordables",
+            "position": "FA",
+            "source": "Orientation sociale du parti",
+            "note": "Soutient des mesures fortes pour l'accès au logement"
+          },
+          {
+            "questionId": "q6_densification_quartiers",
+            "position": "FA"
+          },
+          {
+            "questionId": "q7_restrictions_airbnb",
+            "position": "FA"
+          },
+          {
+            "questionId": "q8_assouplissement_zonage",
+            "position": "PD"
+          },
+          {
+            "questionId": "q9_protection_espaces_verts",
+            "position": "FA"
+          },
+          {
+            "questionId": "q10_transition_carboneutre",
+            "position": "FA"
+          },
+          {
+            "questionId": "q11_reduction_dechets",
+            "position": "FA"
+          },
+          {
+            "questionId": "q12_augmentation_taxes",
+            "position": "FA"
+          },
+          {
+            "questionId": "q13_pouvoir_conseils_quartier",
+            "position": "FA"
+          },
+          {
+            "questionId": "q14_reduction_dette",
+            "position": "FD"
+          },
+          {
+            "questionId": "q15_avantages_fiscaux_entreprises",
+            "position": "FD"
+          },
+          {
+            "questionId": "q16_limitation_touristes",
+            "position": "PA"
+          },
+          {
+            "questionId": "q17_soutien_organismes_communautaires",
+            "position": "FA"
+          },
+          {
+            "questionId": "q18_augmentation_effectifs_policiers",
+            "position": "PD"
+          },
+          {
+            "questionId": "q19_investissement_infrastructures_culturelles_sportives",
+            "position": "FA"
+          },
+          {
+            "questionId": "q20_protection_patrimoine",
+            "position": "FA"
+          }
+        ]
+      },
+      "score": 78
+    },
+    {
+      "party": {
+        "id": "alliance_citoyenne",
+        "name": "Alliance citoyenne de Québec",
+        "shortName": "ACQ",
+        "leader": "Alain Giasson",
+        "logoUrl": "/logos/alliance-citoyenne-white-bg.svg",
+        "websiteUrl": "https://metroquebec.com/local/118385/c-est-quoi-l-alliance-citoyenne-de-quebec/",
+        "orientation": "Centriste avec tendance pragmatique",
+        "strengths": [
+          "Développement économique",
+          "Services de proximité"
+        ],
+        "reserves": [
+          "Grands projets coûteux",
+          "Augmentation des taxes"
+        ],
+        "mainIdeasSummary": "Orientation générale : Centriste avec tendance pragmatique.\nForces : Développement économique, Services de proximité.\nRéserves : Grands projets coûteux, Augmentation des taxes.",
+        "positions": [
+          {
+            "questionId": "q1_tramway",
+            "position": "PD",
+            "source": "Déclarations publiques et articles de presse analysant la position du parti sur les grands projets d'infrastructure",
+            "note": "Favorise plutôt une révision complète du projet de transport structurant avec une approche plus consensuelle"
+          },
+          {
+            "questionId": "q2_pistes_cyclables",
+            "position": "PA",
+            "source": "Communications officielles du parti mentionnant la mobilité durable et le transport actif",
+            "note": "Soutient le développement du réseau cyclable mais avec une approche équilibrée qui tient compte de tous les usagers"
+          },
+          {
+            "questionId": "q3_troisieme_lien",
+            "position": "N",
+            "source": "Absence de position claire dans les communications publiques disponibles",
+            "note": "Semble privilégier d'autres solutions de mobilité et une approche plus consultative sur les grands projets"
+          },
+          {
+            "questionId": "q4_secteur_prive_transport",
+            "position": "PA",
+            "source": "Orientation générale pro-entreprise",
+            "note": "Favorable aux partenariats public-privé"
+          },
+          {
+            "questionId": "q5_quotas_logements_abordables",
+            "position": "PA",
+            "source": "Mentions de la crise du logement dans les communications",
+            "note": "Soutient des mesures pour augmenter l'offre de logements abordables"
+          },
+          {
+            "questionId": "q6_densification_quartiers",
+            "position": "PA"
+          },
+          {
+            "questionId": "q7_restrictions_airbnb",
+            "position": "N"
+          },
+          {
+            "questionId": "q8_assouplissement_zonage",
+            "position": "PA"
+          },
+          {
+            "questionId": "q9_protection_espaces_verts",
+            "position": "PA"
+          },
+          {
+            "questionId": "q10_transition_carboneutre",
+            "position": "PA"
+          },
+          {
+            "questionId": "q11_reduction_dechets",
+            "position": "N"
+          },
+          {
+            "questionId": "q12_augmentation_taxes",
+            "position": "PD"
+          },
+          {
+            "questionId": "q13_pouvoir_conseils_quartier",
+            "position": "PA"
+          },
+          {
+            "questionId": "q14_reduction_dette",
+            "position": "PA"
+          },
+          {
+            "questionId": "q15_avantages_fiscaux_entreprises",
+            "position": "PA"
+          },
+          {
+            "questionId": "q16_limitation_touristes",
+            "position": "PD"
+          },
+          {
+            "questionId": "q17_soutien_organismes_communautaires",
+            "position": "PA"
+          },
+          {
+            "questionId": "q18_augmentation_effectifs_policiers",
+            "position": "PA"
+          },
+          {
+            "questionId": "q19_investissement_infrastructures_culturelles_sportives",
+            "position": "PA"
+          },
+          {
+            "questionId": "q20_protection_patrimoine",
+            "position": "PA"
+          }
+        ]
+      },
+      "score": 65
+    }
+  ],
+  "userPosition": {
+    "x": -1.5873015873015885,
+    "y": -5.555555555555555
+  },
+  "timestamp": 1749569574521
+}

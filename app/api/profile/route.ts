@@ -214,4 +214,57 @@ export async function PUT(request: NextRequest) {
       { status: 500 }
     )
   }
+}
+
+// DELETE - Supprimer le profil d'une session
+export async function DELETE(request: NextRequest) {
+  try {
+    // Extraire le sessionToken depuis le header Authorization
+    const sessionToken = extractSessionToken(request)
+    if (!sessionToken) {
+      return NextResponse.json(
+        { error: 'Header Authorization Bearer requis' },
+        { status: 401 }
+      )
+    }
+
+    // Validate sessionToken format
+    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
+      return NextResponse.json(
+        { error: 'Format de sessionToken invalide' },
+        { status: 400 }
+      )
+    }
+
+    // Créer les instances d'API
+    const sessionsAPI = new SessionsAPI()
+    const profilesAPI = new ProfilesAPI()
+
+    // Vérifier que la session existe et est valide
+    const session = await sessionsAPI.getSessionByToken(sessionToken)
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Session invalide ou expirée' },
+        { status: 401 }
+      )
+    }
+
+    // Supprimer le profil
+    await profilesAPI.deleteProfile(session.id)
+
+    // Mettre à jour l'activité de la session
+    await sessionsAPI.updateSessionActivity(session.id)
+
+    return NextResponse.json({ 
+      success: true,
+      message: 'Profil supprimé avec succès' 
+    })
+
+  } catch (error) {
+    console.error('Erreur lors de la suppression du profil:', error)
+    return NextResponse.json(
+      { error: 'Erreur interne du serveur' },
+      { status: 500 }
+    )
+  }
 } 

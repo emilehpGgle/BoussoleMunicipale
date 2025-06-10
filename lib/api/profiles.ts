@@ -67,7 +67,7 @@ export class ProfilesAPI {
   }
 
   /**
-   * Récupère les données du profil au format compatible localStorage
+   * Récupère les données du profil
    */
   async getProfileData(sessionId: string): Promise<Record<string, any>> {
     const profile = await this.getProfile(sessionId)

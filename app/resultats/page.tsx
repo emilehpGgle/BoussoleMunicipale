@@ -36,7 +36,8 @@ import { toast } from "sonner"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
-import EnhancedShareCard from "@/components/enhanced-share-card"
+import ShareModal from "@/components/share-modal"
+import DebugDataCleaner from "@/components/debug-data-cleaner"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -87,6 +88,7 @@ const convertImportanceDirectToNumeric = (importance: ImportanceDirectOptionKey)
 export default function ResultsPage() {
   const [email, setEmail] = useState("")
   const [consent, setConsent] = useState(false)
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false)
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -108,106 +110,37 @@ export default function ResultsPage() {
   // État consolidé de chargement
   const isLoading = responsesLoading || resultsLoading
 
-  // Calculer les scores localement (logique existante adaptée)
+  // Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
   const calculatedScores = useMemo(() => {
     if (!userAnswers || Object.keys(userAnswers).length === 0) {
       return []
     }
 
-    // Si on a des résultats sauvegardés et récents, les utiliser
-    if (results && results.sortedParties) {
-      return results.sortedParties.map(partyScore => {
-        const party = partiesData.find(p => p.id === partyScore.partyId)
-        if (!party) return null
-
-        // Calculer les détails pour l'accordéon
-        const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
-          const userAnswer = userAnswers[question.id]
-          const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-          const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
-          let questionMatchValue = 0
-          let weightedQuestionScore = 0
-
-          if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
-            const userScore = agreementScoreValues[userAnswer]
-            const partyScore = agreementScoreValues[partyPositionEntry.position]
-            const diff = Math.abs(userScore - partyScore)
-            questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
-            weightedQuestionScore = questionMatchValue * currentImportance
-          }
-          
-          return {
-            question,
-            userAnswer,
-            userImportance: userImportance[question.id],
-            partyPosition: partyPositionEntry,
-            matchValue: questionMatchValue,
-            weightedScore: weightedQuestionScore,
-          }
-        })
-
-        return {
-          party,
-          score: partyScore.score,
-          rawScore: partyScore.score,
-          maxPossibleRawScoreForParty: 100,
-          details: scoreDetails,
-        }
-      }).filter(Boolean) as CalculatedPartyScore[]
-    }
-
-    // Sinon, calculer localement (logique existante)
+    // IMPORTANTE: Utiliser TOUJOURS la même logique que dans useResults et la carte politique
+    // pour garantir la cohérence des résultats
+    
+    // Calculer la position politique de l'utilisateur (même logique que la carte)
     const userPosition = calculateUserPoliticalPosition(userAnswers)
 
     const newCalculatedScores = partiesData.map((party) => {
-      // Calculer la distance politique pour cette approche plus sophistiquée
+      // Utiliser la position politique du parti (partyPositions provient de political-map-calculator)
       const partyPosition = partyPositions[party.id]
       let score = 0
-      let rawScore = 0
-      let maxPossibleRawScoreForParty = 100
 
       if (partyPosition) {
-        // Calcul basé sur la distance politique (utilisé par la carte)
+        // MÊME calcul que dans useResults.ts et la carte politique
         const distance = calculatePoliticalDistance(userPosition, partyPosition)
-        // Convertir la distance en score de compatibilité (distance max théorique = ~283 sur [-100,100] x [-100,100])
-        const maxDistance = Math.sqrt(200 * 200 + 200 * 200) // ≈ 283
-        
-        // La formule est maintenant non-linéaire pour pénaliser plus sévèrement les grandes distances.
-        // On utilise une puissance (ex: 1.5) pour que la pénalité augmente exponentiellement.
-        const normalizedDistance = distance / maxDistance
-        const penalty = Math.pow(normalizedDistance, 1.5) * 100
-        score = Math.max(0, 100 - penalty)
-        rawScore = score
+        // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
+        const maxDistance = 283
+        const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
+        score = compatibility
       } else {
-        // Fallback : utiliser l'ancienne méthode si pas de position politique
-        let totalWeightedScore = 0
-        let maxPossibleWeightedScore = 0
-
-        boussoleQuestions.forEach((question) => {
-          const userAnswer = userAnswers[question.id]
-          const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
-          const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
-          let questionMatchValue = 0
-          let weightedQuestionScore = 0
-
-          if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
-            const userScore = agreementScoreValues[userAnswer]
-            const partyScore = agreementScoreValues[partyPositionEntry.position]
-            const diff = Math.abs(userScore - partyScore)
-            questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
-            weightedQuestionScore = questionMatchValue * currentImportance
-          }
-          totalWeightedScore += weightedQuestionScore
-          maxPossibleWeightedScore += MAX_AGREEMENT_MAGNITUDE * currentImportance
-        })
-        
-        const normalizedScore = maxPossibleWeightedScore > 0 ? (totalWeightedScore / maxPossibleWeightedScore) * 100 : 0
-        score = Math.max(0, Math.min(100, normalizedScore))
-        rawScore = totalWeightedScore
-        maxPossibleRawScoreForParty = maxPossibleWeightedScore
+        // Si pas de position politique définie pour ce parti, score de 0
+        score = 0
+        console.warn(`Pas de position politique définie pour le parti: ${party.id}`)
       }
 
-      // Les détails pour l'accordéon sont maintenant calculés avec la même logique de base
+      // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
       const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
         const userAnswer = userAnswers[question.id]
         const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
@@ -219,7 +152,6 @@ export default function ResultsPage() {
           const userScore = agreementScoreValues[userAnswer]
           const partyScore = agreementScoreValues[partyPositionEntry.position]
           const diff = Math.abs(userScore - partyScore)
-          // Note: ce calcul de "match" est conservé pour les détails mais n'influence plus le score principal
           questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
           weightedQuestionScore = questionMatchValue * currentImportance
         }
@@ -237,15 +169,16 @@ export default function ResultsPage() {
       return {
         party,
         score: Math.round(score),
-        rawScore,
-        maxPossibleRawScoreForParty,
+        rawScore: score,
+        maxPossibleRawScoreForParty: 100,
         details: scoreDetails,
       }
     })
 
+    // Trier par score décroissant
     newCalculatedScores.sort((a, b) => b.score - a.score)
     return newCalculatedScores
-  }, [userAnswers, userImportance, results])
+  }, [userAnswers, userImportance])
 
   // Calculer et sauvegarder les résultats si pas encore fait
   useEffect(() => {
@@ -563,98 +496,22 @@ export default function ResultsPage() {
           <p className="text-muted-foreground">
             Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
           </p>
-          {/* Affichage du pourcentage de complétion si disponible */}
-          {results && (
-            <p className="text-sm text-muted-foreground mt-2">
-              Basé sur {results.answeredQuestions}/{results.totalQuestions} réponses ({results.completionPercentage}% complété)
-            </p>
-          )}
         </div>
         <div className="sm:ml-auto sm:text-right">
-          <h3 className="text-lg font-semibold text-foreground mb-2 text-center sm:text-right">
+          <h3 className="text-lg font-semibold text-gray-800 mb-2 text-center sm:text-right">
             Partagez vos résultats
           </h3>
           
-          {/* Nouvelle carte de partage moderne - affichée sur mobile */}
-          <div className="md:hidden mb-4">
-            <EnhancedShareCard 
-              topParties={topParties.map(p => ({ ...p, rank: topParties.indexOf(p) + 1 }))}
-              userPosition={results?.politicalPosition}
-              className="max-w-sm mx-auto"
-            />
-          </div>
-          
-          <div className="flex justify-center sm:justify-end gap-2">
+          <div className="flex justify-center sm:justify-end">
             <Button
-              variant="outline"
-              size="icon"
-              onClick={handleTwitterShare}
-              className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Partager sur Twitter"
+              onClick={() => setIsShareModalOpen(true)}
+              className="bg-blue-600 text-white hover:bg-blue-700 px-6 py-2 rounded-lg font-medium"
             >
-              <Twitter className="h-5 w-5 text-sky-500" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleFacebookShare}
-              className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Partager sur Facebook"
-            >
-              <Facebook className="h-5 w-5 text-blue-600" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleMessengerShare}
-              className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Partager sur Messenger"
-            >
-              <MessageCircle className="h-5 w-5 text-blue-500" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleLinkedInShare}
-              className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Partager sur LinkedIn"
-            >
-              <Linkedin className="h-5 w-5 text-sky-700" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleCopyShare}
-              className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Copier le lien"
-            >
-              <Download className="h-5 w-5 text-gray-600" />
-            </Button>
-            
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleGeneralShare}
-              className="rounded-full btn-base-effects hover:bg-muted/80"
-              aria-label="Partager"
-            >
-              <Share2 className="h-5 w-5 text-foreground" />
+              <Share2 className="h-4 w-4 mr-2" />
+              Partager
             </Button>
           </div>
         </div>
-      </div>
-
-      {/* Nouvelle carte de partage moderne - affichée sur desktop */}
-      <div className="hidden md:block">
-        <EnhancedShareCard 
-          topParties={topParties.map(p => ({ ...p, rank: topParties.indexOf(p) + 1 }))}
-          userPosition={results?.politicalPosition}
-          className="max-w-md mx-auto mb-8"
-        />
       </div>
 
       <Card className="shadow-soft rounded-2xl">
@@ -767,9 +624,8 @@ export default function ResultsPage() {
               let userResponseText = "Non répondue"
               if (userAnswer) {
                 if (question.responseType === "importance_direct") {
-                  // Pour les questions d'importance directe, utiliser les labels spéciaux
-                  const importanceDirectAnswers = JSON.parse(localStorage.getItem("userImportanceDirectAnswers") || "{}")
-                  const directAnswer = importanceDirectAnswers[question.id]
+                  // Pour les questions d'importance directe, utiliser les réponses du hook
+                  const directAnswer = userImportance[question.id]
                   if (directAnswer) {
                     const importanceDirectLabels: Record<string, string> = {
                       "TI": "Très important",
@@ -901,7 +757,7 @@ export default function ResultsPage() {
         </Card>
       </div>
 
-      <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+      <div className="mt-10 flex justify-center">
         <Button
           asChild
           variant="outline"
@@ -912,6 +768,25 @@ export default function ResultsPage() {
           </Link>
         </Button>
       </div>
+
+      {/* Outil de debug pour le développement */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="mt-8">
+          <DebugDataCleaner />
+        </div>
+      )}
+
+      {/* Modal de partage */}
+      <ShareModal
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+        results={results}
+        politicalPosition={results?.politicalPosition}
+        userAnswers={userAnswers}
+        userImportance={userImportance}
+        calculatedScores={calculatedScores}
+        topParties={topParties}
+      />
       </div>
     </div>
   )

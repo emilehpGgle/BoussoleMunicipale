@@ -1,5 +1,5 @@
 // Hooks personnalisés pour la Boussole Municipale
-// Gestion des données avec Supabase + fallback localStorage
+// Gestion des données avec Supabase uniquement (localStorage supprimé)
 
 export { useSession } from './useSession'
 export { useUserResponses } from './useUserResponses'

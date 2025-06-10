@@ -32,8 +32,6 @@ interface ResultsState {
   hasResults: boolean
 }
 
-const RESULTS_STORAGE_KEY = 'calculatedResults'
-
 export function useResults() {
   const { sessionToken, isSessionValid } = useSession()
   const { responses, getResponseCounts } = useUserResponses()
@@ -51,25 +49,24 @@ export function useResults() {
   // Constantes pour le calcul de complétion
   const TOTAL_QUESTIONS = 20
 
-  // Charger les résultats depuis Supabase ou localStorage
+  // Charger les résultats depuis Supabase uniquement
   const loadResults = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
-      // Si pas de session ou session invalide, charger depuis localStorage directement
+      // Session obligatoire pour charger les résultats
       if (!sessionToken || !isSessionValid) {
-        const localResults = JSON.parse(localStorage.getItem(RESULTS_STORAGE_KEY) || 'null')
-
         setState(prev => ({
           ...prev,
-          results: localResults,
+          results: null,
           isLoading: false,
-          hasResults: !!localResults
+          hasResults: false,
+          error: 'Session requise pour charger vos résultats'
         }))
         return
       }
 
-      // Charger depuis Supabase avec header Authorization sécurisé
+      // Charger depuis Supabase
       const response = await fetch('/api/results', {
         method: 'GET',
         headers: {
@@ -89,33 +86,29 @@ export function useResults() {
             results: resultsData,
             isLoading: false,
             hasResults: !!resultsData,
-            lastSaved: new Date(data.results.updated_at)
+            lastSaved: new Date(data.results.updated_at),
+            error: null
           }))
           return
         }
       }
 
-      // Fallback : charger depuis localStorage
-      const localResults = JSON.parse(localStorage.getItem(RESULTS_STORAGE_KEY) || 'null')
-
+      // En cas d'erreur API ou résultats vides
       setState(prev => ({
         ...prev,
-        results: localResults,
+        results: null,
         isLoading: false,
-        hasResults: !!localResults
+        hasResults: false,
+        error: null // Pas d'erreur si les résultats n'existent pas encore
       }))
 
     } catch (error) {
       console.error('Erreur lors du chargement des résultats:', error)
-      
-      // En cas d'erreur, fallback vers localStorage
-      const localResults = JSON.parse(localStorage.getItem(RESULTS_STORAGE_KEY) || 'null')
-      
       setState(prev => ({
         ...prev,
-        results: localResults,
+        results: null,
         isLoading: false,
-        hasResults: !!localResults,
+        hasResults: false,
         error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
@@ -132,22 +125,21 @@ export function useResults() {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
 
-      // Calcul correct du pourcentage de complétion
-      // Utilise uniquement les réponses agreement et importanceDirect 
+      // Calcul du pourcentage de complétion
       const primaryResponsesCount = counts.agreement + counts.importanceDirect
       const maxExpectedResponses = TOTAL_QUESTIONS
       const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 
-      // NOUVEAU: Vrai algorithme de calcul basé sur les réponses utilisateur
+      // Algorithme de calcul basé sur les réponses utilisateur
       const { calculateUserPoliticalPosition, partyAnswers, calculatePoliticalDistance } = await import('../lib/political-map-calculator')
       
       // Convertir les réponses au format attendu par l'algorithme
       const userAnswers = responses.agreement
       
-      // Calculer la position politique de l'utilisateur (sans importance)
+      // Calculer la position politique de l'utilisateur
       const politicalPosition = calculateUserPoliticalPosition(userAnswers)
       
-      // Calculer les positions des partis (sans importance)
+      // Calculer les positions des partis
       const partyPositions: Record<string, { x: number; y: number }> = {}
       Object.entries(partyAnswers).forEach(([partyId, answers]) => {
         partyPositions[partyId] = calculateUserPoliticalPosition(answers)
@@ -159,7 +151,7 @@ export function useResults() {
       
       Object.entries(partyPositions).forEach(([partyId, partyPos]) => {
         const distance = calculatePoliticalDistance(politicalPosition, partyPos)
-        // Convertir distance en pourcentage de compatibilité (100% = distance 0, 0% = distance max ~283)
+        // Convertir distance en pourcentage de compatibilité
         const maxDistance = 283 // Distance maximale théorique sqrt(200^2 + 200^2)
         const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
         
@@ -198,9 +190,6 @@ export function useResults() {
         hasResults: true
       }))
 
-      // Sauvegarder dans localStorage
-      localStorage.setItem(RESULTS_STORAGE_KEY, JSON.stringify(calculatedResults))
-
       return calculatedResults
 
     } catch (error) {
@@ -214,10 +203,20 @@ export function useResults() {
     }
   }, [getResponseCounts, responses])
 
-  // Sauvegarder les résultats
+  // Sauvegarder les résultats (Supabase uniquement)
   const saveResults = useCallback(async (resultsData: CalculatedResults) => {
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
+
+      // Session obligatoire pour sauvegarder
+      if (!sessionToken || !isSessionValid) {
+        setState(prev => ({
+          ...prev,
+          isSaving: false,
+          error: 'Session requise pour sauvegarder vos résultats'
+        }))
+        return
+      }
 
       // Mettre à jour l'état local
       setState(prev => ({
@@ -226,38 +225,37 @@ export function useResults() {
         hasResults: true
       }))
 
-      // Sauvegarder dans localStorage
-      localStorage.setItem(RESULTS_STORAGE_KEY, JSON.stringify(resultsData))
-
-      // Sauvegarder vers Supabase si possible
-      if (sessionToken && isSessionValid) {
-        const response = await fetch('/api/results', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${sessionToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            resultsData,
-            politicalPosition: resultsData.politicalPosition
-          })
+      // Sauvegarder vers Supabase
+      const response = await fetch('/api/results', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resultsData,
+          politicalPosition: resultsData.politicalPosition
         })
+      })
 
-        if (response.ok) {
-          const data = await response.json()
-          if (data.success) {
-            setState(prev => ({
-              ...prev,
-              isSaving: false,
-              lastSaved: new Date()
-            }))
-            return
-          }
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success) {
+          setState(prev => ({
+            ...prev,
+            isSaving: false,
+            lastSaved: new Date()
+          }))
+          return
         }
       }
 
-      // Si la sauvegarde Supabase échoue, on garde juste le localStorage
-      setState(prev => ({ ...prev, isSaving: false }))
+      // En cas d'erreur API
+      setState(prev => ({
+        ...prev,
+        isSaving: false,
+        error: 'Erreur lors de la sauvegarde des résultats'
+      }))
 
     } catch (error) {
       console.error('Erreur lors de la sauvegarde des résultats:', error)
@@ -278,26 +276,39 @@ export function useResults() {
     return results
   }, [calculateResults, saveResults])
 
-  // Effacer les résultats
+  // Effacer les résultats (Supabase uniquement)
   const clearResults = useCallback(async () => {
     try {
-      // Effacer localStorage
-      localStorage.removeItem(RESULTS_STORAGE_KEY)
+      if (!sessionToken || !isSessionValid) {
+        console.warn('Session requise pour effacer les résultats')
+        return
+      }
 
-      // Effacer l'état local
-      setState(prev => ({
-        ...prev,
-        results: null,
-        hasResults: false,
-        lastSaved: null
-      }))
-
-      // TODO: Effacer sur Supabase si nécessaire
+      // Effacer sur Supabase
+      const response = await fetch('/api/results', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${sessionToken}`,
+          'Content-Type': 'application/json',
+        }
+      })
+      
+      if (response.ok) {
+        setState(prev => ({
+          ...prev,
+          results: null,
+          hasResults: false,
+          lastSaved: null
+        }))
+        console.log('✅ Résultats effacés sur Supabase')
+      } else {
+        console.warn('⚠️ Impossible d\'effacer les résultats sur Supabase')
+      }
 
     } catch (error) {
       console.error('Erreur lors de l\'effacement des résultats:', error)
     }
-  }, [])
+  }, [sessionToken, isSessionValid])
 
   // Obtenir le top N des partis
   const getTopParties = useCallback((n: number = 3) => {
