@@ -108,8 +108,8 @@ export default function HomePage() {
                 title: "3. Prenez une décision éclairée", // Clarified title
                 description:
                   "Utilisez vos résultats pour mieux comprendre quel candidat correspond à vos priorités avant de voter.", // Clarified description
-                color: "text-foreground/80", // Kept color, can be adjusted
-                bgColor: "bg-foreground/5", // Kept color, can be adjusted
+                color: "text-primary", // Uniformisé avec les autres icônes
+                bgColor: "bg-primary/10", // Uniformisé avec les autres icônes
               },
               {
                 icon: Share2, // New icon for sharing
