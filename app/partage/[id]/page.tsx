@@ -31,26 +31,52 @@ interface SharedResult {
 // Fonction pour récupérer les données partagées
 async function getSharedResult(id: string): Promise<SharedResult | null> {
   try {
-    // En développement et production, utiliser le chemin absolu vers le fichier
-    const fs = await import('fs').then(m => m.promises)
-    const path = await import('path')
+    // Essayer d'abord avec l'URL publique (fonctionne mieux sur Vercel)
+    const publicUrl = `/partage/${id}.json`
     
-    const filePath = path.join(process.cwd(), 'public', 'partage', `${id}.json`)
+    // En développement, utiliser l'URL complète, en production utiliser l'URL relative
+    const baseUrl = process.env.NODE_ENV === 'development' 
+      ? 'http://localhost:3000'
+      : process.env.VERCEL_URL 
+        ? `https://${process.env.VERCEL_URL}`
+        : 'https://boussole-municipale.vercel.app'
     
-    // Vérifier si le fichier existe
-    try {
-      await fs.access(filePath)
-    } catch {
-      console.warn(`Fichier de partage non trouvé: ${filePath}`)
+    const fullUrl = process.env.NODE_ENV === 'development' 
+      ? `${baseUrl}${publicUrl}`
+      : publicUrl
+    
+    console.log(`Tentative de récupération: ${fullUrl}`)
+    
+    const response = await fetch(fullUrl, { 
+      next: { revalidate: 3600 },
+      cache: 'force-cache'
+    })
+    
+    if (!response.ok) {
+      console.warn(`Données de partage non trouvées pour ${id}, statut: ${response.status}`)
       return null
     }
     
-    // Lire le fichier directement depuis le système de fichiers
-    const fileContent = await fs.readFile(filePath, 'utf8')
-    return JSON.parse(fileContent)
+    const data = await response.json()
+    console.log(`Données récupérées pour ${id}:`, data.id)
+    return data
   } catch (error) {
     console.error(`Erreur lors de la récupération des données de partage pour ${id}:`, error)
-    return null
+    
+    // Fallback: essayer avec le système de fichiers
+    try {
+      const fs = await import('fs').then(m => m.promises)
+      const path = await import('path')
+      
+      const filePath = path.join(process.cwd(), 'public', 'partage', `${id}.json`)
+      console.log(`Fallback: tentative lecture fichier ${filePath}`)
+      
+      const fileContent = await fs.readFile(filePath, 'utf8')
+      return JSON.parse(fileContent)
+    } catch (fsError) {
+      console.error(`Erreur fallback fichier pour ${id}:`, fsError)
+      return null
+    }
   }
 }
 
