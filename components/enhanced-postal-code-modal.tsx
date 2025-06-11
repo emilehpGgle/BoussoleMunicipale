@@ -3,6 +3,9 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useProfile } from "@/hooks/useProfile"
+import { useUserResponses } from "@/hooks/useUserResponses"
+import { useSession } from "@/hooks/useSession"
+import ExistingResponsesModal from "./existing-responses-modal"
 import {
   Dialog,
   DialogContent,
@@ -40,10 +43,13 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [estimatedDistrict, setEstimatedDistrict] = useState<string | null>(null)
   const [confirmedDistrict, setConfirmedDistrict] = useState<string>("")
   const [districtInfo, setDistrictInfo] = useState<DistrictInfo | null>(null)
+  const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
   const router = useRouter()
   
-  // Intégration du hook useProfile pour sauvegarde centralisée
+  // Intégration des hooks
   const { updateProfileFields, isSaving } = useProfile()
+  const { getResponseCounts, isLoading: responsesLoading } = useUserResponses()
+  const { isSessionValid } = useSession()
 
   // Gérer les changements d'état du modal
   React.useEffect(() => {
@@ -109,10 +115,23 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       
       console.log('✅ Code postal sauvegardé dans le profil utilisateur')
       
-      // Fini localStorage! Tout est maintenant dans Supabase via le profil utilisateur
-      
+      // Fermer ce modal d'abord
       onClose()
+      
+      // Vérifier s'il y a des réponses existantes (seulement si session valide)
+      if (isSessionValid && !responsesLoading) {
+        const counts = getResponseCounts()
+        
+        // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
+        if (counts.total > 0) {
+          setIsExistingResponsesModalOpen(true)
+          return
+        }
+      }
+      
+      // Sinon, aller directement au questionnaire
       router.push("/questionnaire")
+      
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde du profil:', error)
       
@@ -122,6 +141,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       onClose()
       router.push("/questionnaire")
     }
+  }
+
+  // Callback pour continuer avec un nouveau questionnaire
+  const handleContinueNewQuestionnaire = () => {
+    setIsExistingResponsesModalOpen(false)
+    router.push("/questionnaire")
   }
 
   const handleDistrictChange = (newDistrict: string) => {
@@ -292,20 +317,39 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         )}
 
         {/* Option pour continuer sans géolocalisation */}
-        <div className="mt-4 text-center border-t pt-4">
+        <div className="text-center">
           <Button
             variant="link"
             className="text-sm text-muted-foreground hover:text-primary"
             onClick={() => {
               onClose()
+              
+              // Vérifier s'il y a des réponses existantes avant de continuer
+              if (isSessionValid && !responsesLoading) {
+                const counts = getResponseCounts()
+                
+                if (counts.total > 0) {
+                  setIsExistingResponsesModalOpen(true)
+                  return
+                }
+              }
+              
               router.push("/questionnaire?skipLocation=true")
             }}
           >
             Continuer sans localisation
           </Button>
         </div>
+
       </DialogContent>
     </Dialog>
+    
+    {/* Modal pour les réponses existantes - séparé du modal principal */}
+    <ExistingResponsesModal
+      isOpen={isExistingResponsesModalOpen}
+      onClose={() => setIsExistingResponsesModalOpen(false)}
+      onContinueNew={handleContinueNewQuestionnaire}
+    />
     </>
   )
 } 
