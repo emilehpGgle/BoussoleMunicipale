@@ -45,8 +45,19 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    console.log(`🎭 [SharePageClient] Initialisation avec:`, {
+      hasSharedResult: !!sharedResult,
+      sharedResultId: sharedResult?.id,
+      topPartiesCount: sharedResult?.topParties?.length,
+      hasUserAnswers: !!sharedResult?.userAnswers,
+      userAnswersCount: Object.keys(sharedResult?.userAnswers || {}).length
+    })
+    
     if (!sharedResult) {
+      console.error(`❌ [SharePageClient] Aucun résultat partagé reçu`)
       setError('Impossible de charger les résultats partagés')
+    } else {
+      console.log(`✅ [SharePageClient] Résultats reçus avec succès pour ID: ${sharedResult.id}`)
     }
   }, [sharedResult])
 

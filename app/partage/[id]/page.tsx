@@ -30,7 +30,29 @@ interface SharedResult {
 
 // Fonction pour récupérer les données partagées
 async function getSharedResult(id: string): Promise<SharedResult | null> {
+  console.log(`🔍 [getSharedResult] Début récupération pour ID: ${id}`)
+  
   try {
+    // Première tentative : lire directement depuis le système de fichiers (plus fiable)
+    console.log(`📁 [getSharedResult] Tentative 1: Lecture fichier local`)
+    try {
+      const fs = await import('fs').then(m => m.promises)
+      const path = await import('path')
+      
+      const filePath = path.join(process.cwd(), 'public', 'partage', `${id}.json`)
+      console.log(`📂 [getSharedResult] Chemin fichier: ${filePath}`)
+      
+      const fileContent = await fs.readFile(filePath, 'utf8')
+      const data = JSON.parse(fileContent)
+      console.log(`✅ [getSharedResult] Données récupérées avec succès pour ${id}`)
+      return data
+    } catch (fsError) {
+      console.log(`❌ [getSharedResult] Erreur lecture fichier:`, fsError)
+    }
+
+    // Deuxième tentative : récupération HTTP (fallback)
+    console.log(`🌐 [getSharedResult] Tentative 2: Récupération HTTP`)
+    
     // Essayer d'abord avec l'URL publique (fonctionne mieux sur Vercel)
     const publicUrl = `/partage/${id}.json`
     
@@ -45,38 +67,27 @@ async function getSharedResult(id: string): Promise<SharedResult | null> {
       ? `${baseUrl}${publicUrl}`
       : publicUrl
     
-    console.log(`Tentative de récupération: ${fullUrl}`)
+    console.log(`🔗 [getSharedResult] URL tentative: ${fullUrl}`)
     
     const response = await fetch(fullUrl, { 
       next: { revalidate: 3600 },
       cache: 'force-cache'
     })
     
+    console.log(`📡 [getSharedResult] Statut réponse HTTP: ${response.status}`)
+    
     if (!response.ok) {
-      console.warn(`Données de partage non trouvées pour ${id}, statut: ${response.status}`)
+      console.warn(`⚠️ [getSharedResult] Données de partage non trouvées pour ${id}, statut: ${response.status}`)
       return null
     }
     
     const data = await response.json()
-    console.log(`Données récupérées pour ${id}:`, data.id)
+    console.log(`✅ [getSharedResult] Données récupérées via HTTP pour ${id}:`, data.id)
     return data
-  } catch (error) {
-    console.error(`Erreur lors de la récupération des données de partage pour ${id}:`, error)
     
-    // Fallback: essayer avec le système de fichiers
-    try {
-      const fs = await import('fs').then(m => m.promises)
-      const path = await import('path')
-      
-      const filePath = path.join(process.cwd(), 'public', 'partage', `${id}.json`)
-      console.log(`Fallback: tentative lecture fichier ${filePath}`)
-      
-      const fileContent = await fs.readFile(filePath, 'utf8')
-      return JSON.parse(fileContent)
-    } catch (fsError) {
-      console.error(`Erreur fallback fichier pour ${id}:`, fsError)
-      return null
-    }
+  } catch (error) {
+    console.error(`💥 [getSharedResult] Erreur critique pour ${id}:`, error)
+    return null
   }
 }
 

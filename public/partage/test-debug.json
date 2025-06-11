@@ -1,0 +1,16 @@
+{
+  "id": "test-debug",
+  "userName": "Test Debug",
+  "topParties": [
+    {
+      "party": {
+        "id": "test",
+        "name": "Parti de Test",
+        "shortName": "TEST"
+      },
+      "score": 100
+    }
+  ],
+  "timestamp": 1672531200000,
+  "debug": true
+} 

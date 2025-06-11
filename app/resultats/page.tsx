@@ -188,6 +188,7 @@ export default function ResultsPage() {
   // Amélioration 6: Gestion d'erreurs API et feedback utilisateur pour generateShareUrl
   const generateShareUrl = async () => {
     const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    console.log(`🎯 [Results-generateShareUrl] Génération shareId: ${shareId}`)
     
     // Structure des données à partager
     const shareData = {
@@ -201,7 +202,15 @@ export default function ResultsPage() {
       userImportance: userImportance
     }
     
+    console.log(`📦 [Results-generateShareUrl] Données à sauvegarder:`, {
+      id: shareData.id,
+      topPartiesCount: shareData.topParties.length,
+      hasUserAnswers: !!shareData.userAnswers,
+      userAnswersCount: Object.keys(shareData.userAnswers || {}).length
+    })
+    
     try {
+      console.log(`🚀 [Results-generateShareUrl] Appel API save-share`)
       // Appeler l'API pour sauvegarder les résultats
       const response = await fetch('/api/save-share', {
         method: 'POST',
@@ -211,16 +220,26 @@ export default function ResultsPage() {
         body: JSON.stringify({ shareId, data: shareData })
       })
       
+      console.log(`📡 [Results-generateShareUrl] Réponse API statut: ${response.status}`)
+      
       if (!response.ok) {
-        throw new Error(`API returned ${response.status}`)
+        const errorText = await response.text()
+        console.error(`❌ [Results-generateShareUrl] Erreur API:`, errorText)
+        throw new Error(`API returned ${response.status}: ${errorText}`)
       }
+      
+      const result = await response.json()
+      console.log(`✅ [Results-generateShareUrl] Sauvegarde réussie:`, result)
+      
     } catch (error) {
-      console.error('Erreur lors de l\'appel à l\'API de sauvegarde:', error)
+      console.error('💥 [Results-generateShareUrl] Erreur lors de l\'appel à l\'API de sauvegarde:', error)
       toast.error("Erreur lors de la sauvegarde. Le partage pourrait ne pas fonctionner.")
     }
     
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-    return `${baseUrl}/partage/${shareId}`
+    const shareUrl = `${baseUrl}/partage/${shareId}`
+    console.log(`🔗 [Results-generateShareUrl] URL finale générée: ${shareUrl}`)
+    return shareUrl
   }
 
   // Génération d'un message de partage plus naturel et accrocheur

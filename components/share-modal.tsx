@@ -68,6 +68,7 @@ export default function ShareModal({
   // Générer le lien de partage
   const generateShareUrl = async () => {
     const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+    console.log(`🎯 [generateShareUrl] Génération shareId: ${shareId}`)
     
     const shareData = {
       id: shareId,
@@ -79,7 +80,15 @@ export default function ShareModal({
       userImportance: userImportance
     }
     
+    console.log(`📦 [generateShareUrl] Données à sauvegarder:`, {
+      id: shareData.id,
+      topPartiesCount: shareData.topParties.length,
+      hasUserAnswers: !!shareData.userAnswers,
+      userAnswersCount: Object.keys(shareData.userAnswers || {}).length
+    })
+    
     try {
+      console.log(`🚀 [generateShareUrl] Appel API save-share`)
       const response = await fetch('/api/save-share', {
         method: 'POST',
         headers: {
@@ -88,16 +97,26 @@ export default function ShareModal({
         body: JSON.stringify({ shareId, data: shareData })
       })
       
+      console.log(`📡 [generateShareUrl] Réponse API statut: ${response.status}`)
+      
       if (!response.ok) {
-        throw new Error(`API returned ${response.status}`)
+        const errorText = await response.text()
+        console.error(`❌ [generateShareUrl] Erreur API:`, errorText)
+        throw new Error(`API returned ${response.status}: ${errorText}`)
       }
+      
+      const result = await response.json()
+      console.log(`✅ [generateShareUrl] Sauvegarde réussie:`, result)
+      
     } catch (error) {
-      console.error('Erreur lors de l\'appel à l\'API de sauvegarde:', error)
+      console.error('💥 [generateShareUrl] Erreur lors de l\'appel à l\'API de sauvegarde:', error)
       toast.error("Erreur lors de la sauvegarde. Le partage pourrait ne pas fonctionner.")
     }
     
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-    return `${baseUrl}/partage/${shareId}`
+    const shareUrl = `${baseUrl}/partage/${shareId}`
+    console.log(`🔗 [generateShareUrl] URL finale générée: ${shareUrl}`)
+    return shareUrl
   }
 
   // Fonctions de partage
