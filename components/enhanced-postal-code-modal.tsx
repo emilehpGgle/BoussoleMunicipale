@@ -48,17 +48,27 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   
   // Intégration des hooks
   const { updateProfileFields, isSaving } = useProfile()
-  const { getResponseCounts, isLoading: responsesLoading } = useUserResponses()
+  const { getResponseCounts, isLoading: responsesLoading, responses } = useUserResponses()
   const { isSessionValid } = useSession()
 
-  // Gérer les changements d'état du modal
+  // Debug: Surveiller l'état des réponses
   React.useEffect(() => {
-    // Modal state logic if needed
-  }, [isOpen, onClose])
+    if (isSessionValid && !responsesLoading) {
+      const counts = getResponseCounts()
+      console.log('🔄 État des réponses mis à jour:', {
+        isLoading: responsesLoading,
+        counts: counts,
+        totalAgreements: Object.keys(responses.agreement).length,
+        totalImportance: Object.keys(responses.importanceDirect).length
+      })
+    }
+  }, [responsesLoading, responses, isSessionValid, getResponseCounts])
 
   // Nettoyage du composant
   React.useEffect(() => {
-    // Component cleanup logic if needed
+    return () => {
+      // Cleanup si nécessaire
+    }
   }, [])
 
   const handlePostalCodeSubmit = async (e: React.FormEvent) => {
@@ -118,19 +128,36 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       // Fermer ce modal d'abord
       onClose()
       
-      // Vérifier s'il y a des réponses existantes (seulement si session valide)
-      if (isSessionValid && !responsesLoading) {
-        const counts = getResponseCounts()
-        
-        // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
-        if (counts.total > 0) {
-          setIsExistingResponsesModalOpen(true)
-          return
+      // Attendre la fin du chargement des réponses avant de vérifier
+      if (isSessionValid) {
+        // Fonction pour vérifier les réponses existantes après le chargement
+        const checkExistingResponses = () => {
+          if (!responsesLoading) {
+            const counts = getResponseCounts()
+            console.log('🔍 Vérification des réponses existantes:', counts)
+            
+            // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
+            if (counts.total > 0) {
+              console.log('📋 Réponses existantes détectées, ouverture du modal de choix')
+              setIsExistingResponsesModalOpen(true)
+              return
+            }
+            
+            console.log('🆕 Aucune réponse existante, redirection vers le questionnaire')
+            router.push("/questionnaire")
+          } else {
+            // Réessayer après 100ms si encore en chargement
+            console.log('⏳ Chargement des réponses en cours, nouvelle tentative...')
+            setTimeout(checkExistingResponses, 100)
+          }
         }
+        
+        // Démarrer la vérification avec un petit délai pour s'assurer que le modal est fermé
+        setTimeout(checkExistingResponses, 50)
+      } else {
+        // Pas de session, aller directement au questionnaire
+        router.push("/questionnaire")
       }
-      
-      // Sinon, aller directement au questionnaire
-      router.push("/questionnaire")
       
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde du profil:', error)
