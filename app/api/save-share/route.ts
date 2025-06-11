@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
-import { promises as fs } from 'fs'
-import path from 'path'
+import { createServerClient } from '@/lib/supabase/server'
 
 export async function POST(request: Request) {
   try {
-    console.log(`🚀 [save-share] Début traitement sauvegarde`)
+    console.log(`🚀 [save-share] Début traitement sauvegarde avec Supabase`)
     
     const body = await request.json()
     const { shareId, data } = body
@@ -22,49 +21,48 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Données manquantes' }, { status: 400 })
     }
 
-    // Valider le shareId pour éviter les "path traversal attacks"
-    const safeShareId = path.basename(shareId)
+    // Valider le shareId pour éviter les injections
+    const safeShareId = shareId.toString().replace(/[^a-zA-Z0-9\-_]/g, '')
     console.log(`🔒 [save-share] shareId sécurisé: ${safeShareId}`)
 
-    const dir = path.join(process.cwd(), 'public', 'partage')
-    console.log(`📁 [save-share] Répertoire cible: ${dir}`)
-    
-    // Créer le répertoire avec des logs
     try {
-      await fs.mkdir(dir, { recursive: true })
-      console.log(`✅ [save-share] Répertoire créé/vérifié avec succès`)
-    } catch (mkdirError) {
-      console.error(`❌ [save-share] Erreur création répertoire:`, mkdirError)
-      throw mkdirError
-    }
-    
-    const filePath = path.join(dir, `${safeShareId}.json`)
-    console.log(`📄 [save-share] Chemin fichier complet: ${filePath}`)
-    
-    // Écrire le fichier avec des logs
-    try {
-      await fs.writeFile(filePath, JSON.stringify(data, null, 2))
-      console.log(`✅ [save-share] Fichier écrit avec succès`)
+      // Créer le client Supabase côté serveur
+      console.log(`🗄️ [save-share] Connexion à Supabase`)
+      const supabase = createServerClient()
       
-      // Vérifier que le fichier existe vraiment
-      const stats = await fs.stat(filePath)
-      console.log(`📊 [save-share] Taille fichier créé: ${stats.size} octets`)
-      
-      // Lire et vérifier le contenu
-      const savedContent = await fs.readFile(filePath, 'utf8')
-      const parsedContent = JSON.parse(savedContent)
-      console.log(`🔍 [save-share] Contenu vérifié - ID: ${parsedContent.id}`)
-      
-    } catch (writeError) {
-      console.error(`❌ [save-share] Erreur écriture fichier:`, writeError)
-      throw writeError
+      // Insérer les données dans la table shared_results
+      console.log(`💾 [save-share] Insertion en base de données`)
+      const { data: insertedData, error } = await supabase
+        .from('shared_results')
+        .insert({
+          share_id: safeShareId,
+          share_data: data
+        })
+        .select()
+        .single()
+
+      if (error) {
+        console.error(`❌ [save-share] Erreur insertion Supabase:`, error)
+        throw new Error(`Erreur base de données: ${error.message}`)
+      }
+
+      console.log(`✅ [save-share] Données sauvegardées avec succès en base`)
+      console.log(`📊 [save-share] ID généré en base: ${insertedData.id}`)
+
+    } catch (dbError) {
+      console.error(`❌ [save-share] Erreur base de données:`, dbError)
+      return NextResponse.json({ 
+        message: 'Erreur lors de la sauvegarde en base de données',
+        error: dbError instanceof Error ? dbError.message : 'Erreur de base de données',
+        success: false
+      }, { status: 500 })
     }
 
-    const publicPath = `/partage/${safeShareId}.json`
+    const publicPath = `/partage/${safeShareId}`
     console.log(`🌐 [save-share] Chemin public: ${publicPath}`)
 
     return NextResponse.json({ 
-      message: 'Résultats sauvegardés avec succès', 
+      message: 'Résultats sauvegardés avec succès en base de données', 
       path: publicPath,
       shareId: safeShareId,
       success: true

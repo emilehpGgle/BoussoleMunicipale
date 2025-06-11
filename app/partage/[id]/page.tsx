@@ -1,5 +1,6 @@
 import { type Metadata } from 'next'
 import SharePageClient from './share-page-client'
+import { createServerClient } from '@/lib/supabase/server'
 // Importer les types pour une meilleure cohérence (comme dans l'API)
 import type { Party } from '@/lib/boussole-data'
 
@@ -28,63 +29,64 @@ interface SharedResult {
   timestamp: number
 }
 
-// Fonction pour récupérer les données partagées
+// Fonction pour récupérer les données partagées depuis Supabase
 async function getSharedResult(id: string): Promise<SharedResult | null> {
-  console.log(`🔍 [getSharedResult] Début récupération pour ID: ${id}`)
+  console.log(`🔍 [getSharedResult] Début récupération depuis Supabase pour ID: ${id}`)
   
   try {
-    // Première tentative : lire directement depuis le système de fichiers (plus fiable)
-    console.log(`📁 [getSharedResult] Tentative 1: Lecture fichier local`)
-    try {
-      const fs = await import('fs').then(m => m.promises)
-      const path = await import('path')
-      
-      const filePath = path.join(process.cwd(), 'public', 'partage', `${id}.json`)
-      console.log(`📂 [getSharedResult] Chemin fichier: ${filePath}`)
-      
-      const fileContent = await fs.readFile(filePath, 'utf8')
-      const data = JSON.parse(fileContent)
-      console.log(`✅ [getSharedResult] Données récupérées avec succès pour ${id}`)
-      return data
-    } catch (fsError) {
-      console.log(`❌ [getSharedResult] Erreur lecture fichier:`, fsError)
-    }
+    // Valider l'ID pour éviter les injections
+    const safeId = id.toString().replace(/[^a-zA-Z0-9\-_]/g, '')
+    console.log(`🔒 [getSharedResult] ID sécurisé: ${safeId}`)
+    
+    // Créer le client Supabase côté serveur
+    console.log(`🗄️ [getSharedResult] Connexion à Supabase`)
+    const supabase = createServerClient()
+    
+    // Récupérer les données depuis la table shared_results
+    console.log(`🔍 [getSharedResult] Requête base de données`)
+    const { data, error } = await supabase
+      .from('shared_results')
+      .select('share_data, access_count')
+      .eq('share_id', safeId)
+      .gt('expires_at', new Date().toISOString()) // Seulement les résultats non expirés
+      .single()
 
-    // Deuxième tentative : récupération HTTP (fallback)
-    console.log(`🌐 [getSharedResult] Tentative 2: Récupération HTTP`)
-    
-    // Essayer d'abord avec l'URL publique (fonctionne mieux sur Vercel)
-    const publicUrl = `/partage/${id}.json`
-    
-    // En développement, utiliser l'URL complète, en production utiliser l'URL relative
-    const baseUrl = process.env.NODE_ENV === 'development' 
-      ? 'http://localhost:3000'
-      : process.env.VERCEL_URL 
-        ? `https://${process.env.VERCEL_URL}`
-        : 'https://boussole-municipale.vercel.app'
-    
-    const fullUrl = process.env.NODE_ENV === 'development' 
-      ? `${baseUrl}${publicUrl}`
-      : publicUrl
-    
-    console.log(`🔗 [getSharedResult] URL tentative: ${fullUrl}`)
-    
-    const response = await fetch(fullUrl, { 
-      next: { revalidate: 3600 },
-      cache: 'force-cache'
-    })
-    
-    console.log(`📡 [getSharedResult] Statut réponse HTTP: ${response.status}`)
-    
-    if (!response.ok) {
-      console.warn(`⚠️ [getSharedResult] Données de partage non trouvées pour ${id}, statut: ${response.status}`)
+    if (error) {
+      if (error.code === 'PGRST116') {
+        console.warn(`⚠️ [getSharedResult] Aucun résultat trouvé pour ID: ${safeId}`)
+        return null
+      }
+      console.error(`❌ [getSharedResult] Erreur Supabase:`, error)
       return null
     }
-    
-    const data = await response.json()
-    console.log(`✅ [getSharedResult] Données récupérées via HTTP pour ${id}:`, data.id)
-    return data
-    
+
+    if (!data || !data.share_data) {
+      console.warn(`⚠️ [getSharedResult] Données vides pour ID: ${safeId}`)
+      return null
+    }
+
+    console.log(`✅ [getSharedResult] Données récupérées avec succès pour ID: ${safeId}`)
+    console.log(`📊 [getSharedResult] Nombre d'accès précédents: ${data.access_count}`)
+
+    // Incrémenter le compteur d'accès (en arrière-plan, sans attendre)
+    supabase
+      .from('shared_results')
+      .update({ 
+        access_count: (data.access_count || 0) + 1,
+        last_accessed_at: new Date().toISOString()
+      })
+      .eq('share_id', safeId)
+      .then(({ error: updateError }) => {
+        if (updateError) {
+          console.warn(`⚠️ [getSharedResult] Erreur mise à jour compteur:`, updateError)
+        } else {
+          console.log(`📈 [getSharedResult] Compteur d'accès mis à jour`)
+        }
+      })
+
+    // Retourner les données du partage
+    return data.share_data as SharedResult
+
   } catch (error) {
     console.error(`💥 [getSharedResult] Erreur critique pour ${id}:`, error)
     return null

@@ -260,6 +260,38 @@ export interface Database {
           updated_at?: string
         }
       }
+      shared_results: {
+        Row: {
+          id: string
+          share_id: string
+          share_data: Json
+          created_at: string
+          updated_at: string
+          expires_at: string
+          access_count: number
+          last_accessed_at: string | null
+        }
+        Insert: {
+          id?: string
+          share_id: string
+          share_data: Json
+          created_at?: string
+          updated_at?: string
+          expires_at?: string
+          access_count?: number
+          last_accessed_at?: string | null
+        }
+        Update: {
+          id?: string
+          share_id?: string
+          share_data?: Json
+          created_at?: string
+          updated_at?: string
+          expires_at?: string
+          access_count?: number
+          last_accessed_at?: string | null
+        }
+      }
     }
     Views: {
       [_ in never]: never
