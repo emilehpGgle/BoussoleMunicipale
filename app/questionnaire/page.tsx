@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, ArrowRight, HelpCircle, CheckCircle2 } from "lucide-react"
@@ -19,6 +19,7 @@ export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [questionKey, setQuestionKey] = useState(0) // Pour forcer le re-render avec animations
+  const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -44,6 +45,56 @@ export default function QuestionnairePage() {
     userAnswers,
     userImportanceDirectAnswers
   } = useUserResponses()
+
+  // Calculer quelle question afficher basée sur les réponses existantes
+  const calculateNextQuestionIndex = useCallback(() => {
+    // Parcourir toutes les questions pour trouver la première non répondue
+    for (let i = 0; i < boussoleQuestions.length; i++) {
+      const question = boussoleQuestions[i]
+      
+      // Vérifier si cette question a été répondue
+      const hasResponse = question.responseType === "importance_direct" 
+        ? userImportanceDirectAnswers[question.id] !== undefined
+        : userAnswers[question.id] !== undefined
+      
+      // Si cette question n'a pas de réponse, c'est celle qu'on doit afficher
+      if (!hasResponse) {
+        return i
+      }
+    }
+    
+    // Si toutes les questions ont été répondues, aller à la dernière
+    return boussoleQuestions.length - 1
+  }, [userAnswers, userImportanceDirectAnswers])
+
+  // Initialiser l'index de question une fois que les réponses sont chargées
+  useEffect(() => {
+    if (!isLoading && !hasInitialized) {
+      const nextQuestionIndex = calculateNextQuestionIndex()
+      
+      // Si on a des réponses et qu'on n'est pas à la première question
+      if (nextQuestionIndex > 0) {
+        console.log(`🎯 Reprendre au questionnaire à la question ${nextQuestionIndex + 1}/${boussoleQuestions.length}`)
+        setCurrentQuestionIndex(nextQuestionIndex)
+      }
+      
+      setHasInitialized(true)
+    }
+  }, [isLoading, hasInitialized, userAnswers, userImportanceDirectAnswers, calculateNextQuestionIndex])
+
+  // Nouvelle logique: re-calculer si les données changent après l'initialisation
+  useEffect(() => {
+    if (hasInitialized && !isLoading) {
+      const responseCount = getResponseCounts().total
+      if (responseCount > 0 && currentQuestionIndex === 0) {
+        const newIndex = calculateNextQuestionIndex()
+        if (newIndex > 0) {
+          console.log(`🎯 Correction: aller à la question ${newIndex + 1}`)
+          setCurrentQuestionIndex(newIndex)
+        }
+      }
+    }
+  }, [hasInitialized, isLoading, currentQuestionIndex, calculateNextQuestionIndex, getResponseCounts])
 
   useEffect(() => {
     // Logic for postal code check can be added here if needed

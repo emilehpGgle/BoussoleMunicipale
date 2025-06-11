@@ -1,211 +1,194 @@
 "use client"
 
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useUserResponses } from "@/hooks/useUserResponses"
-import { useResults } from "@/hooks/useResults"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { RotateCcw, BarChart3, CheckCircle2, Clock, Loader2 } from "lucide-react"
+import { RotateCcw, Play, FileText } from "lucide-react"
+import { useUserResponses } from "@/hooks/useUserResponses"
+import { useRouter } from "next/navigation"
+import { boussoleQuestions } from "@/lib/boussole-data"
 
-type ExistingResponsesModalProps = {
+interface ContinueOrRestartModalProps {
   isOpen: boolean
   onClose: () => void
-  onContinueNew: () => void // Callback pour continuer avec nouveau questionnaire
+  targetPath?: string // "/" par défaut pour l'accueil, mais peut être "/questionnaire" etc.
 }
 
-export default function ExistingResponsesModal({ 
+export default function ContinueOrRestartModal({ 
   isOpen, 
   onClose, 
-  onContinueNew 
-}: ExistingResponsesModalProps) {
+  targetPath = "/" 
+}: ContinueOrRestartModalProps) {
   const [isClearing, setIsClearing] = useState(false)
-  const [isNavigating, setIsNavigating] = useState(false)
+  const { clearAllResponses, getResponseCounts, responses } = useUserResponses()
   const router = useRouter()
   
-  // Utiliser nos hooks pour obtenir les données existantes
-  const { getResponseCounts, clearAllResponses, lastSaved } = useUserResponses()
-  const { hasResults, results, clearResults } = useResults()
-  
-  // Obtenir les statistiques des réponses
   const responseCounts = getResponseCounts()
-  const completionPercentage = Math.round((responseCounts.total / 20) * 100) // 20 questions totales
+  const hasResponses = responseCounts.total > 0
 
-  // Formater la date de dernière sauvegarde
-  const formatLastSaved = () => {
-    if (!lastSaved) return "Date inconnue"
-    
-    const now = new Date()
-    const diff = now.getTime() - lastSaved.getTime()
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24))
-    
-    if (days === 0) {
-      return "Aujourd'hui"
-    } else if (days === 1) {
-      return "Hier"
-    } else if (days < 7) {
-      return `Il y a ${days} jours`
-    } else {
-      return lastSaved.toLocaleDateString('fr-FR', {
-        day: 'numeric',
-        month: 'long',
-        year: 'numeric'
-      })
+  // Calculer à quelle question reprendre
+  const calculateNextQuestionIndex = () => {
+    // Parcourir toutes les questions pour trouver la première non répondue
+    for (let i = 0; i < boussoleQuestions.length; i++) {
+      const question = boussoleQuestions[i]
+      
+      // Vérifier si cette question a été répondue
+      const hasResponse = question.responseType === "importance_direct" 
+        ? responses.importanceDirect[question.id] !== undefined
+        : responses.agreement[question.id] !== undefined
+      
+      // Si cette question n'a pas de réponse, c'est celle qu'on doit afficher
+      if (!hasResponse) {
+        return i
+      }
     }
+    
+    // Si toutes les questions ont été répondues, aller à la dernière
+    return boussoleQuestions.length - 1
   }
 
-  // Gérer la consultation des résultats existants
-  const handleViewResults = async () => {
-    setIsNavigating(true)
+  const nextQuestionIndex = calculateNextQuestionIndex()
+  const nextQuestionNumber = nextQuestionIndex + 1
+
+  // Si pas de réponses, aller directement à la destination
+  if (!hasResponses && isOpen) {
+    onClose()
+    router.push(targetPath)
+    return null
+  }
+
+  const handleContinueQuestionnaire = () => {
+    onClose()
+    // Aller au questionnaire pour continuer
+    router.push("/questionnaire")
+  }
+
+  const handleRestartFromScratch = async () => {
     try {
+      setIsClearing(true)
+      
+      // Fermer le modal immédiatement pour éviter les conflits de rendu
       onClose()
-      router.push("/resultats")
-    } catch (error) {
-      console.error('Erreur lors de la navigation vers les résultats:', error)
-      setIsNavigating(false)
-    }
-  }
-
-  // Gérer le redémarrage à zéro
-  const handleStartFresh = async () => {
-    setIsClearing(true)
-    try {
-      // Effacer toutes les réponses existantes
+      
+      // Effacer toutes les réponses
       await clearAllResponses()
       
-      // Effacer les résultats existants
-      if (hasResults) {
-        await clearResults()
+      // Si on veut aller à l'accueil, y aller
+      // Sinon recommencer le questionnaire
+      if (targetPath === "/") {
+        // Petit délai pour que les états se stabilisent
+        setTimeout(() => {
+          window.location.href = "/"
+        }, 100)
+      } else {
+        // Petite pause pour que le clearing soit effectif
+        setTimeout(() => {
+          window.location.href = "/questionnaire"
+        }, 200)
       }
       
-      // Fermer le modal et continuer avec le nouveau questionnaire
-      onClose()
-      onContinueNew()
-      
     } catch (error) {
-      console.error('Erreur lors de l\'effacement des données:', error)
-      // En cas d'erreur, on peut quand même continuer
+      console.error("Erreur lors de l'effacement des réponses:", error)
+      // En cas d'erreur, fermer quand même le modal
       onClose()
-      onContinueNew()
     } finally {
       setIsClearing(false)
     }
   }
 
+  const handleGoToDestination = () => {
+    onClose()
+    router.push(targetPath)
+  }
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] rounded-xl shadow-2xl bg-white border-2 border-primary/20">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
-            <CheckCircle2 className="h-6 w-6 text-green-600" />
-            Questionnaire déjà complété !
-          </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
-            Nous avons trouvé des réponses existantes. Que souhaitez-vous faire ?
+      <DialogContent className="sm:max-w-md bg-card border-border shadow-soft">
+        <DialogHeader className="text-left">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 bg-primary/10 rounded-full">
+              <FileText className="h-5 w-5 text-primary" />
+            </div>
+            <DialogTitle className="text-xl font-semibold text-foreground">
+              Questionnaire en cours
+            </DialogTitle>
+          </div>
+          <DialogDescription className="text-muted-foreground leading-relaxed">
+            Vous avez déjà répondu à <span className="font-semibold text-foreground">{responseCounts.total} question{responseCounts.total > 1 ? 's' : ''}</span> sur 20.
+            Que souhaitez-vous faire ?
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
-          {/* Résumé des réponses existantes */}
-          <Card className="bg-green-50 border border-green-200">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-800">
-                    Dernière sauvegarde : {formatLastSaved()}
-                  </span>
-                </div>
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
-                  {completionPercentage}% complété
-                </Badge>
+        <div className="grid gap-3 py-4">
+          {/* Option 1: Continuer le questionnaire */}
+          <Button
+            onClick={handleContinueQuestionnaire}
+            className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-200 hover:shadow-md"
+          >
+            <div className="flex items-center gap-3 w-full">
+              <div className="p-2 bg-primary-foreground/20 rounded-full">
+                <Play className="h-4 w-4" />
               </div>
-              
-              <div className="space-y-1 text-sm text-green-700">
-                <p>
-                  <strong>{responseCounts.total}</strong> questions répondues sur 20
-                </p>
-                {hasResults && (
-                  <p className="flex items-center gap-1">
-                    <BarChart3 className="h-3 w-3" />
-                    Résultats disponibles
-                  </p>
+              <div className="text-left flex-1">
+                <div className="font-semibold text-sm">Continuer le questionnaire</div>
+                <div className="text-xs opacity-90">
+                  Reprendre à la question {nextQuestionNumber} sur {boussoleQuestions.length}
+                </div>
+              </div>
+            </div>
+          </Button>
+
+          {/* Option 2: Recommencer à zéro */}
+          <Button
+            onClick={handleRestartFromScratch}
+            disabled={isClearing}
+            variant="outline"
+            className="w-full justify-start h-auto p-4 border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl transition-all duration-200"
+          >
+            <div className="flex items-center gap-3 w-full">
+              <div className="p-2 bg-slate-100 rounded-full">
+                {isClearing ? (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-600"></div>
+                ) : (
+                  <RotateCcw className="h-4 w-4 text-slate-600" />
                 )}
               </div>
-            </CardContent>
-          </Card>
-
-          {/* Options disponibles */}
-          <div className="space-y-3">
-            <div className="text-sm font-medium text-foreground mb-2">
-              Choisissez une option :
+              <div className="text-left flex-1">
+                <div className="font-semibold text-sm text-slate-700">Recommencer à zéro</div>
+                <div className="text-xs text-slate-500">Effacer toutes vos réponses</div>
+              </div>
             </div>
-            
-            {/* Option 1: Voir les résultats */}
-            <Button
-              onClick={handleViewResults}
-              disabled={isNavigating || isClearing}
-              className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
-            >
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  {isNavigating ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <BarChart3 className="h-5 w-5" />
-                  )}
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold">Consulter mes résultats</div>
-                  <div className="text-sm opacity-90">
-                    Voir mes affinités politiques et comparaisons avec les partis
-                  </div>
-                </div>
-              </div>
-            </Button>
+          </Button>
 
-            {/* Option 2: Recommencer à zéro */}
+          {/* Option 3: Aller à la destination sans toucher aux réponses */}
+          {targetPath === "/" && (
             <Button
-              onClick={handleStartFresh}
-              disabled={isNavigating || isClearing}
-              variant="outline"
-              className="w-full justify-start h-auto p-4 border-2 hover:bg-muted/50 rounded-xl"
+              onClick={handleGoToDestination}
+              variant="ghost"
+              className="w-full justify-start h-auto p-4 hover:bg-muted/50 rounded-xl transition-all duration-200"
             >
-              <div className="flex items-center gap-3">
-                <div className="flex-shrink-0">
-                  {isClearing ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <RotateCcw className="h-5 w-5" />
-                  )}
-                </div>
-                <div className="text-left">
-                  <div className="font-semibold">Recommencer à zéro</div>
-                  <div className="text-sm text-muted-foreground">
-                    Effacer mes réponses et refaire le questionnaire complet
-                  </div>
+              <div className="flex items-center gap-3 w-full">
+                <div className="text-left flex-1">
+                  <div className="font-medium text-sm text-muted-foreground">Retourner à l'accueil</div>
+                  <div className="text-xs text-muted-foreground/80">Garder vos réponses pour plus tard</div>
                 </div>
               </div>
             </Button>
-          </div>
+          )}
         </div>
 
-        <DialogFooter>
-          <Button
-            type="button"
-            variant="ghost"
+        <DialogFooter className="sm:justify-start">
+          <Button 
+            variant="ghost" 
             onClick={onClose}
-            className="rounded-xl"
-            disabled={isNavigating || isClearing}
+            className="text-muted-foreground hover:text-foreground"
           >
             Annuler
           </Button>
@@ -213,4 +196,19 @@ export default function ExistingResponsesModal({
       </DialogContent>
     </Dialog>
   )
+}
+
+// Export du hook personnalisé pour faciliter l'utilisation
+export function useContinueOrRestartModal() {
+  const [isOpen, setIsOpen] = useState(false)
+  
+  const openModal = () => setIsOpen(true)
+  const closeModal = () => setIsOpen(false)
+  
+  return {
+    isOpen,
+    openModal,
+    closeModal,
+    ContinueOrRestartModal
+  }
 } 

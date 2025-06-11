@@ -4,12 +4,26 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
+import ContinueOrRestartModal from "@/components/existing-responses-modal"
 import { useState, useEffect } from "react"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
+import { usePathname } from "next/navigation"
+import { useUserResponses } from "@/hooks/useUserResponses"
 
 export default function SiteHeader() {
   const [isPostalModalOpen, setIsPostalModalOpen] = useState(false)
+  const [isContinueModalOpen, setIsContinueModalOpen] = useState(false)
+  const pathname = usePathname()
+  const { getResponseCounts } = useUserResponses()
+
+  // Déterminer si on est dans le questionnaire ou les résultats
+  const isInQuestionnaire = pathname === '/questionnaire'
+  const isInResults = pathname === '/resultats'
+  const isInProfile = pathname === '/profil'
+  
+  // Contextes où le bouton "Commencer" n'est pas pertinent
+  const shouldHideStartButton = isInQuestionnaire || isInResults || isInProfile
 
   const openPostalModal = () => {
     setIsPostalModalOpen(true)
@@ -19,10 +33,45 @@ export default function SiteHeader() {
     setIsPostalModalOpen(false)
   }
 
-  // Écouter l'événement personnalisé depuis d'autres composants
+  const openContinueModal = () => {
+    setIsContinueModalOpen(true)
+  }
+  
+  const closeContinueModal = () => {
+    setIsContinueModalOpen(false)
+  }
+
+  // Gérer le clic sur "Commencer" - vérifier s'il y a des réponses existantes
+  const handleStartQuestionnaire = () => {
+    const responseCounts = getResponseCounts()
+    
+    if (responseCounts.total > 0) {
+      // Il y a des réponses, ouvrir le modal de choix
+      openContinueModal()
+    } else {
+      // Pas de réponses, ouvrir le modal de code postal pour commencer
+      openPostalModal()
+    }
+  }
+
+  // Gérer le clic sur "Accueil" - aller simplement à l'accueil
+  const handleGoHome = () => {
+    window.location.href = "/"
+  }
+
+  // Écouter l'événement personnalisé depuis d'autres composants (pour le bouton de la page d'accueil)
   useEffect(() => {
     const handleOpenModal = (event: Event) => {
-      openPostalModal()
+      // Quand on vient de la page d'accueil, vérifier s'il y a des réponses existantes
+      const responseCounts = getResponseCounts()
+      
+      if (responseCounts.total > 0) {
+        // Il y a des réponses, ouvrir le modal de choix
+        openContinueModal()
+      } else {
+        // Pas de réponses, ouvrir le modal de code postal pour commencer
+        openPostalModal()
+      }
     }
 
     window.addEventListener('openPostalCodeModal', handleOpenModal)
@@ -30,7 +79,7 @@ export default function SiteHeader() {
     return () => {
       window.removeEventListener('openPostalCodeModal', handleOpenModal)
     }
-  }, [])
+  }, [getResponseCounts])
 
   // Surveiller les changements d'état du modal
   useEffect(() => {
@@ -39,38 +88,46 @@ export default function SiteHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/90 backdrop-blur-md shadow-soft">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md shadow-soft">
         <div className="container flex h-20 max-w-7xl items-center justify-between">
-          {/* Logo - Updated with new image */}
+          {/* Logo - Updated with improved transparency handling */}
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
-            {" "}
-            {/* Adjusted height slightly for new logo aspect ratio */}
-            <div className="relative h-full w-44 sm:w-48 md:w-[190px]">
-              {" "}
-              {/* Adjusted width slightly */}
+            <div className="relative h-full w-44 sm:w-48 md:w-[190px] opacity-95">
               <Image
-                src="/logo-main.png" // Updated logo path
+                src="/logo-main.png"
                 alt="Boussole Municipale Logo"
                 fill
                 style={{ objectFit: "contain" }}
                 priority
+                className="transition-opacity duration-200"
               />
             </div>
           </Link>
 
-          {/* Desktop Navigation & Action Button */}
+          {/* Desktop Navigation & Conditional Action Button */}
           <div className="hidden md:flex items-center space-x-6">
             <Link href="/aide" className="text-sm font-medium text-foreground/80 hover:text-primary">
               Aide
             </Link>
-            <Button
-              onClick={() => {
-                openPostalModal()
-              }}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift btn-primary-hover-effects"
-            >
-              Commencer
-            </Button>
+            
+            {/* Affichage conditionnel du bouton selon le contexte */}
+            {!shouldHideStartButton ? (
+              <Button
+                onClick={handleStartQuestionnaire}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift btn-primary-hover-effects"
+              >
+                Commencer
+              </Button>
+            ) : (
+              // Bouton "Accueil" simple - pas de modal
+              <Button
+                onClick={handleGoHome}
+                variant="outline"
+                className="border-primary/20 text-foreground/80 hover:bg-primary/10 hover:text-primary rounded-xl px-7 py-3 text-sm font-medium shadow-sm btn-base-effects btn-hover-lift"
+              >
+                Accueil
+              </Button>
+            )}
           </div>
 
           {/* Mobile Navigation Trigger */}
@@ -91,11 +148,9 @@ export default function SiteHeader() {
                   <SheetTitle>
                     <SheetClose asChild>
                       <Link href="/" className="block h-[50px]">
-                        {" "}
-                        {/* Adjusted height */}
                         <div className="relative h-full w-36 sm:w-40">
                           <Image
-                            src="/logo-main.png" // Updated logo path
+                            src="/logo-main.png"
                             alt="Boussole Municipale Logo"
                             fill
                             style={{ objectFit: "contain" }}
@@ -111,24 +166,50 @@ export default function SiteHeader() {
                       Aide
                     </Link>
                   </SheetClose>
-                  <Button
-                    onClick={() => {
-                      openPostalModal()
-                      // Fermer le sheet manuellement
-                      const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
-                      closeButton?.click()
-                    }}
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift btn-primary-hover-effects"
-                  >
-                    Commencer
-                  </Button>
+                  
+                  {/* Navigation conditionnelle pour mobile aussi */}
+                  {!shouldHideStartButton ? (
+                    <Button
+                      onClick={() => {
+                        // Fermer le sheet d'abord
+                        const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
+                        closeButton?.click()
+                        // Puis gérer le commencement
+                        setTimeout(() => handleStartQuestionnaire(), 100)
+                      }}
+                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift btn-primary-hover-effects"
+                    >
+                      Commencer
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={() => {
+                        // Fermer le sheet d'abord
+                        const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
+                        closeButton?.click()
+                        // Puis aller à l'accueil (simple)
+                        setTimeout(() => handleGoHome(), 100)
+                      }}
+                      variant="outline"
+                      className="w-full border-primary/20 text-foreground hover:bg-primary/10 hover:text-primary rounded-xl py-3 text-base font-medium mt-4 btn-base-effects btn-hover-lift"
+                    >
+                      Retour à l'accueil
+                    </Button>
+                  )}
                 </nav>
               </SheetContent>
             </Sheet>
           </div>
         </div>
       </header>
+      
+      {/* Modals */}
       <EnhancedPostalCodeModal isOpen={isPostalModalOpen} onClose={closePostalModal} />
+      <ContinueOrRestartModal 
+        isOpen={isContinueModalOpen} 
+        onClose={closeContinueModal}
+        targetPath="/"
+      />
     </>
   )
 }
