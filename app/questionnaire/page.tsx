@@ -12,42 +12,46 @@ import { boussoleQuestions, agreementLabels, importanceDirectLabels, getAgreemen
 import type { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
+import { useUserStatus } from "@/hooks/useUserStatus"
+import UserStatusCard from "@/components/user-status-card"
 
 // questions constant is already defined from boussoleQuestions
 
 export default function QuestionnairePage() {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [questionKey, setQuestionKey] = useState(0) // Pour forcer le re-render avec animations
-  const router = useRouter()
   const searchParams = useSearchParams()
+  const router = useRouter()
 
-  // Intégration des hooks sécurisés
-  const { sessionToken } = useSession()
-  const {
-    // État des réponses
-    responses,
-    isLoading,
-    isSaving,
-    error,
-    
-    // Actions pour sauvegarder
-    saveAgreementResponse,
+  const { sessionToken, isSessionValid } = useSession()
+  const { 
+    responses, 
+    isLoading, 
+    error, 
+    saveAgreementResponse, 
     saveImportanceDirectResponse,
-    
-    // Plus besoin des actions de nettoyage ici
-    
-    // Utilitaires
+    clearAllResponses,
     getResponseCounts,
-    
-    // Aliases pour compatibilité
     userAnswers,
     userImportanceDirectAnswers
   } = useUserResponses()
+  
+  const status = useUserStatus()
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(() => {
+    const currentQuestionParam = searchParams.get('question')
+    return currentQuestionParam ? parseInt(currentQuestionParam) - 1 : 0
+  })
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [questionKey, setQuestionKey] = useState(0) // Pour forcer le re-render avec animations
 
   useEffect(() => {
-    // Logic for postal code check can be added here if needed
-  }, [searchParams, router])
+    const questionParam = searchParams.get('question')
+    if (questionParam) {
+      const questionNumber = parseInt(questionParam) - 1
+      if (questionNumber >= 0 && questionNumber < boussoleQuestions.length && questionNumber !== currentQuestionIndex) {
+        setCurrentQuestionIndex(questionNumber)
+      }
+    }
+  }, [searchParams, currentQuestionIndex])
 
   const currentQuestion = boussoleQuestions[currentQuestionIndex]
   const progress = ((currentQuestionIndex + 1) / boussoleQuestions.length) * 100
@@ -140,29 +144,38 @@ export default function QuestionnairePage() {
       {error && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
           <p>⚠️ Problème de connexion</p>
-          <p className="text-xs opacity-80">Vos réponses sont sauvegardées localement</p>
+          <p className="text-xs opacity-80">Vos données sont sauvegardées localement</p>
         </div>
       )}
 
-      {/* Image décorative - jardinage centrée à droite */}
-      <div className="hidden lg:block">
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-right">
-          <img 
-            src="/Image_parc_jardinage.png" 
-            alt="" 
-            className="w-full h-full object-cover decorative-image-right"
-          />
+      {/* Si l'utilisateur a terminé, afficher les options */}
+      {status.hasCompleteResponses && status.hasResults && (
+        <div className="container max-w-4xl py-8 px-4 md:px-6">
+          <div className="mb-8">
+            <UserStatusCard showOnHomepage={false} />
+          </div>
         </div>
-      </div>
+      )}
 
-      <div className="container max-w-4xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col min-h-screen relative z-10">
+      {/* Questionnaire - toujours affiché pour permettre de refaire */}
+      <div className="container max-w-4xl py-8 px-4 md:px-6">
+        {/* En-tête avec retour et progression */}
+        <div className="flex items-center justify-between mb-8">
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Retour
+            </Link>
+          </Button>
+          
+          <div className="text-sm text-muted-foreground">
+            Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
+          </div>
+        </div>
+
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm font-medium text-muted-foreground">
-              Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
-            </div>
-            {/* Affichage du nombre de réponses */}
-            <div className="text-xs text-muted-foreground">
               {getResponseCounts().total} réponses enregistrées
             </div>
           </div>
@@ -274,12 +287,6 @@ export default function QuestionnairePage() {
             )}
           </div>
         </Card>
-
-        <div className="mt-2 text-center">
-          <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
-            <Link href="/">Quitter</Link>
-          </Button>
-        </div>
       </div>
     </div>
   )
