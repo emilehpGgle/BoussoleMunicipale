@@ -56,6 +56,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
     return { x, y }
   }
 
+  // Dimensions responsive : utiliser viewBox au lieu de dimensions fixes
   const svgWidth = 600
   const svgHeight = 400
 
@@ -86,10 +87,14 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
           </Badge>
         </div>
 
-        {/* Graphique SVG */}
-        <div className="flex justify-center">
-          <div className="bg-gradient-to-br from-muted/20 to-muted/40 rounded-xl p-4 border">
-            <svg width={svgWidth} height={svgHeight} className="overflow-visible">
+        {/* Graphique SVG responsive */}
+        <div className="flex justify-center overflow-hidden">
+          <div className="bg-gradient-to-br from-muted/20 to-muted/40 rounded-xl p-2 sm:p-4 border w-full max-w-4xl">
+            <svg 
+              viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+              className="w-full h-auto max-w-full overflow-visible"
+              style={{ aspectRatio: `${svgWidth}/${svgHeight}` }}
+            >
               {/* Grille de fond */}
               <defs>
                 <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -112,7 +117,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
                 strokeWidth="2"
               />
 
-              {/* Labels des axes */}
+              {/* Labels des axes - Responsive */}
               <text x={50} y={svgHeight/2 - 10} fontSize="12" fill="hsl(var(--muted-foreground))" className="font-medium">
                 {axisConfiguration.economic.leftLabel}
               </text>
@@ -183,6 +188,8 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
                       className="transition-all duration-200 cursor-pointer drop-shadow-md"
                       onMouseEnter={() => setHoveredParty(partyId)}
                       onMouseLeave={() => setHoveredParty(null)}
+                      onTouchStart={() => setHoveredParty(partyId)}
+                      onTouchEnd={() => setHoveredParty(null)}
                     />
                     
                     {/* Logo du parti (approximation avec initiales) */}
