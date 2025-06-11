@@ -37,7 +37,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     onClick={openModal}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
                   >
                     Commencer le questionnaire
                   </Button>
@@ -115,13 +115,13 @@ export default function HomePage() {
             ].map((item, index) => (
               <div
                 key={item.title}
-                className="flex flex-col items-start text-left p-8 bg-card rounded-2xl shadow-soft transition-all duration-300 hover:shadow-lg hover:-translate-y-1 animate-slideInUp card-interactive-effects group"
+                className="flex flex-col items-start text-left p-8 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects group"
                 style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
               >
-                <div className={`p-3.5 ${item.bgColor} rounded-full mb-5 transition-transform group-hover:scale-110`}>
+                <div className={`p-3.5 ${item.bgColor} rounded-full mb-5`}>
                   <item.icon className={`h-7 w-7 ${item.color} transition-colors`} />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">{item.title}</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
               </div>
             ))}

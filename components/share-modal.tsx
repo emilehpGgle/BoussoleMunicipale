@@ -223,7 +223,7 @@ export default function ShareModal({
             <button
               onClick={handleTwitterShare}
               disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] hover:bg-[#1a91da] text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] hover:bg-[#1a91da] text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
             >
               <Twitter className="w-4 h-4" />
               <span className="text-sm font-medium">Twitter</span>
@@ -232,7 +232,7 @@ export default function ShareModal({
             <button
               onClick={handleCopyLink}
               disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
             >
               <LinkIcon className="w-4 h-4" />
               <span className="text-sm font-medium">Copier</span>
@@ -241,7 +241,7 @@ export default function ShareModal({
             <button
               onClick={() => setIsEmailModalOpen(true)}
               disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-full transition-all duration-200 hover:scale-105 shadow-md hover:shadow-lg disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
             >
               <Mail className="w-4 h-4" />
               <span className="text-sm font-medium">Email</span>

@@ -90,7 +90,7 @@
 
   /* General card enhancements */
   .card-interactive-effects {
-    @apply transition-all duration-300 ease-out hover:shadow-soft-md hover:-translate-y-1;
+    @apply transition-all duration-200 ease-out hover:shadow-md;
   }
 
   /* Classes utilitaires pour teal spécial */

@@ -85,6 +85,7 @@ export default function ResultsPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
+  const [showFloatingShare, setShowFloatingShare] = useState(false)
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -182,6 +183,30 @@ export default function ResultsPage() {
       calculateAndSaveResults()
     }
   }, [isLoading, hasResults, userAnswers, calculateAndSaveResults])
+
+  // Observer pour détecter si le bouton header est visible
+  useEffect(() => {
+    const headerButton = document.getElementById('header-share-button')
+    if (!headerButton) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Si le bouton header n'est pas visible, montrer le bouton flottant
+        setShowFloatingShare(!entry.isIntersecting)
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0
+      }
+    )
+
+    observer.observe(headerButton)
+
+    return () => {
+      observer.unobserve(headerButton)
+    }
+  }, [isLoading]) // Re-observer après le chargement
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
@@ -466,17 +491,31 @@ export default function ResultsPage() {
             Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
           </p>
         </div>
+        <div className="flex flex-col sm:flex-row items-center gap-3" id="header-share-button">
+          <span className="text-lg font-semibold text-foreground">Partagez vos résultats !</span>
+          <Button
+            onClick={() => setIsShareModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6 py-2 flex items-center gap-2"
+          >
+            <Share2 className="h-4 w-4" />
+            Partager
+          </Button>
+        </div>
       </div>
 
-      {/* Floating Share Button - Modern placement */}
-      <Button
-        onClick={() => setIsShareModalOpen(true)}
-        className="fixed bottom-6 right-6 z-50 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-full p-4 md:p-5"
-        size="lg"
-        aria-label="Partager vos résultats"
-      >
-        <Share2 className="h-5 w-5 md:h-6 md:w-6" />
-      </Button>
+      {/* Floating Share Button - Apparaît seulement quand le header n'est pas visible */}
+      {showFloatingShare && (
+        <div className="fixed bottom-6 right-6 z-50 animate-fadeIn">
+          <Button
+            onClick={() => setIsShareModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full p-4"
+            size="lg"
+            aria-label="Partager vos résultats"
+          >
+            <Share2 className="h-5 w-5" />
+          </Button>
+        </div>
+      )}
 
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
@@ -572,6 +611,8 @@ export default function ResultsPage() {
 
       {/* Carte de positionnement politique 2D */}
       <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
+
+      
 
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
