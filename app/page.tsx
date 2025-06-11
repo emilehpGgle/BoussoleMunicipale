@@ -199,7 +199,7 @@ export default function HomePage() {
             </div>
             {/* Image */}
             <div
-              className="relative h-[300px] md:h-[400px] w-full rounded-2xl overflow-hidden animate-fadeIn"
+              className="relative h-[250px] sm:h-[300px] md:h-[400px] w-full rounded-2xl overflow-hidden animate-fadeIn"
               style={{ animationDelay: "0.6s" }}
             >
               <Image
@@ -208,6 +208,7 @@ export default function HomePage() {
                 fill
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>

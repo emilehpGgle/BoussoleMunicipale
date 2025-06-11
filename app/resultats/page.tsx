@@ -390,7 +390,6 @@ export default function ResultsPage() {
              isCalculating ? 'Calcul de vos résultats...' : 
              'Chargement...'}
           </p>
-          {sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
         </div>
       </div>
     )
@@ -430,19 +429,11 @@ export default function ResultsPage() {
 
   return (
     <div className="relative min-h-screen">
-      {/* Affichage d'erreur si problème de synchronisation */}
+      {/* Affichage d'erreur uniquement si problème critique */}
       {(responsesError || resultsError) && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
-          <p>⚠️ Problème de synchronisation</p>
-          <p className="text-xs opacity-80">Affichage des données locales</p>
-        </div>
-      )}
-
-      {/* Indicateur de calcul */}
-      {isCalculating && (
-        <div className="fixed top-4 left-4 bg-primary/10 border border-primary/20 text-primary px-3 py-2 rounded-lg text-sm z-50 flex items-center gap-2">
-          <div className="animate-spin rounded-full h-3 w-3 border-b border-primary"></div>
-          <span>Calcul des résultats...</span>
+          <p>⚠️ Problème de connexion</p>
+          <p className="text-xs opacity-80">Vos données sont sauvegardées localement</p>
         </div>
       )}
 
@@ -475,22 +466,17 @@ export default function ResultsPage() {
             Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
           </p>
         </div>
-        <div className="sm:ml-auto sm:text-right">
-          <h3 className="text-lg font-semibold text-gray-800 mb-2 text-center sm:text-right">
-            Partagez vos résultats
-          </h3>
-          
-          <div className="flex justify-center sm:justify-end">
-            <Button
-              onClick={() => setIsShareModalOpen(true)}
-              className="bg-blue-600 text-white hover:bg-blue-700 px-6 py-2 rounded-lg font-medium"
-            >
-              <Share2 className="h-4 w-4 mr-2" />
-              Partager
-            </Button>
-          </div>
-        </div>
       </div>
+
+      {/* Floating Share Button - Modern placement */}
+      <Button
+        onClick={() => setIsShareModalOpen(true)}
+        className="fixed bottom-6 right-6 z-50 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 rounded-full p-4 md:p-5"
+        size="lg"
+        aria-label="Partager vos résultats"
+      >
+        <Share2 className="h-5 w-5 md:h-6 md:w-6" />
+      </Button>
 
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
@@ -539,14 +525,14 @@ export default function ResultsPage() {
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
-          <CardDescription>Comparaison de votre affinité globale avec chaque parti.</CardDescription>
+          <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {calculatedScores.map(({ party, score }) => (
             <Link
               href={`/parti/${party.id}`}
               key={party.id}
-              className="block p-4 rounded-lg hover:bg-muted/50 transition-colors group"
+              className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-primary/20 hover:shadow-md"
             >
               <div className="flex items-center gap-3 mb-2">
                 <LogoContainer className="w-9 h-9 group-hover:shadow-md transition-shadow">
@@ -558,24 +544,25 @@ export default function ResultsPage() {
                     style={{ objectFit: "contain" }}
                   />
                 </LogoContainer>
-                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">
                   {party.name}
                 </h3>
+                <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                  <span className="text-sm font-medium">Voir les détails</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </div>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-full bg-muted rounded-full h-5 flex overflow-hidden border border-border">
+                <div className="w-full bg-muted rounded-full h-5 flex overflow-hidden border border-border group-hover:border-primary/30 transition-colors">
                   <div
                     className="bg-primary h-full flex items-center justify-center text-xs text-primary-foreground font-medium transition-all duration-500 ease-out"
                     style={{ width: `${score.toFixed(0)}%` }}
                   >
-                    {score.toFixed(0)}%
+                    {score >= 15 ? `${score.toFixed(0)}%` : ""}
                   </div>
                 </div>
-              </div>
-              <div className="flex justify-between text-xs text-muted-foreground mt-1.5 px-1">
-                <span>Affinité: {score.toFixed(0)}%</span>
-                <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-primary text-xs font-medium">
-                  Voir la fiche <ArrowRight className="inline h-3 w-3" />
+                <span className="text-sm font-medium text-foreground whitespace-nowrap ml-2">
+                  {score.toFixed(0)}% d'affinité
                 </span>
               </div>
             </Link>

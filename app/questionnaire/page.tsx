@@ -129,7 +129,6 @@ export default function QuestionnairePage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Chargement de vos réponses...</p>
-          {sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
         </div>
       </div>
     )
@@ -137,19 +136,11 @@ export default function QuestionnairePage() {
 
   return (
     <div className="relative min-h-screen">
-      {/* Affichage d'erreur si problème de synchronisation */}
+      {/* Affichage d'erreur uniquement si problème critique */}
       {error && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
-          <p>⚠️ Synchronisation échouée</p>
+          <p>⚠️ Problème de connexion</p>
           <p className="text-xs opacity-80">Vos réponses sont sauvegardées localement</p>
-        </div>
-      )}
-
-      {/* Indicateur de sauvegarde */}
-      {isSaving && (
-        <div className="fixed top-4 left-4 bg-primary/10 border border-primary/20 text-primary px-3 py-2 rounded-lg text-sm z-50 flex items-center gap-2">
-          <div className="animate-spin rounded-full h-3 w-3 border-b border-primary"></div>
-          <span>Sauvegarde...</span>
         </div>
       )}
 
