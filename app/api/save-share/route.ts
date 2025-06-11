@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
 
 export async function POST(request: Request) {
   try {
-    console.log(`🚀 [save-share] Début traitement sauvegarde avec Supabase`)
+    console.log(`🚀 [save-share] Début traitement sauvegarde avec Supabase (anon key)`)
     
     const body = await request.json()
     const { shareId, data } = body
@@ -26,11 +26,12 @@ export async function POST(request: Request) {
     console.log(`🔒 [save-share] shareId sécurisé: ${safeShareId}`)
 
     try {
-      // Créer le client Supabase côté serveur
-      console.log(`🗄️ [save-share] Connexion à Supabase`)
-      const supabase = createServerClient()
+      // Créer le client Supabase normal (avec anon key)
+      console.log(`🗄️ [save-share] Connexion à Supabase avec anon key`)
+      const supabase = createClient()
       
       // Insérer les données dans la table shared_results
+      // Les politiques RLS permettent maintenant l'insertion publique
       console.log(`💾 [save-share] Insertion en base de données`)
       const { data: insertedData, error } = await supabase
         .from('shared_results')

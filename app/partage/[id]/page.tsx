@@ -1,6 +1,6 @@
 import { type Metadata } from 'next'
 import SharePageClient from './share-page-client'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/client'
 // Importer les types pour une meilleure cohérence (comme dans l'API)
 import type { Party } from '@/lib/boussole-data'
 
@@ -29,20 +29,21 @@ interface SharedResult {
   timestamp: number
 }
 
-// Fonction pour récupérer les données partagées depuis Supabase
+// Fonction pour récupérer les données partagées depuis Supabase avec anon key
 async function getSharedResult(id: string): Promise<SharedResult | null> {
-  console.log(`🔍 [getSharedResult] Début récupération depuis Supabase pour ID: ${id}`)
+  console.log(`🔍 [getSharedResult] Début récupération depuis Supabase avec anon key pour ID: ${id}`)
   
   try {
     // Valider l'ID pour éviter les injections
     const safeId = id.toString().replace(/[^a-zA-Z0-9\-_]/g, '')
     console.log(`🔒 [getSharedResult] ID sécurisé: ${safeId}`)
     
-    // Créer le client Supabase côté serveur
-    console.log(`🗄️ [getSharedResult] Connexion à Supabase`)
-    const supabase = createServerClient()
+    // Créer le client Supabase normal (avec anon key)
+    console.log(`🗄️ [getSharedResult] Connexion à Supabase avec anon key`)
+    const supabase = createClient()
     
     // Récupérer les données depuis la table shared_results
+    // Les politiques RLS permettent la lecture publique des résultats non expirés
     console.log(`🔍 [getSharedResult] Requête base de données`)
     const { data, error } = await supabase
       .from('shared_results')
@@ -69,6 +70,7 @@ async function getSharedResult(id: string): Promise<SharedResult | null> {
     console.log(`📊 [getSharedResult] Nombre d'accès précédents: ${data.access_count}`)
 
     // Incrémenter le compteur d'accès (en arrière-plan, sans attendre)
+    // Les politiques RLS permettent maintenant la mise à jour du compteur
     supabase
       .from('shared_results')
       .update({ 
