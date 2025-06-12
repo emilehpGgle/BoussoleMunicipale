@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useProfile } from "@/hooks/useProfile"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
-import ExistingResponsesModal from "./existing-responses-modal"
+import ContinueOrRestartModal from "./existing-responses-modal"
 import {
   Dialog,
   DialogContent,
@@ -170,12 +170,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     }
   }
 
-  // Callback pour continuer avec un nouveau questionnaire
-  const handleContinueNewQuestionnaire = () => {
-    setIsExistingResponsesModalOpen(false)
-    router.push("/questionnaire")
-  }
-
   const handleDistrictChange = (newDistrict: string) => {
     setConfirmedDistrict(newDistrict)
     setDistrictInfo(getDistrictInfo(newDistrict))
@@ -285,18 +279,39 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               <Label className="text-sm font-medium text-foreground">
                 Confirmez ou modifiez votre arrondissement :
               </Label>
-              <Select value={confirmedDistrict} onValueChange={handleDistrictChange}>
-                <SelectTrigger className="rounded-lg">
-                  <SelectValue placeholder="Sélectionnez votre arrondissement" />
-                </SelectTrigger>
-                <SelectContent>
-                  {quebecDistricts.map((district) => (
-                    <SelectItem key={district} value={district}>
-                      {district}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="relative">
+                <Select 
+                  value={confirmedDistrict} 
+                  onValueChange={handleDistrictChange}
+                >
+                  <SelectTrigger className="w-full rounded-lg bg-background border border-border">
+                    <SelectValue 
+                      placeholder="Sélectionnez votre arrondissement"
+                      className="text-foreground"
+                    />
+                  </SelectTrigger>
+                  <SelectContent 
+                    className="bg-background border border-border shadow-lg max-h-60 overflow-y-auto z-[10000]"
+                    position="popper"
+                    sideOffset={4}
+                  >
+                    {quebecDistricts.map((district) => (
+                      <SelectItem 
+                        key={district} 
+                        value={district}
+                        className="cursor-pointer hover:bg-muted focus:bg-muted px-3 py-2"
+                      >
+                        {district}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Debug: Afficher le nombre d'arrondissements */}
+              <p className="text-xs text-muted-foreground">
+                {quebecDistricts.length} arrondissements disponibles
+              </p>
             </div>
 
             {/* Information sur l'arrondissement sélectionné */}
@@ -372,10 +387,10 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     </Dialog>
     
     {/* Modal pour les réponses existantes - séparé du modal principal */}
-    <ExistingResponsesModal
+    <ContinueOrRestartModal
       isOpen={isExistingResponsesModalOpen}
       onClose={() => setIsExistingResponsesModalOpen(false)}
-      onContinueNew={handleContinueNewQuestionnaire}
+      targetPath="/questionnaire"
     />
     </>
   )
