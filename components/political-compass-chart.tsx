@@ -17,6 +17,7 @@ import {
 } from '@/lib/political-map-calculator'
 import { partiesData } from '@/lib/boussole-data'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 
 interface PoliticalCompassChartProps {
   userAnswers: UserAnswers
@@ -26,6 +27,7 @@ interface PoliticalCompassChartProps {
 export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassChartProps) {
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const router = useRouter();
 
   // Calcul de la position de l'utilisateur
   const userPosition = useMemo(() => {
@@ -148,7 +150,14 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
         const radius = isFullscreenMode ? (isHovered ? 25 : 18) : (isHovered ? 18 : 12)
         
         return (
-          <g key={partyId}>
+          <g key={partyId}
+            style={{ cursor: 'pointer' }}
+            onClick={() => router.push(`/parti/${partyId}`)}
+            onMouseEnter={() => setHoveredParty(partyId)}
+            onMouseLeave={() => setHoveredParty(null)}
+            onTouchStart={() => setHoveredParty(partyId)}
+            onTouchEnd={() => setHoveredParty(null)}
+          >
             {/* Cercle du parti */}
             <circle
               cx={coords.x}
@@ -157,11 +166,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
               fill="white"
               stroke="#1e40af"
               strokeWidth={isHovered ? 3 : 2}
-              className="transition-all duration-200 cursor-pointer drop-shadow-md"
-              onMouseEnter={() => setHoveredParty(partyId)}
-              onMouseLeave={() => setHoveredParty(null)}
-              onTouchStart={() => setHoveredParty(partyId)}
-              onTouchEnd={() => setHoveredParty(null)}
+              className="transition-all duration-200 drop-shadow-md"
             />
             
             {/* Logo du parti (approximation avec initiales) */}
