@@ -195,7 +195,7 @@ export default function QuestionnairePage() {
         </div>
       )}
 
-      {/* Image décorative - jardinage centrée à droite */}
+      {/* Image décorative - jardinage centrée à droite (desktop) */}
       <div className="hidden lg:block">
         <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-right">
           <img 
@@ -206,7 +206,29 @@ export default function QuestionnairePage() {
         </div>
       </div>
 
-      <div className="container max-w-4xl py-2 px-4 md:px-6 animate-fadeIn flex flex-col min-h-screen relative z-10">
+      {/* Images décoratives pour mobile - subtiles en coins */}
+      <div className="lg:hidden">
+        {/* Image de jardinage en coin supérieur droit */}
+        <div className="mobile-decorative-corner top-right">
+          <img 
+            src="/Image_parc_jardinage.png" 
+            alt="" 
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
+        
+        {/* Image secondaire en bas si nécessaire */}
+        <div className="mobile-decorative-corner bottom-left">
+          <img 
+            src="/Image_parc_crisp.png" 
+            alt="" 
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
+      </div>
+
+      {/* Contenu principal avec overlay pour mobile */}
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 mobile-content-overlay">
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm font-medium text-muted-foreground">

@@ -222,4 +222,79 @@
       min-height: 200px !important;
     }
   }
+
+  /* Images décoratives pour mobile - subtiles en arrière-plan */
+  .mobile-decorative-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.03;
+    z-index: -1;
+    pointer-events: none;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  .mobile-decorative-corner {
+    position: fixed;
+    opacity: 0.08;
+    z-index: 1;
+    pointer-events: none;
+    border-radius: 20px;
+  }
+
+  .mobile-decorative-corner.top-right {
+    top: 80px;
+    right: 10px;
+    width: 120px;
+    height: 120px;
+  }
+
+  .mobile-decorative-corner.bottom-left {
+    bottom: 100px;
+    left: 10px;
+    width: 100px;
+    height: 100px;
+  }
+
+  .mobile-decorative-corner.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    width: 80px;
+    height: 80px;
+  }
+
+  /* Gradient overlay pour améliorer la lisibilité */
+  .mobile-content-overlay {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Amélioration des couleurs sur mobile */
+  @media (max-width: 768px) {
+    /* Ajout de couleurs subtiles aux cartes */
+    .card-color-accent {
+      background: linear-gradient(135deg, 
+        hsl(var(--background)) 0%, 
+        hsl(var(--primary) / 0.02) 100%);
+      border-left: 3px solid hsl(var(--primary) / 0.3);
+    }
+
+    /* Bordures colorées pour différencier les sections */
+    .mobile-section-border {
+      border-left: 4px solid hsl(var(--primary));
+      padding-left: 16px;
+    }
+
+    /* Backgrounds dégradés subtils */
+    .mobile-gradient-bg {
+      background: linear-gradient(135deg, 
+        hsl(var(--background)) 0%, 
+        hsl(var(--primary) / 0.03) 50%,
+        hsl(var(--teal-special) / 0.02) 100%);
+    }
+  }
 }

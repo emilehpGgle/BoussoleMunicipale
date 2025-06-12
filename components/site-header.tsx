@@ -89,10 +89,10 @@ export default function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md shadow-soft">
-        <div className="container flex h-20 max-w-7xl items-center justify-between">
-          {/* Logo - Updated with improved transparency handling */}
-          <Link href="/" className="flex items-center shrink-0 h-[56px]">
-            <div className="relative h-full w-44 sm:w-48 md:w-[190px] opacity-95">
+        <div className="container flex h-20 max-w-7xl items-center">
+          {/* Logo - Maintenant toujours aligné à gauche */}
+          <Link href="/" className="flex items-center shrink-0 h-[56px] mr-4">
+            <div className="relative h-full w-36 sm:w-44 md:w-[190px] opacity-95">
               <Image
                 src="/logo-main.png"
                 alt="Boussole Municipale Logo"
@@ -103,6 +103,9 @@ export default function SiteHeader() {
               />
             </div>
           </Link>
+
+          {/* Spacer flexible pour pousser les éléments à droite */}
+          <div className="flex-1" />
 
           {/* Desktop Navigation & Conditional Action Button */}
           <div className="hidden md:flex items-center space-x-6">

@@ -681,7 +681,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Image décorative - chien et maître centrée à gauche (réduite) */}
+      {/* Image décorative - chien et maître centrée à gauche (réduite) (desktop) */}
       <div className="hidden lg:block">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
           <img 
@@ -692,7 +692,29 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      <div className="container max-w-4xl py-6 px-4 md:px-6 animate-fadeIn relative z-10">
+      {/* Images décoratives pour mobile - coins subtils */}
+      <div className="lg:hidden">
+        {/* Chien et maître en coin supérieur droit */}
+        <div className="mobile-decorative-corner top-right">
+          <img 
+            src="/Image_parc_chien_maitre.png" 
+            alt="" 
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
+        
+        {/* Image secondaire en bas */}
+        <div className="mobile-decorative-corner bottom-right">
+          <img 
+            src="/Image_parc_crisp.png" 
+            alt="" 
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
+      </div>
+
+      {/* Contenu principal avec overlay mobile */}
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none">
       {/* Header */}
       <div className="mb-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">

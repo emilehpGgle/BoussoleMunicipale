@@ -462,7 +462,7 @@ export default function ResultsPage() {
         </div>
       )}
 
-      {/* Images décoratives positionnées selon la hauteur */}
+      {/* Images décoratives positionnées selon la hauteur (desktop) */}
       <div className="hidden lg:block">
         {/* Chat qui dort - premier tiers de la page */}
         <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
@@ -483,272 +483,292 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10">
-      <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
-        <div className="flex-1">
-          <h1 className="text-foreground mb-3">Vos Résultats</h1> {/* font-bold is now in globals.css for h1 */}
-          <p className="text-muted-foreground">
-            Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
-          </p>
+      {/* Images décoratives pour mobile - coins subtils */}
+      <div className="lg:hidden">
+        {/* Chat en coin supérieur droit */}
+        <div className="mobile-decorative-corner top-right">
+          <img 
+            src="/Image_parc_chat_dort.png" 
+            alt="" 
+            className="w-full h-full object-cover rounded-2xl"
+          />
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3" id="header-share-button">
-          <span className="text-lg font-semibold text-foreground">Partagez vos résultats !</span>
-          <Button
-            onClick={() => setIsShareModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6 py-2 flex items-center gap-2"
-          >
-            <Share2 className="h-4 w-4" />
-            Partager
-          </Button>
+        
+        {/* Famille en coin inférieur gauche */}
+        <div className="mobile-decorative-corner bottom-left">
+          <img 
+            src="/Image_famille.png" 
+            alt="" 
+            className="w-full h-full object-cover rounded-2xl"
+          />
         </div>
       </div>
 
-      {/* Floating Share Button - Apparaît seulement quand le header n'est pas visible */}
-      {showFloatingShare && (
-        <div className="fixed bottom-6 right-6 z-50 animate-fadeIn">
-          <Button
-            onClick={() => setIsShareModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full p-4"
-            size="lg"
-            aria-label="Partager vos résultats"
-          >
-            <Share2 className="h-5 w-5" />
-          </Button>
+      {/* Contenu principal avec overlay mobile */}
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
+          <div className="flex-1 mobile-section-border lg:border-l-0 lg:pl-0">
+            <h1 className="text-foreground mb-3">Vos Résultats</h1> {/* font-bold is now in globals.css for h1 */}
+            <p className="text-muted-foreground">
+              Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-3" id="header-share-button">
+            <span className="text-lg font-semibold text-foreground">Partagez vos résultats !</span>
+            <Button
+              onClick={() => setIsShareModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6 py-2 flex items-center gap-2"
+            >
+              <Share2 className="h-4 w-4" />
+              Partager
+            </Button>
+          </div>
         </div>
-      )}
 
-      <Card className="shadow-soft rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
-        </CardHeader>
-        <CardContent className="grid md:grid-cols-3 gap-6">
-          {topParties.map(({ party, score }, index) => (
-            <Card
-              key={party.id}
-              className="p-6 flex flex-col items-center text-center border-border shadow-sm rounded-xl card-interactive-effects animate-fadeIn" // Added card-interactive-effects & animate-fadeIn
-              style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
+        {/* Floating Share Button - Apparaît seulement quand le header n'est pas visible */}
+        {showFloatingShare && (
+          <div className="fixed bottom-6 right-6 z-50 animate-fadeIn">
+            <Button
+              onClick={() => setIsShareModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full p-4"
+              size="lg"
+              aria-label="Partager vos résultats"
             >
-              <LogoContainer className="w-20 h-20 mb-4">
-                <Image
-                  src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
-                  alt={`Logo ${party.name}`}
-                  width={60} // Adjusted to fit within padding
-                  height={60} // Adjusted to fit within padding
-                  style={{ objectFit: "contain" }}
-                />
-              </LogoContainer>
-              {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
-              <div className="min-h-[4rem] flex flex-col justify-center mb-3">
-                <h3 className="text-lg font-semibold text-foreground leading-tight">{party.shortName || party.name}</h3>
-                <p className="text-sm text-muted-foreground leading-tight">{party.name}</p>
-              </div>
-              <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
-                <div
-                  className="bg-primary h-4 rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${score.toFixed(0)}%` }}
-                ></div>
-              </div>
-              <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d'affinité</p>
-              <Button
-                asChild
-                variant="outline"
-                className="w-full rounded-lg border-primary text-primary hover:bg-primary/10 btn-base-effects btn-hover-lift"
+              <Share2 className="h-5 w-5" />
+            </Button>
+          </div>
+        )}
+
+        <Card className="shadow-soft rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
+          </CardHeader>
+          <CardContent className="grid md:grid-cols-3 gap-6">
+            {topParties.map(({ party, score }, index) => (
+              <Card
+                key={party.id}
+                className="p-6 flex flex-col items-center text-center border-border shadow-sm rounded-xl card-interactive-effects animate-fadeIn card-color-accent" // Added card-color-accent for mobile
+                style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
               >
-                <Link href={`/parti/${party.id}`}>Voir la fiche du parti</Link>
-              </Button>
-            </Card>
-          ))}
-        </CardContent>
-      </Card>
-
-      <Card className="shadow-soft rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
-          <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {calculatedScores.map(({ party, score }) => (
-            <Link
-              href={`/parti/${party.id}`}
-              key={party.id}
-              className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-primary/20 hover:shadow-md"
-            >
-              <div className="flex items-center gap-3 mb-2">
-                <LogoContainer className="w-9 h-9 group-hover:shadow-md transition-shadow">
+                <LogoContainer className="w-20 h-20 mb-4">
                   <Image
-                    src={party.logoUrl || "/placeholder.svg?width=32&height=32&query=Logo+non+disponible"}
-                    alt={`${party.name} logo`}
-                    width={28}
-                    height={28}
+                    src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
+                    alt={`Logo ${party.name}`}
+                    width={60} // Adjusted to fit within padding
+                    height={60} // Adjusted to fit within padding
                     style={{ objectFit: "contain" }}
                   />
                 </LogoContainer>
-                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">
-                  {party.name}
-                </h3>
-                <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
-                  <span className="text-sm font-medium">Voir les détails</span>
-                  <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
+                <div className="min-h-[4rem] flex flex-col justify-center mb-3">
+                  <h3 className="text-lg font-semibold text-foreground leading-tight">{party.shortName || party.name}</h3>
+                  <p className="text-sm text-muted-foreground leading-tight">{party.name}</p>
                 </div>
-              </div>
-              <div className="flex items-center gap-2 text-sm">
-                <div className="w-full bg-muted rounded-full h-5 flex overflow-hidden border border-border group-hover:border-primary/30 transition-colors">
+                <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
                   <div
-                    className="bg-primary h-full flex items-center justify-center text-xs text-primary-foreground font-medium transition-all duration-500 ease-out"
+                    className="bg-primary h-4 rounded-full transition-all duration-500 ease-out"
                     style={{ width: `${score.toFixed(0)}%` }}
-                  >
-                    {score >= 15 ? `${score.toFixed(0)}%` : ""}
-                  </div>
+                  ></div>
                 </div>
-                <span className="text-sm font-medium text-foreground whitespace-nowrap ml-2">
-                  {score.toFixed(0)}% d'affinité
-                </span>
-              </div>
-            </Link>
-          ))}
-        </CardContent>
-      </Card>
-
-      {/* Carte de positionnement politique 2D */}
-      <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
-
-      
-
-      <Card className="shadow-soft rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
-          <CardDescription>
-            Explorez comment vos réponses se comparent à celles des partis pour chaque question.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="single" collapsible className="w-full">
-            {boussoleQuestions.map((question, qIndex) => {
-              const userAnswer = calculatedScores[0]?.details.find((d) => d.question.id === question.id)?.userAnswer
-              
-              // Obtenir la réponse directe d'importance si applicable
-              let userResponseText = "Non répondue"
-              if (userAnswer) {
-                if (question.responseType === "importance_direct") {
-                  // Pour les questions d'importance directe, utiliser les réponses du hook
-                  const directAnswer = userImportance[question.id]
-                  if (directAnswer) {
-                    const importanceDirectLabels: Record<string, string> = {
-                      "TI": "Très important",
-                      "AI": "Assez important", 
-                      "NI": "Neutre",
-                      "PI": "Peu important",
-                      "PTI": "Pas du tout important",
-                      "IDK": "Ne sais pas"
-                    }
-                    userResponseText = importanceDirectLabels[directAnswer] || directAnswer
-                  }
-                } else {
-                  // Pour les questions d'accord/désaccord standard
-                  userResponseText = getAgreementLabel(question, userAnswer)
-                }
-              }
-              
-              return (
-                <AccordionItem value={`item-${qIndex}`} key={question.id}>
-                  <AccordionTrigger className="text-left hover:no-underline group">
-                    <span className="text-sm font-medium text-foreground group-hover:text-primary">
-                      {qIndex + 1}. {question.text}
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-4 px-2 space-y-3">
-                    <div className="p-3 bg-primary/10 rounded-md border border-primary/20">
-                      <p className="text-sm font-semibold text-primary mb-1">Votre Réponse :</p>
-                      <p className="text-sm text-primary-dark">
-                        {userResponseText}
-                      </p>
-                    </div>
-                    <div className="space-y-2">
-                      <h5 className="text-sm font-semibold text-muted-foreground">Positions des partis :</h5>
-                      {calculatedScores.map(({ party, details }) => {
-                        const detail = details.find((d) => d.question.id === question.id)
-                        const partyPos = detail?.partyPosition
-                        const positionText =
-                          partyPos?.position && partyPos.position !== "?"
-                            ? getAgreementLabel(question, partyPos.position)
-                            : partyPos?.position === "?"
-                              ? "Position incertaine"
-                              : "Non spécifiée"
-                        return (
-                          <div
-                            key={party.id}
-                            className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
-                          >
-                            <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
-                            <span className="text-muted-foreground">{positionText}</span>
-                            {partyPos?.source && (
-                              <em className="block text-gray-500 text-[11px] truncate">Source: {partyPos.source}</em>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              )
-            })}
-          </Accordion>
-        </CardContent>
-      </Card>
-
-      <div className="mt-8">
-        <Card className="bg-muted/30 border-muted-foreground/20 shadow-none">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-              <Info className="h-5 w-5" />
-              Méthodologie (Simplifiée)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="text-sm text-muted-foreground space-y-4">
-            <div>
-              <h4 className="font-semibold text-foreground mb-1">📍 Positionnement politique</h4>
-              <p>
-                Chacune des 20 questions influence votre score sur deux axes indépendants (économique et social). Votre position finale est la somme de ces influences, pondérée par l'importance que vous accordez à chaque question.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-foreground mb-1">📊 Calcul des affinités</h4>
-              <p>
-                L'affinité est calculée à partir de la distance qui vous sépare de chaque parti sur la carte politique. Plus un parti est proche de vous, plus l'affinité est élevée. La formule a été ajustée pour que les partis éloignés soient plus sévèrement pénalisés, rendant le score plus intuitif.
-              </p>
-            </div>
-            <div>
-              <p className="text-xs italic pt-2 border-t border-muted-foreground/10">
-                <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l'analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
-              </p>
-            </div>
+                <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d'affinité</p>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="w-full rounded-lg border-primary text-primary hover:bg-primary/10 btn-base-effects btn-hover-lift"
+                >
+                  <Link href={`/parti/${party.id}`}>Voir la fiche du parti</Link>
+                </Button>
+              </Card>
+            ))}
           </CardContent>
         </Card>
-      </div>
 
-      <div className="mt-10 flex justify-center">
-        <Button
-          asChild
-          variant="outline"
-          className="flex items-center gap-2 rounded-lg px-6 py-3 btn-base-effects btn-hover-lift"
-        >
-          <Link href="/questionnaire">
-            <ArrowLeft className="h-4 w-4" /> Refaire le questionnaire
-          </Link>
-        </Button>
-      </div>
+        <Card className="shadow-soft rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
+            <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {calculatedScores.map(({ party, score }) => (
+              <Link
+                href={`/parti/${party.id}`}
+                key={party.id}
+                className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-primary/20 hover:shadow-md"
+              >
+                <div className="flex items-center gap-3 mb-2">
+                  <LogoContainer className="w-9 h-9 group-hover:shadow-md transition-shadow">
+                    <Image
+                      src={party.logoUrl || "/placeholder.svg?width=32&height=32&query=Logo+non+disponible"}
+                      alt={`${party.name} logo`}
+                      width={28}
+                      height={28}
+                      style={{ objectFit: "contain" }}
+                    />
+                  </LogoContainer>
+                  <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">
+                    {party.name}
+                  </h3>
+                  <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
+                    <span className="text-sm font-medium">Voir les détails</span>
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <div className="w-full bg-muted rounded-full h-5 flex overflow-hidden border border-border group-hover:border-primary/30 transition-colors">
+                    <div
+                      className="bg-primary h-full flex items-center justify-center text-xs text-primary-foreground font-medium transition-all duration-500 ease-out"
+                      style={{ width: `${score.toFixed(0)}%` }}
+                    >
+                      {score >= 15 ? `${score.toFixed(0)}%` : ""}
+                    </div>
+                  </div>
+                  <span className="text-sm font-medium text-foreground whitespace-nowrap ml-2">
+                    {score.toFixed(0)}% d'affinité
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </CardContent>
+        </Card>
 
-      {/* Modal de partage */}
-      <ShareModal
-        isOpen={isShareModalOpen}
-        onClose={() => setIsShareModalOpen(false)}
-        results={results}
-        politicalPosition={results?.politicalPosition}
-        userAnswers={userAnswers}
-        userImportance={userImportance}
-        calculatedScores={calculatedScores}
-        topParties={topParties}
-      />
+        {/* Carte de positionnement politique 2D */}
+        <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
+
+        <Card className="shadow-soft rounded-2xl">
+          <CardHeader>
+            <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
+            <CardDescription>
+              Explorez comment vos réponses se comparent à celles des partis pour chaque question.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Accordion type="single" collapsible className="w-full">
+              {boussoleQuestions.map((question, qIndex) => {
+                const userAnswer = calculatedScores[0]?.details.find((d) => d.question.id === question.id)?.userAnswer
+                
+                // Obtenir la réponse directe d'importance si applicable
+                let userResponseText = "Non répondue"
+                if (userAnswer) {
+                  if (question.responseType === "importance_direct") {
+                    // Pour les questions d'importance directe, utiliser les réponses du hook
+                    const directAnswer = userImportance[question.id]
+                    if (directAnswer) {
+                      const importanceDirectLabels: Record<string, string> = {
+                        "TI": "Très important",
+                        "AI": "Assez important", 
+                        "NI": "Neutre",
+                        "PI": "Peu important",
+                        "PTI": "Pas du tout important",
+                        "IDK": "Ne sais pas"
+                      }
+                      userResponseText = importanceDirectLabels[directAnswer] || directAnswer
+                    }
+                  } else {
+                    // Pour les questions d'accord/désaccord standard
+                    userResponseText = getAgreementLabel(question, userAnswer)
+                  }
+                }
+                
+                return (
+                  <AccordionItem value={`item-${qIndex}`} key={question.id}>
+                    <AccordionTrigger className="text-left hover:no-underline group">
+                      <span className="text-sm font-medium text-foreground group-hover:text-primary">
+                        {qIndex + 1}. {question.text}
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="pt-2 pb-4 px-2 space-y-3">
+                      <div className="p-3 bg-primary/10 rounded-md border border-primary/20">
+                        <p className="text-sm font-semibold text-primary mb-1">Votre Réponse :</p>
+                        <p className="text-sm text-primary-dark">
+                          {userResponseText}
+                        </p>
+                      </div>
+                      <div className="space-y-2">
+                        <h5 className="text-sm font-semibold text-muted-foreground">Positions des partis :</h5>
+                        {calculatedScores.map(({ party, details }) => {
+                          const detail = details.find((d) => d.question.id === question.id)
+                          const partyPos = detail?.partyPosition
+                          const positionText =
+                            partyPos?.position && partyPos.position !== "?"
+                              ? getAgreementLabel(question, partyPos.position)
+                              : partyPos?.position === "?"
+                                ? "Position incertaine"
+                                : "Non spécifiée"
+                          return (
+                            <div
+                              key={party.id}
+                              className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
+                            >
+                              <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
+                              <span className="text-muted-foreground">{positionText}</span>
+                              {partyPos?.source && (
+                                <em className="block text-gray-500 text-[11px] truncate">Source: {partyPos.source}</em>
+                              )}
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                )
+              })}
+            </Accordion>
+          </CardContent>
+        </Card>
+
+        <div className="mt-8">
+          <Card className="bg-muted/30 border-muted-foreground/20 shadow-none">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+                <Info className="h-5 w-5" />
+                Méthodologie (Simplifiée)
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="text-sm text-muted-foreground space-y-4">
+              <div>
+                <h4 className="font-semibold text-foreground mb-1">📍 Positionnement politique</h4>
+                <p>
+                  Chacune des 20 questions influence votre score sur deux axes indépendants (économique et social). Votre position finale est la somme de ces influences, pondérée par l'importance que vous accordez à chaque question.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-semibold text-foreground mb-1">📊 Calcul des affinités</h4>
+                <p>
+                  L'affinité est calculée à partir de la distance qui vous sépare de chaque parti sur la carte politique. Plus un parti est proche de vous, plus l'affinité est élevée. La formule a été ajustée pour que les partis éloignés soient plus sévèrement pénalisés, rendant le score plus intuitif.
+                </p>
+              </div>
+              <div>
+                <p className="text-xs italic pt-2 border-t border-muted-foreground/10">
+                  <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l'analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <Button
+            asChild
+            variant="outline"
+            className="flex items-center gap-2 rounded-lg px-6 py-3 btn-base-effects btn-hover-lift"
+          >
+            <Link href="/questionnaire">
+              <ArrowLeft className="h-4 w-4" /> Refaire le questionnaire
+            </Link>
+          </Button>
+        </div>
+
+        {/* Modal de partage */}
+        <ShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+          results={results}
+          politicalPosition={results?.politicalPosition}
+          userAnswers={userAnswers}
+          userImportance={userImportance}
+          calculatedScores={calculatedScores}
+          topParties={topParties}
+        />
       </div>
     </div>
   )
