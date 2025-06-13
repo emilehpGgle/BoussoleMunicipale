@@ -10,48 +10,48 @@ const backgroundConfigs = {
   home: [
     {
       src: "/Image_parc_jardinage.png",
-      className: "absolute top-20 right-8 w-24 h-24 z-0",
+      className: "absolute top-1/3 right-2 w-20 h-20",
       style: {}
     },
     {
       src: "/Image_voiture.png", 
-      className: "absolute bottom-32 left-6 w-20 h-20 z-0",
+      className: "absolute bottom-1/4 left-2 w-16 h-16",
       style: {}
     }
   ],
   questionnaire: [
     {
       src: "/Image_parc_crisp.png",
-      className: "absolute top-40 right-4 w-22 h-22 z-0",
+      className: "absolute top-1/2 right-2 w-16 h-16",
       style: {}
     },
     {
       src: "/Image_voiture.png",
-      className: "absolute bottom-20 left-4 w-18 h-18 z-0",
+      className: "absolute bottom-32 left-2 w-14 h-14",
       style: {}
     }
   ],
   results: [
     {
       src: "/Image_parc_chat_dort.png",
-      className: "absolute top-16 right-6 w-20 h-20 z-0", 
+      className: "absolute top-1/4 right-2 w-18 h-18", 
       style: {}
     },
     {
       src: "/Image_famille.png",
-      className: "absolute bottom-40 left-4 w-24 h-24 z-0",
+      className: "absolute bottom-1/5 left-2 w-20 h-20",
       style: {}
     }
   ],
   profile: [
     {
       src: "/Image_parc_chien_maitre.png",
-      className: "absolute top-32 right-8 w-22 h-22 z-0",
+      className: "absolute top-1/3 right-2 w-16 h-16",
       style: {}
     },
     {
       src: "/Image_voiture.png",
-      className: "absolute bottom-24 left-6 w-20 h-20 z-0",
+      className: "absolute bottom-1/3 left-2 w-16 h-16",
       style: {}
     }
   ]
@@ -68,7 +68,7 @@ export default function BackgroundDecorative({ variant = 'home' }: BackgroundDec
           <div 
             key={`bg-${variant}-${index}`} 
             className={`${image.className} pointer-events-none`}
-            style={image.style}
+            style={{ ...image.style, zIndex: 1 }}
           >
             <Image
               src={image.src}
