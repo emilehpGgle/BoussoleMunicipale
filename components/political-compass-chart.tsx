@@ -274,16 +274,6 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
                 Positionnement basé sur vos réponses aux enjeux municipaux
               </CardDescription>
             </div>
-            {/* Bouton plein écran pour mobile */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsFullscreen(true)}
-              className="md:hidden flex items-center gap-2 ml-2 shrink-0"
-            >
-              <Maximize2 className="h-4 w-4" />
-              <span className="sr-only">Agrandir</span>
-            </Button>
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -302,7 +292,17 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
 
           {/* Graphique SVG responsive */}
           <div className="flex justify-center overflow-hidden">
-            <div className="bg-gradient-to-br from-muted/20 to-muted/40 rounded-xl p-2 sm:p-4 border w-full max-w-4xl">
+            <div className="relative bg-gradient-to-br from-muted/20 to-muted/40 rounded-xl p-2 sm:p-4 border w-full max-w-4xl">
+              {/* Bouton plein écran repositionné juste au-dessus à droite de la carte */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setIsFullscreen(true)}
+                className="md:hidden absolute -top-3 -right-2 z-10 flex items-center gap-2 bg-background/95 backdrop-blur-sm border shadow-md"
+              >
+                <Maximize2 className="h-4 w-4" />
+                <span className="sr-only">Agrandir</span>
+              </Button>
               <PoliticalMapSVG width={svgWidth} height={svgHeight} />
             </div>
           </div>

@@ -74,8 +74,9 @@ export default function BackgroundDecorative({ variant = 'home' }: BackgroundDec
               src={image.src}
               alt=""
               fill
-              className="object-cover rounded-xl"
+              className="object-cover rounded-xl opacity-100"
               sizes="96px"
+              style={{ opacity: 1 }}
             />
           </div>
         ))}
