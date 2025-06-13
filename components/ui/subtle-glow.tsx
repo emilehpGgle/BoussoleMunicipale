@@ -25,35 +25,35 @@ export function SubtleGlow({
   const BASE_TRANSITION = {
     repeat: Infinity,
     duration: duration,
-    ease: 'easeInOut',
+    ease: 'easeInOut' as const,
   }
 
-  // Intensités très réduites pour un effet discret
+  // Intensités augmentées pour être plus visibles
   const intensitySettings = {
     minimal: {
-      opacity: [0.02, 0.04, 0.02],
-      scale: [0.8, 0.85, 0.8],
+      opacity: [0.08, 0.12, 0.08],
+      scale: [0.8, 0.9, 0.8],
     },
     subtle: {
-      opacity: [0.03, 0.06, 0.03],
-      scale: [0.9, 0.95, 0.9],
+      opacity: [0.12, 0.18, 0.12],
+      scale: [0.9, 1.0, 0.9],
     },
     soft: {
-      opacity: [0.05, 0.08, 0.05],
-      scale: [0.95, 1.0, 0.95],
+      opacity: [0.15, 0.25, 0.15],
+      scale: [0.95, 1.05, 0.95],
     }
   }
 
   const animations = {
     static: {
-      background: `radial-gradient(circle at 50% 50%, ${colors[0]}15, transparent 70%)`,
+      background: `radial-gradient(circle at 50% 50%, ${colors[0]}20, transparent 70%)`,
       opacity: intensitySettings[intensity].opacity[0],
     },
     breathe: {
       background: [
-        `radial-gradient(circle at 50% 50%, ${colors[0]}15, transparent 70%)`,
-        `radial-gradient(circle at 50% 50%, ${colors[1]}15, transparent 70%)`,
-        `radial-gradient(circle at 50% 50%, ${colors[0]}15, transparent 70%)`,
+        `radial-gradient(circle at 50% 50%, ${colors[0]}20, transparent 70%)`,
+        `radial-gradient(circle at 50% 50%, ${colors[1]}25, transparent 70%)`,
+        `radial-gradient(circle at 50% 50%, ${colors[0]}20, transparent 70%)`,
       ],
       opacity: intensitySettings[intensity].opacity,
       scale: intensitySettings[intensity].scale,
@@ -63,7 +63,7 @@ export function SubtleGlow({
       },
     },
     pulse: {
-      background: `radial-gradient(circle at 50% 50%, ${colors[0]}15, transparent 70%)`,
+      background: `radial-gradient(circle at 50% 50%, ${colors[0]}25, transparent 70%)`,
       opacity: intensitySettings[intensity].opacity,
       transition: {
         ...BASE_TRANSITION,
@@ -72,10 +72,10 @@ export function SubtleGlow({
     },
     drift: {
       background: [
-        `radial-gradient(circle at 30% 40%, ${colors[0]}15, transparent 70%)`,
-        `radial-gradient(circle at 70% 60%, ${colors[1]}15, transparent 70%)`,
-        `radial-gradient(circle at 40% 70%, ${colors[2]}15, transparent 70%)`,
-        `radial-gradient(circle at 60% 30%, ${colors[0]}15, transparent 70%)`,
+        `radial-gradient(circle at 30% 40%, ${colors[0]}20, transparent 70%)`,
+        `radial-gradient(circle at 70% 60%, ${colors[1]}25, transparent 70%)`,
+        `radial-gradient(circle at 40% 70%, ${colors[2]}20, transparent 70%)`,
+        `radial-gradient(circle at 60% 30%, ${colors[0]}25, transparent 70%)`,
       ],
       opacity: intensitySettings[intensity].opacity,
       transition: {
