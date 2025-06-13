@@ -13,6 +13,8 @@ import type { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
+import { ColoredText, HighlightText } from "@/components/ui/colored-text"
+import { GlowSection } from "@/components/ui/subtle-glow"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -199,7 +201,15 @@ export default function QuestionnairePage() {
   }
 
       return (
-      <div className="relative min-h-screen mobile-constrained">
+      <GlowSection 
+        glowProps={{ 
+          mode: 'drift', 
+          intensity: 'minimal',
+          colors: ['#3B82F6', '#06B6D4', '#8B5CF6'],
+          duration: 20
+        }}
+        className="relative min-h-screen mobile-constrained"
+      >
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {error && (
@@ -225,11 +235,11 @@ export default function QuestionnairePage() {
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm font-medium text-muted-foreground">
-              Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
+              <ColoredText variant="gradient" intensity="subtle">Question {currentQuestionIndex + 1}</ColoredText> sur <ColoredText variant="secondary" intensity="subtle">{boussoleQuestions.length}</ColoredText>
             </div>
             {/* Affichage du nombre de réponses */}
             <div className="text-xs text-muted-foreground">
-              {getResponseCounts().total} réponses enregistrées
+              <ColoredText variant="accent" intensity="subtle">{getResponseCounts().total} réponses</ColoredText> enregistrées
             </div>
           </div>
           <Progress
@@ -241,7 +251,18 @@ export default function QuestionnairePage() {
 
         <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
           <div className="flex items-start gap-3 mb-4">
-            <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>{currentQuestion.text}</h2>
+            <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
+              {currentQuestion.text.split(' ').map((word, index) => {
+                // Mettre en couleur certains mots-clés
+                const keywords = ['transport', 'environnement', 'logement', 'économie', 'culture', 'sécurité', 'santé', 'éducation', 'municipal', 'ville', 'citoyens', 'développement'];
+                const isKeyword = keywords.some(keyword => word.toLowerCase().includes(keyword.toLowerCase()));
+                
+                if (isKeyword) {
+                  return <span key={index}><ColoredText variant="primary" intensity="subtle">{word}</ColoredText> </span>;
+                }
+                return <span key={index}>{word} </span>;
+              })}
+            </h2>
             {currentQuestion.description && (
               <TooltipProvider>
                 <Tooltip delayDuration={100}>
@@ -347,6 +368,6 @@ export default function QuestionnairePage() {
           </Button>
         </div>
       </div>
-    </div>
+    </GlowSection>
   )
 }
