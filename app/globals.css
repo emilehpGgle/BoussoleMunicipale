@@ -273,111 +273,51 @@
     z-index: 2;
   }
 
-  /* NOUVEAU SYSTÈME : Autocollants décoratifs pour mobile */
-  .decorative-sticker {
+  /* NOUVEAU SYSTÈME : Images en background minimalistes */
+  .background-decorative {
     position: absolute;
-    z-index: 10;
+    z-index: 0;
     pointer-events: none;
-    border-radius: 20px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    border-radius: 12px;
+    opacity: 1;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   }
 
-  .decorative-sticker:hover {
-    transform: scale(1.05);
-  }
-
-  /* Positions spécifiques pour les autocollants */
-  .sticker-top-right {
-    top: 20px;
-    right: 20px;
+  /* Images petites et discrètes en arrière-plan */
+  .bg-image-small {
     width: 80px;
     height: 80px;
-    transform: rotate(8deg);
   }
 
-  .sticker-top-left {
-    top: 60px;
-    left: 20px;
-    width: 70px;
-    height: 70px;
-    transform: rotate(-5deg);
+  .bg-image-medium {
+    width: 96px;
+    height: 96px;
   }
 
-  .sticker-bottom-right {
-    bottom: 40px;
-    right: 15px;
-    width: 90px;
-    height: 90px;
-    transform: rotate(12deg);
+  /* Positions stratégiques pour les images background */
+  .bg-position-top-right {
+    top: 80px;
+    right: 32px;
   }
 
-  .sticker-bottom-left {
-    bottom: 80px;
-    left: 15px;
-    width: 75px;
-    height: 75px;
-    transform: rotate(-8deg);
+  .bg-position-top-left {
+    top: 160px;
+    left: 24px;
   }
 
-  .sticker-center-right {
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%) rotate(15deg);
-    width: 85px;
-    height: 85px;
+  .bg-position-bottom-right {
+    bottom: 64px;
+    right: 24px;
   }
 
-  .sticker-center-left {
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%) rotate(-10deg);
-    width: 75px;
-    height: 75px;
+  .bg-position-bottom-left {
+    bottom: 128px;
+    left: 24px;
   }
 
-  /* Animation flottante pour les autocollants */
-  @keyframes stickerFloat {
-    0%, 100% {
-      transform: translateY(0px) rotate(var(--rotation, 0deg));
-    }
-    50% {
-      transform: translateY(-3px) rotate(var(--rotation, 0deg));
-    }
-  }
-
-  .sticker-animated {
-    animation: stickerFloat 4s ease-in-out infinite;
-  }
-
-  .sticker-animated.sticker-top-right {
-    --rotation: 8deg;
-    animation-delay: 0s;
-  }
-
-  .sticker-animated.sticker-top-left {
-    --rotation: -5deg;
-    animation-delay: 1s;
-  }
-
-  .sticker-animated.sticker-bottom-right {
-    --rotation: 12deg;
-    animation-delay: 2s;
-  }
-
-  .sticker-animated.sticker-bottom-left {
-    --rotation: -8deg;
-    animation-delay: 0.5s;
-  }
-
-  .sticker-animated.sticker-center-right {
-    --rotation: 15deg;
-    animation-delay: 1.5s;
-  }
-
-  .sticker-animated.sticker-center-left {
-    --rotation: -10deg;
-    animation-delay: 2.5s;
+  .bg-position-center-right {
+    top: 40%;
+    right: 16px;
   }
 
   /* Contraintes pour éviter les débordements */
@@ -413,6 +353,35 @@
         hsl(var(--background)) 0%, 
         hsl(var(--primary) / 0.03) 50%,
         hsl(var(--teal-special) / 0.02) 100%);
+    }
+  }
+
+  /* Contraintes strictes pour mobile */
+  @media (max-width: 768px) {
+    * {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 100%;
+      overflow-x: hidden;
+    }
+    
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      width: 100%;
+    }
+    
+    /* Assurer que les images ne débordent jamais */
+    img, .relative {
+      max-width: 100%;
+      width: 100%;
     }
   }
 }

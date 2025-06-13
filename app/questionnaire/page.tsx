@@ -12,7 +12,8 @@ import { boussoleQuestions, agreementLabels, importanceDirectLabels, getAgreemen
 import type { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
-import DecorativeStickers from "@/components/decorative-stickers"
+import { useResults } from "@/hooks/useResults"
+import BackgroundDecorative from '@/components/decorative-background'
 
 // questions constant is already defined from boussoleQuestions
 
@@ -23,6 +24,7 @@ export default function QuestionnairePage() {
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
+  const [currentScreen, setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -46,6 +48,8 @@ export default function QuestionnairePage() {
     userAnswers,
     userImportanceDirectAnswers
   } = useUserResponses()
+
+  const { hasResults } = useResults()
 
   // Calculer quelle question afficher basée sur les réponses existantes
   const calculateNextQuestionIndex = useCallback(() => {
@@ -186,10 +190,18 @@ export default function QuestionnairePage() {
     )
   }
 
-  return (
-    <div className="relative min-h-screen mobile-constrained">
-      {/* Autocollants décoratifs pour mobile */}
-      <DecorativeStickers variant="questionnaire" />
+  const showResults = () => {
+    setCurrentScreen('results')
+  }
+
+  const backToQuestionnaire = () => {
+    setCurrentScreen('questionnaire')
+  }
+
+      return (
+      <div className="relative min-h-screen mobile-constrained">
+        {/* Images décoratives en background - minimalistes */}
+        <BackgroundDecorative variant="questionnaire" />
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {error && (

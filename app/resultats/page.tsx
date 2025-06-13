@@ -34,7 +34,7 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
-import DecorativeStickers from "@/components/decorative-stickers"
+import BackgroundDecorative from "@/components/decorative-background"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -453,10 +453,10 @@ export default function ResultsPage() {
     </div>
   )
 
-  return (
-    <div className="relative min-h-screen mobile-constrained">
-      {/* Autocollants décoratifs pour mobile */}
-      <DecorativeStickers variant="results" />
+      return (
+      <div className="relative min-h-screen mobile-constrained">
+        {/* Images décoratives en background - minimalistes */}
+        <BackgroundDecorative variant="results" />
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {(responsesError || resultsError) && (

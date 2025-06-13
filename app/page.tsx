@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
 import Image from "next/image"
 import Link from "next/link"
-import DecorativeStickers from "@/components/decorative-stickers"
+import BackgroundDecorative from "@/components/decorative-background"
 
 export default function HomePage() {
   // Fonction pour déclencher l'ouverture du modal depuis le header
@@ -18,8 +18,8 @@ export default function HomePage() {
 
   return (
     <div className="mobile-constrained">
-      {/* Autocollants décoratifs pour mobile */}
-      <DecorativeStickers variant="home" />
+      {/* Images décoratives en background - minimalistes */}
+      <BackgroundDecorative variant="home" />
 
       {/* Section Hero */}
       <section className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50">
@@ -179,12 +179,12 @@ export default function HomePage() {
       </section>
 
       {/* Section de confidentialité avec image - CORRIGÉE */}
-      <section className="section-contained w-full py-16 md:py-24 bg-muted/30">
-        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
-          <div className="grid gap-12 md:gap-8 items-center md:grid-cols-2">
+      <section className="section-contained w-full py-16 md:py-24 bg-muted/30 overflow-hidden">
+        <div className="container px-4 md:px-6 max-w-7xl mx-auto overflow-hidden">
+          <div className="grid gap-8 md:gap-12 items-center md:grid-cols-2 w-full">
             {/* Contenu textuel */}
             <div
-              className="text-center md:text-left p-6 md:p-10 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects order-2 md:order-1"
+              className="text-center md:text-left p-6 md:p-10 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects order-2 md:order-1 w-full min-w-0"
               style={{ animationDelay: "0.4s" }}
             >
               <h2 className="mb-6 text-foreground">Votre vie privée, notre priorité.</h2>
@@ -202,7 +202,7 @@ export default function HomePage() {
             </div>
             {/* Image - OPTIMISÉE POUR MOBILE */}
             <div
-              className="relative h-[250px] sm:h-[300px] md:h-[350px] w-full max-w-full rounded-2xl overflow-hidden animate-fadeIn order-1 md:order-2"
+              className="relative h-[200px] sm:h-[250px] md:h-[350px] w-full rounded-2xl overflow-hidden animate-fadeIn order-1 md:order-2 min-w-0"
               style={{ animationDelay: "0.6s" }}
             >
               <Image
@@ -211,7 +211,7 @@ export default function HomePage() {
                 fill
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
-                sizes="(max-width: 768px) 100vw, 45vw"
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>

@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ArrowRight, User, Home, Car, Target, X, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
-import DecorativeStickers from "@/components/decorative-stickers"
+import BackgroundDecorative from '@/components/decorative-background'
 
 // Données pour les questions de profil (organisées par page)
 const profileQuestions = {
@@ -673,9 +673,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="relative min-h-screen mobile-constrained">
-      {/* Autocollants décoratifs pour mobile */}
-      <DecorativeStickers variant="profile" />
+    <div className="mobile-constrained">
+      {/* Images décoratives en background - minimalistes */}
+      <BackgroundDecorative variant="profile" />
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {error && (
