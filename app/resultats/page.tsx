@@ -34,6 +34,7 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
+import { GlowCard } from "@/components/ui/glow-effect"
 
 
 interface UserAnswers {
@@ -520,16 +521,31 @@ export default function ResultsPage() {
           </div>
         )}
 
-                 <Card className="shadow-soft rounded-2xl subtle-glow">
+                 <GlowCard 
+          className="shadow-soft rounded-2xl"
+          glowProps={{
+            mode: "breathe",
+            intensity: "subtle",
+            duration: 12,
+            colors: ['#3B82F6', '#06B6D4', '#8B5CF6']
+          }}
+        >
+          <Card className="bg-transparent">
            <CardHeader>
              <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
            </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-6">
             {topParties.map(({ party, score }, index) => (
-              <Card
+              <GlowCard
                 key={party.id}
                 className="p-6 flex flex-col items-center text-center border-border shadow-sm rounded-xl card-interactive-effects animate-fadeIn card-color-accent" // Added card-color-accent for mobile
                 style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
+                glowProps={{
+                  mode: "pulse",
+                  intensity: "minimal",
+                  duration: 8,
+                  colors: ['#3B82F6', '#06B6D4']
+                }}
               >
                 <LogoContainer className="w-20 h-20 mb-4">
                   <Image
@@ -559,10 +575,11 @@ export default function ResultsPage() {
                 >
                   <Link href={`/parti/${party.id}`}>Voir la fiche du parti</Link>
                 </Button>
-              </Card>
+                </GlowCard>
             ))}
           </CardContent>
-        </Card>
+          </Card>
+        </GlowCard>
 
                  <Card className="shadow-soft rounded-2xl subtle-glow">
            <CardHeader>

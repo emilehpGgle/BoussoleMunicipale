@@ -15,6 +15,7 @@ import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
 import { ColoredText, HighlightText } from "@/components/ui/colored-text"
 import { GlowSection } from "@/components/ui/subtle-glow"
+import { GlowCard } from "@/components/ui/glow-effect"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -249,7 +250,16 @@ export default function QuestionnairePage() {
           />
         </div>
 
-        <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
+        <GlowCard 
+          key={questionKey} 
+          className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'}`}
+          glowProps={{
+            mode: "breathe",
+            intensity: "subtle",
+            duration: 10,
+            colors: ['#3B82F6', '#06B6D4', '#8B5CF6']
+          }}
+        >
           <div className="flex items-start gap-3 mb-4">
             <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
               {currentQuestion.text}
@@ -351,7 +361,7 @@ export default function QuestionnairePage() {
               </Button>
             )}
           </div>
-        </Card>
+        </GlowCard>
 
         <div className="mt-2 text-center">
           <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
