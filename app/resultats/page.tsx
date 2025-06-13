@@ -34,7 +34,7 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
-import BackgroundDecorative from "@/components/decorative-background"
+
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -455,8 +455,6 @@ export default function ResultsPage() {
 
       return (
       <div className="relative min-h-screen mobile-constrained">
-        {/* Images décoratives en background - minimalistes */}
-        <BackgroundDecorative variant="results" />
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {(responsesError || resultsError) && (
@@ -522,10 +520,10 @@ export default function ResultsPage() {
           </div>
         )}
 
-        <Card className="shadow-soft rounded-2xl">
-          <CardHeader>
-            <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
-          </CardHeader>
+                 <Card className="shadow-soft rounded-2xl subtle-glow">
+           <CardHeader>
+             <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
+           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-6">
             {topParties.map(({ party, score }, index) => (
               <Card
@@ -566,9 +564,9 @@ export default function ResultsPage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-soft rounded-2xl">
-          <CardHeader>
-            <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
+                 <Card className="shadow-soft rounded-2xl subtle-glow">
+           <CardHeader>
+             <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
             <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -617,9 +615,9 @@ export default function ResultsPage() {
         {/* Carte de positionnement politique 2D */}
         <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
 
-        <Card className="shadow-soft rounded-2xl">
-          <CardHeader>
-            <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
+                 <Card className="shadow-soft rounded-2xl subtle-glow">
+           <CardHeader>
+             <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
             <CardDescription>
               Explorez comment vos réponses se comparent à celles des partis pour chaque question.
             </CardDescription>

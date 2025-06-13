@@ -13,7 +13,7 @@ import type { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
-import BackgroundDecorative from '@/components/decorative-background'
+
 
 // questions constant is already defined from boussoleQuestions
 
@@ -200,8 +200,6 @@ export default function QuestionnairePage() {
 
       return (
       <div className="relative min-h-screen mobile-constrained">
-        {/* Images décoratives en background - minimalistes */}
-        <BackgroundDecorative variant="questionnaire" />
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {error && (
@@ -241,7 +239,7 @@ export default function QuestionnairePage() {
           />
         </div>
 
-        <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
+        <Card key={questionKey} className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'}`}>
           <div className="flex items-start gap-3 mb-4">
             <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>{currentQuestion.text}</h2>
             {currentQuestion.description && (

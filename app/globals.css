@@ -273,51 +273,35 @@
     z-index: 2;
   }
 
-  /* NOUVEAU SYSTÈME : Images en background minimalistes */
-  .background-decorative {
-    position: absolute;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: 12px;
-    opacity: 1 !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  /* SYSTÈME DE GLOW SUBTIL POUR LES MODULES */
+  .subtle-glow {
+    box-shadow: 
+      0 0 0 1px rgba(59, 130, 246, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.2s ease-in-out;
   }
 
-  /* Images petites et discrètes en arrière-plan */
-  .bg-image-small {
-    width: 80px;
-    height: 80px;
+  .subtle-glow:hover {
+    box-shadow: 
+      0 0 0 1px rgba(59, 130, 246, 0.2),
+      0 4px 12px rgba(59, 130, 246, 0.08),
+      0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
-  .bg-image-medium {
-    width: 96px;
-    height: 96px;
+  /* Variante pour les questions/cartes principales */
+  .question-glow {
+    box-shadow: 
+      0 0 0 1px rgba(59, 130, 246, 0.05),
+      0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(59, 130, 246, 0.1);
   }
 
-  /* Positions stratégiques pour les images background */
-  .bg-position-top-right {
-    top: 80px;
-    right: 32px;
-  }
-
-  .bg-position-top-left {
-    top: 160px;
-    left: 24px;
-  }
-
-  .bg-position-bottom-right {
-    bottom: 64px;
-    right: 24px;
-  }
-
-  .bg-position-bottom-left {
-    bottom: 128px;
-    left: 24px;
-  }
-
-  .bg-position-center-right {
-    top: 40%;
-    right: 16px;
+  .question-glow:hover {
+    box-shadow: 
+      0 0 0 1px rgba(59, 130, 246, 0.15),
+      0 4px 16px rgba(59, 130, 246, 0.06),
+      0 2px 4px rgba(0, 0, 0, 0.1);
+    border-color: rgba(59, 130, 246, 0.2);
   }
 
   /* Contraintes pour éviter les débordements */

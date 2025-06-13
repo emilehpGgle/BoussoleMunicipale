@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
 import Image from "next/image"
 import Link from "next/link"
-import BackgroundDecorative from "@/components/decorative-background"
+
 
 export default function HomePage() {
   // Fonction pour déclencher l'ouverture du modal depuis le header
@@ -18,8 +18,6 @@ export default function HomePage() {
 
   return (
     <div className="mobile-constrained">
-      {/* Images décoratives en background - minimalistes */}
-      <BackgroundDecorative variant="home" />
 
       {/* Section Hero */}
       <section className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50">
