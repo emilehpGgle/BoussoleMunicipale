@@ -34,6 +34,7 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
+import DecorativeStickers from "@/components/decorative-stickers"
 
 interface UserAnswers {
   [questionId: string]: AgreementOptionKey | undefined
@@ -453,7 +454,10 @@ export default function ResultsPage() {
   )
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen mobile-constrained">
+      {/* Autocollants décoratifs pour mobile */}
+      <DecorativeStickers variant="results" />
+
       {/* Affichage d'erreur uniquement si problème critique */}
       {(responsesError || resultsError) && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
@@ -483,29 +487,8 @@ export default function ResultsPage() {
         </div>
       </div>
 
-      {/* Images décoratives pour mobile - coins subtils */}
-      <div className="lg:hidden">
-        {/* Chat en coin supérieur droit */}
-        <div className="mobile-decorative-corner top-right">
-          <img 
-            src="/Image_parc_chat_dort.png" 
-            alt="" 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        </div>
-        
-        {/* Famille en coin inférieur gauche */}
-        <div className="mobile-decorative-corner bottom-left">
-          <img 
-            src="/Image_famille.png" 
-            alt="" 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        </div>
-      </div>
-
       {/* Contenu principal avec overlay mobile */}
-      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none">
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none section-contained">
         <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
           <div className="flex-1 mobile-section-border lg:border-l-0 lg:pl-0">
             <h1 className="text-foreground mb-3">Vos Résultats</h1> {/* font-bold is now in globals.css for h1 */}

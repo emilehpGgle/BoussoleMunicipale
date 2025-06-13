@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
 import Image from "next/image"
 import Link from "next/link"
+import DecorativeStickers from "@/components/decorative-stickers"
 
 export default function HomePage() {
   // Fonction pour déclencher l'ouverture du modal depuis le header
@@ -16,9 +17,12 @@ export default function HomePage() {
   }
 
   return (
-    <>
+    <div className="mobile-constrained">
+      {/* Autocollants décoratifs pour mobile */}
+      <DecorativeStickers variant="home" />
+
       {/* Section Hero */}
-      <section className="w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50 overflow-hidden">
+      <section className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50">
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
@@ -54,7 +58,7 @@ export default function HomePage() {
               </div>
             </div>
             <div
-              className="relative h-[350px] md:h-[450px] w-full rounded-2xl overflow-hidden animate-fadeIn"
+              className="relative h-[350px] md:h-[450px] w-full max-w-full rounded-2xl overflow-hidden animate-fadeIn"
               style={{ 
                 animationDelay: "0.3s",
                 boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
@@ -67,6 +71,7 @@ export default function HomePage() {
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
                 priority
+                sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
           </div>
@@ -74,14 +79,12 @@ export default function HomePage() {
       </section>
 
       {/* Section d'explication */}
-      <section id="comment-ca-marche" className="w-full py-16 md:py-24 bg-background">
+      <section id="comment-ca-marche" className="section-contained w-full py-16 md:py-24 bg-background">
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <h2 className="text-center mb-12 text-foreground animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             Comment ça fonctionne ?
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {" "}
-            {/* Changed to lg:grid-cols-4 */}
             {[
               {
                 icon: FileText,
@@ -98,16 +101,16 @@ export default function HomePage() {
                 bgColor: "bg-primary/10",
               },
               {
-                icon: Users, // Could be CheckSquare or similar for "decision"
-                title: "3. Prenez une décision éclairée", // Clarified title
+                icon: Users,
+                title: "3. Prenez une décision éclairée",
                 description:
-                  "Utilisez vos résultats pour mieux comprendre quel candidat correspond à vos priorités avant de voter.", // Clarified description
-                color: "text-primary", // Uniformisé avec les autres icônes
-                bgColor: "bg-primary/10", // Uniformisé avec les autres icônes
+                  "Utilisez vos résultats pour mieux comprendre quel candidat correspond à vos priorités avant de voter.",
+                color: "text-primary",
+                bgColor: "bg-primary/10",
               },
               {
-                icon: Share2, // New icon for sharing
-                title: "4. Partagez (si vous voulez!)", // New step
+                icon: Share2,
+                title: "4. Partagez (si vous voulez!)",
                 description: "Discutez de vos résultats avec vos amis et votre famille pour encourager le débat.",
                 color: "text-primary",
                 bgColor: "bg-primary/10",
@@ -130,7 +133,7 @@ export default function HomePage() {
       </section>
 
       {/* Section éducative */}
-      <section className="w-full py-16 md:py-20 bg-gradient-to-br from-primary/5 to-teal-special/5">
+      <section className="section-contained w-full py-16 md:py-20 bg-gradient-to-br from-primary/5 to-teal-special/5">
         <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div
             className="animate-slideInUp"
@@ -175,13 +178,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Section de confidentialité avec image */}
-      <section className="w-full py-16 md:py-24 bg-muted/30">
+      {/* Section de confidentialité avec image - CORRIGÉE */}
+      <section className="section-contained w-full py-16 md:py-24 bg-muted/30">
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid gap-12 md:gap-8 items-center md:grid-cols-2">
             {/* Contenu textuel */}
             <div
-              className="text-center md:text-left p-10 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects"
+              className="text-center md:text-left p-6 md:p-10 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects order-2 md:order-1"
               style={{ animationDelay: "0.4s" }}
             >
               <h2 className="mb-6 text-foreground">Votre vie privée, notre priorité.</h2>
@@ -197,9 +200,9 @@ export default function HomePage() {
                 <Link href="/confidentialite">Lire notre politique de confidentialité</Link>
               </Button>
             </div>
-            {/* Image */}
+            {/* Image - OPTIMISÉE POUR MOBILE */}
             <div
-              className="relative h-[250px] sm:h-[300px] md:h-[400px] w-full rounded-2xl overflow-hidden animate-fadeIn"
+              className="relative h-[250px] sm:h-[300px] md:h-[350px] w-full max-w-full rounded-2xl overflow-hidden animate-fadeIn order-1 md:order-2"
               style={{ animationDelay: "0.6s" }}
             >
               <Image
@@ -208,7 +211,7 @@ export default function HomePage() {
                 fill
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 768px) 100vw, 45vw"
               />
             </div>
           </div>
@@ -216,7 +219,7 @@ export default function HomePage() {
       </section>
 
       {/* Section Call-to-Action */}
-      <section className="w-full py-16 md:py-20 bg-gradient-to-r from-primary to-teal-special">
+      <section className="section-contained w-full py-16 md:py-20 bg-gradient-to-r from-primary to-teal-special">
         <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
@@ -233,6 +236,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   )
 }

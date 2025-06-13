@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ArrowRight, User, Home, Car, Target, X, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
+import DecorativeStickers from "@/components/decorative-stickers"
 
 // Données pour les questions de profil (organisées par page)
 const profileQuestions = {
@@ -672,7 +673,10 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen mobile-constrained">
+      {/* Autocollants décoratifs pour mobile */}
+      <DecorativeStickers variant="profile" />
+
       {/* Affichage d'erreur uniquement si problème critique */}
       {error && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
@@ -692,29 +696,8 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Images décoratives pour mobile - coins subtils */}
-      <div className="lg:hidden">
-        {/* Chien et maître en coin supérieur droit */}
-        <div className="mobile-decorative-corner top-right">
-          <img 
-            src="/Image_parc_chien_maitre.png" 
-            alt="" 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        </div>
-        
-        {/* Image secondaire en bas */}
-        <div className="mobile-decorative-corner bottom-right">
-          <img 
-            src="/Image_parc_crisp.png" 
-            alt="" 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        </div>
-      </div>
-
       {/* Contenu principal avec overlay mobile */}
-      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none">
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none section-contained">
       {/* Header */}
       <div className="mb-6 text-center">
         <div className="flex items-center justify-center gap-2 mb-2">

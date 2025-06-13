@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { ArrowLeft, ArrowRight, HelpCircle, CheckCircle2 } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { ArrowLeft, ArrowRight, HelpCircle, CheckCircle2, Home, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -12,6 +12,7 @@ import { boussoleQuestions, agreementLabels, importanceDirectLabels, getAgreemen
 import type { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
+import DecorativeStickers from "@/components/decorative-stickers"
 
 // questions constant is already defined from boussoleQuestions
 
@@ -186,7 +187,10 @@ export default function QuestionnairePage() {
   }
 
   return (
-    <div className="relative min-h-screen">
+    <div className="relative min-h-screen mobile-constrained">
+      {/* Autocollants décoratifs pour mobile */}
+      <DecorativeStickers variant="questionnaire" />
+
       {/* Affichage d'erreur uniquement si problème critique */}
       {error && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
@@ -206,29 +210,8 @@ export default function QuestionnairePage() {
         </div>
       </div>
 
-      {/* Images décoratives pour mobile - subtiles en coins */}
-      <div className="lg:hidden">
-        {/* Image de jardinage en coin supérieur droit */}
-        <div className="mobile-decorative-corner top-right">
-          <img 
-            src="/Image_parc_jardinage.png" 
-            alt="" 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        </div>
-        
-        {/* Image secondaire en bas si nécessaire */}
-        <div className="mobile-decorative-corner bottom-left">
-          <img 
-            src="/Image_parc_crisp.png" 
-            alt="" 
-            className="w-full h-full object-cover rounded-2xl"
-          />
-        </div>
-      </div>
-
       {/* Contenu principal avec overlay pour mobile */}
-      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 mobile-content-overlay">
+      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 mobile-content-overlay section-contained">
         <div className="mb-4">
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm font-medium text-muted-foreground">
