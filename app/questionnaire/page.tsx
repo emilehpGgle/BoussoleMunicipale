@@ -285,7 +285,7 @@ export default function QuestionnairePage() {
                 return (
                   <ButtonWithEffects
                     key={optionKey}
-                    variant="subtle"
+                    variant={isSelected ? "standard" : "subtle"}
                     className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
                       ${
                         isSelected
@@ -310,7 +310,7 @@ export default function QuestionnairePage() {
                 return (
                   <ButtonWithEffects
                     key={optionKey}
-                    variant="subtle"
+                    variant={isSelected ? "standard" : "subtle"}
                     className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
                       ${
                         isSelected

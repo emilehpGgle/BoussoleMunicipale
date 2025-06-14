@@ -35,6 +35,7 @@ import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
 import { PageWithGlow } from "@/components/ui/background-glow"
+import { TopMatchModal } from "@/components/ui/top-match-modal"
 
 
 interface UserAnswers {
@@ -88,6 +89,7 @@ export default function ResultsPage() {
   const [isDownloading, setIsDownloading] = useState(false)
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [showFloatingShare, setShowFloatingShare] = useState(false)
+  const [showTopMatchModal, setShowTopMatchModal] = useState(false)
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -185,6 +187,18 @@ export default function ResultsPage() {
       calculateAndSaveResults()
     }
   }, [isLoading, hasResults, userAnswers, calculateAndSaveResults])
+
+  // Afficher le modal de révélation automatiquement
+  useEffect(() => {
+    if (!isLoading && calculatedScores.length > 0 && !showTopMatchModal) {
+      // Délai pour laisser la page se charger complètement
+      const timer = setTimeout(() => {
+        setShowTopMatchModal(true)
+      }, 1000)
+      
+      return () => clearTimeout(timer)
+    }
+  }, [isLoading, calculatedScores.length, showTopMatchModal])
 
   // Observer pour détecter si le bouton header est visible
   useEffect(() => {
@@ -751,6 +765,22 @@ export default function ResultsPage() {
           userImportance={userImportance}
           calculatedScores={calculatedScores}
           topParties={topParties}
+        />
+
+        {/* Modal de révélation du top match */}
+        <TopMatchModal
+          isOpen={showTopMatchModal}
+          onClose={() => setShowTopMatchModal(false)}
+          topMatch={calculatedScores.length > 0 ? {
+            partyId: calculatedScores[0].party.id,
+            score: calculatedScores[0].score,
+            percentage: calculatedScores[0].score,
+            rank: 1
+          } : null}
+          onViewPartyProfile={() => {
+            setShowTopMatchModal(false)
+            // La navigation se fait via le Link dans le modal
+          }}
         />
       </div>
     </div>

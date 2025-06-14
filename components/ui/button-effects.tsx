@@ -21,6 +21,7 @@ export function ButtonWithEffects({
   ...props
 }: ButtonEffectsProps) {
   const [isClicked, setIsClicked] = useState(false);
+  const [showSparks, setShowSparks] = useState(false);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
@@ -29,11 +30,17 @@ export function ButtonWithEffects({
     setIsClicked(true);
     setTimeout(() => setIsClicked(false), 120);
 
+    // Effet spark pour les boutons standards
+    if (variant === 'standard') {
+      setShowSparks(true);
+      setTimeout(() => setShowSparks(false), 400);
+    }
+
     // Appeler la fonction onClick après un délai minimal pour le feedback visuel
     if (onClick) {
       setTimeout(() => onClick(), 50);
     }
-  }, [onClick, disabled]);
+  }, [onClick, disabled, variant]);
 
   // Configuration simplifiée selon la variante
   const effectConfig = {
@@ -98,6 +105,39 @@ export function ButtonWithEffects({
           ease: "easeOut"
         }}
       />
+
+      {/* Effet spark/particules optimisées - uniquement pour variant='standard' */}
+      {variant === 'standard' && showSparks && (
+        <>
+          {[...Array(4)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-primary rounded-full pointer-events-none"
+              style={{
+                left: '50%',
+                top: '50%',
+              }}
+              initial={{
+                x: 0,
+                y: 0,
+                opacity: 1,
+                scale: 1,
+              }}
+              animate={{
+                x: Math.cos((i * Math.PI * 2) / 4) * 25,
+                y: Math.sin((i * Math.PI * 2) / 4) * 25,
+                opacity: 0,
+                scale: 0,
+              }}
+              transition={{
+                duration: 0.35,
+                ease: "easeOut",
+                delay: i * 0.03,
+              }}
+            />
+          ))}
+        </>
+      )}
 
       {/* Contenu du bouton */}
       <span className="relative z-10">
