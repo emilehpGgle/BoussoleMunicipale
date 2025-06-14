@@ -188,15 +188,21 @@ export default function ResultsPage() {
     }
   }, [isLoading, hasResults, userAnswers, calculateAndSaveResults])
 
-  // Afficher le modal de révélation automatiquement
+  // Afficher le modal de révélation automatiquement (une seule fois par session)
   useEffect(() => {
     if (!isLoading && calculatedScores.length > 0 && !showTopMatchModal) {
-      // Délai pour laisser la page se charger complètement
-      const timer = setTimeout(() => {
-        setShowTopMatchModal(true)
-      }, 1000)
+      // Vérifier si le modal a déjà été affiché dans cette session
+      const hasSeenModal = sessionStorage.getItem('hasSeenTopMatchModal')
       
-      return () => clearTimeout(timer)
+      if (!hasSeenModal) {
+        // Délai pour laisser la page se charger complètement
+        const timer = setTimeout(() => {
+          setShowTopMatchModal(true)
+          sessionStorage.setItem('hasSeenTopMatchModal', 'true')
+        }, 1000)
+        
+        return () => clearTimeout(timer)
+      }
     }
   }, [isLoading, calculatedScores.length, showTopMatchModal])
 

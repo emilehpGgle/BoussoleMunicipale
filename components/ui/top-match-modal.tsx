@@ -10,6 +10,7 @@ import { Sparkles, Star, ArrowRight, X } from 'lucide-react';
 import { PartyScore } from '@/hooks/useResults';
 import { partiesData } from '@/lib/boussole-data';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface TopMatchModalProps {
   isOpen: boolean;
@@ -133,13 +134,17 @@ export function TopMatchModal({
               <div className="space-y-4">
                 {/* Logo du parti */}
                 <motion.div
-                  className="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center"
+                  className="mx-auto w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center overflow-hidden border-2 border-primary/20"
                   whileHover={{ scale: 1.05 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <span className="text-2xl font-bold text-primary">
-                    {party.name.charAt(0)}
-                  </span>
+                  <Image
+                    src={party.logoUrl || "/placeholder.svg?width=48&height=48&query=Logo+non+disponible"}
+                    alt={`${party.name} logo`}
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
                 </motion.div>
 
                 {/* Nom du parti */}
@@ -170,7 +175,7 @@ export function TopMatchModal({
           >
             <div className="relative">
               <motion.div
-                className="mx-auto w-24 h-24 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-xl"
+                className="mx-auto w-24 h-24 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center shadow-xl"
                 animate={{
                   boxShadow: animationStep >= 3 ? [
                     '0 0 0 0 rgba(var(--primary), 0.4)',
@@ -187,7 +192,6 @@ export function TopMatchModal({
                   {topMatch.percentage}%
                 </span>
               </motion.div>
-              <Star className="absolute -top-2 -right-2 h-6 w-6 text-yellow-500" />
             </div>
             <p className="text-base font-medium text-foreground">
               Compatibilité avec vos valeurs
