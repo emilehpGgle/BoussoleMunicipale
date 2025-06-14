@@ -205,7 +205,7 @@ export default function QuestionnairePage() {
       return (
       <PageWithGlow 
         intensity="subtle"
-        className="relative min-h-screen mobile-constrained"
+        className="relative questionnaire-compact mobile-constrained"
       >
 
       {/* Affichage d'erreur uniquement si problème critique */}
@@ -227,9 +227,9 @@ export default function QuestionnairePage() {
         </div>
       </div>
 
-      {/* Contenu principal avec overlay pour mobile */}
-      <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8 mobile-content-overlay section-contained">
-        <div className="mb-4">
+      {/* Contenu principal optimisé pour l'espace vertical */}
+      <div className="container max-w-4xl py-4 md:py-6 px-4 md:px-6 mobile-content-overlay section-contained flex flex-col questionnaire-compact">
+        <div className="mb-3 progress-container">
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm font-medium text-muted-foreground">
               Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
@@ -248,10 +248,10 @@ export default function QuestionnairePage() {
 
         <Card 
           key={questionKey} 
-          className={`p-4 md:p-6 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'} transition-all duration-300`}
+          className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'} transition-all duration-300`}
         >
-          <div className="flex items-start gap-3 mb-4">
-            <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
+          <div className="flex items-start gap-3 mb-3 question-header">
+            <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
               {currentQuestion.text}
             </h2>
             {currentQuestion.description && (
@@ -275,7 +275,7 @@ export default function QuestionnairePage() {
             )}
           </div>
 
-          <div className={`grid gap-2 mb-4 flex-1 ${!isTransitioning ? 'question-content-enter' : ''}`}>
+          <div className={`question-grid grid gap-1.5 mb-3 flex-1 ${!isTransitioning ? 'question-content-enter' : ''}`}>
             {currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
               // Questions d'importance directe
               currentQuestion.importanceDirectOptions.map((optionKey, index) => {
@@ -286,7 +286,7 @@ export default function QuestionnairePage() {
                   <ButtonWithEffects
                     key={optionKey}
                     variant={isSelected ? "standard" : "subtle"}
-                    className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
+                    className={`option-button justify-start py-3 px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
                       ${
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft"
@@ -311,7 +311,7 @@ export default function QuestionnairePage() {
                   <ButtonWithEffects
                     key={optionKey}
                     variant={isSelected ? "standard" : "subtle"}
-                    className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
+                    className={`option-button justify-start py-3 px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
                       ${
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft"
@@ -329,7 +329,7 @@ export default function QuestionnairePage() {
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-between gap-3 mt-auto">
+          <div className="navigation-buttons flex flex-col sm:flex-row justify-between gap-2 mt-auto pt-2">
             <Button
               variant="outline"
               onClick={goToPreviousQuestion}
@@ -353,7 +353,7 @@ export default function QuestionnairePage() {
           </div>
         </Card>
 
-        <div className="mt-2 text-center">
+        <div className="mt-1 text-center">
           <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
             <Link href="/">Quitter</Link>
           </Button>

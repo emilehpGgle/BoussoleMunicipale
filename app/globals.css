@@ -6,37 +6,70 @@
   :root {
     /* Nouvelle palette optimisée - Bleu primary, Teal accent spécial */
     --background: 0 0% 100%; /* Blanc pur */
-    --foreground: 222 84% 5%; /* Bleu nuit profond pour texte */
+    --foreground: 222.2 84% 4.9%; /* Bleu nuit profond pour texte */
 
     --card: 0 0% 100%; /* Cartes blanches */
-    --card-foreground: 222 84% 5%;
+    --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 5%;
+    --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 212 84% 45%; /* Bleu confiance principal (#1E40AF) */
-    --primary-foreground: 0 0% 100%; /* Blanc */
+    --primary: 221.2 83.2% 53.3%; /* Bleu confiance principal (#1E40AF) */
+    --primary-foreground: 210 40% 98%; /* Blanc */
 
-    --secondary: 214 32% 91%; /* Gris bleu très subtil pour secondary (#E2E8F0) */
-    --secondary-foreground: 222 84% 5%; /* Texte sombre sur secondary */
+    --secondary: 210 40% 96%; /* Gris bleu très subtil pour secondary (#E2E8F0) */
+    --secondary-foreground: 222.2 84% 4.9%; /* Texte sombre sur secondary */
 
-    --accent: 210 20% 98%; /* Blanc bleuté très subtil (#F8FAFC) */
-    --accent-foreground: 222 84% 5%;
+    --accent: 210 40% 96%; /* Blanc bleuté très subtil (#F8FAFC) */
+    --accent-foreground: 222.2 84% 4.9%;
 
     --teal-special: 181 84% 28%; /* Teal du logo pour effets spéciaux (#0D7377) */
     --teal-special-foreground: 0 0% 100%;
 
-    --muted: 210 20% 98%; /* Blanc bleuté très léger */
-    --muted-foreground: 215 16% 47%; /* Gris bleu équilibré */
+    --muted: 210 40% 96%; /* Blanc bleuté très léger */
+    --muted-foreground: 215.4 16.3% 46.9%; /* Gris bleu équilibré */
 
-    --destructive: 0 84% 60%; /* Rouge doux pour erreurs */
-    --destructive-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%; /* Rouge doux pour erreurs */
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 214 32% 91%; /* Bordures ultra-subtiles (#E2E8F0) */
-    --input: 214 32% 91%;
-    --ring: 212 84% 45%; /* Bleu pour focus rings */
+    --border: 214.3 31.8% 91.4%; /* Bordures ultra-subtiles (#E2E8F0) */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%; /* Bleu pour focus rings */
 
     --radius: 0.75rem; /* Coins arrondis (12px) */
+
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 
@@ -372,5 +405,55 @@
       max-width: 100%;
       width: 100%;
     }
+  }
+}
+
+/* Optimisations pour le questionnaire compact */
+@layer utilities {
+  .questionnaire-compact {
+    /* Utiliser la hauteur complète de l'écran */
+    min-height: 100vh;
+    min-height: 100dvh; /* Support pour les navigateurs modernes */
+  }
+}
+
+/* Optimisations responsive pour les petits écrans */
+@media (max-height: 700px) {
+  .questionnaire-compact .card-question {
+    @apply p-3;
+  }
+  
+  .questionnaire-compact .question-title {
+    @apply text-base leading-snug;
+  }
+  
+  .questionnaire-compact .option-button {
+    @apply py-2 text-sm;
+  }
+  
+  .questionnaire-compact .question-grid {
+    @apply gap-1;
+  }
+}
+
+@media (max-height: 600px) {
+  .questionnaire-compact {
+    @apply py-2;
+  }
+  
+  .questionnaire-compact .progress-container {
+    @apply mb-2;
+  }
+  
+  .questionnaire-compact .card-question {
+    @apply p-2;
+  }
+  
+  .questionnaire-compact .question-header {
+    @apply mb-2;
+  }
+  
+  .questionnaire-compact .navigation-buttons {
+    @apply gap-1 pt-1;
   }
 }
