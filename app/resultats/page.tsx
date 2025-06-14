@@ -468,11 +468,60 @@ export default function ResultsPage() {
     )
   }
 
-  const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
+  // Composant LogoContainer avec gestion d'erreur améliorée
+  const LogoContainer: React.FC<{ children: React.ReactNode; className?: string; party?: Party }> = ({ children, className, party }) => (
     <div className={`bg-white rounded-xl p-2 shadow-sm flex items-center justify-center ${className || ""}`}>
       {children}
     </div>
   )
+
+  // Composant PartyLogo avec gestion d'erreur robuste
+  const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number }; className?: string }> = ({ party, size, className = "" }) => {
+    const [imageError, setImageError] = useState(false)
+    const [imageLoading, setImageLoading] = useState(true)
+
+    return (
+      <LogoContainer className={className} party={party}>
+        {imageLoading && !imageError && (
+          <div className="w-full h-full bg-muted/30 animate-pulse rounded-lg flex items-center justify-center">
+            <div className="text-xs text-muted-foreground font-medium">
+              {party.shortName || party.name.substring(0, 3).toUpperCase()}
+            </div>
+          </div>
+        )}
+        <Image
+          src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
+          alt={`Logo ${party.name}`}
+          width={size.width}
+          height={size.height}
+          style={{ 
+            objectFit: "contain",
+            display: imageError ? 'none' : 'block'
+          }}
+          onLoad={() => setImageLoading(false)}
+          onError={() => {
+            console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)
+            setImageError(true)
+            setImageLoading(false)
+          }}
+          priority={false}
+          unoptimized={true}
+        />
+        {imageError && (
+          <div className="w-full h-full bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-center">
+            <div className="text-center">
+              <div className="text-lg font-bold text-primary mb-1">
+                {party.shortName || party.name.substring(0, 3).toUpperCase()}
+              </div>
+              <div className="text-xs text-muted-foreground leading-tight">
+                {party.name.length > 15 ? party.name.substring(0, 15) + '...' : party.name}
+              </div>
+            </div>
+          </div>
+        )}
+      </LogoContainer>
+    )
+  }
 
       return (
       <PageWithGlow intensity="subtle">
@@ -553,15 +602,7 @@ export default function ResultsPage() {
                 className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl card-interactive-effects animate-fadeIn bg-white/90 backdrop-blur-sm hover:border-primary/30 transition-all duration-300" // Added card-color-accent for mobile
                 style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
               >
-                <LogoContainer className="w-20 h-20 mb-4">
-                  <Image
-                    src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
-                    alt={`Logo ${party.name}`}
-                    width={60} // Adjusted to fit within padding
-                    height={60} // Adjusted to fit within padding
-                    style={{ objectFit: "contain" }}
-                  />
-                </LogoContainer>
+                                 <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" />
                 {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
                 <div className="min-h-[4rem] flex flex-col justify-center mb-3">
                   <h3 className="text-lg font-semibold text-foreground leading-tight">{party.shortName || party.name}</h3>
@@ -599,15 +640,7 @@ export default function ResultsPage() {
                 className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-primary/20 hover:shadow-md"
               >
                 <div className="flex items-center gap-3 mb-2">
-                  <LogoContainer className="w-9 h-9 group-hover:shadow-md transition-shadow">
-                    <Image
-                      src={party.logoUrl || "/placeholder.svg?width=32&height=32&query=Logo+non+disponible"}
-                      alt={`${party.name} logo`}
-                      width={28}
-                      height={28}
-                      style={{ objectFit: "contain" }}
-                    />
-                  </LogoContainer>
+                                     <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" />
                   <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">
                     {party.name}
                   </h3>
