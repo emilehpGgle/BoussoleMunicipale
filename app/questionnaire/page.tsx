@@ -117,8 +117,14 @@ export default function QuestionnairePage() {
       // Sauvegarder via notre hook sécurisé
       await saveAgreementResponse(currentQuestion.id, optionKey)
       
-      // Auto-progression avec animation "swoosh" (sauf dernière question)
-      if (currentQuestionIndex < boussoleQuestions.length - 1) {
+      // Si c'est la dernière question, rediriger automatiquement vers les résultats
+      if (currentQuestionIndex === boussoleQuestions.length - 1) {
+        // Délai pour permettre à l'utilisateur de voir sa sélection
+        setTimeout(() => {
+          router.push('/resultats')
+        }, 800) // Délai légèrement plus long pour la dernière question
+      } else {
+        // Auto-progression avec animation "swoosh" pour les autres questions
         setIsTransitioning(true)
         setTimeout(() => {
           setCurrentQuestionIndex(currentQuestionIndex + 1)
@@ -137,8 +143,14 @@ export default function QuestionnairePage() {
       // Sauvegarder via notre hook sécurisé
       await saveImportanceDirectResponse(currentQuestion.id, optionKey)
       
-      // Auto-progression avec animation "swoosh" (sauf dernière question)  
-      if (currentQuestionIndex < boussoleQuestions.length - 1) {
+      // Si c'est la dernière question, rediriger automatiquement vers les résultats
+      if (currentQuestionIndex === boussoleQuestions.length - 1) {
+        // Délai pour permettre à l'utilisateur de voir sa sélection
+        setTimeout(() => {
+          router.push('/resultats')
+        }, 800) // Délai légèrement plus long pour la dernière question
+      } else {
+        // Auto-progression avec animation "swoosh" pour les autres questions
         setIsTransitioning(true)
         setTimeout(() => {
           setCurrentQuestionIndex(currentQuestionIndex + 1)
