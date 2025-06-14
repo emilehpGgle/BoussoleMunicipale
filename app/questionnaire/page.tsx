@@ -16,6 +16,7 @@ import { useResults } from "@/hooks/useResults"
 import { ColoredText, HighlightText } from "@/components/ui/colored-text"
 import { GlowSection } from "@/components/ui/subtle-glow"
 import { PageWithGlow } from "@/components/ui/background-glow"
+import { ButtonWithEffects } from "@/components/ui/button-effects"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -282,14 +283,14 @@ export default function QuestionnairePage() {
                 const isSelected = userImportanceDirectAnswers[currentQuestion.id] === optionKey;
                 
                 return (
-                  <Button
+                  <ButtonWithEffects
                     key={optionKey}
-                    variant={isSelected ? "default" : "outline"}
-                    className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0
+                    variant="all"
+                    className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
                       ${
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
-                          : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
+                          : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150"
                       } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
                     onClick={() => handleImportanceDirectAnswer(optionKey)}
                   >
@@ -297,7 +298,7 @@ export default function QuestionnairePage() {
                       <CheckCircle2 className="mr-2 h-4 w-4 text-primary-foreground/80" />
                     )}
                     {labelText}
-                  </Button>
+                  </ButtonWithEffects>
                 )
               })
             ) : (
@@ -307,14 +308,14 @@ export default function QuestionnairePage() {
                 const isSelected = userAnswers[currentQuestion.id] === optionKey;
                 
                 return (
-                  <Button
+                  <ButtonWithEffects
                     key={optionKey}
-                    variant={isSelected ? "default" : "outline"}
-                    className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0
+                    variant="all"
+                    className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
                       ${
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
-                          : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150 active:scale-[0.99]"
+                          : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150"
                       } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
                     onClick={() => handleAnswer(optionKey)}
                   >
@@ -322,7 +323,7 @@ export default function QuestionnairePage() {
                       <CheckCircle2 className="mr-2 h-4 w-4 text-primary-foreground/80" />
                     )}
                     {labelText}
-                  </Button>
+                  </ButtonWithEffects>
                 )
               })
             )}
