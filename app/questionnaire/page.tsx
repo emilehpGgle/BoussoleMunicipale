@@ -117,11 +117,11 @@ export default function QuestionnairePage() {
       // Sauvegarder via notre hook sécurisé
       await saveAgreementResponse(currentQuestion.id, optionKey)
       
-      // Si c'est la dernière question, rediriger automatiquement vers les résultats
+      // Si c'est la dernière question, rediriger automatiquement vers le profil
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/resultats')
+          router.push('/profil')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -143,11 +143,11 @@ export default function QuestionnairePage() {
       // Sauvegarder via notre hook sécurisé
       await saveImportanceDirectResponse(currentQuestion.id, optionKey)
       
-      // Si c'est la dernière question, rediriger automatiquement vers les résultats
+      // Si c'est la dernière question, rediriger automatiquement vers le profil
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/resultats')
+          router.push('/profil')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -352,14 +352,14 @@ export default function QuestionnairePage() {
               Précédent
             </Button>
 
-            {/* Bouton "Voir mes résultats" seulement sur la dernière question */}
+            {/* Bouton "Continuer" seulement sur la dernière question */}
             {currentQuestionIndex === boussoleQuestions.length - 1 && (
               <Button
                 onClick={goToNextQuestion}
                 disabled={!isAnswered}
                 className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm"
               >
-                Voir mes résultats
+                Continuer
               </Button>
             )}
           </div>
