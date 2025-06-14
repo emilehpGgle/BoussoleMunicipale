@@ -248,7 +248,7 @@ export default function QuestionnairePage() {
 
         <Card 
           key={questionKey} 
-          className={`p-4 md:p-6 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 hover:border-primary/40 flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'} transition-all duration-300`}
+          className={`p-4 md:p-6 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'} transition-all duration-300`}
         >
           <div className="flex items-start gap-3 mb-4">
             <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
@@ -285,13 +285,13 @@ export default function QuestionnairePage() {
                 return (
                   <ButtonWithEffects
                     key={optionKey}
-                    variant="all"
+                    variant="subtle"
                     className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
                       ${
                         isSelected
-                          ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
-                          : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150"
-                      } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
+                          ? "bg-primary text-primary-foreground shadow-soft"
+                          : "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150"
+                      } ${!isTransitioning ? 'option-button-enter' : ''}`}
                     onClick={() => handleImportanceDirectAnswer(optionKey)}
                   >
                     {isSelected && (
@@ -310,13 +310,13 @@ export default function QuestionnairePage() {
                 return (
                   <ButtonWithEffects
                     key={optionKey}
-                    variant="all"
+                    variant="subtle"
                     className={`justify-start py-4 px-4 text-left rounded-xl text-base font-medium min-h-0 w-full
                       ${
                         isSelected
-                          ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
-                          : "bg-background hover:bg-primary/20 hover:border-primary hover:text-foreground text-foreground border-border transition-all duration-150"
-                      } btn-base-effects ${!isTransitioning ? 'option-button-enter' : ''}`}
+                          ? "bg-primary text-primary-foreground shadow-soft"
+                          : "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150"
+                      } ${!isTransitioning ? 'option-button-enter' : ''}`}
                     onClick={() => handleAnswer(optionKey)}
                   >
                     {isSelected && (

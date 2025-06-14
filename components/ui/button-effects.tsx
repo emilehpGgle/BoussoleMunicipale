@@ -8,7 +8,7 @@ interface ButtonEffectsProps {
   children: React.ReactNode;
   className?: string;
   onClick?: () => void;
-  variant?: 'glow' | 'ripple' | 'pulse' | 'spark' | 'all';
+  variant?: 'minimal' | 'subtle' | 'standard';
   disabled?: boolean;
 }
 
@@ -16,150 +16,93 @@ export function ButtonWithEffects({
   children,
   className,
   onClick,
-  variant = 'all',
+  variant = 'standard',
   disabled = false,
   ...props
 }: ButtonEffectsProps) {
   const [isClicked, setIsClicked] = useState(false);
-  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([]);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
-    
-    // Effet de clic global
+
+    // Animation de feedback immédiat
     setIsClicked(true);
-    setTimeout(() => setIsClicked(false), 200);
-    
-    // Effet ripple à la position du clic
-    if (variant === 'ripple' || variant === 'all') {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const newRipple = {
-        id: Date.now(),
-        x: e.clientX - rect.left,
-        y: e.clientY - rect.top,
-      };
-      
-      setRipples(prev => [...prev, newRipple]);
-      setTimeout(() => {
-        setRipples(prev => prev.filter(ripple => ripple.id !== newRipple.id));
-      }, 600);
+    setTimeout(() => setIsClicked(false), 120);
+
+    // Appeler la fonction onClick après un délai minimal pour le feedback visuel
+    if (onClick) {
+      setTimeout(() => onClick(), 50);
     }
-    
-    onClick?.();
-  }, [onClick, disabled, variant]);
+  }, [onClick, disabled]);
+
+  // Configuration simplifiée selon la variante
+  const effectConfig = {
+    minimal: {
+      glowOpacity: 0.15,
+      scale: 0.99,
+      shadowIntensity: '0 2px 8px rgba(var(--primary), 0.15)'
+    },
+    subtle: {
+      glowOpacity: 0.25,
+      scale: 0.98,
+      shadowIntensity: '0 4px 12px rgba(var(--primary), 0.2)'
+    },
+    standard: {
+      glowOpacity: 0.35,
+      scale: 0.97,
+      shadowIntensity: '0 6px 16px rgba(var(--primary), 0.25)'
+    }
+  };
+
+  const config = effectConfig[variant];
 
   return (
     <motion.button
       className={cn(
-        'relative overflow-hidden transition-all duration-200',
-        // Bordures subtiles mais définies
-        'border-2 border-border/60 hover:border-primary/70',
-        // Effet glow au hover et clic (augmenté)
-        (variant === 'glow' || variant === 'all') && [
-          'hover:shadow-xl hover:shadow-primary/35 hover:border-primary/80',
-          isClicked && 'shadow-2xl shadow-primary/50 border-primary'
-        ],
+        'relative overflow-hidden transition-all duration-150 ease-out',
+        // Bordures nettes et définies
+        'border-2 border-border/70 hover:border-primary/60',
+        // Ombre subtile
+        'shadow-sm hover:shadow-md',
+        // États de focus et active optimisés
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
+        'active:scale-[0.98]',
         className
       )}
       onClick={handleClick}
       disabled={disabled}
-      // Animation de scale au clic (plus marquée)
+      // Animation de scale légère mais perceptible
       animate={{
-        scale: isClicked ? 0.97 : 1,
+        scale: isClicked ? config.scale : 1,
       }}
       transition={{
-        type: "spring",
-        stiffness: 450,
-        damping: 16
+        type: "tween",
+        duration: 0.1,
+        ease: "easeOut"
       }}
-      // Effet de pulse (plus visible)
-      whileTap={
-        (variant === 'pulse' || variant === 'all') ? {
-          scale: 0.95,
-          transition: { duration: 0.08 }
-        } : {}
-      }
+      style={{
+        // Ombre dynamique pour feedback visuel
+        boxShadow: isClicked ? config.shadowIntensity : undefined,
+      }}
       {...props}
     >
+      {/* Effet de glow optimisé - seulement au clic */}
+      <motion.div
+        className="absolute inset-0 bg-primary/20 rounded-lg pointer-events-none"
+        initial={{ opacity: 0 }}
+        animate={{
+          opacity: isClicked ? config.glowOpacity : 0,
+        }}
+        transition={{
+          duration: 0.12,
+          ease: "easeOut"
+        }}
+      />
+
       {/* Contenu du bouton */}
       <span className="relative z-10">
         {children}
       </span>
-      
-      {/* Effet de glow instantané au clic (plus intense) */}
-      {(variant === 'glow' || variant === 'all') && (
-        <motion.div
-          className="absolute inset-0 bg-primary/30 rounded-lg"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            opacity: isClicked ? 1 : 0,
-            scale: isClicked ? 1.15 : 0.8,
-          }}
-          transition={{
-            duration: 0.12,
-            ease: "easeOut"
-          }}
-        />
-      )}
-      
-      {/* Effet ripple (plus visible) */}
-      {(variant === 'ripple' || variant === 'all') && ripples.map((ripple) => (
-        <motion.div
-          key={ripple.id}
-          className="absolute rounded-full bg-primary/40 pointer-events-none"
-          style={{
-            left: ripple.x - 12,
-            top: ripple.y - 12,
-            width: 24,
-            height: 24,
-          }}
-          initial={{
-            scale: 0,
-            opacity: 0.9,
-          }}
-          animate={{
-            scale: 9,
-            opacity: 0,
-          }}
-          transition={{
-            duration: 0.5,
-            ease: "easeOut"
-          }}
-        />
-      ))}
-
-      {/* Effet spark/particules subtiles */}
-      {(variant === 'spark' || variant === 'all') && isClicked && (
-        <>
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-primary rounded-full pointer-events-none"
-              style={{
-                left: '50%',
-                top: '50%',
-              }}
-              initial={{
-                x: 0,
-                y: 0,
-                opacity: 1,
-                scale: 1,
-              }}
-              animate={{
-                x: Math.cos((i * Math.PI * 2) / 6) * 30,
-                y: Math.sin((i * Math.PI * 2) / 6) * 30,
-                opacity: 0,
-                scale: 0,
-              }}
-              transition={{
-                duration: 0.4,
-                ease: "easeOut",
-                delay: i * 0.02,
-              }}
-            />
-          ))}
-        </>
-      )}
     </motion.button>
   );
 }
