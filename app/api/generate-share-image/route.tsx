@@ -23,11 +23,25 @@ interface SharedResult {
 async function getSharedResult(id: string): Promise<SharedResult | null> {
   try {
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
-    const response = await fetch(`${baseUrl}/partage/${id}.json`, { next: { revalidate: 3600 } })
-    if (!response.ok) return null
-    return await response.json()
+    console.log(`🔍 [getSharedResult] Récupération données pour ID: ${id} depuis ${baseUrl}`)
+    
+    const response = await fetch(`${baseUrl}/partage/${id}.json`, { 
+      next: { revalidate: 3600 },
+      headers: {
+        'User-Agent': 'FacebookExternalHit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+      }
+    })
+    
+    if (!response.ok) {
+      console.error(`❌ [getSharedResult] Erreur HTTP ${response.status} pour ID: ${id}`)
+      return null
+    }
+    
+    const data = await response.json()
+    console.log(`✅ [getSharedResult] Données récupérées avec succès pour ID: ${id}`)
+    return data
   } catch (error) {
-    console.error(`Erreur lors de la récupération des données pour l'image ${id}:`, error)
+    console.error(`💥 [getSharedResult] Erreur lors de la récupération des données pour l'image ${id}:`, error)
     return null
   }
 }
@@ -38,19 +52,24 @@ export async function GET(request: Request) {
     // Correction: utiliser le bon paramètre 'id' comme dans les autres parties de l'app
     const shareId = searchParams.get('id')
 
+    console.log(`🎨 [generate-share-image] Génération image pour ID: ${shareId}`)
+
     if (!shareId) {
+      console.error(`❌ [generate-share-image] ID de partage manquant`)
       return new Response('ID de partage manquant', { status: 400 })
     }
 
     const result = await getSharedResult(shareId)
 
     if (!result) {
+      console.error(`❌ [generate-share-image] Résultats non trouvés pour ID: ${shareId}`)
       return new Response('Résultats non trouvés', { status: 404 })
     }
     
     const { userName, topParties } = result
+    console.log(`✅ [generate-share-image] Génération image pour utilisateur: ${userName}`)
 
-    return new ImageResponse(
+    const imageResponse = new ImageResponse(
       (
         <div
           style={{
@@ -100,11 +119,24 @@ export async function GET(request: Request) {
       {
         width: 1200,
         height: 630,
+        headers: {
+          // Headers recommandés par Facebook pour les images Open Graph
+          'Content-Type': 'image/png',
+          'Cache-Control': 'public, max-age=31536000, immutable',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET',
+          'Access-Control-Allow-Headers': 'Content-Type',
+          // Permettre à Facebook de cacher l'image
+          'X-Robots-Tag': 'noindex, nofollow',
+        },
       },
     );
+
+    console.log(`🎉 [generate-share-image] Image générée avec succès pour ID: ${shareId}`)
+    return imageResponse
   } catch (e: unknown) {
     const errorMessage = e instanceof Error ? e.message : 'Erreur inconnue'
-    console.error(`Erreur de génération d'image: ${errorMessage}`)
+    console.error(`💥 [generate-share-image] Erreur de génération d'image: ${errorMessage}`)
     return new Response('Échec de la génération de l\'image', { status: 500 })
   }
 } 

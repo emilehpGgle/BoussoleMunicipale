@@ -132,7 +132,28 @@ export default function ShareModal({
   const generateShareImageUrl = async (shareId: string): Promise<string | null> => {
     try {
       // L'API génère l'image à partir de l'ID de partage sauvegardé
-      return `${window.location.origin}/api/generate-share-image?id=${shareId}`
+      const imageUrl = `${window.location.origin}/api/generate-share-image?id=${shareId}`
+      
+      // NOUVEAU: Pré-cache l'image via Facebook Debugger API (solution recommandée par Facebook)
+      try {
+        // Utiliser l'API Graph de Facebook pour forcer le scraping de l'image
+        // Cela évite le problème d'image blanche lors du premier partage
+        const shareUrl = `${window.location.origin}/partage/${shareId}`
+        
+        // Appel à l'API Facebook pour pré-cacher les métadonnées
+        // Note: Cela nécessite un token d'application Facebook, mais on peut aussi utiliser l'URL directe
+        const debugUrl = `https://graph.facebook.com/v18.0/?ids=${encodeURIComponent(shareUrl)}&fields=og_object{url,title,description,image}&access_token=${process.env.NEXT_PUBLIC_FACEBOOK_APP_TOKEN || ''}`
+        
+        // Tentative de pré-cache (en arrière-plan, sans bloquer)
+        fetch(debugUrl, { method: 'GET' }).catch(() => {
+          // Si échec, on continue sans bloquer l'utilisateur
+          console.log('Pré-cache Facebook non disponible, l\'image pourrait ne pas apparaître au premier partage')
+        })
+      } catch (error) {
+        console.log('Pré-cache Facebook impossible:', error)
+      }
+      
+      return imageUrl
     } catch (error) {
       console.error('Erreur lors de la génération d\'image:', error)
       return null
