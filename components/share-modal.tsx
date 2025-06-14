@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Twitter, Link as LinkIcon, Mail } from "lucide-react"
+import { Twitter, Link as LinkIcon, Mail, Facebook, MessageCircle } from "lucide-react"
 import { toast } from "sonner"
 import { partiesData, type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
 import PoliticalCompassChart from "@/components/political-compass-chart"
@@ -39,6 +39,15 @@ interface ShareModalProps {
   userImportance: Record<string, ImportanceDirectOptionKey>
   calculatedScores: CalculatedPartyScore[]
   topParties: CalculatedPartyScore[]
+}
+
+// Types pour Facebook SDK
+declare global {
+  interface Window {
+    FB?: {
+      ui: (params: any, callback?: (response: any) => void) => void
+    }
+  }
 }
 
 export default function ShareModal({ 
@@ -119,6 +128,41 @@ export default function ShareModal({
     return shareUrl
   }
 
+  // Génération d'image via l'API existante (plus fiable que html2canvas)
+  const generateShareImageUrl = async (): Promise<string | null> => {
+    try {
+      // Utiliser l'API existante pour générer l'image
+      const topPartiesData = topParties.slice(0, 3).map(party => ({
+        party: {
+          id: party.party.id,
+          name: party.party.name,
+          shortName: party.party.shortName,
+          leader: party.party.leader,
+          logoUrl: party.party.logoUrl
+        },
+        score: party.score
+      }))
+
+      const userPos = politicalPosition ? {
+        economic: politicalPosition.x,
+        social: politicalPosition.y
+      } : { economic: 0, social: 0 }
+
+      // Générer l'URL de l'image via notre API
+      const params = new URLSearchParams({
+        userName: "Citoyen",
+        topParties: JSON.stringify(topPartiesData),
+        userPosition: JSON.stringify(userPos),
+        format: 'png'
+      })
+
+      return `${window.location.origin}/api/generate-share-image?${params}`
+    } catch (error) {
+      console.error('Erreur lors de la génération d\'image:', error)
+      return null
+    }
+  }
+
   // Fonctions de partage
   const handleTwitterShare = async () => {
     setIsSharing(true)
@@ -130,6 +174,72 @@ export default function ShareModal({
       toast.success("Partagé sur Twitter !")
     } catch (error) {
       toast.error("Erreur lors du partage sur Twitter")
+    }
+    setIsSharing(false)
+  }
+
+  const handleFacebookShare = async () => {
+    setIsSharing(true)
+    try {
+      const shareUrl = await generateShareUrl()
+      
+      const topMatch = topParties[0]
+      const partyName = topMatch?.party?.shortName || topMatch?.party?.name || 'mon parti préféré'
+      const score = Math.round(topMatch?.score || 0)
+      
+      // Texte engageant pour Facebook
+      const shareText = `🏛️ Mes affinités politiques municipales révélées !\n\n🎯 Mon parti principal : ${partyName} (${score}%)\n\n📊 Découvrez ma position complète sur la carte politique et faites votre propre test gratuit en 5 minutes !\n\n#BoussoleQuébec #PolitiqueMunicipale #Québec2025`
+      
+      // Générer l'image de partage
+      const imageUrl = await generateShareImageUrl()
+      
+      if (imageUrl && typeof window !== 'undefined' && window.FB) {
+        // Utiliser Facebook SDK si disponible
+        window.FB.ui({
+          method: 'feed',
+          link: shareUrl,
+          picture: imageUrl,
+          name: 'Mes résultats - Boussole Municipale Québec',
+          caption: 'boussolemunicipalequebec.ca',
+          description: shareText
+        }, (response: any) => {
+          if (response && response.post_id) {
+            toast.success("Partagé sur Facebook avec image !")
+          }
+        })
+      } else {
+        // Fallback vers le sharer standard avec texte amélioré
+        const params = new URLSearchParams({
+          u: shareUrl,
+          quote: shareText
+        })
+        window.open(`https://www.facebook.com/sharer/sharer.php?${params}`, '_blank')
+        toast.success("Partage Facebook ouvert !")
+      }
+    } catch (error) {
+      console.error('Erreur lors du partage Facebook:', error)
+      toast.error("Impossible de partager sur Facebook")
+    }
+    setIsSharing(false)
+  }
+
+  const handleMessengerShare = async () => {
+    setIsSharing(true)
+    try {
+      const shareUrl = await generateShareUrl()
+      const topMatch = topParties[0]
+      const partyName = topMatch?.party?.shortName || topMatch?.party?.name || 'mon parti préféré'
+      const score = Math.round(topMatch?.score || 0)
+      
+      const message = `🏛️ Regarde mes résultats de la Boussole Municipale ! Mon parti principal : ${partyName} (${score}%). Fais ton test ici :`
+      
+      // Ouvrir Messenger avec le message et lien
+      const messengerUrl = `https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`
+      window.open(messengerUrl, '_blank')
+      toast.success("Messenger ouvert !")
+    } catch (error) {
+      console.error('Erreur lors du partage Messenger:', error)
+      toast.error("Impossible de partager sur Messenger")
     }
     setIsSharing(false)
   }
@@ -230,12 +340,30 @@ export default function ShareModal({
             </button>
             
             <button
+              onClick={handleFacebookShare}
+              disabled={isSharing}
+              className="flex items-center gap-2 px-4 py-2 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+            >
+              <Facebook className="w-4 h-4" />
+              <span className="text-sm font-medium">Facebook</span>
+            </button>
+            
+            <button
+              onClick={handleMessengerShare}
+              disabled={isSharing}
+              className="flex items-center gap-2 px-4 py-2 bg-[#0084FF] hover:bg-[#006ee6] text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
+            >
+              <MessageCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">Messenger</span>
+            </button>
+            
+            <button
               onClick={handleCopyLink}
               disabled={isSharing}
               className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
             >
               <LinkIcon className="w-4 h-4" />
-              <span className="text-sm font-medium">Copier</span>
+              <span className="text-sm font-medium">Copier le lien</span>
             </button>
 
             <button

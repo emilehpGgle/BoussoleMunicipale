@@ -84,12 +84,22 @@ const convertImportanceDirectToNumeric = (importance: ImportanceDirectOptionKey)
   }
 }
 
+// Types pour Facebook SDK
+declare global {
+  interface Window {
+    FB?: {
+      ui: (params: any, callback?: (response: any) => void) => void
+    }
+  }
+}
+
 export default function ResultsPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [showFloatingShare, setShowFloatingShare] = useState(false)
   const [showTopMatchModal, setShowTopMatchModal] = useState(false)
+  const [isSharing, setIsSharing] = useState(false)
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -341,18 +351,93 @@ export default function ResultsPage() {
     }
   }
 
-  // Amélioration 3: Gestion d'erreurs Facebook avec extraction sécurisée
-  const handleFacebookShare = async () => {
+  // Fonction pour capturer la carte politique en image
+  const captureMapScreenshot = async (): Promise<string | null> => {
     try {
+      // Importer html2canvas dynamiquement pour éviter les erreurs SSR
+      const html2canvas = (await import('html2canvas')).default
+      
+      // Trouver le conteneur de la carte politique
+      const mapContainer = document.querySelector('[data-chart]') as HTMLElement
+      if (!mapContainer) {
+        console.warn('Carte politique non trouvée pour capture')
+        return null
+      }
+
+      // Capturer l'élément avec des options optimisées
+      const canvas = await html2canvas(mapContainer, {
+        scale: 2, // Haute résolution
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        width: 800,
+        height: 600,
+        scrollX: 0,
+        scrollY: 0
+      })
+
+      // Convertir en blob pour upload
+      return new Promise((resolve) => {
+        canvas.toBlob((blob: Blob | null) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob)
+            resolve(url)
+          } else {
+            resolve(null)
+          }
+        }, 'image/png', 0.95)
+      })
+    } catch (error) {
+      console.error('Erreur lors de la capture de la carte:', error)
+      toast.error("Impossible de capturer la carte politique")
+      return null
+    }
+  }
+
+  // Amélioration : Nouveau partage Facebook avec image
+  const handleFacebookShareWithImage = async () => {
+    try {
+      setIsSharing(true)
       const shareUrl = await generateShareUrl()
+      
+      // Capturer la carte politique
+      const mapImage = await captureMapScreenshot()
+      
       const topParty = topParties[0]
       const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
       const score = Math.round(topParty?.score || 0)
-      const text = encodeURIComponent(`Découvrez mes affinités politiques municipales ! ${partyName}: ${score}%`)
-      window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${text}`, '_blank')
+      
+      // Texte engageant pour Facebook
+      const shareText = `🏛️ Mes affinités politiques municipales révélées !\n\n🎯 Mon parti principal : ${partyName} (${score}%)\n\n📊 Découvrez ma position complète sur la carte politique et faites votre propre test gratuit en 5 minutes !\n\n#BoussoleQuébec #PolitiqueMunicipale #Québec2025`
+      
+      if (mapImage && typeof window !== 'undefined' && window.FB) {
+        // Utiliser Facebook SDK si disponible
+        window.FB.ui({
+          method: 'feed',
+          link: shareUrl,
+          picture: mapImage,
+          name: 'Mes résultats - Boussole Municipale Québec',
+          caption: 'boussolemunicipalequebec.ca',
+          description: shareText
+        }, (response: any) => {
+          if (response && response.post_id) {
+            toast.success("Partagé sur Facebook !")
+          }
+        })
+      } else {
+        // Fallback vers le sharer standard avec texte amélioré
+        const params = new URLSearchParams({
+          u: shareUrl,
+          quote: shareText
+        })
+        window.open(`https://www.facebook.com/sharer/sharer.php?${params}`, '_blank')
+        toast.success("Partage Facebook ouvert !")
+      }
     } catch (error) {
       console.error('Erreur lors du partage Facebook:', error)
       toast.error("Impossible de partager sur Facebook")
+    } finally {
+      setIsSharing(false)
     }
   }
 
@@ -387,14 +472,25 @@ export default function ResultsPage() {
     }
   }
 
-  // Amélioration 4: Gestion d'erreurs Messenger
+  // Nouveau : Support Messenger
   const handleMessengerShare = async () => {
     try {
+      setIsSharing(true)
       const shareUrl = await generateShareUrl()
+      const topParty = topParties[0]
+      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
+      const score = Math.round(topParty?.score || 0)
+      
+      const message = encodeURIComponent(`🏛️ Regarde mes résultats de la Boussole Municipale ! Mon parti principal : ${partyName} (${score}%). Fais ton test ici :`)
+      
+      // Ouvrir Messenger avec le message prérempli
       window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
+      toast.success("Messenger ouvert !")
     } catch (error) {
       console.error('Erreur lors du partage Messenger:', error)
       toast.error("Impossible de partager sur Messenger")
+    } finally {
+      setIsSharing(false)
     }
   }
 
