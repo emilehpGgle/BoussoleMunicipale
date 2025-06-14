@@ -165,9 +165,9 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                stat: "85%",
-                label: "de votre quotidien",
-                description: "est influencé par les décisions municipales"
+                stat: "70%",
+                label: "du budget municipal",
+                description: "va aux services de proximité (transport, parcs, voirie)"
               },
               {
                 stat: "40%",

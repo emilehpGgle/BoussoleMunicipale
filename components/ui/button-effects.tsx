@@ -52,29 +52,31 @@ export function ButtonWithEffects({
     <motion.button
       className={cn(
         'relative overflow-hidden transition-all duration-200',
-        // Effet glow au hover et clic
+        // Bordures subtiles mais définies
+        'border-2 border-border/60 hover:border-primary/70',
+        // Effet glow au hover et clic (augmenté)
         (variant === 'glow' || variant === 'all') && [
-          'hover:shadow-lg hover:shadow-primary/25',
-          isClicked && 'shadow-xl shadow-primary/40'
+          'hover:shadow-xl hover:shadow-primary/35 hover:border-primary/80',
+          isClicked && 'shadow-2xl shadow-primary/50 border-primary'
         ],
         className
       )}
       onClick={handleClick}
       disabled={disabled}
-      // Animation de scale au clic
+      // Animation de scale au clic (plus marquée)
       animate={{
-        scale: isClicked ? 0.98 : 1,
+        scale: isClicked ? 0.97 : 1,
       }}
       transition={{
         type: "spring",
-        stiffness: 400,
-        damping: 17
+        stiffness: 450,
+        damping: 16
       }}
-      // Effet de pulse
+      // Effet de pulse (plus visible)
       whileTap={
         (variant === 'pulse' || variant === 'all') ? {
-          scale: 0.96,
-          transition: { duration: 0.1 }
+          scale: 0.95,
+          transition: { duration: 0.08 }
         } : {}
       }
       {...props}
@@ -84,43 +86,43 @@ export function ButtonWithEffects({
         {children}
       </span>
       
-      {/* Effet de glow instantané au clic */}
+      {/* Effet de glow instantané au clic (plus intense) */}
       {(variant === 'glow' || variant === 'all') && (
         <motion.div
-          className="absolute inset-0 bg-primary/20 rounded-lg"
+          className="absolute inset-0 bg-primary/30 rounded-lg"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{
             opacity: isClicked ? 1 : 0,
-            scale: isClicked ? 1.1 : 0.8,
+            scale: isClicked ? 1.15 : 0.8,
           }}
           transition={{
-            duration: 0.15,
+            duration: 0.12,
             ease: "easeOut"
           }}
         />
       )}
       
-      {/* Effet ripple */}
+      {/* Effet ripple (plus visible) */}
       {(variant === 'ripple' || variant === 'all') && ripples.map((ripple) => (
         <motion.div
           key={ripple.id}
-          className="absolute rounded-full bg-primary/30 pointer-events-none"
+          className="absolute rounded-full bg-primary/40 pointer-events-none"
           style={{
-            left: ripple.x - 10,
-            top: ripple.y - 10,
-            width: 20,
-            height: 20,
+            left: ripple.x - 12,
+            top: ripple.y - 12,
+            width: 24,
+            height: 24,
           }}
           initial={{
             scale: 0,
-            opacity: 0.8,
+            opacity: 0.9,
           }}
           animate={{
-            scale: 8,
+            scale: 9,
             opacity: 0,
           }}
           transition={{
-            duration: 0.6,
+            duration: 0.5,
             ease: "easeOut"
           }}
         />
