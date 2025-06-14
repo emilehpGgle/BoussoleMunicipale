@@ -26,10 +26,22 @@ const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }>
   </div>
 )
 
-// Composant PartyLogo avec gestion d'erreur robuste
+// Composant PartyLogo avec gestion d'erreur robuste et préchargement
 const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number }; className?: string }> = ({ party, size, className = "" }) => {
   const [imageError, setImageError] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
+
+  // Préchargement du logo pour le modal (priorité élevée)
+  useEffect(() => {
+    const img = new window.Image()
+    img.onload = () => setImageLoading(false)
+    img.onerror = () => {
+      console.warn(`⚠️ Préchargement échoué pour ${party.name}: ${party.logoUrl}`)
+      setImageError(true)
+      setImageLoading(false)
+    }
+    img.src = party.logoUrl
+  }, [party.logoUrl, party.name])
 
   return (
     <LogoContainer className={className}>
@@ -40,24 +52,27 @@ const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number 
           </div>
         </div>
       )}
-      <Image
-        src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
-        alt={`Logo ${party.name}`}
-        width={size.width}
-        height={size.height}
-        style={{ 
-          objectFit: "contain",
-          display: imageError ? 'none' : 'block'
-        }}
-        onLoad={() => setImageLoading(false)}
-        onError={() => {
-          console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)
-          setImageError(true)
-          setImageLoading(false)
-        }}
-        priority={false}
-        unoptimized={true}
-      />
+      {!imageError && (
+        <Image
+          src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
+          alt={`Logo ${party.name}`}
+          width={size.width}
+          height={size.height}
+          style={{ 
+            objectFit: "contain",
+            display: imageLoading ? 'none' : 'block'
+          }}
+          onLoad={() => setImageLoading(false)}
+          onError={() => {
+            console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)
+            setImageError(true)
+            setImageLoading(false)
+          }}
+          priority={true} // Priorité élevée pour le modal
+          unoptimized={true}
+          loading="eager" // Chargement immédiat pour le modal
+        />
+      )}
       {imageError && (
         <div className="w-full h-full bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-center">
           <div className="text-center">

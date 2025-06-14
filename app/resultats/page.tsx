@@ -475,10 +475,22 @@ export default function ResultsPage() {
     </div>
   )
 
-  // Composant PartyLogo avec gestion d'erreur robuste
-  const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number }; className?: string }> = ({ party, size, className = "" }) => {
+  // Composant PartyLogo avec gestion d'erreur robuste et préchargement
+  const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number }; className?: string; index?: number }> = ({ party, size, className = "", index = 0 }) => {
     const [imageError, setImageError] = useState(false)
     const [imageLoading, setImageLoading] = useState(true)
+
+    // Préchargement des logos pour éviter les problèmes de chargement
+    useEffect(() => {
+      const img = new window.Image()
+      img.onload = () => setImageLoading(false)
+      img.onerror = () => {
+        console.warn(`⚠️ Préchargement échoué pour ${party.name}: ${party.logoUrl}`)
+        setImageError(true)
+        setImageLoading(false)
+      }
+      img.src = party.logoUrl
+    }, [party.logoUrl, party.name])
 
     return (
       <LogoContainer className={className} party={party}>
@@ -489,24 +501,27 @@ export default function ResultsPage() {
             </div>
           </div>
         )}
-        <Image
-          src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
-          alt={`Logo ${party.name}`}
-          width={size.width}
-          height={size.height}
-          style={{ 
-            objectFit: "contain",
-            display: imageError ? 'none' : 'block'
-          }}
-          onLoad={() => setImageLoading(false)}
-          onError={() => {
-            console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)
-            setImageError(true)
-            setImageLoading(false)
-          }}
-          priority={false}
-          unoptimized={true}
-        />
+        {!imageError && (
+          <Image
+            src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
+            alt={`Logo ${party.name}`}
+            width={size.width}
+            height={size.height}
+            style={{ 
+              objectFit: "contain",
+              display: imageLoading ? 'none' : 'block'
+            }}
+            onLoad={() => setImageLoading(false)}
+            onError={() => {
+              console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)
+              setImageError(true)
+              setImageLoading(false)
+            }}
+            priority={index < 3} // Priorité pour les 3 premières cartes
+            unoptimized={true}
+            loading={index < 3 ? "eager" : "lazy"} // Chargement immédiat pour les 3 premières
+          />
+        )}
         {imageError && (
           <div className="w-full h-full bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-center">
             <div className="text-center">
@@ -602,7 +617,7 @@ export default function ResultsPage() {
                 className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl card-interactive-effects animate-fadeIn bg-white/90 backdrop-blur-sm hover:border-primary/30 transition-all duration-300" // Added card-color-accent for mobile
                 style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
               >
-                                 <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" />
+                                 <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" index={index} />
                 {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
                 <div className="min-h-[4rem] flex flex-col justify-center mb-3">
                   <h3 className="text-lg font-semibold text-foreground leading-tight">{party.shortName || party.name}</h3>
@@ -633,14 +648,14 @@ export default function ResultsPage() {
             <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {calculatedScores.map(({ party, score }) => (
+            {calculatedScores.map(({ party, score }, index) => (
               <Link
                 href={`/parti/${party.id}`}
                 key={party.id}
                 className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-primary/20 hover:shadow-md"
               >
-                <div className="flex items-center gap-3 mb-2">
-                                     <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" />
+                <div className="flex items-center gap-3 mb-3">
+                                     <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" index={index} />
                   <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">
                     {party.name}
                   </h3>
@@ -649,18 +664,13 @@ export default function ResultsPage() {
                     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="w-full bg-muted rounded-full h-5 flex overflow-hidden border border-border group-hover:border-primary/30 transition-colors">
-                    <div
-                      className="bg-primary h-full flex items-center justify-center text-xs text-primary-foreground font-medium transition-all duration-500 ease-out"
-                      style={{ width: `${score.toFixed(0)}%` }}
-                    >
-                      {score >= 15 ? `${score.toFixed(0)}%` : ""}
-                    </div>
+                <div className="w-full bg-muted rounded-full h-5 overflow-hidden border border-border group-hover:border-primary/30 transition-colors">
+                  <div
+                    className="bg-primary h-full flex items-center justify-center text-xs text-primary-foreground font-medium transition-all duration-500 ease-out"
+                    style={{ width: `${score.toFixed(0)}%` }}
+                  >
+                    {score >= 15 ? `${score.toFixed(0)}%` : ""}
                   </div>
-                  <span className="text-sm font-medium text-foreground whitespace-nowrap ml-2">
-                    {score.toFixed(0)}% d'affinité
-                  </span>
                 </div>
               </Link>
             ))}
