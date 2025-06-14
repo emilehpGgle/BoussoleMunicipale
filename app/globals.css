@@ -87,7 +87,7 @@
   .btn-primary-hover-effects {
     @apply hover:brightness-110;
   }
-  
+
   /* Enhanced button borders - subtle but visible */
   .btn-enhanced-border {
     @apply border-2 border-border/80 hover:border-primary/50 transition-all duration-200;

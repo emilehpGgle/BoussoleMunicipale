@@ -456,7 +456,7 @@ export default function ResultsPage() {
 
       return (
       <PageWithGlow intensity="subtle">
-        <div className="relative min-h-screen mobile-constrained">
+      <div className="relative min-h-screen mobile-constrained">
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {(responsesError || resultsError) && (

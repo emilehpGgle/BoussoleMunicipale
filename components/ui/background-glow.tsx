@@ -15,11 +15,11 @@ export function BackgroundGlow({
   intensity = 'subtle',
 }: BackgroundGlowProps) {
   
-  // Paramètres d'intensité pour l'arrière-plan
+  // Paramètres d'intensité pour l'arrière-plan (augmentés pour être plus visibles)
   const intensitySettings = {
-    minimal: { opacity: 0.02, scale: 0.8 },
-    subtle: { opacity: 0.04, scale: 1.0 },
-    soft: { opacity: 0.06, scale: 1.2 },
+    minimal: { opacity: 0.15, scale: 0.8 },
+    subtle: { opacity: 0.25, scale: 1.0 },
+    soft: { opacity: 0.35, scale: 1.2 },
   };
 
   const currentIntensity = intensitySettings[intensity];
@@ -30,9 +30,9 @@ export function BackgroundGlow({
       <motion.div
         className="fixed inset-0 pointer-events-none blur-3xl transform-gpu"
         style={{
-          background: `radial-gradient(circle at 20% 30%, #3B82F620 0%, transparent 50%), 
-                       radial-gradient(circle at 80% 70%, #06B6D415 0%, transparent 50%),
-                       radial-gradient(circle at 40% 90%, #8B5CF610 0%, transparent 50%)`,
+          background: `radial-gradient(circle at 20% 30%, #3B82F640 0%, transparent 60%), 
+                       radial-gradient(circle at 80% 70%, #06B6D430 0%, transparent 60%),
+                       radial-gradient(circle at 40% 90%, #8B5CF625 0%, transparent 60%)`,
           opacity: currentIntensity.opacity,
           scale: currentIntensity.scale,
         }}
@@ -51,9 +51,9 @@ export function BackgroundGlow({
       <motion.div
         className="fixed inset-0 pointer-events-none blur-3xl transform-gpu"
         style={{
-          background: `radial-gradient(circle at 70% 20%, #06B6D418 0%, transparent 50%), 
-                       radial-gradient(circle at 30% 80%, #8B5CF612 0%, transparent 50%),
-                       radial-gradient(circle at 90% 40%, #3B82F615 0%, transparent 50%)`,
+          background: `radial-gradient(circle at 70% 20%, #06B6D435 0%, transparent 60%), 
+                       radial-gradient(circle at 30% 80%, #8B5CF630 0%, transparent 60%),
+                       radial-gradient(circle at 90% 40%, #3B82F625 0%, transparent 60%)`,
           opacity: currentIntensity.opacity * 0.8,
           scale: currentIntensity.scale * 0.9,
         }}
@@ -68,8 +68,8 @@ export function BackgroundGlow({
         }}
       />
       
-      {/* Subtle overlay for better contrast */}
-      <div className="fixed inset-0 bg-white/3 pointer-events-none" />
+      {/* Subtle overlay pour améliorer le contraste (réduit) */}
+      <div className="fixed inset-0 bg-white/5 pointer-events-none" />
       
       {/* Content */}
       <div className="relative z-10">
