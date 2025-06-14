@@ -129,34 +129,10 @@ export default function ShareModal({
   }
 
   // Génération d'image via l'API existante (plus fiable que html2canvas)
-  const generateShareImageUrl = async (): Promise<string | null> => {
+  const generateShareImageUrl = async (shareId: string): Promise<string | null> => {
     try {
-      // Utiliser l'API existante pour générer l'image
-      const topPartiesData = topParties.slice(0, 3).map(party => ({
-        party: {
-          id: party.party.id,
-          name: party.party.name,
-          shortName: party.party.shortName,
-          leader: party.party.leader,
-          logoUrl: party.party.logoUrl
-        },
-        score: party.score
-      }))
-
-      const userPos = politicalPosition ? {
-        economic: politicalPosition.x,
-        social: politicalPosition.y
-      } : { economic: 0, social: 0 }
-
-      // Générer l'URL de l'image via notre API
-      const params = new URLSearchParams({
-        userName: "Citoyen",
-        topParties: JSON.stringify(topPartiesData),
-        userPosition: JSON.stringify(userPos),
-        format: 'png'
-      })
-
-      return `${window.location.origin}/api/generate-share-image?${params}`
+      // L'API génère l'image à partir de l'ID de partage sauvegardé
+      return `${window.location.origin}/api/generate-share-image?id=${shareId}`
     } catch (error) {
       console.error('Erreur lors de la génération d\'image:', error)
       return null
@@ -181,7 +157,37 @@ export default function ShareModal({
   const handleFacebookShare = async () => {
     setIsSharing(true)
     try {
-      const shareUrl = await generateShareUrl()
+      // Générer le shareId et l'URL en premier
+      const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      
+      // Sauvegarder les données de partage
+      const shareData = {
+        id: shareId,
+        userName: "Citoyen engagé",
+        topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
+        userPosition: politicalPosition,
+        timestamp: Date.now(),
+        userAnswers: userAnswers,
+        userImportance: userImportance
+      }
+      
+      try {
+        const response = await fetch('/api/save-share', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ shareId, data: shareData })
+        })
+        
+        if (!response.ok) {
+          throw new Error(`API returned ${response.status}`)
+        }
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde:', error)
+        toast.error("Erreur lors de la sauvegarde. Le partage pourrait ne pas fonctionner.")
+      }
+      
+      const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+      const shareUrl = `${baseUrl}/partage/${shareId}`
       
       const topMatch = topParties[0]
       const partyName = topMatch?.party?.shortName || topMatch?.party?.name || 'mon parti préféré'
@@ -190,8 +196,8 @@ export default function ShareModal({
       // Texte engageant pour Facebook
       const shareText = `🏛️ Mes affinités politiques municipales révélées !\n\n🎯 Mon parti principal : ${partyName} (${score}%)\n\n📊 Découvrez ma position complète sur la carte politique et faites votre propre test gratuit en 5 minutes !\n\n#BoussoleQuébec #PolitiqueMunicipale #Québec2025`
       
-      // Générer l'image de partage
-      const imageUrl = await generateShareImageUrl()
+      // Générer l'image de partage avec le shareId
+      const imageUrl = await generateShareImageUrl(shareId)
       
       if (imageUrl && typeof window !== 'undefined' && window.FB) {
         // Utiliser Facebook SDK si disponible
