@@ -15,7 +15,7 @@ import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
 import { ColoredText, HighlightText } from "@/components/ui/colored-text"
 import { GlowSection } from "@/components/ui/subtle-glow"
-import { GlowCard } from "@/components/ui/glow-effect"
+import { PageWithGlow } from "@/components/ui/background-glow"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -202,13 +202,8 @@ export default function QuestionnairePage() {
   }
 
       return (
-      <GlowSection 
-        glowProps={{ 
-          mode: 'drift', 
-          intensity: 'subtle',
-          colors: ['#3B82F6', '#06B6D4'],
-          duration: 15
-        }}
+      <PageWithGlow 
+        intensity="subtle"
         className="relative min-h-screen mobile-constrained"
       >
 
@@ -250,15 +245,9 @@ export default function QuestionnairePage() {
           />
         </div>
 
-        <GlowCard 
+        <Card 
           key={questionKey} 
-          className={`p-4 md:p-6 shadow-soft rounded-2xl bg-card flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'}`}
-          glowProps={{
-            mode: "breathe",
-            intensity: "subtle",
-            duration: 10,
-            colors: ['#3B82F6', '#06B6D4', '#8B5CF6']
-          }}
+          className={`p-4 md:p-6 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 hover:border-primary/40 flex-1 flex flex-col question-glow ${isTransitioning ? 'question-exit' : 'question-enter'} transition-all duration-300`}
         >
           <div className="flex items-start gap-3 mb-4">
             <h2 className={`text-xl md:text-2xl text-foreground leading-tight font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
@@ -361,7 +350,7 @@ export default function QuestionnairePage() {
               </Button>
             )}
           </div>
-        </GlowCard>
+        </Card>
 
         <div className="mt-2 text-center">
           <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
@@ -369,6 +358,6 @@ export default function QuestionnairePage() {
           </Button>
         </div>
       </div>
-    </GlowSection>
+    </PageWithGlow>
   )
 }

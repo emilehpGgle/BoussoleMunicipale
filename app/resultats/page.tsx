@@ -34,7 +34,7 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
-import { GlowCard } from "@/components/ui/glow-effect"
+import { PageWithGlow } from "@/components/ui/background-glow"
 
 
 interface UserAnswers {
@@ -455,7 +455,8 @@ export default function ResultsPage() {
   )
 
       return (
-      <div className="relative min-h-screen mobile-constrained">
+      <PageWithGlow intensity="subtle">
+        <div className="relative min-h-screen mobile-constrained">
 
       {/* Affichage d'erreur uniquement si problème critique */}
       {(responsesError || resultsError) && (
@@ -521,31 +522,16 @@ export default function ResultsPage() {
           </div>
         )}
 
-                 <GlowCard 
-          className="shadow-soft rounded-2xl"
-          glowProps={{
-            mode: "breathe",
-            intensity: "subtle",
-            duration: 12,
-            colors: ['#3B82F6', '#06B6D4', '#8B5CF6']
-          }}
-        >
-          <Card className="bg-transparent">
+                 <Card className="shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border border-border/50">
            <CardHeader>
              <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
            </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-6">
             {topParties.map(({ party, score }, index) => (
-              <GlowCard
+              <Card
                 key={party.id}
-                className="p-6 flex flex-col items-center text-center border-border shadow-sm rounded-xl card-interactive-effects animate-fadeIn card-color-accent" // Added card-color-accent for mobile
+                className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl card-interactive-effects animate-fadeIn bg-white/90 backdrop-blur-sm hover:border-primary/30 transition-all duration-300" // Added card-color-accent for mobile
                 style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
-                glowProps={{
-                  mode: "pulse",
-                  intensity: "minimal",
-                  duration: 8,
-                  colors: ['#3B82F6', '#06B6D4']
-                }}
               >
                 <LogoContainer className="w-20 h-20 mb-4">
                   <Image
@@ -575,11 +561,10 @@ export default function ResultsPage() {
                 >
                   <Link href={`/parti/${party.id}`}>Voir la fiche du parti</Link>
                 </Button>
-                </GlowCard>
+              </Card>
             ))}
           </CardContent>
-          </Card>
-        </GlowCard>
+        </Card>
 
                  <Card className="shadow-soft rounded-2xl subtle-glow">
            <CardHeader>
@@ -769,5 +754,6 @@ export default function ResultsPage() {
         />
       </div>
     </div>
+    </PageWithGlow>
   )
 }
