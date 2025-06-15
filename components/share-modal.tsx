@@ -128,38 +128,6 @@ export default function ShareModal({
     return shareUrl
   }
 
-  // Génération d'image via l'API existante (plus fiable que html2canvas)
-  const generateShareImageUrl = async (shareId: string): Promise<string | null> => {
-    try {
-      // L'API génère l'image à partir de l'ID de partage sauvegardé
-      const imageUrl = `${window.location.origin}/api/generate-share-image?id=${shareId}`
-      
-      // NOUVEAU: Pré-cache l'image via Facebook Debugger API (solution recommandée par Facebook)
-      try {
-        // Utiliser l'API Graph de Facebook pour forcer le scraping de l'image
-        // Cela évite le problème d'image blanche lors du premier partage
-        const shareUrl = `${window.location.origin}/partage/${shareId}`
-        
-        // Appel à l'API Facebook pour pré-cacher les métadonnées
-        // Note: Cela nécessite un token d'application Facebook, mais on peut aussi utiliser l'URL directe
-        const debugUrl = `https://graph.facebook.com/v18.0/?ids=${encodeURIComponent(shareUrl)}&fields=og_object{url,title,description,image}&access_token=${process.env.NEXT_PUBLIC_FACEBOOK_APP_TOKEN || ''}`
-        
-        // Tentative de pré-cache (en arrière-plan, sans bloquer)
-        fetch(debugUrl, { method: 'GET' }).catch(() => {
-          // Si échec, on continue sans bloquer l'utilisateur
-          console.log('Pré-cache Facebook non disponible, l\'image pourrait ne pas apparaître au premier partage')
-        })
-      } catch (error) {
-        console.log('Pré-cache Facebook impossible:', error)
-      }
-      
-      return imageUrl
-    } catch (error) {
-      console.error('Erreur lors de la génération d\'image:', error)
-      return null
-    }
-  }
-
   // Fonctions de partage
   const handleTwitterShare = async () => {
     setIsSharing(true)
@@ -178,74 +146,18 @@ export default function ShareModal({
   const handleFacebookShare = async () => {
     setIsSharing(true)
     try {
-      // Générer le shareId et l'URL en premier
-      const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-      
-      // Sauvegarder les données de partage
-      const shareData = {
-        id: shareId,
-        userName: "Citoyen engagé",
-        topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
-        userPosition: politicalPosition,
-        timestamp: Date.now(),
-        userAnswers: userAnswers,
-        userImportance: userImportance
-      }
-      
-      try {
-        const response = await fetch('/api/save-share', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ shareId, data: shareData })
-        })
-        
-        if (!response.ok) {
-          throw new Error(`API returned ${response.status}`)
-        }
-      } catch (error) {
-        console.error('Erreur lors de la sauvegarde:', error)
-        toast.error("Erreur lors de la sauvegarde. Le partage pourrait ne pas fonctionner.")
-      }
-      
-      const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-      const shareUrl = `${baseUrl}/partage/${shareId}`
-      
-      const topMatch = topParties[0]
-      const partyName = topMatch?.party?.shortName || topMatch?.party?.name || 'mon parti préféré'
-      const score = Math.round(topMatch?.score || 0)
-      
-      // Texte engageant pour Facebook
-      const shareText = `🏛️ Mes affinités politiques municipales révélées !\n\n🎯 Mon parti principal : ${partyName} (${score}%)\n\n📊 Découvrez ma position complète sur la carte politique et faites votre propre test gratuit en 5 minutes !\n\n#BoussoleQuébec #PolitiqueMunicipale #Québec2025`
-      
-      // Générer l'image de partage avec le shareId
-      const imageUrl = await generateShareImageUrl(shareId)
-      
-      if (imageUrl && typeof window !== 'undefined' && window.FB) {
-        // Utiliser Facebook SDK si disponible
-        window.FB.ui({
-          method: 'feed',
-          link: shareUrl,
-          picture: imageUrl,
-          name: 'Mes résultats - Boussole Municipale Québec',
-          caption: 'boussolemunicipalequebec.ca',
-          description: shareText
-        }, (response: any) => {
-          if (response && response.post_id) {
-            toast.success("Partagé sur Facebook avec image !")
-          }
-        })
-      } else {
-        // Fallback vers le sharer standard avec texte amélioré
-        const params = new URLSearchParams({
-          u: shareUrl,
-          quote: shareText
-        })
-        window.open(`https://www.facebook.com/sharer/sharer.php?${params}`, '_blank')
-        toast.success("Partage Facebook ouvert !")
-      }
+      const shareUrl = await generateShareUrl()
+      const text = generateShareText()
+      // Utilisation du sharer standard, plus simple et fiable
+      const params = new URLSearchParams({
+        u: shareUrl,
+        quote: text
+      })
+      window.open(`https://www.facebook.com/sharer/sharer.php?${params}`, '_blank')
+      toast.success("Partage Facebook ouvert !")
     } catch (error) {
       console.error('Erreur lors du partage Facebook:', error)
-      toast.error("Impossible de partager sur Facebook")
+      toast.error("Erreur lors du partage sur Facebook")
     }
     setIsSharing(false)
   }
