@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Twitter, Link as LinkIcon, Mail, Facebook, MessageCircle } from "lucide-react"
+import { X, Link as LinkIcon, Mail, Facebook, MessageCircle } from "lucide-react"
 import { toast } from "sonner"
 import { partiesData, type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
 import PoliticalCompassChart from "@/components/political-compass-chart"
@@ -136,9 +136,9 @@ export default function ShareModal({
       const text = generateShareText()
       const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`
       window.open(url, '_blank')
-      toast.success("Partagé sur Twitter !")
+      toast.success("Partagé sur X !")
     } catch (error) {
-      toast.error("Erreur lors du partage sur Twitter")
+      toast.error("Erreur lors du partage sur X")
     }
     setIsSharing(false)
   }
@@ -265,54 +265,30 @@ export default function ShareModal({
         {/* Boutons de partage modernes en haut */}
         <div className="space-y-4 border-b pb-6">
           <h4 className="text-center font-medium text-gray-700">
-            Partagez vos résultats et invitez vos amis !
+            Partagez vos résultats et encouragez vos proches à découvrir leurs propres affinités politiques.
           </h4>
           
-          <div className="flex flex-wrap justify-center gap-3">
-            <button
-              onClick={handleTwitterShare}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1DA1F2] hover:bg-[#1a91da] text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-            >
-              <Twitter className="w-4 h-4" />
-              <span className="text-sm font-medium">Twitter</span>
-            </button>
-            
-            <button
-              onClick={handleFacebookShare}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1877F2] hover:bg-[#166fe5] text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-            >
-              <Facebook className="w-4 h-4" />
-              <span className="text-sm font-medium">Facebook</span>
-            </button>
-            
-            <button
-              onClick={handleMessengerShare}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0084FF] hover:bg-[#006ee6] text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-            >
-              <MessageCircle className="w-4 h-4" />
-              <span className="text-sm font-medium">Messenger</span>
-            </button>
-            
-            <button
-              onClick={handleCopyLink}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-            >
-              <LinkIcon className="w-4 h-4" />
-              <span className="text-sm font-medium">Copier le lien</span>
-            </button>
-
-            <button
-              onClick={() => setIsEmailModalOpen(true)}
-              disabled={isSharing}
-              className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
-            >
-              <Mail className="w-4 h-4" />
-              <span className="text-sm font-medium">Email</span>
-            </button>
+          <div className="grid grid-cols-2 gap-4">
+            <Button onClick={handleFacebookShare} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white">
+              <Facebook className="w-5 h-5" />
+              <span>Facebook</span>
+            </Button>
+            <Button onClick={handleTwitterShare} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white">
+              <X className="w-5 h-5" />
+              <span>X</span>
+            </Button>
+            <Button onClick={handleMessengerShare} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-[#00B2FF] hover:bg-[#00A2E8] text-white">
+              <MessageCircle className="w-5 h-5" />
+              <span>Messenger</span>
+            </Button>
+            <Button onClick={handleCopyLink} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white">
+              <LinkIcon className="w-5 h-5" />
+              <span>Copier le lien</span>
+            </Button>
+            <Button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white">
+              <Mail className="w-5 h-5" />
+              <span>Email</span>
+            </Button>
           </div>
         </div>
         
