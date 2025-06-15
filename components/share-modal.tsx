@@ -268,25 +268,25 @@ export default function ShareModal({
             Partagez vos résultats et encouragez vos proches à découvrir leurs propres affinités politiques.
           </h4>
           
-          <div className="grid grid-cols-2 gap-4">
-            <Button onClick={handleFacebookShare} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166FE5] text-white">
-              <Facebook className="w-5 h-5" />
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button onClick={handleFacebookShare} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-[#1877F2] hover:bg-[#166FE5] text-white rounded-lg text-sm font-medium">
+              <Facebook className="w-4 h-4" />
               <span>Facebook</span>
             </Button>
-            <Button onClick={handleTwitterShare} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-black hover:bg-gray-800 text-white">
-              <X className="w-5 h-5" />
+            <Button onClick={handleTwitterShare} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg text-sm font-medium">
+              <X className="w-4 h-4" />
               <span>X</span>
             </Button>
-            <Button onClick={handleMessengerShare} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-[#00B2FF] hover:bg-[#00A2E8] text-white">
-              <MessageCircle className="w-5 h-5" />
+            <Button onClick={handleMessengerShare} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-[#00B2FF] hover:bg-[#00A2E8] text-white rounded-lg text-sm font-medium">
+              <MessageCircle className="w-4 h-4" />
               <span>Messenger</span>
             </Button>
-            <Button onClick={handleCopyLink} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white">
-              <LinkIcon className="w-5 h-5" />
+            <Button onClick={handleCopyLink} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-medium">
+              <LinkIcon className="w-4 h-4" />
               <span>Copier le lien</span>
             </Button>
-            <Button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="w-full flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 text-white">
-              <Mail className="w-5 h-5" />
+            <Button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium">
+              <Mail className="w-4 h-4" />
               <span>Email</span>
             </Button>
           </div>
