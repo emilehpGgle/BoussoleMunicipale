@@ -270,8 +270,11 @@ export function useUserResponses() {
 
   // Charger les réponses au montage du composant
   useEffect(() => {
-    loadResponses()
-  }, [loadResponses])
+    if (isSessionValid) {
+      loadResponses()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSessionValid])
 
   return {
     // État
