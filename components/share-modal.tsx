@@ -268,27 +268,40 @@ export default function ShareModal({
             Partagez vos résultats et encouragez vos proches à découvrir leurs propres affinités politiques.
           </h4>
           
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button onClick={handleFacebookShare} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-[#1877F2] hover:bg-[#166FE5] text-white rounded-lg text-sm font-medium">
-              <Facebook className="w-4 h-4" />
-              <span>Facebook</span>
-            </Button>
-            <Button onClick={handleTwitterShare} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-black hover:bg-gray-800 text-white rounded-lg text-sm font-medium">
-              <X className="w-4 h-4" />
-              <span>X</span>
-            </Button>
-            <Button onClick={handleMessengerShare} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-[#00B2FF] hover:bg-[#00A2E8] text-white rounded-lg text-sm font-medium">
-              <MessageCircle className="w-4 h-4" />
-              <span>Messenger</span>
-            </Button>
-            <Button onClick={handleCopyLink} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm font-medium">
-              <LinkIcon className="w-4 h-4" />
-              <span>Copier le lien</span>
-            </Button>
-            <Button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="flex items-center gap-2 px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white rounded-lg text-sm font-medium">
-              <Mail className="w-4 h-4" />
-              <span>Email</span>
-            </Button>
+          <div className="text-center">
+            <h3 className="text-xl font-semibold mb-4">Partager via</h3>
+            <div className="flex justify-center gap-4 mt-2">
+              <button onClick={handleFacebookShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-600 text-white transition-transform group-hover:scale-110">
+                  <Facebook className="w-7 h-7" />
+                </div>
+                <span className="text-xs">Facebook</span>
+              </button>
+              <button onClick={handleTwitterShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-black text-white transition-transform group-hover:scale-110 overflow-hidden">
+                  <Image src="/X.png" alt="X Logo" width={48} height={48} />
+                </div>
+                <span className="text-xs">X</span>
+              </button>
+              <button onClick={handleMessengerShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 text-white transition-transform group-hover:scale-110">
+                  <MessageCircle className="w-7 h-7" />
+                </div>
+                <span className="text-xs">Messenger</span>
+              </button>
+              <button onClick={handleCopyLink} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-600 text-white transition-transform group-hover:scale-110">
+                  <LinkIcon className="w-7 h-7" />
+                </div>
+                <span className="text-xs">Copier le lien</span>
+              </button>
+              <button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-600 text-white transition-transform group-hover:scale-110">
+                  <Mail className="w-7 h-7" />
+                </div>
+                <span className="text-xs">Email</span>
+              </button>
+            </div>
           </div>
         </div>
         
