@@ -27,7 +27,6 @@ export default function QuestionnairePage() {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [questionKey, setQuestionKey] = useState(0) // Pour forcer le re-render avec animations
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
-  const [startupState, setStartupState] = useState<'loading' | 'prompt' | 'ready'>('loading')
   const router = useRouter()
   const searchParams = useSearchParams()
   const [currentScreen, setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
@@ -74,38 +73,23 @@ export default function QuestionnairePage() {
     }
     
     // Si toutes les questions ont été répondues, aller à la dernière
-    return boussoleQuestions.length
+    return boussoleQuestions.length - 1
   }, [userAnswers, userImportanceDirectAnswers])
 
   // Initialiser l'index de question une fois que les réponses sont chargées
   useEffect(() => {
     if (!isLoading && !hasInitialized) {
-      const responseCount = getResponseCounts().total
-      if (responseCount > 0) {
-        setStartupState('prompt') // Afficher l'écran d'accueil
-      } else {
-        setStartupState('ready') // Commencer directement
+      const nextQuestionIndex = calculateNextQuestionIndex()
+      
+      // Si on a des réponses et qu'on n'est pas à la première question
+      if (nextQuestionIndex > 0) {
+        console.log(`🎯 Reprendre au questionnaire à la question ${nextQuestionIndex + 1}/${boussoleQuestions.length}`)
+        setCurrentQuestionIndex(nextQuestionIndex)
       }
+      
       setHasInitialized(true)
     }
-  }, [isLoading, hasInitialized, getResponseCounts])
-
-  // Gérer les actions de l'écran d'accueil
-  const handleContinue = () => {
-    const nextQuestionIndex = calculateNextQuestionIndex()
-    setCurrentQuestionIndex(nextQuestionIndex < TOTAL_QUESTIONS ? nextQuestionIndex : TOTAL_QUESTIONS - 1)
-    setStartupState('ready')
-  }
-
-  const handleRestart = async () => {
-    await clearAllResponses()
-    setCurrentQuestionIndex(0)
-    setStartupState('ready')
-  }
-
-  const handleViewResults = () => {
-    router.push('/resultats')
-  }
+  }, [isLoading, hasInitialized, calculateNextQuestionIndex])
 
   // Nouvelle logique: re-calculer si les données changent après l'initialisation
   useEffect(() => {
@@ -218,39 +202,6 @@ export default function QuestionnairePage() {
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Chargement de vos réponses...</p>
         </div>
-      </div>
-    )
-  }
-
-  // Écran d'accueil si des réponses existent déjà
-  if (startupState === 'prompt') {
-    const responseCount = getResponseCounts().total
-    const isCompleted = responseCount >= TOTAL_QUESTIONS
-
-    return (
-      <div className="container max-w-2xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen text-center">
-        <Card className="p-8 shadow-2xl bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="text-3xl font-bold">
-              {isCompleted ? "Félicitations, vous avez terminé !" : "Bon retour !"}
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-muted-foreground">
-              {isCompleted
-                ? "Vous avez répondu à toutes les questions. Vous pouvez consulter vos résultats détaillés ou recommencer le questionnaire."
-                : `Vous avez déjà répondu à ${responseCount} sur ${TOTAL_QUESTIONS} questions. Reprenez là où vous vous étiez arrêté.`}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {isCompleted ? (
-                <Button onClick={handleViewResults} size="lg" className="flex-1">Consulter les résultats</Button>
-              ) : (
-                <Button onClick={handleContinue} size="lg" className="flex-1">Continuer</Button>
-              )}
-              <Button onClick={handleRestart} size="lg" variant="outline" className="flex-1">Recommencer</Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     )
   }

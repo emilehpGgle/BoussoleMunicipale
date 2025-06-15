@@ -10,7 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import { RotateCcw, Play, FileText } from "lucide-react"
+import { RotateCcw, Play, FileText, BarChart3 } from "lucide-react"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useRouter } from "next/navigation"
 import { boussoleQuestions } from "@/lib/boussole-data"
@@ -32,6 +32,7 @@ export default function ContinueOrRestartModal({
   
   const responseCounts = getResponseCounts()
   const hasResponses = responseCounts.total > 0
+  const isCompleted = responseCounts.total >= boussoleQuestions.length
 
   // Calculer à quelle question reprendre
   const calculateNextQuestionIndex = () => {
@@ -68,6 +69,11 @@ export default function ContinueOrRestartModal({
     onClose()
     // Aller au questionnaire pour continuer
     router.push("/questionnaire")
+  }
+
+  const handleViewResults = () => {
+    onClose()
+    router.push("/resultats")
   }
 
   const handleRestartFromScratch = async () => {
@@ -117,33 +123,51 @@ export default function ContinueOrRestartModal({
               <FileText className="h-5 w-5 text-primary" />
             </div>
             <DialogTitle className="text-xl font-semibold text-foreground">
-              Questionnaire en cours
+              {isCompleted ? "Questionnaire terminé !" : "Questionnaire en cours"}
             </DialogTitle>
           </div>
           <DialogDescription className="text-muted-foreground leading-relaxed">
-            Vous avez déjà répondu à <span className="font-semibold text-foreground">{responseCounts.total} question{responseCounts.total > 1 ? 's' : ''}</span> sur 20.
-            Que souhaitez-vous faire ?
+            {isCompleted 
+              ? "Félicitations ! Vous avez répondu à toutes les questions. Consultez vos résultats maintenant."
+              : `Vous avez déjà répondu à ${responseCounts.total} question${responseCounts.total > 1 ? 's' : ''} sur ${boussoleQuestions.length}. Que souhaitez-vous faire ?`
+            }
           </DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-3 py-4">
-          {/* Option 1: Continuer le questionnaire */}
-          <Button
-            onClick={handleContinueQuestionnaire}
-            className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-200 hover:shadow-md"
-          >
-            <div className="flex items-center gap-3 w-full">
-              <div className="p-2 bg-primary-foreground/20 rounded-full">
-                <Play className="h-4 w-4" />
-              </div>
-              <div className="text-left flex-1">
-                <div className="font-semibold text-sm">Continuer le questionnaire</div>
-                <div className="text-xs opacity-90">
-                  Reprendre à la question {nextQuestionNumber} sur {boussoleQuestions.length}
+          {isCompleted ? (
+             <Button
+              onClick={handleViewResults}
+              className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-200 hover:shadow-md"
+            >
+              <div className="flex items-center gap-3 w-full">
+                <div className="p-2 bg-primary-foreground/20 rounded-full">
+                  <BarChart3 className="h-4 w-4" />
+                </div>
+                <div className="text-left flex-1">
+                  <div className="font-semibold text-sm">Consulter les résultats</div>
+                  <div className="text-xs opacity-90">Voir votre alignement avec les partis</div>
                 </div>
               </div>
-            </div>
-          </Button>
+            </Button>
+          ) : (
+            <Button
+              onClick={handleContinueQuestionnaire}
+              className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-200 hover:shadow-md"
+            >
+              <div className="flex items-center gap-3 w-full">
+                <div className="p-2 bg-primary-foreground/20 rounded-full">
+                  <Play className="h-4 w-4" />
+                </div>
+                <div className="text-left flex-1">
+                  <div className="font-semibold text-sm">Continuer le questionnaire</div>
+                  <div className="text-xs opacity-90">
+                    Reprendre à la question {nextQuestionNumber} sur {boussoleQuestions.length}
+                  </div>
+                </div>
+              </div>
+            </Button>
+          )}
 
           {/* Option 2: Recommencer à zéro */}
           <Button
