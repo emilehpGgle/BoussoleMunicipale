@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-    console.error('Erreur lors de la sauvegarde de la réponse:', error)
+    console.error('[responses] Response save failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       )
     }
-    console.error('Erreur lors de la récupération des réponses:', error)
+    console.error('[responses] Response fetch failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
@@ -172,7 +172,7 @@ export async function DELETE(request: NextRequest) {
         { status: 401 }
       )
     }
-    console.error('Erreur lors de la suppression des réponses:', error)
+    console.error('[responses] Response deletion failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }

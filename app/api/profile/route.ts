@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la sauvegarde du profil:', error)
+    console.error('[profile] Profile save failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
@@ -135,7 +135,7 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la récupération du profil:', error)
+    console.error('[profile] Profile fetch failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
@@ -208,7 +208,7 @@ export async function PUT(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la mise à jour du profil:', error)
+    console.error('[profile] Profile update failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
@@ -261,7 +261,7 @@ export async function DELETE(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Erreur lors de la suppression du profil:', error)
+    console.error('[profile] Profile deletion failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
       { status: 500 }
