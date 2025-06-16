@@ -122,7 +122,7 @@ export default function SiteHeader() {
                 Commencer
               </Button>
             ) : (
-              // Bouton "Accueil" simple - pas de modal
+              // Bouton &quot;Accueil&quot; simple - pas de modal
               <Button
                 onClick={handleGoHome}
                 variant="outline"

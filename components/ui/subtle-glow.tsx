@@ -1,7 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import { motion, Transition } from 'motion/react'
+import { motion } from 'motion/react'
 
 export type SubtleGlowProps = {
   className?: string

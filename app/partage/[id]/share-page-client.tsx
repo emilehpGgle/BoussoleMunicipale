@@ -8,8 +8,8 @@ import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import PoliticalCompassChart from '@/components/political-compass-chart'
-import { partiesData, type AgreementOptionKey } from '@/lib/boussole-data'
-import { calculateUserPoliticalPosition } from '@/lib/political-map-calculator'
+import { type AgreementOptionKey } from '@/lib/boussole-data'
+// import { calculateUserPoliticalPosition } from '@/lib/political-map-calculator' // Unused
 
 
 // Types pour les données partagées (doivent correspondre à ce qui est sauvegardé)
@@ -97,7 +97,7 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="space-y-6">
           
-          {/* Module "Meilleurs alignements (Partis)" avec liens vers fiches */}
+          {/* Module &quot;Meilleurs alignements (Partis)&quot; avec liens vers fiches */}
           <Card className="shadow-soft rounded-2xl">
             <CardHeader>
               <CardTitle className="text-2xl">Meilleurs alignements (Partis)</CardTitle>
@@ -134,7 +134,7 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
                           style={{ width: `${topParty.score.toFixed(0)}%` }}
                         ></div>
                       </div>
-                      <p className="text-lg font-bold text-foreground mb-4">{topParty.score.toFixed(0)}% d'affinité</p>
+                      <p className="text-lg font-bold text-foreground mb-4">{topParty.score.toFixed(0)}% d&apos;affinité</p>
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-primary text-xs font-medium">
                         Voir la fiche <ArrowRight className="inline h-3 w-3" />
                       </div>

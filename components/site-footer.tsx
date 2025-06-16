@@ -13,7 +13,7 @@ export default function SiteFooter() {
               Confidentialité
             </Link>
             <Link href="/conditions" className="text-muted-foreground hover:text-foreground transition-colors">
-              Conditions d'utilisation
+              Conditions d&apos;utilisation
             </Link>
             <Link href="/aide" className="text-muted-foreground hover:text-foreground transition-colors">
               Aide

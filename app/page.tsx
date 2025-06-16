@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
 import Image from "next/image"
 import Link from "next/link"
-import { ColoredText, HighlightText } from "@/components/ui/colored-text"
+import { ColoredText } from "@/components/ui/colored-text"
 import { GlowSection } from "@/components/ui/subtle-glow"
 
 

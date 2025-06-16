@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/supabase/client'
-import { Database, AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
+import { Database, AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
 
 type UserResponse = Database['public']['Tables']['user_responses']['Row']
 type UserResponseInsert = Database['public']['Tables']['user_responses']['Insert']

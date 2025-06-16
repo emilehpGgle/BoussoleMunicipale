@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResultsAPI } from '@/lib/api/results'
-import { ResponsesAPI } from '@/lib/api/responses'
+// import { ResponsesAPI } from '@/lib/api/responses' // Unused
 
 // Helper function to extract sessionToken from Authorization header
 function extractSessionToken(request: NextRequest): string | null {
@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: SaveResultsRequest = await request.json()
-    const { resultsData, politicalPosition } = body
+    const { resultsData, politicalPosition: _politicalPosition } = body
 
     // Validation des paramètres requis
     if (!resultsData) {

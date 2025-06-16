@@ -77,7 +77,7 @@ export class ResultsAPI {
   ) {
     const result: UserResultInsert = {
       session_id: sessionId,
-      results_data: resultsData as any, // Cast nécessaire pour la compatibilité avec le type Json de Supabase
+      results_data: resultsData as unknown, // Cast nécessaire pour la compatibilité avec le type Json de Supabase
       political_position: resultsData.calculatedResults.politicalPosition || null,
       completion_status: completionStatus,
     }

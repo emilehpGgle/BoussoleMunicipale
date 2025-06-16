@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowLeft, HelpCircle, Users, Share2, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function AidePage() {
   return (
@@ -10,7 +10,7 @@ export default function AidePage() {
         <Button variant="ghost" asChild className="mb-4">
           <Link href="/" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
-            Retour à l'accueil
+            Retour à l&apos;accueil
           </Link>
         </Button>
         
@@ -34,7 +34,7 @@ export default function AidePage() {
             <p className="text-sm leading-relaxed">
               La Boussole Municipale compare vos réponses à 20 questions avec les positions 
               officielles des partis politiques municipaux de Québec. Un algorithme calcule 
-              votre pourcentage d'affinité avec chaque parti en fonction de vos réponses.
+              votre pourcentage d&apos;affinité avec chaque parti en fonction de vos réponses.
             </p>
           </CardContent>
         </Card>
@@ -80,9 +80,9 @@ export default function AidePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm leading-relaxed">
-              Depuis la page de résultats, cliquez sur "Partager" pour générer un lien unique 
+              Depuis la page de résultats, cliquez sur &quot;Partager&quot; pour générer un lien unique 
               vers vos résultats. Vous pouvez le partager sur les réseaux sociaux ou vous 
-              l'envoyer par email.
+              l&apos;envoyer par email.
             </p>
           </CardContent>
         </Card>
@@ -95,7 +95,7 @@ export default function AidePage() {
             <div>
               <h4 className="font-semibold text-sm mb-1">Le site ne fonctionne pas correctement</h4>
               <p className="text-sm text-muted-foreground">
-                Essayez de vider le cache de votre navigateur ou d'utiliser un autre navigateur. 
+                Essayez de vider le cache de votre navigateur ou d&apos;utiliser un autre navigateur. 
                 Le site fonctionne mieux sur Chrome, Firefox et Safari récents.
               </p>
             </div>
@@ -107,7 +107,7 @@ export default function AidePage() {
               </p>
             </div>
             <div>
-              <h4 className="font-semibold text-sm mb-1">Problème d'affichage sur mobile</h4>
+              <h4 className="font-semibold text-sm mb-1">Problème d&apos;affichage sur mobile</h4>
               <p className="text-sm text-muted-foreground">
                 Le site est optimisé pour tous les appareils. Si vous rencontrez des problèmes, 
                 essayez de recharger la page ou de passer en mode paysage sur tablette.
@@ -118,13 +118,13 @@ export default function AidePage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Besoin d'aide supplémentaire ?</CardTitle>
+            <CardTitle>Besoin d&apos;aide supplémentaire ?</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm leading-relaxed">
               Si vous ne trouvez pas la réponse à votre question, consultez la page 
               <Link href="/a-propos" className="text-primary hover:underline">À Propos</Link> 
-              pour plus d'informations sur le projet et les contacts.
+              pour plus d&apos;informations sur le projet et les contacts.
             </p>
           </CardContent>
         </Card>

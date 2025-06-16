@@ -1,4 +1,4 @@
-import { type AgreementOptionKey, boussoleQuestions, agreementLabels } from './boussole-data'
+import { type AgreementOptionKey } from './boussole-data'
 
 // Définition des axes politiques
 export interface PoliticalPosition {

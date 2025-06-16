@@ -2,25 +2,23 @@
 
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card } from "@/components/ui/card"
 import { ArrowLeft, ArrowRight, HelpCircle, CheckCircle2, Home, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useSearchParams, useRouter } from "next/navigation"
-import { boussoleQuestions, agreementLabels, importanceDirectLabels, getAgreementLabel, getImportanceDirectLabel } from "@/lib/boussole-data"
-import type { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from "@/lib/boussole-data"
+import { boussoleQuestions, getAgreementLabel, getImportanceDirectLabel } from "@/lib/boussole-data"
+import type { AgreementOptionKey, ImportanceDirectOptionKey } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
-import { ColoredText, HighlightText } from "@/components/ui/colored-text"
-import { GlowSection } from "@/components/ui/subtle-glow"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 
 
 // questions constant is already defined from boussoleQuestions
-const TOTAL_QUESTIONS = boussoleQuestions.length
+const _TOTAL_QUESTIONS = boussoleQuestions.length
 
 export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -29,7 +27,7 @@ export default function QuestionnairePage() {
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [currentScreen, setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
+  const [_currentScreen, setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
 
   // Intégration des hooks sécurisés
   const { sessionToken } = useSession()
@@ -206,11 +204,11 @@ export default function QuestionnairePage() {
     )
   }
 
-  const showResults = () => {
+  const _showResults = () => {
     setCurrentScreen('results')
   }
 
-  const backToQuestionnaire = () => {
+  const _backToQuestionnaire = () => {
     setCurrentScreen('questionnaire')
   }
 
@@ -220,7 +218,7 @@ export default function QuestionnairePage() {
         className="relative questionnaire-compact mobile-constrained"
       >
 
-      {/* Affichage d'erreur uniquement si problème critique */}
+      {/* Affichage d&apos;erreur uniquement si problème critique */}
       {error && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
           <p>⚠️ Problème de connexion</p>
@@ -239,7 +237,7 @@ export default function QuestionnairePage() {
         </div>
       </div>
 
-      {/* Contenu principal optimisé pour l'espace vertical */}
+      {/* Contenu principal optimisé pour l&apos;espace vertical */}
       <div className="container max-w-4xl py-4 md:py-6 px-4 md:px-6 mobile-content-overlay section-contained flex flex-col questionnaire-compact">
         <div className="mb-3 progress-container">
           <div className="flex justify-between items-center mb-2">
@@ -276,7 +274,7 @@ export default function QuestionnairePage() {
                       className="mt-1 text-muted-foreground hover:text-secondary btn-base-effects"
                     >
                       <HelpCircle className="h-4 w-4" />
-                      <span className="sr-only">Plus d'informations</span>
+                      <span className="sr-only">Plus d&apos;informations</span>
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs bg-card p-3 rounded-lg shadow-soft border">
