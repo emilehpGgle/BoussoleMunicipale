@@ -2,6 +2,7 @@
 
 import { useState, useRef, ElementType } from "react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -142,21 +143,21 @@ export default function ProfilePage() {
     // État du profil
     profile,
     isLoading,
-    isSaving,
+    isSaving: _isSaving,
     error,
     
     // Actions pour sauvegarder
     updateProfileField,
-    updateProfileFields,
+    updateProfileFields: _updateProfileFields,
     
     // Utilitaires
-    getProfileField,
-    hasProfileField,
+    getProfileField: _getProfileField,
+    hasProfileField: _hasProfileField,
     getCompletionPercentage,
-    isProfileComplete,
+    isProfileComplete: _isProfileComplete,
     
     // Alias pour compatibilité
-    userProfile
+    userProfile: _userProfile
   } = useProfile()
 
   // Obtenir les questions de la page actuelle
@@ -358,7 +359,7 @@ export default function ProfilePage() {
   }
 
   const handleNext = () => {
-    const currentQuestions = getCurrentQuestions()
+    const _currentQuestions = getCurrentQuestions()
     const currentPageIsComplete = isCurrentPageComplete()
 
     if (!currentPageIsComplete) {
@@ -531,7 +532,7 @@ export default function ProfilePage() {
           {question.options?.map((option: string, index: number) => {
             const rank = getRankForItem(option)
             const isSelected = rank !== null
-            const canSelectMore = selectedCount < 3
+            const _canSelectMore = selectedCount < 3
             
             return (
               <Button
@@ -673,10 +674,11 @@ export default function ProfilePage() {
       {/* Image décorative - chien et maître centrée à gauche (réduite) (desktop) */}
       <div className="hidden lg:block">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
-          <img 
+          <Image 
             src="/Image_parc_chien_maitre.png" 
             alt="" 
-            className="w-full h-full object-cover decorative-image-left"
+            fill
+            className="object-cover decorative-image-left"
           />
         </div>
       </div>
@@ -724,7 +726,7 @@ export default function ProfilePage() {
       {currentPage === 'issues' ? (
         // Page 3 : Affichage simple sans accordéon
         <div className="space-y-6 mb-6">
-          {currentQuestions.map((question, index) => {
+          {currentQuestions.map((question, _index) => {
             // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
             if (question.id === 'citizen_concerns') {
               const prioritiesAnswer = profile['municipal_priorities'] || {}

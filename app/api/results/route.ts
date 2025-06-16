@@ -64,10 +64,9 @@ interface FormattedResultsData {
   }
 }
 
-// Types pour les requêtes (sessionToken retiré du body)
+// Types pour les requêtes
 interface SaveResultsRequest {
   resultsData: CalculatedResults
-  politicalPosition?: { x: number; y: number }
 }
 
 // POST - Calculer et sauvegarder les résultats

@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { ArrowLeft, ArrowRight, HelpCircle, CheckCircle2, Home, ChevronRight } from "lucide-react"
+import { ArrowLeft, HelpCircle, CheckCircle2 } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { Progress } from "@/components/ui/progress"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useSearchParams, useRouter } from "next/navigation"
@@ -18,7 +19,7 @@ import { ButtonWithEffects } from "@/components/ui/button-effects"
 
 
 // questions constant is already defined from boussoleQuestions
-const _TOTAL_QUESTIONS = boussoleQuestions.length
+const __TOTAL_QUESTIONS = boussoleQuestions.length
 
 export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -27,21 +28,21 @@ export default function QuestionnairePage() {
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [_currentScreen, setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
+  const [__currentScreen, _setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
 
   // Intégration des hooks sécurisés
-  const { sessionToken } = useSession()
+  const { sessionToken: _sessionToken } = useSession()
   const {
     // État des réponses
-    responses,
+    responses: _responses,
     isLoading,
-    isSaving,
+    isSaving: _isSaving,
     error,
     
     // Actions pour sauvegarder
     saveAgreementResponse,
     saveImportanceDirectResponse,
-    clearAllResponses,
+    clearAllResponses: _clearAllResponses,
     
     // Utilitaires
     getResponseCounts,
@@ -51,7 +52,7 @@ export default function QuestionnairePage() {
     userImportanceDirectAnswers
   } = useUserResponses()
 
-  const { hasResults } = useResults()
+  const { hasResults: _hasResults } = useResults()
 
   // Calculer quelle question afficher basée sur les réponses existantes
   const calculateNextQuestionIndex = useCallback(() => {
@@ -204,12 +205,12 @@ export default function QuestionnairePage() {
     )
   }
 
-  const _showResults = () => {
-    setCurrentScreen('results')
+  const __showResults = () => {
+    _setCurrentScreen('results')
   }
 
-  const _backToQuestionnaire = () => {
-    setCurrentScreen('questionnaire')
+  const __backToQuestionnaire = () => {
+    _setCurrentScreen('questionnaire')
   }
 
       return (
@@ -229,10 +230,11 @@ export default function QuestionnairePage() {
       {/* Image décorative - jardinage centrée à droite (desktop) */}
       <div className="hidden lg:block">
         <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-right">
-          <img 
+          <Image 
             src="/Image_parc_jardinage.png" 
             alt="" 
-            className="w-full h-full object-cover decorative-image-right"
+            fill
+            className="object-cover decorative-image-right"
           />
         </div>
       </div>
@@ -288,7 +290,7 @@ export default function QuestionnairePage() {
           <div className={`question-grid grid gap-1.5 mb-3 flex-1 ${!isTransitioning ? 'question-content-enter' : ''}`}>
             {currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
               // Questions d'importance directe
-              currentQuestion.importanceDirectOptions.map((optionKey, index) => {
+              currentQuestion.importanceDirectOptions.map((optionKey, _index) => {
                 const labelText = getImportanceDirectLabel(currentQuestion, optionKey);
                 const isSelected = userImportanceDirectAnswers[currentQuestion.id] === optionKey;
                 
@@ -313,7 +315,7 @@ export default function QuestionnairePage() {
               })
             ) : (
               // Questions d'accord/désaccord (standard)
-              currentQuestion.agreementOptions.map((optionKey, index) => {
+              currentQuestion.agreementOptions.map((optionKey, _index) => {
                 const labelText = getAgreementLabel(currentQuestion, optionKey);
                 const isSelected = userAnswers[currentQuestion.id] === optionKey;
                 
