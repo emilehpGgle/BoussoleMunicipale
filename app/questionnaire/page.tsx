@@ -19,7 +19,7 @@ import { ButtonWithEffects } from "@/components/ui/button-effects"
 
 
 // questions constant is already defined from boussoleQuestions
-const __TOTAL_QUESTIONS = boussoleQuestions.length
+const _TOTAL_QUESTIONS = boussoleQuestions.length
 
 export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -28,7 +28,7 @@ export default function QuestionnairePage() {
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [__currentScreen, _setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
+  const [_currentScreen, _setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
 
   // Intégration des hooks sécurisés
   const { sessionToken: _sessionToken } = useSession()
@@ -205,11 +205,11 @@ export default function QuestionnairePage() {
     )
   }
 
-  const __showResults = () => {
+  const _showResults = () => {
     _setCurrentScreen('results')
   }
 
-  const __backToQuestionnaire = () => {
+  const _backToQuestionnaire = () => {
     _setCurrentScreen('questionnaire')
   }
 
@@ -290,7 +290,7 @@ export default function QuestionnairePage() {
           <div className={`question-grid grid gap-1.5 mb-3 flex-1 ${!isTransitioning ? 'question-content-enter' : ''}`}>
             {currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
               // Questions d'importance directe
-              currentQuestion.importanceDirectOptions.map((optionKey, _index) => {
+              currentQuestion.importanceDirectOptions.map((optionKey) => {
                 const labelText = getImportanceDirectLabel(currentQuestion, optionKey);
                 const isSelected = userImportanceDirectAnswers[currentQuestion.id] === optionKey;
                 
@@ -315,7 +315,7 @@ export default function QuestionnairePage() {
               })
             ) : (
               // Questions d'accord/désaccord (standard)
-              currentQuestion.agreementOptions.map((optionKey, _index) => {
+              currentQuestion.agreementOptions.map((optionKey) => {
                 const labelText = getAgreementLabel(currentQuestion, optionKey);
                 const isSelected = userAnswers[currentQuestion.id] === optionKey;
                 

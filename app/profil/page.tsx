@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, Target, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
+import { cn } from "@/lib/utils"
+import { Progress } from "@/components/ui/progress"
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {
@@ -138,7 +140,7 @@ export default function ProfilePage() {
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   // Intégration des hooks sécurisés
-  const { sessionToken } = useSession()
+  const { sessionToken: _sessionToken } = useSession()
   const {
     // État du profil
     profile,
@@ -151,13 +153,13 @@ export default function ProfilePage() {
     updateProfileFields: _updateProfileFields,
     
     // Utilitaires
+    getCompletionPercentage,
     getProfileField: _getProfileField,
     hasProfileField: _hasProfileField,
-    getCompletionPercentage,
     isProfileComplete: _isProfileComplete,
     
     // Alias pour compatibilité
-    userProfile: _userProfile
+    userProfile: _userProfile,
   } = useProfile()
 
   // Obtenir les questions de la page actuelle
@@ -360,22 +362,28 @@ export default function ProfilePage() {
 
   const handleNext = () => {
     const _currentQuestions = getCurrentQuestions()
-    const currentPageIsComplete = isCurrentPageComplete()
-
-    if (!currentPageIsComplete) {
-      // Idéalement, afficher un message à l'utilisateur
-      console.warn("Veuillez répondre à toutes les questions requises avant de continuer.")
-      return
-    }
-
     if (currentPage === 'basic') {
-      setCurrentPage('municipal')
-      setActiveQuestionIndex(0)
+      // Vérifier si toutes les questions de la page "basic" sont répondues
+      const isComplete = profileQuestions.basic.every(isQuestionComplete)
+      if (isComplete) {
+        setCurrentPage('municipal')
+        setActiveQuestionIndex(0)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        // Mettre en évidence les questions non répondues si nécessaire
+        console.warn("Veuillez répondre à toutes les questions avant de continuer.")
+      }
     } else if (currentPage === 'municipal') {
-      setCurrentPage('issues')
-      setActiveQuestionIndex(0)
+      const isComplete = profileQuestions.municipal.every(isQuestionComplete)
+      if (isComplete) {
+        setCurrentPage('issues')
+        setActiveQuestionIndex(0)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
     } else if (currentPage === 'issues') {
-      handleSubmit()
+      if (canSubmit()) {
+        handleSubmit()
+      }
     }
   }
 
@@ -504,10 +512,10 @@ export default function ProfilePage() {
 
     const getRankColor = (rank: number) => {
       switch (rank) {
-        case 1: return "bg-amber-400 text-black font-bold"  // Or
-        case 2: return "bg-gray-300 text-gray-800 font-bold"  // Argent
-        case 3: return "bg-amber-600 text-white font-bold"  // Bronze
-        default: return "bg-muted"
+        case 1: return "bg-green-500 border-green-600"
+        case 2: return "bg-yellow-500 border-yellow-600"
+        case 3: return "bg-orange-500 border-orange-600"
+        default: return "bg-gray-400 border-gray-500"
       }
     }
 

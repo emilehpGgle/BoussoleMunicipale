@@ -50,7 +50,7 @@ interface CalculatedPartyScore {
   }>
 }
 
-const agreementScoreValues: Record<AgreementOptionKey, number> = {
+const _agreementScoreValues: Record<AgreementOptionKey, number> = {
   FA: 2,
   PA: 1,
   N: 0,
