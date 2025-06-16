@@ -14,7 +14,7 @@ export default function ConditionsPage() {
         </Button>
         
         <h1 className="text-3xl font-bold text-foreground mb-4">
-          Conditions d'utilisation
+          Conditions d&apos;utilisation
         </h1>
       </div>
 
@@ -22,8 +22,8 @@ export default function ConditionsPage() {
         <section>
           <h2 className="text-xl font-semibold mb-3">Acceptation des conditions</h2>
           <p>
-            En utilisant la Boussole Municipale, vous acceptez les présentes conditions d'utilisation. 
-            Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser ce service.
+            En utilisant la Boussole Municipale, vous acceptez les présentes conditions d&apos;utilisation. 
+            Si vous n&apos;acceptez pas ces conditions, veuillez ne pas utiliser ce service.
           </p>
         </section>
 
@@ -32,14 +32,14 @@ export default function ConditionsPage() {
           <p>
             La Boussole Municipale est un outil éducatif conçu pour aider les citoyens à comprendre 
             leurs affinités politiques avec les partis municipaux de Québec. Cet outil est fourni 
-            à des fins d'information uniquement.
+            à des fins d&apos;information uniquement.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-3">Exactitude des informations</h2>
           <p>
-            Nous nous efforçons de maintenir l'exactitude des informations sur les partis politiques, 
+            Nous nous efforçons de maintenir l&apos;exactitude des informations sur les partis politiques, 
             mais nous ne garantissons pas que toutes les informations sont complètes ou entièrement 
             à jour. Les utilisateurs sont encouragés à vérifier les informations auprès des sources officielles.
           </p>
@@ -62,7 +62,7 @@ export default function ConditionsPage() {
         <section>
           <h2 className="text-xl font-semibold mb-3">Limitation de responsabilité</h2>
           <p>
-            La Boussole Municipale est fournie "en l'état" sans garantie d'aucune sorte. 
+            La Boussole Municipale est fournie &quot;en l&apos;état&quot; sans garantie d&apos;aucune sorte. 
             Nous ne sommes pas responsables des décisions prises sur la base des résultats obtenus.
           </p>
         </section>
@@ -70,7 +70,7 @@ export default function ConditionsPage() {
         <section>
           <h2 className="text-xl font-semibold mb-3">Modification des conditions</h2>
           <p>
-            Nous nous réservons le droit de modifier ces conditions d'utilisation à tout moment. 
+            Nous nous réservons le droit de modifier ces conditions d&apos;utilisation à tout moment. 
             Les modifications prendront effet dès leur publication sur le site.
           </p>
         </section>
@@ -78,7 +78,7 @@ export default function ConditionsPage() {
         <section>
           <h2 className="text-xl font-semibold mb-3">Contact</h2>
           <p>
-            Pour toute question concernant ces conditions d'utilisation, 
+            Pour toute question concernant ces conditions d&apos;utilisation, 
             consultez notre page À Propos pour les informations de contact.
           </p>
         </section>

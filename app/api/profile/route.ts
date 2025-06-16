@@ -13,7 +13,7 @@ function extractSessionToken(request: NextRequest): string | null {
 
 // Types pour les requêtes (sessionToken retiré du body)
 interface SaveProfileRequest {
-  profileData: Record<string, any>
+  profileData: Record<string, unknown>
 }
 
 // POST - Sauvegarder un profil utilisateur

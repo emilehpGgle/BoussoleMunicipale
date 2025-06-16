@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Import retiré car non utilisé - les APIs utilisent leurs propres clients
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResponsesAPI } from '@/lib/api/responses'
-import { AgreementOptionKey, ImportanceOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
+import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
 
 // Helper function to extract sessionToken from Authorization header
 function extractSessionToken(request: NextRequest): string | null {

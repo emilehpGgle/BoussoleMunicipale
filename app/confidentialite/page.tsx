@@ -20,10 +20,10 @@ export default function ConfidentialitePage() {
 
       <div className="prose prose-gray max-w-none space-y-6 text-sm leading-relaxed">
         <section>
-          <h2 className="text-xl font-semibold mb-3">Collecte d'informations</h2>
+          <h2 className="text-xl font-semibold mb-3">Collecte d&apos;informations</h2>
           <p>
             La Boussole Municipale collecte uniquement les informations nécessaires au fonctionnement 
-            du questionnaire et à l'affichage de vos résultats. Cela inclut vos réponses aux questions 
+            du questionnaire et à l&apos;affichage de vos résultats. Cela inclut vos réponses aux questions 
             et les informations de profil optionnelles que vous choisissez de partager.
           </p>
         </section>
@@ -44,15 +44,15 @@ export default function ConfidentialitePage() {
           <h2 className="text-xl font-semibold mb-3">Protection des données</h2>
           <p>
             Nous ne vendons, ne louons, ni ne partageons vos informations personnelles avec des tiers. 
-            Vos données sont stockées de manière sécurisée et ne sont accessibles qu'à vous.
+            Vos données sont stockées de manière sécurisée et ne sont accessibles qu&apos;à vous.
           </p>
         </section>
 
         <section>
           <h2 className="text-xl font-semibold mb-3">Cookies</h2>
           <p>
-            Ce site utilise des cookies techniques nécessaires au fonctionnement de l'application. 
-            Aucun cookie de suivi ou publicitaire n'est utilisé.
+            Ce site utilise des cookies techniques nécessaires au fonctionnement de l&apos;application. 
+            Aucun cookie de suivi ou publicitaire n&apos;est utilisé.
           </p>
         </section>
 

@@ -2,7 +2,6 @@ import { type Metadata } from 'next'
 import SharePageClient from './share-page-client'
 import { createClient } from '@/lib/supabase/client'
 // Importer les types pour une meilleure cohérence (comme dans l'API)
-import type { Party } from '@/lib/boussole-data'
 
 interface SharePageProps {
   params: Promise<{ id: string }>

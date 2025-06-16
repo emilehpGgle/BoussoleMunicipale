@@ -33,7 +33,7 @@ interface SharedResult {
   timestamp: number
   // Ajouter les réponses utilisateur pour la carte politique
   userAnswers?: Record<string, AgreementOptionKey>
-  userImportance?: Record<string, any>
+  userImportance?: Record<string, unknown>
 }
 
 interface SharePageClientProps {
@@ -134,7 +134,7 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
                           style={{ width: `${topParty.score.toFixed(0)}%` }}
                         ></div>
                       </div>
-                      <p className="text-lg font-bold text-foreground mb-4">{topParty.score.toFixed(0)}% d'affinité</p>
+                      <p className="text-lg font-bold text-foreground mb-4">{topParty.score.toFixed(0)}% d&apos;affinité</p>
                       <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-primary text-xs font-medium">
                         Voir la fiche <ArrowRight className="inline h-3 w-3" />
                       </div>

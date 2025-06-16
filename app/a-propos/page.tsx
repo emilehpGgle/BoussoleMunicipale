@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { ArrowLeft, Target, Users, Code, Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function AProposPage() {
   return (
@@ -66,7 +66,7 @@ export default function AProposPage() {
               <h4 className="font-semibold text-sm mb-1">Calcul des affinités</h4>
               <p className="text-sm text-muted-foreground">
                 Un algorithme compare vos réponses avec les positions des partis pour calculer 
-                votre pourcentage d'affinité avec chacun.
+                votre pourcentage d&apos;affinité avec chacun.
               </p>
             </div>
           </CardContent>
@@ -142,7 +142,7 @@ export default function AProposPage() {
               <div>
                 <h4 className="font-semibold mb-1">Mise à jour</h4>
                 <p className="text-muted-foreground">
-                  Les informations sont régulièrement mises à jour pour refléter l'évolution 
+                  Les informations sont régulièrement mises à jour pour refléter l&apos;évolution 
                   des positions des partis.
                 </p>
               </div>
@@ -182,7 +182,7 @@ export default function AProposPage() {
             <p className="text-sm leading-relaxed">
               Nous accueillons vos commentaires, suggestions et corrections. Si vous remarquez 
               une erreur dans les positions des partis ou si vous avez des suggestions 
-              d'amélioration, n'hésitez pas à nous en faire part.
+              d&apos;amélioration, n&apos;hésitez pas à nous en faire part.
             </p>
             <div className="mt-4 p-3 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">
