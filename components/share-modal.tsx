@@ -2,26 +2,18 @@
 
 import React, { useState } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { X, Link as LinkIcon, Mail, Facebook, MessageCircle } from "lucide-react"
+import { Mail, Facebook, MessageCircle } from "lucide-react"
 import { toast } from "sonner"
-import { partiesData, type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
+import { type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
 import PoliticalCompassChart from "@/components/political-compass-chart"
 import { sendResultsByEmail } from '@/lib/email-service'
 import Image from 'next/image'
-import Link from 'next/link'
 
-interface TopParty {
-  partyId: string
-  score: number
-  percentage: number
-  rank: number
-  party: Party
-}
 
 interface CalculatedPartyScore {
   party: Party
@@ -33,7 +25,10 @@ interface CalculatedPartyScore {
 interface ShareModalProps {
   isOpen: boolean
   onClose: () => void
-  results: any
+  results: {
+    politicalPosition?: { x: number; y: number };
+    [key: string]: unknown;
+  } | null
   politicalPosition?: { x: number; y: number }
   userAnswers: Record<string, AgreementOptionKey>
   userImportance: Record<string, ImportanceDirectOptionKey>
@@ -42,10 +37,21 @@ interface ShareModalProps {
 }
 
 // Types pour Facebook SDK
+interface FacebookShareParams {
+  method: string;
+  link: string;
+  quote?: string;
+}
+
+interface FacebookResponse {
+  post_id?: string;
+  error?: unknown;
+}
+
 declare global {
   interface Window {
     FB?: {
-      ui: (params: any, callback?: (response: any) => void) => void
+      ui: (params: FacebookShareParams, callback?: (response: FacebookResponse) => void) => void
     }
   }
 }
@@ -57,7 +63,7 @@ export default function ShareModal({
   politicalPosition, 
   userAnswers, 
   userImportance,
-  calculatedScores,
+  calculatedScores: _calculatedScores,
   topParties
 }: ShareModalProps) {
   const [isSharing, setIsSharing] = useState(false)
@@ -170,7 +176,7 @@ export default function ShareModal({
       const partyName = topMatch?.party?.shortName || topMatch?.party?.name || 'mon parti préféré'
       const score = Math.round(topMatch?.score || 0)
       
-      const message = `🏛️ Regarde mes résultats de la Boussole Municipale ! Mon parti principal : ${partyName} (${score}%). Fais ton test ici :`
+      const _message = `🏛️ Regarde mes résultats de la Boussole Municipale ! Mon parti principal : ${partyName} (${score}%). Fais ton test ici :`
       
       // Ouvrir Messenger avec le message et lien
       const messengerUrl = `https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`

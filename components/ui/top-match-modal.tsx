@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Sparkles, X, Share2 } from 'lucide-react';
 import { PartyScore, CalculatedResults } from '@/hooks/useResults';
 import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types';
@@ -22,8 +22,18 @@ interface TopMatchModalProps {
   results: CalculatedResults | null;
   userAnswers: Record<string, AgreementOptionKey>;
   userImportance: Record<string, ImportanceDirectOptionKey>;
-  calculatedScores: any[];
-  topParties: any[];
+  calculatedScores: Array<{
+    party: Party;
+    score: number;
+    rawScore: number;
+    maxPossibleRawScoreForParty: number;
+  }>;
+  topParties: Array<{
+    party: Party;
+    score: number;
+    rawScore: number;
+    maxPossibleRawScoreForParty: number;
+  }>;
 }
 
 // Composant LogoContainer identique à celui des résultats (carré avec coins arrondis)
@@ -241,7 +251,7 @@ export function TopMatchModal({
                 onClick={onClose}
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
-                Voir l'analyse complète →
+                Voir l&apos;analyse complète →
               </Button>
             </motion.div>
           </div>
