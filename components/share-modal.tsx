@@ -337,7 +337,7 @@ export default function ShareModal({
                       style={{ width: `${score.toFixed(0)}%` }}
                     ></div>
                   </div>
-                  <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d'affinité</p>
+                  <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d&apos;affinité</p>
                   {/* Pas de bouton dans le partage pour éviter la complexité */}
                 </Card>
               ))}
@@ -398,7 +398,7 @@ export default function ShareModal({
               onCheckedChange={(checked) => setConsent(!!checked)} 
             />
             <Label htmlFor="consent-results" className="text-sm text-muted-foreground">
-              J'aimerais être invité(e) à participer aux futures initiatives de la Boussole électorale.
+              J&apos;aimerais être invité(e) à participer aux futures initiatives de la Boussole électorale.
             </Label>
           </div>
           <Button

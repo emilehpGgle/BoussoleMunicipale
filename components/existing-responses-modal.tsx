@@ -200,7 +200,7 @@ export default function ContinueOrRestartModal({
             >
               <div className="flex items-center gap-3 w-full">
                 <div className="text-left flex-1">
-                  <div className="font-medium text-sm text-muted-foreground">Retourner à l'accueil</div>
+                  <div className="font-medium text-sm text-muted-foreground">Retourner à l&apos;accueil</div>
                   <div className="text-xs text-muted-foreground/80">Garder vos réponses pour plus tard</div>
                 </div>
               </div>

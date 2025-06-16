@@ -4,19 +4,16 @@ import type React from "react"
 import { useState, useEffect, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { ArrowLeft, Share2, Info, Mail, Twitter, Facebook, Instagram, Linkedin, ArrowRight, Download, Link as LinkIcon, MessageCircle } from "lucide-react"
+import { ArrowLeft, Share2, Info, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import {
   partiesData,
   boussoleQuestions,
-  agreementLabels,
-  importanceLabels,
   getAgreementLabel,
   type Party,
   type Question,
   type AgreementOptionKey,
-  type ImportanceOptionKey,
   type ImportanceDirectOptionKey,
   type PartyPosition,
 } from "@/lib/boussole-data"
@@ -24,11 +21,9 @@ import {
   calculatePoliticalDistance,
   calculateUserPoliticalPosition,
   partyPositions,
-  type UserAnswers as PoliticalUserAnswers,
 } from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import PoliticalCompassChart from "@/components/political-compass-chart"
-import { sendResultsByEmail } from "@/lib/email-service"
 import { toast } from "sonner"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
@@ -39,13 +34,6 @@ import { TopMatchModal } from "@/components/ui/top-match-modal"
 // import html2canvas from 'html2canvas';
 
 
-interface UserAnswers {
-  [questionId: string]: AgreementOptionKey | undefined
-}
-
-interface UserImportance {
-  [questionId: string]: ImportanceDirectOptionKey | undefined
-}
 
 interface CalculatedPartyScore {
   party: Party
@@ -86,24 +74,33 @@ const convertImportanceDirectToNumeric = (importance: ImportanceDirectOptionKey)
 }
 
 // Types pour Facebook SDK
+interface FacebookShareParams {
+  method: string;
+  link: string;
+  quote?: string;
+}
+
+interface FacebookResponse {
+  post_id?: string;
+  error?: unknown;
+}
+
 declare global {
   interface Window {
     FB?: {
-      ui: (params: any, callback?: (response: any) => void) => void
+      ui: (params: FacebookShareParams, callback?: (response: FacebookResponse) => void) => void
     }
   }
 }
 
 export default function ResultsPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
-  const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [showFloatingShare, setShowFloatingShare] = useState(false)
   const [showTopMatchModal, setShowTopMatchModal] = useState(false)
-  const [isSharing, setIsSharing] = useState(false)
+  const [_isSharing, _setIsSharing] = useState(false)
 
   // Intégration des hooks sécurisés
-  const { sessionToken } = useSession()
+  const { sessionToken: _sessionToken } = useSession()
   const { 
     userAnswers, 
     userImportanceDirectAnswers: userImportance, 
@@ -312,7 +309,7 @@ export default function ResultsPage() {
   }
 
   // Amélioration 5: Génération d'une image de partage dynamique
-  const generateShareImage = async () => {
+  const _generateShareImage = async () => {
     // La logique de capture d'écran est commentée pour le moment
     // pour éviter les problèmes de dépendance.
     return "https://boussole-municipale.vercel.app/og-image.png";
@@ -362,9 +359,9 @@ export default function ResultsPage() {
   };
 
   // Amélioration : Nouveau partage Facebook avec image
-  const handleFacebookShareWithImage = async () => {
+  const _handleFacebookShareWithImage = async () => {
     try {
-      setIsSharing(true)
+      _setIsSharing(true)
       const shareUrl = await generateShareUrl()
       
       // Capturer la carte politique
@@ -404,12 +401,12 @@ export default function ResultsPage() {
       console.error('Erreur lors du partage Facebook:', error)
       toast.error("Impossible de partager sur Facebook")
     } finally {
-      setIsSharing(false)
+      _setIsSharing(false)
     }
   }
 
   // Amélioration 2: Gestion d'erreurs Twitter avec extraction sécurisée
-  const handleTwitterShare = async () => {
+  const _handleTwitterShare = async () => {
     try {
       const shareUrl = await generateShareUrl()
       const topParty = topParties[0]
@@ -424,7 +421,7 @@ export default function ResultsPage() {
   }
 
   // Amélioration 1: Gestion d'erreurs LinkedIn avec extraction sécurisée
-  const handleLinkedInShare = async () => {
+  const _handleLinkedInShare = async () => {
     try {
       const shareUrl = await generateShareUrl()
       const title = encodeURIComponent('Mes résultats de la Boussole Municipale')
@@ -440,7 +437,7 @@ export default function ResultsPage() {
   }
 
   // Nouveau : Support Messenger
-  const handleMessengerShare = async () => {
+  const _handleMessengerShare = async () => {
     try {
       setIsSharing(true)
       const shareUrl = await generateShareUrl()
@@ -472,7 +469,7 @@ export default function ResultsPage() {
     }
   }
 
-  const handleGeneralShare = async () => {
+  const _handleGeneralShare = async () => {
     const shareUrl = await generateShareUrl()
     if (navigator.share) {
       try {
@@ -692,7 +689,7 @@ export default function ResultsPage() {
                     style={{ width: `${score.toFixed(0)}%` }}
                   ></div>
                 </div>
-                <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d'affinité</p>
+                <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d&apos;affinité</p>
                 <Button
                   asChild
                   variant="outline"
@@ -837,18 +834,18 @@ export default function ResultsPage() {
               <div>
                 <h4 className="font-semibold text-foreground mb-1">📍 Positionnement politique</h4>
                 <p>
-                  Chacune des 20 questions influence votre score sur deux axes indépendants (économique et social). Votre position finale est la somme de ces influences, pondérée par l'importance que vous accordez à chaque question.
+                  Chacune des 20 questions influence votre score sur deux axes indépendants (économique et social). Votre position finale est la somme de ces influences, pondérée par l&apos;importance que vous accordez à chaque question.
                 </p>
               </div>
               <div>
                 <h4 className="font-semibold text-foreground mb-1">📊 Calcul des affinités</h4>
                 <p>
-                  L'affinité est calculée à partir de la distance qui vous sépare de chaque parti sur la carte politique. Plus un parti est proche de vous, plus l'affinité est élevée. La formule a été ajustée pour que les partis éloignés soient plus sévèrement pénalisés, rendant le score plus intuitif.
+                  L&apos;affinité est calculée à partir de la distance qui vous sépare de chaque parti sur la carte politique. Plus un parti est proche de vous, plus l&apos;affinité est élevée. La formule a été ajustée pour que les partis éloignés soient plus sévèrement pénalisés, rendant le score plus intuitif.
                 </p>
               </div>
               <div>
                 <p className="text-xs italic pt-2 border-t border-muted-foreground/10">
-                  <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l'analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
+                  <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l&apos;analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
                 </p>
               </div>
             </CardContent>

@@ -37,10 +37,17 @@ const createResultsMetadata = () => ({
 })
 
 // Proper interfaces for type safety
+interface PartyMatch {
+  partyId: string;
+  score: number;
+  percentage: number;
+  rank: number;
+}
+
 interface CalculatedResults {
   partyScores: Record<string, number>;
   matchedParties: string[];
-  topMatches: Record<string, unknown>[];
+  topMatches: PartyMatch[];
   politicalPosition?: { x: number; y: number };
   completionPercentage: number;
   totalQuestions: number;
@@ -76,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: SaveResultsRequest = await request.json()
-    const { resultsData, politicalPosition: _politicalPosition } = body
+    const { resultsData } = body
 
     // Validation des paramètres requis
     if (!resultsData) {
