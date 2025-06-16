@@ -33,7 +33,7 @@ interface SharedResult {
   timestamp: number
   // Ajouter les réponses utilisateur pour la carte politique
   userAnswers?: Record<string, AgreementOptionKey>
-  userImportance?: Record<string, any>
+  userImportance?: Record<string, unknown>
 }
 
 interface SharePageClientProps {

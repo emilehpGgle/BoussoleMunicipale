@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ExternalLink, FileText, Info } from "lucide-react"
-import { partiesData, boussoleQuestions, agreementLabels, getAgreementLabel } from "@/lib/boussole-data"
+import { partiesData, boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
 import type { Party, Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
 
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
@@ -179,7 +179,7 @@ export default function PartyDetailPage() {
                   )}
                   {partyPos?.quote && (
                     <blockquote className="border-l-4 border-primary pl-3 italic text-foreground/80">
-                      "{partyPos.quote}"
+                      &quot;{partyPos.quote}&quot;
                     </blockquote>
                   )}
                 </CardContent>

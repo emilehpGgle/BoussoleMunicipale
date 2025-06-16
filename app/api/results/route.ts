@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResultsAPI } from '@/lib/api/results'
-// import { ResponsesAPI } from '@/lib/api/responses' // Unused
 
 // Helper function to extract sessionToken from Authorization header
 function extractSessionToken(request: NextRequest): string | null {
@@ -39,7 +38,14 @@ const createResultsMetadata = () => ({
 
 // Proper interfaces for type safety
 interface CalculatedResults {
-  [key: string]: unknown
+  partyScores: Record<string, number>;
+  matchedParties: string[];
+  topMatches: Record<string, unknown>[];
+  politicalPosition?: { x: number; y: number };
+  completionPercentage: number;
+  totalQuestions: number;
+  answeredQuestions: number;
+  calculatedAt: string;
 }
 
 interface FormattedResultsData {
@@ -97,7 +103,7 @@ export async function POST(request: NextRequest) {
     // Sauvegarder les résultats
     const results = await resultsAPI.saveResults(
       session!.id, 
-      formattedResultsData as any, // Note: API expects specific format, keeping minimal casting
+      formattedResultsData,
       'completed'
     )
 
@@ -198,7 +204,7 @@ export async function PUT(request: NextRequest) {
 
     const results = await resultsAPI.saveResults(
       session!.id, 
-      formattedResultsData as any, // Note: API expects specific format, keeping minimal casting
+      formattedResultsData,
       'completed'
     )
 

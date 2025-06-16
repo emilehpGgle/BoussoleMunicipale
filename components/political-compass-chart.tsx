@@ -21,7 +21,7 @@ import { useRouter } from 'next/navigation'
 
 interface PoliticalCompassChartProps {
   userAnswers: UserAnswers
-  userImportance?: Record<string, any> // Paramètre optionnel pour compatibilité, mais non utilisé
+  userImportance?: Record<string, unknown> // Paramètre optionnel pour compatibilité, mais non utilisé
 }
 
 export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassChartProps) {

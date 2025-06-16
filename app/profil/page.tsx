@@ -1,19 +1,31 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, ElementType } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ArrowRight, User, Home, Car, Target, X, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowRight, User, Home, Car, Target, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
 
+// Interface pour la structure d'une question de profil
+interface ProfileQuestion {
+  id: string
+  text: string
+  type: "button_horizontal" | "checkbox_multiple" | "priority_ranking_enhanced" | "text_area"
+  category: "Informations de base" | "Contexte municipal" | "Enjeux"
+  icon: ElementType
+  options?: string[]
+  placeholder?: string
+  description?: string
+}
 
 // Données pour les questions de profil (organisées par page)
-const profileQuestions = {
+const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion[]> = {
   // Page 1 - Informations de base
   basic: [
     {
@@ -157,7 +169,7 @@ export default function ProfilePage() {
     ...profileQuestions.issues
   ]
 
-  const handleAnswerChange = async (questionId: string, value: any) => {
+  const handleAnswerChange = async (questionId: string, value: string | string[] | Record<string, number>) => {
     try {
       // Sauvegarder via notre hook sécurisé
       await updateProfileField(questionId, value)
@@ -295,7 +307,7 @@ export default function ProfilePage() {
   }
 
   // Vérifier si une question est complétée (pour l'affichage visuel)
-  const isQuestionComplete = (question: any) => {
+  const isQuestionComplete = (question: ProfileQuestion) => {
     const answer = profile[question.id]
     
     if (question.type === "checkbox_multiple") {
@@ -315,7 +327,7 @@ export default function ProfilePage() {
   }
 
   // Vérifier si une question est requise pour la progression (différent de l'affichage visuel)
-  const isQuestionRequiredForProgression = (question: any) => {
+  const isQuestionRequiredForProgression = (question: ProfileQuestion) => {
     const answer = profile[question.id]
     
     if (question.type === "checkbox_multiple") {
@@ -346,48 +358,42 @@ export default function ProfilePage() {
   }
 
   const handleNext = () => {
+    const currentQuestions = getCurrentQuestions()
+    const currentPageIsComplete = isCurrentPageComplete()
+
+    if (!currentPageIsComplete) {
+      // Idéalement, afficher un message à l'utilisateur
+      console.warn("Veuillez répondre à toutes les questions requises avant de continuer.")
+      return
+    }
+
     if (currentPage === 'basic') {
       setCurrentPage('municipal')
       setActiveQuestionIndex(0)
-      // Scroll vers le haut pour voir la première question de la nouvelle page
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, 100)
     } else if (currentPage === 'municipal') {
       setCurrentPage('issues')
       setActiveQuestionIndex(0)
-      // Scroll vers le haut pour voir la première question de la nouvelle page
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, 100)
+    } else if (currentPage === 'issues') {
+      handleSubmit()
     }
   }
 
   const handlePrevious = () => {
-    if (currentPage === 'municipal') {
-      setCurrentPage('basic')
-      setActiveQuestionIndex(0)
-      // Scroll vers le haut pour voir la première question de la page précédente
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, 100)
-    } else if (currentPage === 'issues') {
+    if (currentPage === 'issues') {
       setCurrentPage('municipal')
       setActiveQuestionIndex(0)
-      // Scroll vers le haut pour voir la première question de la page précédente
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }, 100)
+    } else if (currentPage === 'municipal') {
+      setCurrentPage('basic')
+      setActiveQuestionIndex(0)
     }
   }
 
   const handleSubmit = () => {
-          // Plus de localStorage - tout est maintenant dans Supabase via useProfile
-    router.push("/resultats")
+    router.push("/questionnaire") // Naviguer vers le questionnaire principal
   }
 
   // Obtenir l'aperçu d'une réponse pour affichage compact
-  const getAnswerPreview = (question: any) => {
+  const getAnswerPreview = (question: ProfileQuestion) => {
     const answer = profile[question.id]
     
     if (!answer) return "Non répondu"
@@ -409,34 +415,60 @@ export default function ProfilePage() {
   }
 
   // Composant pour les boutons horizontaux
-  const renderHorizontalButtons = (question: any) => {
-    const selectedValue = profile[question.id]
-    
+  const renderHorizontalButtons = (question: ProfileQuestion) => {
+    const selectedValue = profile[question.id] as string
+
     return (
-      <div className="space-y-3">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {question.options.map((option: string, index: number) => (
-            <Button
-              key={index}
-              variant={selectedValue === option ? "default" : "outline"}
-              onClick={() => handleAnswerChange(question.id, option)}
-              className={`
-                p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
-                ${selectedValue === option 
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                  : "hover:bg-secondary/50 hover:border-secondary"
-                }
-              `}
-            >
-              {option}
-            </Button>
-          ))}
-        </div>
+      <div className="flex flex-wrap gap-2">
+        {question.options?.map((option) => (
+          <Button
+            key={option}
+            variant={selectedValue === option ? "default" : "outline"}
+            onClick={() => handleAnswerChange(question.id, option)}
+            className={`
+              p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+              ${selectedValue === option 
+                ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                : "hover:bg-secondary/50 hover:border-secondary"
+              }
+            `}
+          >
+            {option}
+          </Button>
+        ))}
       </div>
     )
   }
 
-  const renderEnhancedPriorityRanking = (question: any) => {
+  const renderCheckboxMultiple = (question: ProfileQuestion) => {
+    const selectedValues = (profile[question.id] as string[]) || []
+    
+    const handleCheckboxChange = (option: string) => {
+      const newValues = selectedValues.includes(option)
+        ? selectedValues.filter((v) => v !== option)
+        : [...selectedValues, option]
+      handleAnswerChange(question.id, newValues)
+    }
+
+    return (
+      <div className="space-y-3">
+        {question.options?.map((option, index) => (
+          <div key={`${question.id}-${index}`} className="flex items-center space-x-2">
+            <Checkbox
+              id={`${question.id}-${index}`}
+              checked={selectedValues.includes(option)}
+              onCheckedChange={() => handleCheckboxChange(option)}
+            />
+            <Label htmlFor={`${question.id}-${index}`} className="font-normal">
+              {option}
+            </Label>
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  const renderEnhancedPriorityRanking = (question: ProfileQuestion) => {
     const currentRankings = profile[question.id] || {}
     
     const toggleItemRanking = (item: string) => {
@@ -496,9 +528,10 @@ export default function ProfilePage() {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          {question.options.map((option: string, index: number) => {
+          {question.options?.map((option: string, index: number) => {
             const rank = getRankForItem(option)
             const isSelected = rank !== null
+            const canSelectMore = selectedCount < 3
             
             return (
               <Button
@@ -547,81 +580,39 @@ export default function ProfilePage() {
     )
   }
 
-  const renderQuestionInput = (question: any) => {
+  const renderTextArea = (question: ProfileQuestion) => {
+    return (
+      <div className="space-y-2">
+        {question.description && (
+          <p className="text-sm text-muted-foreground">
+            {question.description}
+          </p>
+        )}
+        <Textarea
+          id={question.id}
+          value={profile[question.id] || ""}
+          onChange={(e) => handleAnswerChange(question.id, e.target.value)}
+          placeholder={question.placeholder}
+          className="w-full min-h-[100px] p-3 border-2 rounded-lg resize-vertical text-sm"
+          rows={3}
+        />
+      </div>
+    )
+  }
+
+  const renderQuestionInput = (question: ProfileQuestion) => {
     switch (question.type) {
       case "button_horizontal":
         return renderHorizontalButtons(question)
         
       case "checkbox_multiple":
-        return (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {question.options?.map((option: string, index: number) => {
-              const selectedOptions = Array.isArray(profile[question.id]) ? profile[question.id] : []
-              const isChecked = selectedOptions.includes(option)
-              
-              return (
-                <Button
-                  key={index}
-                  variant={isChecked ? "default" : "outline"}
-                  onClick={() => {
-                    const current = Array.isArray(profile[question.id]) ? profile[question.id] : []
-                    const newSelected = current.includes(option)
-                      ? current.filter((item: string) => item !== option)
-                      : [...current, option]
-                    handleAnswerChange(question.id, newSelected)
-                    
-                    // Auto-progression pour les questions checkbox quand c'est la dernière question de la page
-                    const currentQuestions = getCurrentQuestions()
-                    const currentQuestionIndex = currentQuestions.findIndex(q => q.id === question.id)
-                    
-                    if (currentQuestionIndex === currentQuestions.length - 1 && newSelected.length > 0) {
-                      setTimeout(() => {
-                        if (currentPage === 'basic') {
-                          setCurrentPage('municipal')
-                          setActiveQuestionIndex(0)
-                        } else if (currentPage === 'municipal') {
-                          setCurrentPage('issues')
-                          setActiveQuestionIndex(0)
-                        }
-                      }, 800) // Délai plus long pour laisser voir la sélection
-                    }
-                  }}
-                  className={`
-                    p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
-                    ${isChecked 
-                      ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                      : "hover:bg-secondary/50 hover:border-secondary"
-                    }
-                  `}
-                >
-                  {option}
-                </Button>
-              )
-            })}
-          </div>
-        )
+        return renderCheckboxMultiple(question)
         
       case "priority_ranking_enhanced":
         return renderEnhancedPriorityRanking(question)
         
       case "text_area":
-        return (
-          <div className="space-y-2">
-            {question.description && (
-              <p className="text-sm text-muted-foreground">
-                {question.description}
-              </p>
-            )}
-            <Textarea
-              id={question.id}
-              value={profile[question.id] || ""}
-              onChange={(e) => handleAnswerChange(question.id, e.target.value)}
-              placeholder={question.placeholder}
-              className="w-full min-h-[100px] p-3 border-2 rounded-lg resize-vertical text-sm"
-              rows={3}
-            />
-          </div>
-        )
+        return renderTextArea(question)
         
       default:
         return <p>Type de question non supporté.</p>

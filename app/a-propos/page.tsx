@@ -182,7 +182,7 @@ export default function AProposPage() {
             <p className="text-sm leading-relaxed">
               Nous accueillons vos commentaires, suggestions et corrections. Si vous remarquez 
               une erreur dans les positions des partis ou si vous avez des suggestions 
-              d'amélioration, n&apos;hésitez pas à nous en faire part.
+              d&apos;amélioration, n&apos;hésitez pas à nous en faire part.
             </p>
             <div className="mt-4 p-3 bg-muted rounded-lg">
               <p className="text-sm text-muted-foreground">

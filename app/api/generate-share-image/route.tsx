@@ -23,7 +23,6 @@ interface SharedResult {
 async function getSharedResult(id: string): Promise<SharedResult | null> {
   try {
     const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
-    console.log(`🔍 [getSharedResult] Récupération données pour ID: ${id} depuis ${baseUrl}`)
     
     const response = await fetch(`${baseUrl}/partage/${id}.json`, { 
       next: { revalidate: 3600 },
@@ -33,15 +32,13 @@ async function getSharedResult(id: string): Promise<SharedResult | null> {
     })
     
     if (!response.ok) {
-      console.error(`❌ [getSharedResult] Erreur HTTP ${response.status} pour ID: ${id}`)
+      console.error(`[getSharedResult] HTTP ${response.status} error for ID: ${id}`)
       return null
     }
     
-    const data = await response.json()
-    console.log(`✅ [getSharedResult] Données récupérées avec succès pour ID: ${id}`)
-    return data
+    return await response.json()
   } catch (error) {
-    console.error(`💥 [getSharedResult] Erreur lors de la récupération des données pour l'image ${id}:`, error)
+    console.error(`[getSharedResult] Failed to fetch data for image ${id}:`, error)
     return null
   }
 }
@@ -49,25 +46,19 @@ async function getSharedResult(id: string): Promise<SharedResult | null> {
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    // Correction: utiliser le bon paramètre 'id' comme dans les autres parties de l'app
     const shareId = searchParams.get('id')
 
-    console.log(`🎨 [generate-share-image] Génération image pour ID: ${shareId}`)
-
     if (!shareId) {
-      console.error(`❌ [generate-share-image] ID de partage manquant`)
-      return new Response('ID de partage manquant', { status: 400 })
+      return new Response('Missing share ID', { status: 400 })
     }
 
     const result = await getSharedResult(shareId)
 
     if (!result) {
-      console.error(`❌ [generate-share-image] Résultats non trouvés pour ID: ${shareId}`)
-      return new Response('Résultats non trouvés', { status: 404 })
+      return new Response('Results not found', { status: 404 })
     }
     
     const { userName, topParties } = result
-    console.log(`✅ [generate-share-image] Génération image pour utilisateur: ${userName}`)
 
     const imageResponse = new ImageResponse(
       (
@@ -132,11 +123,10 @@ export async function GET(request: Request) {
       },
     );
 
-    console.log(`🎉 [generate-share-image] Image générée avec succès pour ID: ${shareId}`)
     return imageResponse
   } catch (e: unknown) {
-    const errorMessage = e instanceof Error ? e.message : 'Erreur inconnue'
-    console.error(`💥 [generate-share-image] Erreur de génération d'image: ${errorMessage}`)
-    return new Response('Échec de la génération de l\'image', { status: 500 })
+    const errorMessage = e instanceof Error ? e.message : 'Unknown error'
+    console.error(`[generate-share-image] Image generation failed: ${errorMessage}`)
+    return new Response('Image generation failed', { status: 500 })
   }
 } 

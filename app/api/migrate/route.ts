@@ -7,7 +7,6 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'migrate':
-        console.log('🚀 Démarrage de la migration via API...')
         const result = await runFullMigration()
         return NextResponse.json({ 
           success: true, 
@@ -16,7 +15,6 @@ export async function POST(request: NextRequest) {
         })
 
       case 'verify':
-        console.log('🔍 Vérification de la migration via API...')
         const verification = await verifyMigration()
         return NextResponse.json({ 
           success: true, 
@@ -25,7 +23,6 @@ export async function POST(request: NextRequest) {
         })
 
       case 'clean':
-        console.log('🗑️ Nettoyage des données via API...')
         await cleanAllData()
         return NextResponse.json({ 
           success: true, 
@@ -40,7 +37,7 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('❌ Erreur lors de l\'exécution de l\'action:', error)
+    console.error('[migrate] Action execution failed:', error)
     return NextResponse.json(
       { 
         success: false, 

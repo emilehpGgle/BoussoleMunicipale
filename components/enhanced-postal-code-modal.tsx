@@ -51,16 +51,10 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const { getResponseCounts, isLoading: responsesLoading, responses } = useUserResponses()
   const { isSessionValid } = useSession()
 
-  // Debug: Surveiller l'état des réponses
+  // Monitor response state changes
   React.useEffect(() => {
     if (isSessionValid && !responsesLoading) {
-      const counts = getResponseCounts()
-      console.log('🔄 État des réponses mis à jour:', {
-        isLoading: responsesLoading,
-        counts: counts,
-        totalAgreements: Object.keys(responses.agreement).length,
-        totalImportance: Object.keys(responses.importanceDirect).length
-      })
+      getResponseCounts()
     }
   }, [responsesLoading, responses, isSessionValid, getResponseCounts])
 

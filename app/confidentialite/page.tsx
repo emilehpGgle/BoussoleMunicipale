@@ -51,7 +51,7 @@ export default function ConfidentialitePage() {
         <section>
           <h2 className="text-xl font-semibold mb-3">Cookies</h2>
           <p>
-            Ce site utilise des cookies techniques nécessaires au fonctionnement de l'application. 
+            Ce site utilise des cookies techniques nécessaires au fonctionnement de l&apos;application. 
             Aucun cookie de suivi ou publicitaire n&apos;est utilisé.
           </p>
         </section>

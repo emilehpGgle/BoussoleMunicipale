@@ -62,7 +62,7 @@ export default function ConditionsPage() {
         <section>
           <h2 className="text-xl font-semibold mb-3">Limitation de responsabilité</h2>
           <p>
-            La Boussole Municipale est fournie &quot;en l'état&quot; sans garantie d'aucune sorte. 
+            La Boussole Municipale est fournie &quot;en l&apos;état&quot; sans garantie d&apos;aucune sorte. 
             Nous ne sommes pas responsables des décisions prises sur la base des résultats obtenus.
           </p>
         </section>

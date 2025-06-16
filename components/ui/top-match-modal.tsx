@@ -197,7 +197,7 @@ export function TopMatchModal({
                   animate={{ opacity: showContent ? 1 : 0 }}
                   transition={{ duration: 0.4, delay: 0.5 }}
                 >
-                  {topMatch.percentage}% d'affinité
+                  {topMatch.percentage}% d&apos;affinité
                 </motion.p>
 
                 {/* Boutons d'action */}
