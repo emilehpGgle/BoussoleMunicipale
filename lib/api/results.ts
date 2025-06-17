@@ -3,7 +3,7 @@ import { Database } from '@/lib/supabase/types'
 
 type UserResult = Database['public']['Tables']['user_results']['Row']
 type UserResultInsert = Database['public']['Tables']['user_results']['Insert']
-type UserResultUpdate = Database['public']['Tables']['user_results']['Update']
+type _UserResultUpdate = Database['public']['Tables']['user_results']['Update']
 
 // Types pour les résultats calculés
 export interface CalculatedResults {
@@ -42,13 +42,23 @@ export interface ResultsStats {
   }>
 }
 
+// Interface pour les résultats bruts de la base de données
+interface DatabaseResult {
+  id: string
+  session_id: string
+  results_data: ResultsData
+  political_position?: { x: number; y: number }
+  created_at: string
+  updated_at: string
+}
+
 export class ResultsAPI {
   private supabase = createClient()
 
   /**
    * Valide et convertit les données de résultats depuis la base de données
    */
-  private parseResultsData(data: any): ResultsData | null {
+  private parseResultsData(data: ResultsData): ResultsData | null {
     try {
       // Vérifier la structure de base
       if (!data || typeof data !== 'object') {
@@ -239,7 +249,7 @@ export class ResultsAPI {
   /**
    * Calcule le pourcentage moyen de complétion des questionnaires
    */
-  private calculateAverageCompletion(results: any[]): number {
+  private calculateAverageCompletion(results: DatabaseResult[]): number {
     const completions = results
       .map(r => this.parseResultsData(r.results_data))
       .filter((rd): rd is ResultsData => rd !== null)
@@ -254,7 +264,7 @@ export class ResultsAPI {
   /**
    * Analyse la distribution politique des utilisateurs
    */
-  private analyzePoliticalDistribution(results: any[]) {
+  private analyzePoliticalDistribution(results: DatabaseResult[]) {
     const positions = results
       .filter(r => r.political_position && typeof r.political_position === 'object')
       .map(r => r.political_position as { x: number; y: number })
@@ -281,7 +291,7 @@ export class ResultsAPI {
   /**
    * Analyse la popularité des partis politiques
    */
-  private analyzePartyPopularity(results: any[]): Array<{
+  private analyzePartyPopularity(results: DatabaseResult[]): Array<{
     party: string
     averageScore: number
     totalResponses: number

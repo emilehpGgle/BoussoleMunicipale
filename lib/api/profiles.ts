@@ -3,7 +3,20 @@ import { Database } from '@/lib/supabase/types'
 
 type UserProfile = Database['public']['Tables']['user_profiles']['Row']
 type UserProfileInsert = Database['public']['Tables']['user_profiles']['Insert']
-type UserProfileUpdate = Database['public']['Tables']['user_profiles']['Update']
+type _UserProfileUpdate = Database['public']['Tables']['user_profiles']['Update']
+
+// Interface pour les données de profil utilisateur
+interface ProfileData {
+  age_group?: string
+  gender?: string
+  household_income?: string
+  education_level?: string
+  main_transport?: string[]
+  housing_status?: string
+  municipal_priorities?: Record<string, number>
+  citizen_concerns?: string
+  [key: string]: string | string[] | Record<string, number> | undefined
+}
 
 export class ProfilesAPI {
   private supabase = createClient()
@@ -11,7 +24,7 @@ export class ProfilesAPI {
   /**
    * Sauvegarde ou met à jour le profil utilisateur pour une session
    */
-  async saveProfile(sessionId: string, profileData: Record<string, any>) {
+  async saveProfile(sessionId: string, profileData: ProfileData) {
     // Validate sessionId format
     if (!sessionId || typeof sessionId !== 'string' || sessionId.length < 10) {
       throw new Error('Invalid session ID format')
@@ -69,24 +82,24 @@ export class ProfilesAPI {
   /**
    * Récupère les données du profil
    */
-  async getProfileData(sessionId: string): Promise<Record<string, any>> {
+  async getProfileData(sessionId: string): Promise<ProfileData> {
     const profile = await this.getProfile(sessionId)
-    return profile?.profile_data as Record<string, any> || {}
+    return profile?.profile_data as ProfileData || {}
   }
 
   /**
    * Met à jour partiellement le profil utilisateur
    */
-  async updateProfile(sessionId: string, profileUpdates: Record<string, any>) {
+  async updateProfile(sessionId: string, profileUpdates: Partial<ProfileData>) {
     // D'abord récupérer le profil existant
     const existingProfile = await this.getProfile(sessionId)
     
-    let updatedProfileData: Record<string, any>
+    let updatedProfileData: ProfileData
     
     if (existingProfile) {
       // Fusionner avec les données existantes
       updatedProfileData = {
-        ...(existingProfile.profile_data as Record<string, any>),
+        ...(existingProfile.profile_data as ProfileData),
         ...profileUpdates
       }
     } else {
@@ -149,7 +162,7 @@ export class ProfilesAPI {
     // Analyser les données pour créer des statistiques
     const stats = {
       totalProfiles: data.length,
-      demographics: this.analyzeDemographics(data.map(p => p.profile_data as Record<string, any>))
+      demographics: this.analyzeDemographics(data.map(p => p.profile_data as ProfileData))
     }
 
     return stats
@@ -158,7 +171,7 @@ export class ProfilesAPI {
   /**
    * Analyse les données démographiques (méthode privée)
    */
-  private analyzeDemographics(profiles: Record<string, any>[]) {
+  private analyzeDemographics(profiles: ProfileData[]) {
     const demographics = {
       age: {} as Record<string, number>,
       region: {} as Record<string, number>,
