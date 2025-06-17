@@ -31,7 +31,6 @@ import { useSession } from "@/hooks/useSession"
 import ShareModal from "@/components/share-modal"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { TopMatchModal } from "@/components/ui/top-match-modal"
-// import html2canvas from 'html2canvas';
 
 
 
@@ -158,8 +157,8 @@ export default function ResultsPage() {
         let weightedQuestionScore = 0
 
         if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
-          const userScore = agreementScoreValues[userAnswer]
-          const partyScore = agreementScoreValues[partyPositionEntry.position]
+          const userScore = _agreementScoreValues[userAnswer]
+          const partyScore = _agreementScoreValues[partyPositionEntry.position]
           const diff = Math.abs(userScore - partyScore)
           questionMatchValue = MAX_AGREEMENT_MAGNITUDE - diff / 2
           weightedQuestionScore = questionMatchValue * currentImportance
@@ -308,34 +307,6 @@ export default function ResultsPage() {
     return `${score}% d'alignement avec ${partyName} ! Surprenant ce qu'on apprend sur nos priorités municipales 🏛️ Découvrez mes résultats complets :`
   }
 
-  // Amélioration 5: Génération d'une image de partage dynamique
-  const _generateShareImage = async () => {
-    // La logique de capture d'écran est commentée pour le moment
-    // pour éviter les problèmes de dépendance.
-    return "https://boussole-municipale.vercel.app/og-image.png";
-    /*
-    const node = document.getElementById('capture-results');
-    if (node) {
-      try {
-        const canvas = await html2canvas(node, {
-          scale: 2, // Améliore la résolution
-          useCORS: true,
-          backgroundColor: '#f8fafc', // Fond pour éviter la transparence
-        });
-        const imageUrl = canvas.toDataURL('image/png');
-        
-        // Optionnel: Envoyer l'image à un service pour obtenir une URL permanente
-        // Pour l'instant, on retourne une data URL (peut être trop longue pour certaines plateformes)
-        return imageUrl;
-      } catch (error) {
-        console.error("Erreur lors de la génération de l'image de partage :", error);
-        toast.error("Impossible de générer l'image pour le partage.");
-        return null;
-      }
-    }
-    return null;
-    */
-  };
 
   const captureMapScreenshot = async (): Promise<string | null> => {
     return null; // Désactivé pour le moment
@@ -614,19 +585,21 @@ export default function ResultsPage() {
       <div className="hidden lg:block">
         {/* Chat qui dort - premier tiers de la page */}
         <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
-          <img 
+          <Image 
             src="/Image_parc_chat_dort.png" 
             alt="" 
-            className="w-full h-full object-cover decorative-image-left"
+            fill
+            className="object-cover decorative-image-left"
           />
         </div>
         
         {/* Famille - troisième tiers de la page */}
         <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-72 h-auto decorative-frame-right">
-          <img 
+          <Image 
             src="/Image_famille.png" 
             alt="" 
-            className="w-full h-full object-cover decorative-image-right"
+            fill
+            className="object-cover decorative-image-right"
           />
         </div>
       </div>
