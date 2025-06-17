@@ -115,7 +115,7 @@ export default function QuestionnairePage() {
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/resultats')
+          router.push('/profil')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -141,7 +141,7 @@ export default function QuestionnairePage() {
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/resultats')
+          router.push('/profil')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -169,7 +169,7 @@ export default function QuestionnairePage() {
     } else {
       // Sauvegarde automatique dans Supabase via les hooks
       // Les données sont déjà synchronisées via nos hooks
-      router.push("/resultats")
+      router.push("/profil")
     }
   }
 

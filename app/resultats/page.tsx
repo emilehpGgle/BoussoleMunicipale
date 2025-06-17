@@ -366,22 +366,24 @@ export default function ResultsPage() {
       {/* Images décoratives positionnées selon la hauteur (desktop) */}
       <div className="hidden lg:block">
         {/* Chat qui dort - premier tiers de la page */}
-        <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
+        <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none decorative-frame-left">
           <Image 
             src="/Image_parc_chat_dort.png" 
             alt="" 
-            fill
-            className="object-cover decorative-image-left"
+            width={256}
+            height={192}
+            className="object-contain decorative-image-left"
           />
         </div>
         
         {/* Famille - troisième tiers de la page */}
-        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none w-72 h-auto decorative-frame-right">
+        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none decorative-frame-right">
           <Image 
             src="/Image_famille.png" 
             alt="" 
-            fill
-            className="object-cover decorative-image-right"
+            width={288}
+            height={216}
+            className="object-contain decorative-image-right"
           />
         </div>
       </div>

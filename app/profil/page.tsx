@@ -389,7 +389,7 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    router.push("/questionnaire") // Naviguer vers le questionnaire principal
+    router.push("/resultats") // Naviguer vers les résultats après completion du profil
   }
 
   // Obtenir l'aperçu d'une réponse pour affichage compact
@@ -671,12 +671,13 @@ export default function ProfilePage() {
 
       {/* Image décorative - chien et maître centrée à gauche (réduite) (desktop) */}
       <div className="hidden lg:block">
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-64 h-auto decorative-frame-left">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none decorative-frame-left">
           <Image 
             src="/Image_parc_chien_maitre.png" 
             alt="" 
-            fill
-            className="object-cover decorative-image-left"
+            width={256}
+            height={192}
+            className="object-contain decorative-image-left"
           />
         </div>
       </div>
