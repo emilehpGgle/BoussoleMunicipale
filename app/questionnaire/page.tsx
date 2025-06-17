@@ -115,7 +115,7 @@ export default function QuestionnairePage() {
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/profil')
+          router.push('/resultats')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -141,7 +141,7 @@ export default function QuestionnairePage() {
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/profil')
+          router.push('/resultats')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -169,7 +169,7 @@ export default function QuestionnairePage() {
     } else {
       // Sauvegarde automatique dans Supabase via les hooks
       // Les données sont déjà synchronisées via nos hooks
-      router.push("/profil")
+      router.push("/resultats")
     }
   }
 
@@ -217,12 +217,13 @@ export default function QuestionnairePage() {
 
       {/* Image décorative - jardinage centrée à droite (desktop) */}
       <div className="hidden lg:block">
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none w-80 h-auto decorative-frame-right">
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none decorative-frame-right">
           <Image 
             src="/Image_parc_jardinage.png" 
             alt="" 
-            fill
-            className="object-cover decorative-image-right"
+            width={320}
+            height={240}
+            className="object-contain decorative-image-right"
           />
         </div>
       </div>
