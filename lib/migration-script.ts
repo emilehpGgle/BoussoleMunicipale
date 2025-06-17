@@ -84,7 +84,14 @@ export async function migrateParties() {
 export async function migratePartyPositions() {
   console.log('🔄 Migration des positions des partis en cours...')
   
-  const positionsToInsert: any[] = []
+  const positionsToInsert: Array<{
+    party_id: string;
+    question_id: string;
+    position: string;
+    source: string | null;
+    note: string | null;
+    quote: string | null;
+  }> = []
   
   // Parcourir tous les partis et leurs positions
   partiesData.forEach((party: Party) => {

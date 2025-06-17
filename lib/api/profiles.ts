@@ -3,10 +3,9 @@ import { Database } from '@/lib/supabase/types'
 
 type UserProfile = Database['public']['Tables']['user_profiles']['Row']
 type UserProfileInsert = Database['public']['Tables']['user_profiles']['Insert']
-type _UserProfileUpdate = Database['public']['Tables']['user_profiles']['Update']
 
 // Interface pour les données de profil utilisateur
-interface ProfileData {
+export interface ProfileData {
   age_group?: string
   gender?: string
   household_income?: string

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
-import { ResultsAPI } from '@/lib/api/results'
+import { ResultsAPI, type ResultsData } from '@/lib/api/results'
 
 // Helper function to extract sessionToken from Authorization header
 function extractSessionToken(request: NextRequest): string | null {
@@ -44,7 +44,7 @@ interface PartyMatch {
   rank: number;
 }
 
-interface CalculatedResults {
+interface RequestCalculatedResults {
   partyScores: Record<string, number>;
   matchedParties: string[];
   topMatches: PartyMatch[];
@@ -55,18 +55,9 @@ interface CalculatedResults {
   calculatedAt: string;
 }
 
-interface FormattedResultsData {
-  calculatedResults: CalculatedResults
-  metadata: {
-    calculatedAt: string
-    version: string
-    algorithm: string
-  }
-}
-
 // Types pour les requêtes
 interface SaveResultsRequest {
-  resultsData: CalculatedResults
+  resultsData: RequestCalculatedResults
 }
 
 // POST - Calculer et sauvegarder les résultats
@@ -101,8 +92,15 @@ export async function POST(request: NextRequest) {
     const sessionsAPI = new SessionsAPI()
 
     // Construire l'objet ResultsData avec la structure requise
-    const formattedResultsData: FormattedResultsData = {
-      calculatedResults: resultsData,
+    const formattedResultsData: ResultsData = {
+      calculatedResults: {
+        partyScores: resultsData.partyScores,
+        matchedParties: resultsData.matchedParties,
+        politicalPosition: resultsData.politicalPosition,
+        completionPercentage: resultsData.completionPercentage,
+        totalQuestions: resultsData.totalQuestions,
+        answeredQuestions: resultsData.answeredQuestions
+      },
       metadata: createResultsMetadata()
     }
 
@@ -203,8 +201,15 @@ export async function PUT(request: NextRequest) {
     const sessionsAPI = new SessionsAPI()
 
     // Mettre à jour les résultats
-    const formattedResultsData: FormattedResultsData = {
-      calculatedResults: resultsData,
+    const formattedResultsData: ResultsData = {
+      calculatedResults: {
+        partyScores: resultsData.partyScores,
+        matchedParties: resultsData.matchedParties,
+        politicalPosition: resultsData.politicalPosition,
+        completionPercentage: resultsData.completionPercentage,
+        totalQuestions: resultsData.totalQuestions,
+        answeredQuestions: resultsData.answeredQuestions
+      },
       metadata: createResultsMetadata()
     }
 

@@ -10,6 +10,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Mail, Facebook, MessageCircle, LinkIcon } from "lucide-react"
 import { toast } from "sonner"
 import { type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
+import { type CalculatedResults } from '@/hooks/useResults'
 import PoliticalCompassChart from "@/components/political-compass-chart"
 import { sendResultsByEmail } from '@/lib/email-service'
 import Image from 'next/image'
@@ -25,10 +26,7 @@ interface CalculatedPartyScore {
 interface ShareModalProps {
   isOpen: boolean
   onClose: () => void
-  results: {
-    politicalPosition?: { x: number; y: number };
-    [key: string]: unknown;
-  } | null
+  results: CalculatedResults | null
   politicalPosition?: { x: number; y: number }
   userAnswers: Record<string, AgreementOptionKey>
   userImportance: Record<string, ImportanceDirectOptionKey>
@@ -63,7 +61,6 @@ export default function ShareModal({
   politicalPosition, 
   userAnswers, 
   userImportance,
-  calculatedScores: _calculatedScores,
   topParties
 }: ShareModalProps) {
   const [isSharing, setIsSharing] = useState(false)
@@ -143,7 +140,7 @@ export default function ShareModal({
       const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`
       window.open(url, '_blank')
       toast.success("Partagé sur X !")
-    } catch (error) {
+    } catch {
       toast.error("Erreur lors du partage sur X")
     }
     setIsSharing(false)
@@ -172,11 +169,7 @@ export default function ShareModal({
     setIsSharing(true)
     try {
       const shareUrl = await generateShareUrl()
-      const topMatch = topParties[0]
-      const partyName = topMatch?.party?.shortName || topMatch?.party?.name || 'mon parti préféré'
-      const score = Math.round(topMatch?.score || 0)
       
-      const _message = `🏛️ Regarde mes résultats de la Boussole Municipale ! Mon parti principal : ${partyName} (${score}%). Fais ton test ici :`
       
       // Ouvrir Messenger avec le message et lien
       const messengerUrl = `https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`
@@ -195,7 +188,7 @@ export default function ShareModal({
       const shareUrl = await generateShareUrl()
       await navigator.clipboard.writeText(`${generateShareText()}\n\n${shareUrl}`)
       toast.success("Lien copié dans le presse-papiers !")
-    } catch (error) {
+    } catch {
       toast.error("Erreur lors de la copie")
     }
     setIsSharing(false)

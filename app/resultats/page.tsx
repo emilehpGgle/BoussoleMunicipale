@@ -24,7 +24,6 @@ import {
 } from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import PoliticalCompassChart from "@/components/political-compass-chart"
-import { toast } from "sonner"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
@@ -96,10 +95,9 @@ export default function ResultsPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [showFloatingShare, setShowFloatingShare] = useState(false)
   const [showTopMatchModal, setShowTopMatchModal] = useState(false)
-  const [_isSharing, _setIsSharing] = useState(false)
 
   // Intégration des hooks sécurisés
-  const { sessionToken: _sessionToken } = useSession()
+  useSession()
   const { 
     userAnswers, 
     userImportanceDirectAnswers: userImportance, 
@@ -239,111 +237,7 @@ export default function ResultsPage() {
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
-  // Amélioration 6: Gestion d'erreurs API et feedback utilisateur pour generateShareUrl
-  const generateShareUrl = async () => {
-    const shareId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    console.log(`🎯 [Results-generateShareUrl] Génération shareId: ${shareId}`)
-    
-    // Structure des données à partager
-    const shareData = {
-      id: shareId,
-      userName: "Citoyen engagé", // Peut être personnalisé
-      topParties: topParties.slice(0, 3).map(p => ({ party: p.party, score: p.score })),
-      userPosition: calculatedScores.length > 0 ? calculateUserPoliticalPosition(userAnswers) : undefined,
-      timestamp: Date.now(),
-      // Ajouter les réponses utilisateur pour permettre l'affichage de la carte politique
-      userAnswers: userAnswers,
-      userImportance: userImportance
-    }
-    
-    console.log(`📦 [Results-generateShareUrl] Données à sauvegarder:`, {
-      id: shareData.id,
-      topPartiesCount: shareData.topParties.length,
-      hasUserAnswers: !!shareData.userAnswers,
-      userAnswersCount: Object.keys(shareData.userAnswers || {}).length
-    })
-    
-    try {
-      console.log(`🚀 [Results-generateShareUrl] Appel API save-share`)
-      // Appeler l'API pour sauvegarder les résultats
-      const response = await fetch('/api/save-share', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ shareId, data: shareData })
-      })
-      
-      console.log(`📡 [Results-generateShareUrl] Réponse API statut: ${response.status}`)
-      
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error(`❌ [Results-generateShareUrl] Erreur API:`, errorText)
-        throw new Error(`API returned ${response.status}: ${errorText}`)
-      }
-      
-      const result = await response.json()
-      console.log(`✅ [Results-generateShareUrl] Sauvegarde réussie:`, result)
-      
-    } catch (error) {
-      console.error('💥 [Results-generateShareUrl] Erreur lors de l\'appel à l\'API de sauvegarde:', error)
-      toast.error("Erreur lors de la sauvegarde. Le partage pourrait ne pas fonctionner.")
-    }
-    
-    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
-    const shareUrl = `${baseUrl}/partage/${shareId}`
-    console.log(`🔗 [Results-generateShareUrl] URL finale générée: ${shareUrl}`)
-    return shareUrl
-  }
 
-  // Génération d'un message de partage plus naturel et accrocheur
-  const generateShareText = () => {
-    if (topParties.length === 0) return "Je viens de découvrir mes affinités politiques municipales ! Fascinant de voir où on se situe 🧭"
-    
-    const topParty = topParties[0]
-    const partyName = topParty.party.shortName || topParty.party.name
-    const score = Math.round(topParty.score)
-    
-    return `${score}% d'alignement avec ${partyName} ! Surprenant ce qu'on apprend sur nos priorités municipales 🏛️ Découvrez mes résultats complets :`
-  }
-
-
-  const captureMapScreenshot = async (): Promise<string | null> => {
-    return null; // Désactivé pour le moment
-    /*
-    const compassElement = document.getElementById('political-compass-chart-capture');
-    if (compassElement) {
-      try {
-        const canvas = await html2canvas(compassElement, { 
-          scale: 2,
-          useCORS: true,
-          backgroundColor: null // Fond transparent
-        });
-        return canvas.toDataURL("image/png");
-      } catch (error) {
-        console.error('Erreur de capture de la carte:', error);
-        return null;
-      }
-    }
-    return null;
-    */
-  };
-
-  // Amélioration : Nouveau partage Facebook avec image
-
-
-
-
-  const handleCopyShare = async () => {
-    const shareUrl = await generateShareUrl()
-    try {
-      await navigator.clipboard.writeText(shareUrl)
-      toast.success("Lien de partage copié dans le presse-papiers !")
-    } catch (err) {
-      toast.error("Impossible de copier le lien.")
-      console.error('Erreur de copie:', err)
-    }
-  }
 
 
   if (isLoading) {
@@ -365,7 +259,7 @@ export default function ResultsPage() {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p className="text-xl text-muted-foreground mb-4">
-          Nous n'avons pas pu trouver vos réponses. Avez-vous complété le questionnaire ?
+          Nous n&apos;avons pas pu trouver vos réponses. Avez-vous complété le questionnaire ?
         </p>
         <Button asChild>
           <Link href="/questionnaire">Répondre au questionnaire</Link>
@@ -378,7 +272,7 @@ export default function ResultsPage() {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p className="text-xl text-muted-foreground mb-4">
-          Nous n'avons pas pu calculer vos résultats. Veuillez réessayer.
+          Nous n&apos;avons pas pu calculer vos résultats. Veuillez réessayer.
         </p>
         <Button onClick={() => calculateAndSaveResults()} disabled={isCalculating}>
           {isCalculating ? 'Calcul en cours...' : 'Recalculer'}
@@ -388,7 +282,7 @@ export default function ResultsPage() {
   }
 
   // Composant LogoContainer avec gestion d'erreur améliorée
-  const LogoContainer: React.FC<{ children: React.ReactNode; className?: string; party?: Party }> = ({ children, className, party }) => (
+  const LogoContainer: React.FC<{ children: React.ReactNode; className?: string; party?: Party }> = ({ children, className }) => (
     <div className={`bg-white rounded-xl p-2 shadow-sm flex items-center justify-center ${className || ""}`}>
       {children}
     </div>
@@ -498,7 +392,7 @@ export default function ResultsPage() {
           <div className="flex-1 mobile-section-border lg:border-l-0 lg:pl-0">
             <h1 className="text-foreground mb-3">Vos Résultats</h1> {/* font-bold is now in globals.css for h1 */}
             <p className="text-muted-foreground">
-              Voici comment vos opinions s'alignent avec celles des partis, basé sur vos réponses au questionnaire.
+              Voici comment vos opinions s&apos;alignent avec celles des partis, basé sur vos réponses au questionnaire.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-center gap-3" id="header-share-button">

@@ -12,8 +12,6 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, Target, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
-import { cn } from "@/lib/utils"
-import { Progress } from "@/components/ui/progress"
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {
@@ -145,21 +143,15 @@ export default function ProfilePage() {
     // État du profil
     profile,
     isLoading,
-    isSaving: _isSaving,
     error,
     
     // Actions pour sauvegarder
     updateProfileField,
-    updateProfileFields: _updateProfileFields,
     
     // Utilitaires
     getCompletionPercentage,
-    getProfileField: _getProfileField,
-    hasProfileField: _hasProfileField,
-    isProfileComplete: _isProfileComplete,
     
     // Alias pour compatibilité
-    userProfile: _userProfile,
   } = useProfile()
 
   // Obtenir les questions de la page actuelle
@@ -361,7 +353,6 @@ export default function ProfilePage() {
   }
 
   const handleNext = () => {
-    const _currentQuestions = getCurrentQuestions()
     if (currentPage === 'basic') {
       // Vérifier si toutes les questions de la page "basic" sont répondues
       const isComplete = profileQuestions.basic.every(isQuestionComplete)
@@ -540,7 +531,6 @@ export default function ProfilePage() {
           {question.options?.map((option: string, index: number) => {
             const rank = getRankForItem(option)
             const isSelected = rank !== null
-            const _canSelectMore = selectedCount < 3
             
             return (
               <Button
@@ -662,7 +652,7 @@ export default function ProfilePage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">Chargement de votre profil...</p>
-          {sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
+          {_sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
         </div>
       </div>
     )
@@ -734,7 +724,7 @@ export default function ProfilePage() {
       {currentPage === 'issues' ? (
         // Page 3 : Affichage simple sans accordéon
         <div className="space-y-6 mb-6">
-          {currentQuestions.map((question, _index) => {
+          {currentQuestions.map((question) => {
             // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
             if (question.id === 'citizen_concerns') {
               const prioritiesAnswer = profile['municipal_priorities'] || {}

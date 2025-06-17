@@ -19,7 +19,6 @@ import { ButtonWithEffects } from "@/components/ui/button-effects"
 
 
 // questions constant is already defined from boussoleQuestions
-const _TOTAL_QUESTIONS = boussoleQuestions.length
 
 export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -28,21 +27,17 @@ export default function QuestionnairePage() {
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [_currentScreen, _setCurrentScreen] = useState<'questionnaire' | 'results'>('questionnaire')
 
   // Intégration des hooks sécurisés
-  const { sessionToken: _sessionToken } = useSession()
+  useSession()
   const {
     // État des réponses
-    responses: _responses,
     isLoading,
-    isSaving: _isSaving,
     error,
     
     // Actions pour sauvegarder
     saveAgreementResponse,
     saveImportanceDirectResponse,
-    clearAllResponses: _clearAllResponses,
     
     // Utilitaires
     getResponseCounts,
@@ -52,7 +47,7 @@ export default function QuestionnairePage() {
     userImportanceDirectAnswers
   } = useUserResponses()
 
-  const { hasResults: _hasResults } = useResults()
+  useResults()
 
   // Calculer quelle question afficher basée sur les réponses existantes
   const calculateNextQuestionIndex = useCallback(() => {
@@ -205,13 +200,6 @@ export default function QuestionnairePage() {
     )
   }
 
-  const _showResults = () => {
-    _setCurrentScreen('results')
-  }
-
-  const _backToQuestionnaire = () => {
-    _setCurrentScreen('questionnaire')
-  }
 
       return (
       <PageWithGlow 

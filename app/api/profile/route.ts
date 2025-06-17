@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ProfilesAPI } from '@/lib/api/profiles'
+import type { ProfileData } from '@/lib/api/profiles'
 
 // Helper function to extract sessionToken from Authorization header
 function extractSessionToken(request: NextRequest): string | null {
@@ -13,7 +14,7 @@ function extractSessionToken(request: NextRequest): string | null {
 
 // Types pour les requêtes (sessionToken retiré du body)
 interface SaveProfileRequest {
-  profileData: Record<string, unknown>
+  profileData: ProfileData
 }
 
 // POST - Sauvegarder un profil utilisateur

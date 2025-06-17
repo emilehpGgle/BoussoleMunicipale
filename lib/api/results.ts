@@ -1,9 +1,8 @@
 import { createClient } from '@/lib/supabase/client'
-import { Database } from '@/lib/supabase/types'
+import { Database, Json } from '@/lib/supabase/types'
 
 type UserResult = Database['public']['Tables']['user_results']['Row']
 type UserResultInsert = Database['public']['Tables']['user_results']['Insert']
-type _UserResultUpdate = Database['public']['Tables']['user_results']['Update']
 
 // Types pour les résultats calculés
 export interface CalculatedResults {
@@ -13,6 +12,7 @@ export interface CalculatedResults {
   completionPercentage: number
   totalQuestions: number
   answeredQuestions: number
+  [key: string]: Json | undefined
 }
 
 export interface ResultsData {
@@ -22,6 +22,7 @@ export interface ResultsData {
     version: string
     algorithm: string
   }
+  [key: string]: Json | undefined
 }
 
 // Interface pour les statistiques de résultats
@@ -42,14 +43,13 @@ export interface ResultsStats {
   }>
 }
 
-// Interface pour les résultats bruts de la base de données
-interface DatabaseResult {
-  id: string
-  session_id: string
-  results_data: ResultsData
-  political_position?: { x: number; y: number }
+
+// Interface pour les statistiques (seulement les champs nécessaires)
+interface StatsResultRow {
+  results_data: Json
+  political_position: Json | null
+  completion_status: 'partial' | 'completed'
   created_at: string
-  updated_at: string
 }
 
 export class ResultsAPI {
@@ -58,19 +58,22 @@ export class ResultsAPI {
   /**
    * Valide et convertit les données de résultats depuis la base de données
    */
-  private parseResultsData(data: ResultsData): ResultsData | null {
+  private parseResultsData(data: Json): ResultsData | null {
     try {
       // Vérifier la structure de base
-      if (!data || typeof data !== 'object') {
+      if (!data || typeof data !== 'object' || Array.isArray(data)) {
         return null
       }
+
+      // TypeScript narrow type to object
+      const objData = data as { [key: string]: Json | undefined }
 
       // Valider la présence des champs requis
-      if (!data.calculatedResults || typeof data.calculatedResults !== 'object') {
+      if (!objData.calculatedResults || typeof objData.calculatedResults !== 'object') {
         return null
       }
 
-      return data as ResultsData
+      return objData as ResultsData
     } catch (error) {
       console.error('Erreur lors du parsing des données de résultats:', error)
       return null
@@ -87,7 +90,7 @@ export class ResultsAPI {
   ) {
     const result: UserResultInsert = {
       session_id: sessionId,
-      results_data: resultsData as unknown, // Cast nécessaire pour la compatibilité avec le type Json de Supabase
+      results_data: resultsData as Json, // Cast vers Json pour la compatibilité avec Supabase
       political_position: resultsData.calculatedResults.politicalPosition || null,
       completion_status: completionStatus,
     }
@@ -238,9 +241,9 @@ export class ResultsAPI {
       totalResults: data.length,
       completedResults: data.filter(r => r.completion_status === 'completed').length,
       partialResults: data.filter(r => r.completion_status === 'partial').length,
-      averageCompletion: this.calculateAverageCompletion(data),
-      politicalDistribution: this.analyzePoliticalDistribution(data),
-      partyPopularity: this.analyzePartyPopularity(data)
+      averageCompletion: this.calculateAverageCompletion(data as StatsResultRow[]),
+      politicalDistribution: this.analyzePoliticalDistribution(data as StatsResultRow[]),
+      partyPopularity: this.analyzePartyPopularity(data as StatsResultRow[])
     }
 
     return stats
@@ -249,7 +252,7 @@ export class ResultsAPI {
   /**
    * Calcule le pourcentage moyen de complétion des questionnaires
    */
-  private calculateAverageCompletion(results: DatabaseResult[]): number {
+  private calculateAverageCompletion(results: StatsResultRow[]): number {
     const completions = results
       .map(r => this.parseResultsData(r.results_data))
       .filter((rd): rd is ResultsData => rd !== null)
@@ -264,7 +267,7 @@ export class ResultsAPI {
   /**
    * Analyse la distribution politique des utilisateurs
    */
-  private analyzePoliticalDistribution(results: DatabaseResult[]) {
+  private analyzePoliticalDistribution(results: StatsResultRow[]) {
     const positions = results
       .filter(r => r.political_position && typeof r.political_position === 'object')
       .map(r => r.political_position as { x: number; y: number })
@@ -291,7 +294,7 @@ export class ResultsAPI {
   /**
    * Analyse la popularité des partis politiques
    */
-  private analyzePartyPopularity(results: DatabaseResult[]): Array<{
+  private analyzePartyPopularity(results: StatsResultRow[]): Array<{
     party: string
     averageScore: number
     totalResponses: number

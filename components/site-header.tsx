@@ -61,7 +61,7 @@ export default function SiteHeader() {
 
   // Écouter l'événement personnalisé depuis d'autres composants (pour le bouton de la page d'accueil)
   useEffect(() => {
-    const handleOpenModal = (_event: Event) => {
+    const handleOpenModal = () => {
       // Quand on vient de la page d'accueil, vérifier s'il y a des réponses existantes
       const responseCounts = getResponseCounts()
       
@@ -196,7 +196,7 @@ export default function SiteHeader() {
                       variant="outline"
                       className="w-full border-primary/20 text-foreground hover:bg-primary/10 hover:text-primary rounded-xl py-3 text-base font-medium mt-4 btn-base-effects btn-hover-lift"
                     >
-                      Retour à l'accueil
+                      Retour à l&apos;accueil
                     </Button>
                   )}
                 </nav>
