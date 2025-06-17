@@ -61,7 +61,7 @@ export default function SiteHeader() {
 
   // Écouter l'événement personnalisé depuis d'autres composants (pour le bouton de la page d'accueil)
   useEffect(() => {
-    const handleOpenModal = (event: Event) => {
+    const handleOpenModal = (_event: Event) => {
       // Quand on vient de la page d'accueil, vérifier s'il y a des réponses existantes
       const responseCounts = getResponseCounts()
       

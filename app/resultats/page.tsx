@@ -330,104 +330,9 @@ export default function ResultsPage() {
   };
 
   // Amélioration : Nouveau partage Facebook avec image
-  const _handleFacebookShareWithImage = async () => {
-    try {
-      _setIsSharing(true)
-      const shareUrl = await generateShareUrl()
-      
-      // Capturer la carte politique
-      const mapImage = await captureMapScreenshot()
-      
-      const topParty = topParties[0]
-      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
-      const score = Math.round(topParty?.score || 0)
-      
-      // Texte engageant pour Facebook
-      const shareText = `🏛️ Mes affinités politiques municipales révélées !\n\n🎯 Mon parti principal : ${partyName} (${score}%)\n\n📊 Découvrez ma position complète sur la carte politique et faites votre propre test gratuit en 5 minutes !\n\n#BoussoleQuébec #PolitiqueMunicipale #Québec2025`
-      
-      if (mapImage && typeof window !== 'undefined' && window.FB) {
-        // Utiliser Facebook SDK si disponible
-        window.FB.ui({
-          method: 'feed',
-          link: shareUrl,
-          picture: mapImage,
-          name: 'Mes résultats - Boussole Municipale Québec',
-          caption: 'boussolemunicipalequebec.ca',
-          description: shareText
-        }, (response: any) => {
-          if (response && response.post_id) {
-            toast.success("Partagé sur Facebook !")
-          }
-        })
-      } else {
-        // Fallback vers le sharer standard avec texte amélioré
-        const params = new URLSearchParams({
-          u: shareUrl,
-          quote: shareText
-        })
-        window.open(`https://www.facebook.com/sharer/sharer.php?${params}`, '_blank')
-        toast.success("Partage Facebook ouvert !")
-      }
-    } catch (error) {
-      console.error('Erreur lors du partage Facebook:', error)
-      toast.error("Impossible de partager sur Facebook")
-    } finally {
-      _setIsSharing(false)
-    }
-  }
 
-  // Amélioration 2: Gestion d'erreurs Twitter avec extraction sécurisée
-  const _handleTwitterShare = async () => {
-    try {
-      const shareUrl = await generateShareUrl()
-      const topParty = topParties[0]
-      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
-      const score = Math.round(topParty?.score || 0)
-      const text = encodeURIComponent(`🗳️ Mes affinités politiques municipales révélées ! Top parti: ${partyName} (${score}%) #BoussoleElectorale #PolitiqueMunicipale`)
-      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${encodeURIComponent(shareUrl)}`, '_blank')
-    } catch (error) {
-      console.error('Erreur lors du partage Twitter:', error)
-      toast.error("Impossible de partager sur Twitter")
-    }
-  }
 
-  // Amélioration 1: Gestion d'erreurs LinkedIn avec extraction sécurisée
-  const _handleLinkedInShare = async () => {
-    try {
-      const shareUrl = await generateShareUrl()
-      const title = encodeURIComponent('Mes résultats de la Boussole Municipale')
-      const topParty = topParties[0]
-      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
-      const score = Math.round(topParty?.score || 0)
-      const summary = encodeURIComponent(`Découvrez mes affinités politiques locales ! Mon top parti: ${partyName} avec ${score}% d'affinité.`)
-      window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}&title=${title}&summary=${summary}`, '_blank')
-    } catch (error) {
-      console.error('Erreur lors du partage LinkedIn:', error)
-      toast.error("Impossible de partager sur LinkedIn")
-    }
-  }
 
-  // Nouveau : Support Messenger
-  const _handleMessengerShare = async () => {
-    try {
-      setIsSharing(true)
-      const shareUrl = await generateShareUrl()
-      const topParty = topParties[0]
-      const partyName = topParty?.party?.shortName || topParty?.party?.name || 'Parti'
-      const score = Math.round(topParty?.score || 0)
-      
-      const message = encodeURIComponent(`🏛️ Regarde mes résultats de la Boussole Municipale ! Mon parti principal : ${partyName} (${score}%). Fais ton test ici :`)
-      
-      // Ouvrir Messenger avec le message prérempli
-      window.open(`https://www.messenger.com/t/?link=${encodeURIComponent(shareUrl)}`, '_blank')
-      toast.success("Messenger ouvert !")
-    } catch (error) {
-      console.error('Erreur lors du partage Messenger:', error)
-      toast.error("Impossible de partager sur Messenger")
-    } finally {
-      setIsSharing(false)
-    }
-  }
 
   const handleCopyShare = async () => {
     const shareUrl = await generateShareUrl()
@@ -440,23 +345,6 @@ export default function ResultsPage() {
     }
   }
 
-  const _handleGeneralShare = async () => {
-    const shareUrl = await generateShareUrl()
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Mes résultats - Boussole Municipale',
-          text: generateShareText(),
-          url: shareUrl,
-        })
-      } catch (error) {
-        console.error('Erreur partage natif:', error)
-      }
-    } else {
-      // Fallback pour les navigateurs non compatibles (ex: desktop)
-      handleCopyShare()
-    }
-  }
 
   if (isLoading) {
     return (

@@ -23,7 +23,7 @@ export function ButtonWithEffects({
   const [isClicked, setIsClicked] = useState(false);
   const [showSparks, setShowSparks] = useState(false);
 
-  const handleClick = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClick = useCallback((_e: React.MouseEvent<HTMLButtonElement>) => {
     if (disabled) return;
 
     // Animation de feedback immédiat

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Mail, Facebook, MessageCircle } from "lucide-react"
+import { Mail, Facebook, MessageCircle, LinkIcon } from "lucide-react"
 import { toast } from "sonner"
 import { type Party, type AgreementOptionKey, type ImportanceDirectOptionKey } from '@/lib/boussole-data'
 import PoliticalCompassChart from "@/components/political-compass-chart"
