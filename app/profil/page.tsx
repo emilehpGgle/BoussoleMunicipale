@@ -210,9 +210,7 @@ export default function ProfilePage() {
 
   // Fonction pour passer à la question suivante (utilisée par le bouton)
   const handleNextQuestion = () => {
-    // Toutes les questions sont maintenant affichées ensemble
-    
-    if (activeQuestionIndex < currentQuestions.length - 1) {
+    if (activeQuestionIndex < allQuestions.length - 1) {
       const nextIndex = activeQuestionIndex + 1
       setActiveQuestionIndex(nextIndex)
       
@@ -228,15 +226,6 @@ export default function ProfilePage() {
           })
         }
       }, 100)
-    } else {
-      // C'est la dernière question de la page, passer à la page suivante
-      if (currentPage === 'basic') {
-        setCurrentPage('municipal')
-        setActiveQuestionIndex(0)
-      } else if (currentPage === 'municipal') {
-        setCurrentPage('issues')
-        setActiveQuestionIndex(0)
-      }
     }
   }
 
@@ -326,10 +315,9 @@ export default function ProfilePage() {
     return answer !== undefined && answer !== ""
   }
 
-  // Vérifier si la page actuelle est complète
+  // Vérifier si toutes les questions requises sont complétées
   const isCurrentPageComplete = () => {
-    // Toutes les questions sont maintenant affichées ensemble
-    return currentQuestions.every(q => isQuestionRequiredForProgression(q))
+    return allQuestions.every(q => isQuestionRequiredForProgression(q))
   }
 
   // Vérifier si tout le questionnaire est complété
@@ -822,7 +810,6 @@ export default function ProfilePage() {
             )
           })}
         </div>
-      )}
 
       {/* Navigation */}
       <div className="flex justify-between items-center">
