@@ -161,7 +161,6 @@ export default function ProfilePage() {
   ]
   
   const allQuestions = getAllQuestions()
-  const totalQuestions = allQuestions.length
 
   const handleAnswerChange = async (questionId: string, value: string | string[] | Record<string, number>) => {
     try {
@@ -596,24 +595,6 @@ export default function ProfilePage() {
   const completedQuestions = allQuestions.filter(q => isQuestionComplete(q)).length
   const globalProgress = (completedQuestions / allQuestions.length) * 100
 
-  // Définir les titres et descriptions pour chaque page
-  const pageInfo = {
-    basic: {
-      title: "Informations de base",
-      description: "Quelques questions rapides pour mieux vous connaître",
-      step: "1/3"
-    },
-    municipal: {
-      title: "Contexte municipal", 
-      description: "Parlons de votre situation à Québec",
-      step: "2/3"
-    },
-    issues: {
-      title: "Enjeux",
-      description: "Exprimez vos priorités et préoccupations municipales",
-      step: "3/3" 
-    }
-  }
 
   const currentInfo = {
     title: "Votre profil",
