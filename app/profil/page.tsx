@@ -133,7 +133,6 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
 export default function ProfilePage() {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const router = useRouter()
-  const citizenConcernsRef = useRef<HTMLDivElement>(null)
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   // Intégration des hooks sécurisés
@@ -244,12 +243,22 @@ export default function ProfilePage() {
       if (previousCount === 2 && currentCount === 3) {
         setTimeout(() => {
           if (isOthersSelected) {
-            // Si "Autres" est sélectionné, scroller vers la zone de texte
-            citizenConcernsRef.current?.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'start',
-              inline: 'nearest'
-            })
+            // Si "Autres" est sélectionné, activer automatiquement la question citizen_concerns
+            const citizenConcernsIndex = allQuestions.findIndex(q => q.id === 'citizen_concerns')
+            if (citizenConcernsIndex !== -1) {
+              setActiveQuestionIndex(citizenConcernsIndex)
+              // Scroll vers la question citizen_concerns après activation
+              setTimeout(() => {
+                const citizenConcernsElement = questionRefs.current['citizen_concerns']
+                if (citizenConcernsElement) {
+                  citizenConcernsElement.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'center',
+                    inline: 'nearest'
+                  })
+                }
+              }, 100)
+            }
           } else {
             // Sinon, scroller vers le bas de la page (bouton "Voir mes résultats")
             window.scrollTo({ 
@@ -262,11 +271,22 @@ export default function ProfilePage() {
       // Si "Autres" vient d'être ajouté après avoir déjà 3 sélections
       else if (!wasOthersSelected && isOthersSelected && currentCount === 3) {
         setTimeout(() => {
-          citizenConcernsRef.current?.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'start',
-            inline: 'nearest'
-          })
+          // Activer automatiquement la question citizen_concerns
+          const citizenConcernsIndex = allQuestions.findIndex(q => q.id === 'citizen_concerns')
+          if (citizenConcernsIndex !== -1) {
+            setActiveQuestionIndex(citizenConcernsIndex)
+            // Scroll vers la question citizen_concerns après activation
+            setTimeout(() => {
+              const citizenConcernsElement = questionRefs.current['citizen_concerns']
+              if (citizenConcernsElement) {
+                citizenConcernsElement.scrollIntoView({ 
+                  behavior: 'smooth', 
+                  block: 'center',
+                  inline: 'nearest'
+                })
+              }
+            }, 100)
+          }
         }, 300)
       }
     } catch (err) {
