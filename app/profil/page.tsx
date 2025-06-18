@@ -131,7 +131,6 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
 }
 
 export default function ProfilePage() {
-  const [currentPage, setCurrentPage] = useState<'basic' | 'municipal' | 'issues'>('basic')
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const router = useRouter()
   const citizenConcernsRef = useRef<HTMLDivElement>(null)
@@ -154,15 +153,15 @@ export default function ProfilePage() {
     // Alias pour compatibilité
   } = useProfile()
 
-  // Obtenir les questions de la page actuelle
-  const getCurrentQuestions = () => profileQuestions[currentPage]
-  
-  // Obtenir toutes les questions pour la validation
+  // Obtenir toutes les questions dans l'ordre
   const getAllQuestions = () => [
     ...profileQuestions.basic,
     ...profileQuestions.municipal,
     ...profileQuestions.issues
   ]
+  
+  const allQuestions = getAllQuestions()
+  const totalQuestions = allQuestions.length
 
   const handleAnswerChange = async (questionId: string, value: string | string[] | Record<string, number>) => {
     try {
@@ -170,8 +169,7 @@ export default function ProfilePage() {
       await updateProfileField(questionId, value)
       
       // Auto-passer à la question suivante après une réponse (sauf pour les text areas, questions multiples et checkbox_multiple)
-      const currentQuestions = getCurrentQuestions()
-      const currentQuestion = currentQuestions[activeQuestionIndex]
+      const currentQuestion = allQuestions[activeQuestionIndex]
       
       if (
         currentQuestion &&
@@ -180,13 +178,13 @@ export default function ProfilePage() {
         )
       ) {
         setTimeout(() => {
-          if (activeQuestionIndex < currentQuestions.length - 1) {
+          if (activeQuestionIndex < allQuestions.length - 1) {
             const nextIndex = activeQuestionIndex + 1
             setActiveQuestionIndex(nextIndex)
             
             // Scroll doux vers la question suivante après un petit délai
             setTimeout(() => {
-              const nextQuestion = currentQuestions[nextIndex]
+              const nextQuestion = allQuestions[nextIndex]
               const nextQuestionElement = questionRefs.current[nextQuestion.id]
               if (nextQuestionElement) {
                 nextQuestionElement.scrollIntoView({ 
@@ -197,21 +195,9 @@ export default function ProfilePage() {
               }
             }, 100) // Délai pour laisser l'accordéon s'ouvrir
           } else {
-            // C'est la dernière question de la page, passer à la page suivante
-            if (currentPage === 'basic') {
-              setCurrentPage('municipal')
-              setActiveQuestionIndex(0)
-              // Scroll vers le haut pour voir la première question de la nouvelle page
-              setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }, 400)
-            } else if (currentPage === 'municipal') {
-              setCurrentPage('issues')
-              setActiveQuestionIndex(0)
-              // Scroll vers le haut pour voir la première question de la nouvelle page
-              setTimeout(() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' })
-              }, 400)
+            // C'est la dernière question - soumettre le profil
+            if (canSubmit()) {
+              handleSubmit()
             }
           }
         }, 300) // Petit délai pour voir la sélection
@@ -224,7 +210,7 @@ export default function ProfilePage() {
 
   // Fonction pour passer à la question suivante (utilisée par le bouton)
   const handleNextQuestion = () => {
-    const currentQuestions = getCurrentQuestions()
+    // Toutes les questions sont maintenant affichées ensemble
     
     if (activeQuestionIndex < currentQuestions.length - 1) {
       const nextIndex = activeQuestionIndex + 1
@@ -232,7 +218,7 @@ export default function ProfilePage() {
       
       // Scroll doux vers la question suivante
       setTimeout(() => {
-        const nextQuestion = currentQuestions[nextIndex]
+        const nextQuestion = allQuestions[nextIndex]
         const nextQuestionElement = questionRefs.current[nextQuestion.id]
         if (nextQuestionElement) {
           nextQuestionElement.scrollIntoView({ 
@@ -342,36 +328,30 @@ export default function ProfilePage() {
 
   // Vérifier si la page actuelle est complète
   const isCurrentPageComplete = () => {
-    const currentQuestions = getCurrentQuestions()
+    // Toutes les questions sont maintenant affichées ensemble
     return currentQuestions.every(q => isQuestionRequiredForProgression(q))
   }
 
   // Vérifier si tout le questionnaire est complété
   const canSubmit = () => {
-    const allQuestions = getAllQuestions()
     return allQuestions.every(q => isQuestionRequiredForProgression(q))
   }
 
   const handleNext = () => {
-    if (currentPage === 'basic') {
-      // Vérifier si toutes les questions de la page "basic" sont répondues
-      const isComplete = profileQuestions.basic.every(isQuestionComplete)
-      if (isComplete) {
-        setCurrentPage('municipal')
-        setActiveQuestionIndex(0)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      } else {
-        // Mettre en évidence les questions non répondues si nécessaire
-        console.warn("Veuillez répondre à toutes les questions avant de continuer.")
-      }
-    } else if (currentPage === 'municipal') {
-      const isComplete = profileQuestions.municipal.every(isQuestionComplete)
-      if (isComplete) {
-        setCurrentPage('issues')
-        setActiveQuestionIndex(0)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-    } else if (currentPage === 'issues') {
+    if (activeQuestionIndex < allQuestions.length - 1) {
+      setActiveQuestionIndex(activeQuestionIndex + 1)
+      // Scroll vers la question suivante
+      setTimeout(() => {
+        const nextQuestion = allQuestions[activeQuestionIndex + 1]
+        if (nextQuestion && questionRefs.current[nextQuestion.id]) {
+          questionRefs.current[nextQuestion.id]?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          })
+        }
+      }, 100)
+    } else {
+      // Dernière question - soumettre
       if (canSubmit()) {
         handleSubmit()
       }
@@ -379,12 +359,18 @@ export default function ProfilePage() {
   }
 
   const handlePrevious = () => {
-    if (currentPage === 'issues') {
-      setCurrentPage('municipal')
-      setActiveQuestionIndex(0)
-    } else if (currentPage === 'municipal') {
-      setCurrentPage('basic')
-      setActiveQuestionIndex(0)
+    if (activeQuestionIndex > 0) {
+      setActiveQuestionIndex(activeQuestionIndex - 1)
+      // Scroll vers la question précédente
+      setTimeout(() => {
+        const prevQuestion = allQuestions[activeQuestionIndex - 1]
+        if (prevQuestion && questionRefs.current[prevQuestion.id]) {
+          questionRefs.current[prevQuestion.id]?.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          })
+        }
+      }, 100)
     }
   }
 
@@ -619,7 +605,6 @@ export default function ProfilePage() {
   }
 
   // Calculer le progrès global
-  const allQuestions = getAllQuestions()
   const completedQuestions = allQuestions.filter(q => isQuestionComplete(q)).length
   const globalProgress = (completedQuestions / allQuestions.length) * 100
 
@@ -642,8 +627,12 @@ export default function ProfilePage() {
     }
   }
 
-  const currentInfo = pageInfo[currentPage]
-  const currentQuestions = getCurrentQuestions()
+  const currentInfo = {
+    title: "Votre profil",
+    description: "Aidez-nous à mieux comprendre votre situation à Québec",
+    step: "1/1"
+  }
+  // Toutes les questions sont maintenant affichées ensemble
 
   // État de chargement pendant l'initialisation
   if (isLoading) {
@@ -721,44 +710,22 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Questions - Accordéon intelligent pour pages 1-2, affichage simple pour page 3 */}
-      {currentPage === 'issues' ? (
-        // Page 3 : Affichage simple sans accordéon
-        <div className="space-y-6 mb-6">
-          {currentQuestions.map((question) => {
-            // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
-            if (question.id === 'citizen_concerns') {
-              const prioritiesAnswer = profile['municipal_priorities'] || {}
-              const hasSelectedOthers = prioritiesAnswer['Autres'] !== undefined
-              
-              if (!hasSelectedOthers) {
-                return null // Ne pas afficher cette question
-              }
-            }
+      {/* Questions - Accordéon intelligent pour toutes les questions */}
+      <div className="space-y-3 mb-6">
+        {allQuestions.map((question, index) => {
+          // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
+          if (question.id === 'citizen_concerns') {
+            const prioritiesAnswer = profile['municipal_priorities'] || {}
+            const hasSelectedOthers = prioritiesAnswer['Autres'] !== undefined
             
-            return (
-              <Card 
-                key={question.id} 
-                className="shadow-soft rounded-xl bg-card"
-                ref={question.id === 'citizen_concerns' ? citizenConcernsRef : undefined}
-              >
-                <CardContent className="p-6 space-y-4">
-                  <Label className="text-base font-medium text-foreground leading-snug block">
-                    {question.text}
-                  </Label>
-                  {renderQuestionInput(question)}
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
-      ) : (
-        // Pages 1-2 : Accordéon intelligent
-        <div className="space-y-3 mb-6">
-          {currentQuestions.map((question, index) => {
-            const isCompleted = isQuestionComplete(question)
-            const isActive = index === activeQuestionIndex
-            const isFuture = index > activeQuestionIndex && !isCompleted
+            if (!hasSelectedOthers) {
+              return null // Ne pas afficher cette question
+            }
+          }
+          
+          const isCompleted = isQuestionComplete(question)
+          const isActive = index === activeQuestionIndex
+          const isFuture = index > activeQuestionIndex && !isCompleted
             
             return (
               <Card 
@@ -836,7 +803,7 @@ export default function ProfilePage() {
                       {renderQuestionInput(question)}
                       
                       {/* Bouton "Question suivante" spécifique pour la question de transport */}
-                      {question.id === 'main_transport' && currentPage === 'municipal' && (
+                      {question.id === 'main_transport' && (
                         <div className="flex justify-end mt-4">
                           <Button
                             onClick={handleNextQuestion}
@@ -860,7 +827,7 @@ export default function ProfilePage() {
       {/* Navigation */}
       <div className="flex justify-between items-center">
         <div>
-          {currentPage !== 'basic' && (
+          {activeQuestionIndex > 0 && (
             <Button
               variant="outline"
               onClick={handlePrevious}
@@ -873,7 +840,7 @@ export default function ProfilePage() {
         </div>
         
         <div>
-          {currentPage === 'issues' ? (
+          {activeQuestionIndex === allQuestions.length - 1 ? (
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit()}
