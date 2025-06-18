@@ -45,11 +45,15 @@ export default function SiteHeader() {
   const handleStartQuestionnaire = () => {
     const responseCounts = getResponseCounts()
     
-    if (responseCounts.total > 0) {
+    console.log('📊 [handleStartQuestionnaire] Response counts:', responseCounts)
+    
+    if (responseCounts && responseCounts.total > 0) {
       // Il y a des réponses, ouvrir le modal de choix
+      console.log('🔄 [handleStartQuestionnaire] Réponses trouvées - ouvrir modal continuation')
       openContinueModal()
     } else {
       // Pas de réponses, ouvrir le modal de code postal pour commencer
+      console.log('🆕 [handleStartQuestionnaire] Pas de réponses - ouvrir modal code postal')
       openPostalModal()
     }
   }
@@ -65,11 +69,15 @@ export default function SiteHeader() {
       // Quand on vient de la page d'accueil, vérifier s'il y a des réponses existantes
       const responseCounts = getResponseCounts()
       
-      if (responseCounts.total > 0) {
+      console.log('📊 [handleOpenModal] Response counts from home page:', responseCounts)
+      
+      if (responseCounts && responseCounts.total > 0) {
         // Il y a des réponses, ouvrir le modal de choix
+        console.log('🔄 [handleOpenModal] Réponses trouvées - ouvrir modal continuation')
         openContinueModal()
       } else {
         // Pas de réponses, ouvrir le modal de code postal pour commencer
+        console.log('🆕 [handleOpenModal] Pas de réponses - ouvrir modal code postal')
         openPostalModal()
       }
     }

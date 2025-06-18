@@ -19,26 +19,45 @@ interface SharedResult {
   topParties: TopParty[]
 }
 
-// Fonction pour récupérer les données partagées
+// Fonction pour récupérer les données partagées directement depuis Supabase
 async function getSharedResult(id: string): Promise<SharedResult | null> {
   try {
-    const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+    console.log(`🔍 [getSharedResult] Récupération depuis Supabase pour l'image: ${id}`)
     
-    const response = await fetch(`${baseUrl}/partage/${id}.json`, { 
-      next: { revalidate: 3600 },
+    // Utiliser les variables d'environnement Supabase directement
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('[getSharedResult] Variables Supabase manquantes')
+      return null
+    }
+    
+    // Valider l'ID pour éviter les injections
+    const safeId = id.toString().replace(/[^a-zA-Z0-9\-_]/g, '')
+    
+    const response = await fetch(`${supabaseUrl}/rest/v1/shared_results?share_id=eq.${safeId}&expires_at=gt.${new Date().toISOString()}&select=share_data`, {
       headers: {
-        'User-Agent': 'FacebookExternalHit/1.1 (+http://www.facebook.com/externalhit_uatext.php)'
+        'apikey': supabaseAnonKey,
+        'Authorization': `Bearer ${supabaseAnonKey}`,
+        'Range': '0-0'
       }
     })
     
     if (!response.ok) {
-      console.error(`[getSharedResult] HTTP ${response.status} error for ID: ${id}`)
+      console.error(`[getSharedResult] Erreur Supabase ${response.status} pour ID: ${safeId}`)
       return null
     }
     
-    return await response.json()
+    const data = await response.json()
+    if (!data || data.length === 0) {
+      console.warn(`[getSharedResult] Aucune donnée trouvée pour ID: ${safeId}`)
+      return null
+    }
+    
+    return data[0].share_data as SharedResult
   } catch (error) {
-    console.error(`[getSharedResult] Failed to fetch data for image ${id}:`, error)
+    console.error(`[getSharedResult] Erreur lors de la récupération pour ${id}:`, error)
     return null
   }
 }

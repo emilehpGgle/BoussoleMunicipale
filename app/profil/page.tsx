@@ -82,7 +82,7 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
     {
       id: "main_transport",
       text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
-      type: "checkbox_multiple",
+      type: "button_horizontal",
       category: "Contexte municipal", 
       icon: Car,
       options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
@@ -299,7 +299,7 @@ export default function ProfilePage() {
   const isQuestionComplete = (question: ProfileQuestion) => {
     const answer = profile[question.id]
     
-    if (question.type === "checkbox_multiple") {
+    if (question.type === "checkbox_multiple" || question.id === "main_transport") {
       return Array.isArray(answer) && answer.length > 0
     }
     
@@ -319,7 +319,7 @@ export default function ProfilePage() {
   const isQuestionRequiredForProgression = (question: ProfileQuestion) => {
     const answer = profile[question.id]
     
-    if (question.type === "checkbox_multiple") {
+    if (question.type === "checkbox_multiple" || question.id === "main_transport") {
       return Array.isArray(answer) && answer.length > 0
     }
     
@@ -391,7 +391,7 @@ export default function ProfilePage() {
     
     if (!answer) return "Non répondu"
     
-    if (question.type === "checkbox_multiple") {
+    if (question.type === "checkbox_multiple" || question.id === "main_transport") {
       return Array.isArray(answer) ? `${answer.length} sélection(s)` : "Non répondu"
     }
     
@@ -407,30 +407,66 @@ export default function ProfilePage() {
     return answer.toString()
   }
 
-  // Composant pour les boutons horizontaux
+  // Composant pour les boutons horizontaux (gère sélection simple et multiple)
   const renderHorizontalButtons = (question: ProfileQuestion) => {
-    const selectedValue = profile[question.id] as string
+    // Pour la question transport, permettre sélections multiples
+    const isMultipleSelect = question.id === "main_transport"
+    
+    if (isMultipleSelect) {
+      const selectedValues = (profile[question.id] as string[]) || []
+      
+      const handleMultipleSelection = (option: string) => {
+        const newValues = selectedValues.includes(option)
+          ? selectedValues.filter((v) => v !== option)
+          : [...selectedValues, option]
+        handleAnswerChange(question.id, newValues)
+      }
 
-    return (
-      <div className="flex flex-wrap gap-2">
-        {question.options?.map((option) => (
-          <Button
-            key={option}
-            variant={selectedValue === option ? "default" : "outline"}
-            onClick={() => handleAnswerChange(question.id, option)}
-            className={`
-              p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
-              ${selectedValue === option 
-                ? "bg-primary text-primary-foreground border-primary shadow-sm" 
-                : "hover:bg-secondary/50 hover:border-secondary"
-              }
-            `}
-          >
-            {option}
-          </Button>
-        ))}
-      </div>
-    )
+      return (
+        <div className="flex flex-wrap gap-2">
+          {question.options?.map((option) => (
+            <Button
+              key={option}
+              variant={selectedValues.includes(option) ? "default" : "outline"}
+              onClick={() => handleMultipleSelection(option)}
+              className={`
+                p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+                ${selectedValues.includes(option)
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                  : "hover:bg-secondary/50 hover:border-secondary"
+                }
+              `}
+            >
+              {option}
+            </Button>
+          ))}
+        </div>
+      )
+    } else {
+      // Sélection simple pour les autres questions
+      const selectedValue = profile[question.id] as string
+
+      return (
+        <div className="flex flex-wrap gap-2">
+          {question.options?.map((option) => (
+            <Button
+              key={option}
+              variant={selectedValue === option ? "default" : "outline"}
+              onClick={() => handleAnswerChange(question.id, option)}
+              className={`
+                p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+                ${selectedValue === option 
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                  : "hover:bg-secondary/50 hover:border-secondary"
+                }
+              `}
+            >
+              {option}
+            </Button>
+          ))}
+        </div>
+      )
+    }
   }
 
   const renderCheckboxMultiple = (question: ProfileQuestion) => {

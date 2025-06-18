@@ -108,7 +108,9 @@ export async function generateMetadata({ params }: SharePageProps): Promise<Meta
     : 'Découvrez vos affinités politiques avec la Boussole Municipale.'
   
   // Amélioration 1: URL absolue pour Open Graph (CRITIQUE pour les réseaux sociaux)
-  const baseUrl = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+  const baseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://boussolemunicipalequebec.ca' 
+    : 'http://localhost:3000'
   const imageUrl = `${baseUrl}/api/generate-share-image?id=${id}`
 
   return {
