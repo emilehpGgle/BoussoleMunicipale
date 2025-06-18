@@ -166,14 +166,15 @@ export default function ProfilePage() {
       // Sauvegarder via notre hook sécurisé
       await updateProfileField(questionId, value)
       
-      // Auto-passer à la question suivante après une réponse (sauf pour les text areas, questions multiples et checkbox_multiple)
+      // Auto-passer à la question suivante après une réponse (sauf pour les text areas, questions multiples et la question transport)
       const currentQuestion = allQuestions[activeQuestionIndex]
       
       if (
         currentQuestion &&
         !["text_area", "priority_ranking_enhanced", "checkbox_multiple"].includes(
           currentQuestion.type
-        )
+        ) &&
+        currentQuestion.id !== "main_transport" // Exception pour la question transport qui permet sélections multiples
       ) {
         setTimeout(() => {
           if (activeQuestionIndex < allQuestions.length - 1) {
