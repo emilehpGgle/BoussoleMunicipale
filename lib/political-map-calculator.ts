@@ -140,6 +140,40 @@ export function calculatePoliticalDistance(pos1: PoliticalPosition, pos2: Politi
 }
 
 /**
+ * Calcule la compatibilité basée sur les priorités
+ * Retourne un score de 0 à 100 basé sur l'alignement des priorités
+ */
+export function calculatePriorityCompatibility(
+  userPriorities: Record<string, number>, 
+  partyPriorities: string[]
+): number {
+  if (!userPriorities || Object.keys(userPriorities).length === 0) {
+    return 50 // Score neutre si pas de priorités utilisateur
+  }
+
+  let compatibilityScore = 0
+  const userPriorityList = Object.entries(userPriorities)
+    .sort(([,a], [,b]) => a - b) // Trier par rang (1, 2, 3)
+    .map(([priority]) => priority)
+
+  // Calculer le score basé sur les correspondances de priorités
+  userPriorityList.forEach((userPriority, userIndex) => {
+    const partyRank = partyPriorities.findIndex(p => p === userPriority)
+    
+    if (partyRank !== -1) {
+      // Correspondance trouvée - plus le rang est proche, plus le score est élevé
+      const rankDifference = Math.abs(userIndex - partyRank)
+      const maxPoints = 35 - (userIndex * 5) // 1er = 35 points max, 2e = 30, 3e = 25
+      const actualPoints = Math.max(0, maxPoints - (rankDifference * 10))
+      compatibilityScore += actualPoints
+    }
+    // Pas de points si pas de correspondance
+  })
+
+  return Math.min(100, Math.max(0, compatibilityScore))
+}
+
+/**
  * Réponses hypothétiques des partis aux questions de la boussole
  * Basées sur leurs programmes et positions publiques
  */

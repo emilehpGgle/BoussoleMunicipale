@@ -34,10 +34,11 @@ export interface Question {
   id: string
   text: string
   category: string
-  responseType: "agreement" | "importance_direct"
+  responseType: "agreement" | "importance_direct" | "priority_ranking"
   agreementOptions: AgreementOptionKey[]
   importanceOptions: ImportanceOptionKey[]
   importanceDirectOptions?: ImportanceDirectOptionKey[] // Pour les questions d'importance directe
+  priorityOptions?: string[] // Pour les questions de priorité
   description?: string
   customAgreementLabels?: Record<AgreementOptionKey, string> // Pour personnaliser les labels
   customImportanceDirectLabels?: Record<ImportanceDirectOptionKey, string> // Pour les questions d'importance directe
@@ -64,6 +65,7 @@ export interface Party {
   strengths?: string[]
   reserves?: string[]
   positions: PartyPosition[]
+  priorities?: string[] // Top 3 enjeux prioritaires du parti (1er, 2e, 3e)
 }
 
 export const boussoleQuestions: Question[] = [
@@ -266,6 +268,27 @@ export const boussoleQuestions: Question[] = [
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
   },
+  {
+    id: "q21_enjeux_prioritaires",
+    text: "Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d'importance : 1er, 2e et 3e choix)",
+    category: "Priorités municipales",
+    responseType: "priority_ranking",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    importanceOptions: [5, 4, 3, 2, 1],
+    description: "Sélectionnez vos 3 enjeux municipaux prioritaires et classez-les par ordre d'importance.",
+    priorityOptions: [
+      "Transport et mobilité",
+      "Logement abordable", 
+      "Environnement et espaces verts",
+      "Sécurité publique",
+      "Développement économique",
+      "Services municipaux",
+      "Projet de tramway",
+      "Troisième lien routier",
+      "Lutte aux changements climatiques",
+      "Patrimoine et identité"
+    ]
+  },
 ]
 
 const questionIdMap = boussoleQuestions.map((q) => q.id)
@@ -294,6 +317,7 @@ export const partiesData: Party[] = [
       ["Développement économique", "Services de proximité"],
       ["Grands projets coûteux", "Augmentation des taxes"],
     ),
+    priorities: ["Développement économique", "Services municipaux", "Transport et mobilité"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -340,6 +364,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "PA" },
       { questionId: questionIdMap[18], position: "PA" },
       { questionId: questionIdMap[19], position: "PA" },
+      { questionId: questionIdMap[20], position: "PA" },
     ],
   },
   {
@@ -357,6 +382,7 @@ export const partiesData: Party[] = [
       ["Développement économique", "Gestion financière"],
       ["Projets environnementaux coûteux", "Interventionnisme municipal"],
     ),
+    priorities: ["Développement économique", "Troisième lien routier", "Sécurité publique"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -403,6 +429,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "FA" },
       { questionId: questionIdMap[18], position: "PA" },
       { questionId: questionIdMap[19], position: "N" },
+      { questionId: questionIdMap[20], position: "PA" },
     ],
   },
   {
@@ -420,6 +447,7 @@ export const partiesData: Party[] = [
       ["Développement économique", "Réduction de la dette"],
       ["Interventions réglementaires", "Dépenses sociales"],
     ),
+    priorities: ["Développement économique", "Troisième lien routier", "Sécurité publique"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -466,6 +494,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "FA" },
       { questionId: questionIdMap[18], position: "N" },
       { questionId: questionIdMap[19], position: "N" },
+      { questionId: questionIdMap[20], position: "PA" },
     ],
   },
   {
@@ -483,6 +512,7 @@ export const partiesData: Party[] = [
       ["Équilibre entre services et fiscalité"],
       ["Grands projets sans bénéfices directs pour les citoyens"],
     ),
+    priorities: ["Services municipaux", "Transport et mobilité", "Développement économique"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -529,6 +559,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "PA" },
       { questionId: questionIdMap[18], position: "PA" },
       { questionId: questionIdMap[19], position: "PA" },
+      { questionId: questionIdMap[20], position: "PA" },
     ],
   },
   {
@@ -546,6 +577,7 @@ export const partiesData: Party[] = [
       ["Environnement", "Transport collectif", "Logement"],
       ["Développement économique traditionnel"],
     ),
+    priorities: ["Projet de tramway", "Logement abordable", "Environnement et espaces verts"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -592,6 +624,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "N" },
       { questionId: questionIdMap[18], position: "FA" },
       { questionId: questionIdMap[19], position: "FA" },
+      { questionId: questionIdMap[20], position: "FA" },
     ],
   },
   {
@@ -609,6 +642,7 @@ export const partiesData: Party[] = [
       ["Réduction des taxes", "Développement économique"],
       ["Projets environnementaux", "Interventions municipales"],
     ),
+    priorities: ["Troisième lien routier", "Développement économique", "Sécurité publique"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -655,6 +689,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "FA" },
       { questionId: questionIdMap[18], position: "PD" },
       { questionId: questionIdMap[19], position: "PD" },
+      { questionId: questionIdMap[20], position: "FA" },
     ],
   },
   {
@@ -672,6 +707,7 @@ export const partiesData: Party[] = [
       ["Environnement", "Transport collectif", "Justice sociale"],
       ["Développement économique traditionnel", "Projets routiers"],
     ),
+    priorities: ["Lutte aux changements climatiques", "Projet de tramway", "Logement abordable"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -718,6 +754,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[17], position: "PD" },
       { questionId: questionIdMap[18], position: "FA" },
       { questionId: questionIdMap[19], position: "FA" },
+      { questionId: questionIdMap[20], position: "FA" },
     ],
   },
 ]

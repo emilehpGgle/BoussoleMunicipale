@@ -20,6 +20,7 @@ import {
 import {
   calculatePoliticalDistance,
   calculateUserPoliticalPosition,
+  calculatePriorityCompatibility,
   partyPositions,
 } from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
@@ -128,10 +129,21 @@ export default function ResultsPage() {
     // Calculer la position politique de l'utilisateur (même logique que la carte)
     const userPosition = calculateUserPoliticalPosition(userAnswers)
 
+    // Récupérer les priorités de l'utilisateur depuis localStorage
+    const userPrioritiesData = localStorage.getItem('priority_q21_enjeux_prioritaires')
+    let userPriorities: Record<string, number> = {}
+    if (userPrioritiesData) {
+      try {
+        userPriorities = JSON.parse(userPrioritiesData)
+      } catch (e) {
+        console.error('Erreur lors du parsing des priorités utilisateur:', e)
+      }
+    }
+
     const newCalculatedScores = partiesData.map((party) => {
       // Utiliser la position politique du parti (partyPositions provient de political-map-calculator)
       const partyPosition = partyPositions[party.id]
-      let score = 0
+      let politicalScore = 0
 
       if (partyPosition) {
         // MÊME calcul que dans useResults.ts et la carte politique
@@ -139,16 +151,22 @@ export default function ResultsPage() {
         // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
         const maxDistance = 283
         const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
-        score = compatibility
+        politicalScore = compatibility
       } else {
         // Si pas de position politique définie pour ce parti, score de 0
-        score = 0
+        politicalScore = 0
         console.warn(`Pas de position politique définie pour le parti: ${party.id}`)
       }
 
+      // Calculer le score des priorités
+      const priorityScore = calculatePriorityCompatibility(userPriorities, party.priorities || [])
+
+      // Score final pondéré : 70% position politique, 30% priorités
+      const finalScore = (politicalScore * 0.7) + (priorityScore * 0.3)
+
       // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
       const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
-        const userAnswer = userAnswers[question.id]
+        const userAnswer = userAnswers[question.id] || 'N'
         const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
         const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
         let questionMatchValue = 0
@@ -174,8 +192,8 @@ export default function ResultsPage() {
 
       return {
         party,
-        score: Math.round(score),
-        rawScore: score,
+        score: Math.round(finalScore),
+        rawScore: finalScore,
         maxPossibleRawScoreForParty: 100,
         details: scoreDetails,
       }
