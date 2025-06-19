@@ -189,7 +189,7 @@ export default function QuestionnairePage() {
   // Handler pour les questions de priorité
   const handlePrioritySelection = (priority: string) => {
     const currentRank = selectedPriorities[priority]
-    let newPriorities = { ...selectedPriorities }
+    const newPriorities = { ...selectedPriorities }
 
     if (currentRank) {
       // Si déjà sélectionné, on le désélectionne et on réorganise
@@ -375,7 +375,7 @@ export default function QuestionnairePage() {
               <div className="space-y-3">
                 <div className="text-center mb-4">
                   <p className="text-sm text-muted-foreground mb-2">
-                    Sélectionnez vos 3 enjeux les plus importants dans l'ordre de priorité
+                    Sélectionnez vos 3 enjeux les plus importants dans l&apos;ordre de priorité
                   </p>
                   <p className="text-xs text-primary font-medium">
                     {Object.keys(selectedPriorities).length}/3 priorités sélectionnées
