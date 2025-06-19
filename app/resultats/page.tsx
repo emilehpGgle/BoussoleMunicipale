@@ -529,7 +529,21 @@ export default function ResultsPage() {
                 
                 // Obtenir la réponse directe d'importance si applicable
                 let userResponseText = "Non répondue"
-                if (userAnswer) {
+                if (question.responseType === "priority_ranking") {
+                  // Pour la question de priorité, récupérer les données du localStorage
+                  const userPrioritiesData = localStorage.getItem(`priority_${question.id}`)
+                  if (userPrioritiesData) {
+                    try {
+                      const priorities = JSON.parse(userPrioritiesData)
+                      const sortedPriorities = Object.entries(priorities)
+                        .sort(([,a], [,b]) => (a as number) - (b as number))
+                        .map(([priority, rank]) => `${rank}. ${priority}`)
+                      userResponseText = sortedPriorities.join(' • ')
+                    } catch (e) {
+                      userResponseText = "Erreur de chargement"
+                    }
+                  }
+                } else if (userAnswer) {
                   if (question.responseType === "importance_direct") {
                     // Pour les questions d'importance directe, utiliser les réponses du hook
                     const directAnswer = userImportance[question.id]
@@ -565,29 +579,52 @@ export default function ResultsPage() {
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h5 className="text-sm font-semibold text-muted-foreground">Positions des partis :</h5>
-                        {calculatedScores.map(({ party, details }) => {
-                          const detail = details.find((d) => d.question.id === question.id)
-                          const partyPos = detail?.partyPosition
-                          const positionText =
-                            partyPos?.position && partyPos.position !== "?"
-                              ? getAgreementLabel(question, partyPos.position)
-                              : partyPos?.position === "?"
-                                ? "Position incertaine"
-                                : "Non spécifiée"
-                          return (
-                            <div
-                              key={party.id}
-                              className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
-                            >
-                              <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
-                              <span className="text-muted-foreground">{positionText}</span>
-                              {partyPos?.source && (
-                                <em className="block text-gray-500 text-[11px] truncate">Source: {partyPos.source}</em>
-                              )}
-                            </div>
-                          )
-                        })}
+                        <h5 className="text-sm font-semibold text-muted-foreground">
+                          {question.responseType === "priority_ranking" ? "Priorités des partis :" : "Positions des partis :"}
+                        </h5>
+                        {question.responseType === "priority_ranking" ? (
+                          // Affichage spécial pour la question de priorité
+                          calculatedScores.map(({ party }) => {
+                            const partyPriorities = party.priorities || []
+                            const prioritiesText = partyPriorities.length > 0 
+                              ? partyPriorities.slice(0, 3).map((p, i) => `${i + 1}. ${p}`).join(' • ')
+                              : "Aucune priorité définie"
+                            
+                            return (
+                              <div
+                                key={party.id}
+                                className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
+                              >
+                                <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
+                                <span className="text-muted-foreground">{prioritiesText}</span>
+                              </div>
+                            )
+                          })
+                        ) : (
+                          // Affichage standard pour les autres questions
+                          calculatedScores.map(({ party, details }) => {
+                            const detail = details.find((d) => d.question.id === question.id)
+                            const partyPos = detail?.partyPosition
+                            const positionText =
+                              partyPos?.position && partyPos.position !== "?"
+                                ? getAgreementLabel(question, partyPos.position)
+                                : partyPos?.position === "?"
+                                  ? "Position incertaine"
+                                  : "Non spécifiée"
+                            return (
+                              <div
+                                key={party.id}
+                                className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
+                              >
+                                <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
+                                <span className="text-muted-foreground">{positionText}</span>
+                                {partyPos?.source && (
+                                  <em className="block text-gray-500 text-[11px] truncate">Source: {partyPos.source}</em>
+                                )}
+                              </div>
+                            )
+                          })
+                        )}
                       </div>
                     </AccordionContent>
                   </AccordionItem>

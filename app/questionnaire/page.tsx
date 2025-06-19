@@ -60,9 +60,8 @@ export default function QuestionnairePage() {
       if (question.responseType === "importance_direct") {
         hasResponse = userImportanceDirectAnswers[question.id] !== undefined
       } else if (question.responseType === "priority_ranking") {
-        // Pour les questions de priorité, vérifier le localStorage
-        const saved = localStorage.getItem(`priority_${question.id}`)
-        hasResponse = saved !== null && saved !== undefined
+        // Pour les questions de priorité, vérifier si la réponse a été sauvegardée comme "PA"
+        hasResponse = userAnswers[question.id] !== undefined
       } else {
         hasResponse = userAnswers[question.id] !== undefined
       }
@@ -210,10 +209,8 @@ export default function QuestionnairePage() {
 
     setSelectedPriorities(newPriorities)
 
-    // Si 3 priorités sélectionnées, sauvegarder automatiquement
-    if (Object.keys(newPriorities).length === 3) {
-      handlePrioritySave(newPriorities)
-    }
+    // Sauvegarder dans localStorage à chaque changement
+    localStorage.setItem(`priority_${currentQuestion.id}`, JSON.stringify(newPriorities))
   }
 
   const handlePrioritySave = async (priorities: Record<string, number>) => {
@@ -226,10 +223,10 @@ export default function QuestionnairePage() {
       // Sauvegarder aussi les données de priorité dans le localStorage pour usage futur
       localStorage.setItem(`priority_${currentQuestion.id}`, priorityData)
       
-      // Si c'est la dernière question, rediriger vers les résultats
+      // Si c'est la dernière question, rediriger vers le profil
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         setTimeout(() => {
-          router.push('/resultats')
+          router.push('/profil')
         }, 800)
       } else {
         // Auto-progression
@@ -275,7 +272,7 @@ export default function QuestionnairePage() {
     if (currentQuestion.responseType === "importance_direct") {
       return userImportanceDirectAnswers[currentQuestion.id] !== undefined
     } else if (currentQuestion.responseType === "priority_ranking") {
-      return Object.keys(selectedPriorities).length === 3
+      return userAnswers[currentQuestion.id] !== undefined
     } else {
       return userAnswers[currentQuestion.id] !== undefined
     }
@@ -426,8 +423,14 @@ export default function QuestionnairePage() {
                   <div className="text-center mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mx-auto mb-1" />
                     <p className="text-sm text-green-700 font-medium">
-                      Parfait ! Vos 3 priorités ont été enregistrées.
+                      Parfait ! Vous avez sélectionné vos 3 priorités.
                     </p>
+                    <Button
+                      onClick={() => handlePrioritySave(selectedPriorities)}
+                      className="mt-3 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 text-sm font-medium"
+                    >
+                      Terminer le questionnaire
+                    </Button>
                   </div>
                 )}
               </div>
