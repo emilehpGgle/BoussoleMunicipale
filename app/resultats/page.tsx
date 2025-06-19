@@ -539,7 +539,7 @@ export default function ResultsPage() {
                         .sort(([,a], [,b]) => (a as number) - (b as number))
                         .map(([priority, rank]) => `${rank}. ${priority}`)
                       userResponseText = sortedPriorities.join(' • ')
-                    } catch (e) {
+                    } catch {
                       userResponseText = "Erreur de chargement"
                     }
                   }
