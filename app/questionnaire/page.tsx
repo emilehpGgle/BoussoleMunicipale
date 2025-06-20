@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, HelpCircle, CheckCircle2 } from "lucide-react"
@@ -27,6 +27,9 @@ export default function QuestionnairePage() {
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   const router = useRouter()
   const searchParams = useSearchParams()
+  
+  // Référence pour le bouton "Terminer"
+  const terminateButtonRef = useRef<HTMLButtonElement>(null)
 
   // Intégration des hooks sécurisés
   useSession()
@@ -211,6 +214,25 @@ export default function QuestionnairePage() {
 
     // Sauvegarder dans localStorage à chaque changement
     localStorage.setItem(`priority_${currentQuestion.id}`, JSON.stringify(newPriorities))
+    
+    // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
+    if (Object.keys(newPriorities).length === 3) {
+      setTimeout(() => {
+        if (terminateButtonRef.current) {
+          terminateButtonRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          })
+          // Petit effet de mise en évidence du bouton
+          terminateButtonRef.current.style.transform = 'scale(1.05)'
+          setTimeout(() => {
+            if (terminateButtonRef.current) {
+              terminateButtonRef.current.style.transform = 'scale(1)'
+            }
+          }, 200)
+        }
+      }, 300) // Délai pour laisser l'animation de sélection se terminer
+    }
   }
 
   const handlePrioritySave = async (priorities: Record<string, number>) => {
@@ -496,6 +518,7 @@ export default function QuestionnairePage() {
             {/* Bouton "Terminer" seulement sur la dernière question */}
             {currentQuestionIndex === boussoleQuestions.length - 1 && (
               <Button
+                ref={terminateButtonRef}
                 onClick={() => {
                   if (currentQuestion.responseType === "priority_ranking") {
                     // Pour les questions de priorité, sauvegarder les priorités sélectionnées
@@ -512,7 +535,7 @@ export default function QuestionnairePage() {
                     ? Object.keys(selectedPriorities).length !== 3
                     : !isAnswered
                 }
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm"
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm transition-transform duration-200"
               >
                 Terminer
               </Button>
