@@ -77,16 +77,8 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
     },
   ],
   
-  // Page 2 - Contexte municipal (ordre inversé)
+  // Page 2 - Contexte municipal (logement d'abord, transport en dernier)
   municipal: [
-    {
-      id: "main_transport",
-      text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
-      type: "button_horizontal",
-      category: "Contexte municipal", 
-      icon: Car,
-      options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
-    },
     {
       id: "housing_status", 
       text: "Quel est votre statut de logement ?",
@@ -94,6 +86,14 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
       category: "Contexte municipal",
       icon: Home,
       options: ["Propriétaire", "Locataire", "Logé chez famille/amis", "Autre"],
+    },
+    {
+      id: "main_transport",
+      text: "Quel(s) moyen(s) de transport utilisez-vous au quotidien ? (Sélectionnez tous ceux qui s'appliquent)",
+      type: "button_horizontal",
+      category: "Contexte municipal", 
+      icon: Car,
+      options: ["Automobile", "Transport en commun", "Vélo", "Marche", "Covoiturage", "Taxi/Uber", "Autre"],
     },
   ],
   
