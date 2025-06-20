@@ -181,26 +181,7 @@ export default function ProfilePage() {
     }
   }
 
-  // Fonction pour passer à la question suivante (utilisée par le bouton)
-  const handleNextQuestion = () => {
-    if (activeQuestionIndex < allQuestions.length - 1) {
-      const nextIndex = activeQuestionIndex + 1
-      setActiveQuestionIndex(nextIndex)
-      
-      // Scroll doux vers la question suivante
-      setTimeout(() => {
-        const nextQuestion = allQuestions[nextIndex]
-        const nextQuestionElement = questionRefs.current[nextQuestion.id]
-        if (nextQuestionElement) {
-          nextQuestionElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center',
-            inline: 'nearest'
-          })
-        }
-      }, 100)
-    }
-  }
+
 
   const handlePriorityRanking = async (questionId: string, rankings: Record<string, number>) => {
     try {
@@ -734,20 +715,6 @@ export default function ProfilePage() {
                   <CardContent className="p-6 pt-0 animate-fadeIn">
                     <div className="space-y-3">
                       {renderQuestionInput(question)}
-                      
-                      {/* Bouton "Question suivante" spécifique pour la question de transport */}
-                      {question.id === 'main_transport' && (
-                        <div className="flex justify-end mt-4">
-                          <Button
-                            onClick={handleNextQuestion}
-                            disabled={!profile[question.id] || (Array.isArray(profile[question.id]) && profile[question.id].length === 0)}
-                            className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
-                          >
-                            Question suivante
-                            <ChevronRight className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      )}
                     </div>
                   </CardContent>
                 )}
