@@ -442,14 +442,7 @@ export default function QuestionnairePage() {
                     )
                   })}
                 </div>
-                {Object.keys(selectedPriorities).length === 3 && (
-                  <div className="text-center mt-4">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 mx-auto mb-1" />
-                    <p className="text-sm text-green-700 font-medium">
-                      Parfait ! Vous avez sélectionné vos 3 priorités.
-                    </p>
-                  </div>
-                )}
+
               </div>
             ) : currentQuestion.responseType === "importance_direct" && currentQuestion.importanceDirectOptions ? (
               // Questions d'importance directe
