@@ -100,32 +100,13 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
   // Page 3 - Enjeux
   issues: [
     {
-      id: "municipal_priorities",
-      text: "Sélectionnez et classez vos 3 priorités municipales (cliquez pour sélectionner, re-cliquez pour désélectionner)",
-      type: "priority_ranking_enhanced",
-      category: "Enjeux",
-      icon: Target, 
-      options: [
-        "Transport et mobilité",
-        "Logement abordable", 
-        "Environnement et espaces verts",
-        "Sécurité publique",
-        "Développement économique",
-        "Services municipaux",
-        "Projet de tramway",
-        "Troisième lien routier",
-        "Lutte aux changements climatiques",
-        "Autres",
-      ],
-    },
-    {
       id: "citizen_concerns",
       text: "Précisez vos autres priorités municipales",
       type: "text_area",
       category: "Enjeux",
       icon: Target,
       placeholder: "Décrivez les autres enjeux municipaux qui vous tiennent à cœur...",
-      description: "Puisque vous avez sélectionné 'Autres', aidez-nous à comprendre quelles sont vos priorités spécifiques.",
+      description: "Partagez-nous d'autres enjeux municipaux qui vous tiennent à cœur et qui n'étaient pas couverts dans le questionnaire.",
     },
   ]
 }

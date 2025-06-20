@@ -420,17 +420,11 @@ export default function QuestionnairePage() {
                   })}
                 </div>
                 {Object.keys(selectedPriorities).length === 3 && (
-                  <div className="text-center mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                  <div className="text-center mt-4">
                     <CheckCircle2 className="h-5 w-5 text-green-600 mx-auto mb-1" />
                     <p className="text-sm text-green-700 font-medium">
                       Parfait ! Vous avez sélectionné vos 3 priorités.
                     </p>
-                    <Button
-                      onClick={() => handlePrioritySave(selectedPriorities)}
-                      className="mt-3 bg-green-600 hover:bg-green-700 text-white rounded-lg px-4 py-2 text-sm font-medium"
-                    >
-                      Terminer le questionnaire
-                    </Button>
                   </div>
                 )}
               </div>
@@ -498,14 +492,28 @@ export default function QuestionnairePage() {
               Précédent
             </Button>
 
-            {/* Bouton "Continuer" seulement sur la dernière question */}
+            {/* Bouton "Terminer" seulement sur la dernière question */}
             {currentQuestionIndex === boussoleQuestions.length - 1 && (
               <Button
-                onClick={goToNextQuestion}
-                disabled={!isAnswered}
+                onClick={() => {
+                  if (currentQuestion.responseType === "priority_ranking") {
+                    // Pour les questions de priorité, sauvegarder les priorités sélectionnées
+                    if (Object.keys(selectedPriorities).length === 3) {
+                      handlePrioritySave(selectedPriorities)
+                    }
+                  } else {
+                    // Pour les autres types de questions, utiliser la logique normale
+                    goToNextQuestion()
+                  }
+                }}
+                disabled={
+                  currentQuestion.responseType === "priority_ranking" 
+                    ? Object.keys(selectedPriorities).length !== 3
+                    : !isAnswered
+                }
                 className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm"
               >
-                Continuer
+                Terminer
               </Button>
             )}
           </div>
