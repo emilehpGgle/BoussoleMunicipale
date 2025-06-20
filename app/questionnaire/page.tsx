@@ -378,7 +378,8 @@ export default function QuestionnairePage() {
                     {Object.keys(selectedPriorities).length}/3 priorités sélectionnées
                   </p>
                 </div>
-                <div className="grid gap-2">
+                {/* Layout en 2 colonnes pour les écrans md et plus, 1 colonne sur mobile */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
                   {currentQuestion.priorityOptions.map((priority) => {
                     const rank = selectedPriorities[priority]
                     const isSelected = rank !== undefined
@@ -398,7 +399,7 @@ export default function QuestionnairePage() {
                         key={priority}
                         variant={isSelected ? "standard" : "subtle"}
                         disabled={!canSelect && !isSelected}
-                        className={`option-button justify-between py-4 px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
+                        className={`option-button justify-between py-3 md:py-4 px-3 md:px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
                           ${
                             isSelected
                               ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
@@ -408,10 +409,10 @@ export default function QuestionnairePage() {
                           } ${!isTransitioning ? 'option-button-enter' : ''}`}
                         onClick={() => handlePrioritySelection(priority)}
                       >
-                        <span className="flex-1">{priority}</span>
+                        <span className="flex-1 leading-tight">{priority}</span>
                         {isSelected && (
-                          <span className="ml-2 flex items-center gap-2">
-                            <span className="text-lg">{getRankEmoji(rank)}</span>
+                          <span className="ml-2 flex items-center gap-1 md:gap-2 flex-shrink-0">
+                            <span className="text-base md:text-lg">{getRankEmoji(rank)}</span>
                             <span className="text-xs font-bold">#{rank}</span>
                           </span>
                         )}
