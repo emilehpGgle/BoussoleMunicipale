@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, User, Home, Car, Target, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
 
@@ -97,17 +97,10 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
     },
   ],
   
-  // Page 3 - Enjeux
+  // Page 3 - Enjeux (optionnel)
   issues: [
-    {
-      id: "citizen_concerns",
-      text: "Précisez vos autres priorités municipales",
-      type: "text_area",
-      category: "Enjeux",
-      icon: Target,
-      placeholder: "Décrivez les autres enjeux municipaux qui vous tiennent à cœur...",
-      description: "Partagez-nous d'autres enjeux municipaux qui vous tiennent à cœur et qui n'étaient pas couverts dans le questionnaire.",
-    },
+    // Note: Cette question est maintenant optionnelle et ne compte pas dans le total de progression
+    // puisque les priorités municipales sont gérées dans le questionnaire principal (Q21)
   ]
 }
 
@@ -210,67 +203,9 @@ export default function ProfilePage() {
   }
 
   const handlePriorityRanking = async (questionId: string, rankings: Record<string, number>) => {
-    const previousAnswers = profile[questionId] || {}
-    
     try {
       // Sauvegarder via notre hook sécurisé
       await updateProfileField(questionId, rankings)
-      
-      const previousCount = Object.keys(previousAnswers).length
-      const currentCount = Object.keys(rankings).length
-      const wasOthersSelected = previousAnswers['Autres'] !== undefined
-      const isOthersSelected = rankings['Autres'] !== undefined
-      
-      // Si l'utilisateur vient de compléter ses 3 priorités (de 2 à 3)
-      if (previousCount === 2 && currentCount === 3) {
-        setTimeout(() => {
-          if (isOthersSelected) {
-            // Si "Autres" est sélectionné, activer automatiquement la question citizen_concerns
-            const citizenConcernsIndex = allQuestions.findIndex(q => q.id === 'citizen_concerns')
-            if (citizenConcernsIndex !== -1) {
-              setActiveQuestionIndex(citizenConcernsIndex)
-              // Scroll vers la question citizen_concerns après activation
-              setTimeout(() => {
-                const citizenConcernsElement = questionRefs.current['citizen_concerns']
-                if (citizenConcernsElement) {
-                  citizenConcernsElement.scrollIntoView({ 
-                    behavior: 'smooth', 
-                    block: 'center',
-                    inline: 'nearest'
-                  })
-                }
-              }, 100)
-            }
-          } else {
-            // Sinon, scroller vers le bas de la page (bouton "Voir mes résultats")
-            window.scrollTo({ 
-              top: document.documentElement.scrollHeight,
-              behavior: 'smooth' 
-            })
-          }
-        }, 300) // Petit délai pour laisser le DOM se mettre à jour
-      }
-      // Si "Autres" vient d'être ajouté après avoir déjà 3 sélections
-      else if (!wasOthersSelected && isOthersSelected && currentCount === 3) {
-        setTimeout(() => {
-          // Activer automatiquement la question citizen_concerns
-          const citizenConcernsIndex = allQuestions.findIndex(q => q.id === 'citizen_concerns')
-          if (citizenConcernsIndex !== -1) {
-            setActiveQuestionIndex(citizenConcernsIndex)
-            // Scroll vers la question citizen_concerns après activation
-            setTimeout(() => {
-              const citizenConcernsElement = questionRefs.current['citizen_concerns']
-              if (citizenConcernsElement) {
-                citizenConcernsElement.scrollIntoView({ 
-                  behavior: 'smooth', 
-                  block: 'center',
-                  inline: 'nearest'
-                })
-              }
-            }, 100)
-          }
-        }, 300)
-      }
     } catch (err) {
       console.error('Erreur lors de la sauvegarde du ranking:', err)
       // L'erreur est déjà gérée par le hook, on peut continuer l'UI
@@ -720,15 +655,6 @@ export default function ProfilePage() {
       {/* Questions - Accordéon intelligent pour toutes les questions */}
       <div className="space-y-3 mb-6">
         {allQuestions.map((question, index) => {
-          // Pour la question des préoccupations, ne l'afficher que si "Autres" est sélectionné
-          if (question.id === 'citizen_concerns') {
-            const prioritiesAnswer = profile['municipal_priorities'] || {}
-            const hasSelectedOthers = prioritiesAnswer['Autres'] !== undefined
-            
-            if (!hasSelectedOthers) {
-              return null // Ne pas afficher cette question
-            }
-          }
           
           const isCompleted = isQuestionComplete(question)
           const isActive = index === activeQuestionIndex
