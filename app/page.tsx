@@ -5,18 +5,52 @@ import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
 import { GlowSection } from "@/components/ui/subtle-glow"
-
+import { useUserResponses } from "@/hooks/useUserResponses"
+import { useSession } from "@/hooks/useSession"
+import { boussoleQuestions } from "@/lib/boussole-data"
+import { useRouter } from "next/navigation"
 
 export default function HomePage() {
-  // Fonction pour déclencher l'ouverture du modal depuis le header
-  const openModal = () => {
+  const { sessionToken } = useSession()
+  const { getResponseCounts, isLoading } = useUserResponses()
+  const router = useRouter()
+
+  // Fonction pour gérer le clic sur "Commencer" - vérifie le statut du questionnaire
+  const handleStartQuestionnaire = async () => {
     try {
+      // Si pas de session, ouvrir le modal du code postal
+      if (!sessionToken) {
+        const event = new CustomEvent('openPostalCodeModal')
+        window.dispatchEvent(event)
+        return
+      }
+
+      // Si on a une session, vérifier le statut du questionnaire
+      if (!isLoading) {
+        const counts = getResponseCounts()
+        const totalQuestions = boussoleQuestions.length
+        
+        if (counts.total >= totalQuestions) {
+          // Questionnaire terminé - aller aux résultats
+          router.push('/resultats')
+        } else if (counts.total > 0) {
+          // Questionnaire en cours - continuer le questionnaire
+          router.push('/questionnaire')
+        } else {
+          // Questionnaire pas commencé - ouvrir le modal du code postal
+          const event = new CustomEvent('openPostalCodeModal')
+          window.dispatchEvent(event)
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la vérification du questionnaire:', error)
+      // En cas d'erreur, ouvrir le modal par défaut
       const event = new CustomEvent('openPostalCodeModal')
       window.dispatchEvent(event)
-    } catch (error) {
-      console.error('Erreur lors de l\'émission de l\'événement:', error)
     }
   }
+
+
 
   return (
     <div className="mobile-constrained">
@@ -48,12 +82,12 @@ export default function HomePage() {
                 <div className="flex flex-col gap-2">
                   <Button
                     size="lg"
-                    onClick={openModal}
+                    onClick={handleStartQuestionnaire}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
                   >
                     Commencer le questionnaire
                   </Button>
-                  <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 20 questions</span>
+                  <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
                 </div>
                 <Button
                   size="lg"
@@ -244,7 +278,7 @@ export default function HomePage() {
             </p>
             <Button
               size="lg"
-              onClick={openModal}
+              onClick={handleStartQuestionnaire}
               className="bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
             >
               Commencer maintenant
