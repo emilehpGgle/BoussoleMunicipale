@@ -14,7 +14,7 @@ interface PrioritiesState {
  * Remplace l'usage du localStorage par Supabase
  */
 export function usePriorities() {
-  const { sessionToken, isSessionValid } = useSession()
+  const { sessionToken, isSessionValid, isInitializing } = useSession()
   
   const [state, setState] = useState<PrioritiesState>({
     priorities: {},
@@ -34,7 +34,8 @@ export function usePriorities() {
           ...prev,
           priorities: {},
           isLoading: false,
-          error: 'Session requise pour charger les priorités'
+          // Ne pas afficher d'erreur si la session est en train de s'initialiser
+          error: null
         }))
         return
       }
@@ -50,12 +51,12 @@ export function usePriorities() {
       if (response.ok) {
         const data = await response.json()
         if (data.success && data.responses) {
-          // Filtrer les réponses de priorité
+          // Filtrer les réponses de priorité pour la question q21_enjeux_prioritaires
           const priorityResponses = data.responses.filter(
-            (r: any) => r.response_type === 'priority_ranking'
+            (r: any) => r.response_type === 'priority_ranking' && r.question_id === 'q21_enjeux_prioritaires'
           )
           
-          // Extraire les priorités (supposons Q21 comme question de priorité)
+          // Extraire les priorités (question q21_enjeux_prioritaires)
           const priorities = priorityResponses.length > 0 
             ? priorityResponses[0].priority_data || {} 
             : {}
@@ -111,7 +112,7 @@ export function usePriorities() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          questionId: 'Q21', // ID de la question de priorité
+          questionId: 'q21_enjeux_prioritaires', // ID correct de la question de priorité
           responseType: 'priority_ranking',
           priorityData
         })
@@ -146,12 +147,22 @@ export function usePriorities() {
     }
   }, [sessionToken, isSessionValid])
 
-  // Charger les priorités au montage
+  // Charger les priorités au montage avec patience pour l'initialisation
   useEffect(() => {
-    if (isSessionValid) {
+    // Attendre que la session soit complètement initialisée avant de charger
+    if (!isInitializing && isSessionValid) {
       loadPriorities()
+    } else if (!isInitializing && !isSessionValid) {
+      // Session définitivement non valide - état par défaut sans erreur
+      setState(prev => ({
+        ...prev,
+        priorities: {},
+        isLoading: false,
+        error: null
+      }))
     }
-  }, [isSessionValid, loadPriorities])
+    // Si isInitializing est true, on attend patiemment
+  }, [isSessionValid, isInitializing, loadPriorities])
 
   return {
     // État

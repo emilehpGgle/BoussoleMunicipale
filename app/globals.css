@@ -199,6 +199,22 @@
   .option-button-enter:nth-child(4) { animation-delay: 0.2s; }
   .option-button-enter:nth-child(5) { animation-delay: 0.24s; }
 
+  /* Animation pour les messages d'erreur */
+  @keyframes slideInFromRight {
+    0% {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-slideInFromRight {
+    animation: slideInFromRight 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
   /* Animation douce style nuage pour le cerf-volant */
   @keyframes kiteFloat {
     0% {

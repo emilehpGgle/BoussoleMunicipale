@@ -110,7 +110,7 @@ export default function ProfilePage() {
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
   // Intégration des hooks sécurisés
-  const { sessionToken: _sessionToken } = useSession()
+  const { sessionToken: _sessionToken, isInitializing } = useSession()
   const {
     // État du profil
     profile,
@@ -134,6 +134,36 @@ export default function ProfilePage() {
   ]
   
   const allQuestions = getAllQuestions()
+
+  // Vérifier si une question est complétée (pour l'affichage visuel)
+  const isQuestionComplete = (question: ProfileQuestion) => {
+    const answer = profile[question.id]
+    
+    if (question.type === "checkbox_multiple" || question.id === "main_transport") {
+      return Array.isArray(answer) && answer.length > 0
+    }
+    
+    if (question.type === "priority_ranking_enhanced") {
+      return answer && typeof answer === "object" && Object.keys(answer).length > 0
+    }
+    
+    if (question.type === "text_area") {
+      // Pour l'affichage visuel : complété seulement si il y a du contenu
+      return answer && answer.trim().length > 0
+    }
+    
+    return answer !== undefined && answer !== ""
+  }
+
+  // Calculer le nombre de questions complétées
+  const completedQuestions = allQuestions.filter(q => isQuestionComplete(q)).length
+  const globalProgress = (completedQuestions / allQuestions.length) * 100
+
+  const currentInfo = {
+    title: "Votre profil",
+    description: "Aidez-nous à mieux comprendre votre situation à Québec",
+    step: "1/1"
+  }
 
   const handleAnswerChange = async (questionId: string, value: string | string[] | Record<string, number>) => {
     try {
@@ -191,26 +221,6 @@ export default function ProfilePage() {
       console.error('Erreur lors de la sauvegarde du ranking:', err)
       // L'erreur est déjà gérée par le hook, on peut continuer l'UI
     }
-  }
-
-  // Vérifier si une question est complétée (pour l'affichage visuel)
-  const isQuestionComplete = (question: ProfileQuestion) => {
-    const answer = profile[question.id]
-    
-    if (question.type === "checkbox_multiple" || question.id === "main_transport") {
-      return Array.isArray(answer) && answer.length > 0
-    }
-    
-    if (question.type === "priority_ranking_enhanced") {
-      return answer && typeof answer === "object" && Object.keys(answer).length > 0
-    }
-    
-    if (question.type === "text_area") {
-      // Pour l'affichage visuel : complété seulement si il y a du contenu
-      return answer && answer.trim().length > 0
-    }
-    
-    return answer !== undefined && answer !== ""
   }
 
   // Vérifier si une question est requise pour la progression (différent de l'affichage visuel)
@@ -545,26 +555,18 @@ export default function ProfilePage() {
     }
   }
 
-  // Calculer le progrès global
-  const completedQuestions = allQuestions.filter(q => isQuestionComplete(q)).length
-  const globalProgress = (completedQuestions / allQuestions.length) * 100
-
-
-  const currentInfo = {
-    title: "Votre profil",
-    description: "Aidez-nous à mieux comprendre votre situation à Québec",
-    step: "1/1"
-  }
-  // Toutes les questions sont maintenant affichées ensemble
-
-  // État de chargement pendant l'initialisation
-  if (isLoading) {
+  // État de chargement pendant l'initialisation - plus patient
+  if (isLoading || isInitializing) {
     return (
       <div className="container max-w-4xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Chargement de votre profil...</p>
-          {_sessionToken && <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>}
+          <p className="text-muted-foreground">
+            {isInitializing ? 'Initialisation de votre session...' : 'Chargement de votre profil...'}
+          </p>
+          {_sessionToken && !isInitializing && (
+            <p className="text-xs text-muted-foreground mt-1">Synchronisation avec le cloud</p>
+          )}
         </div>
       </div>
     )
@@ -573,9 +575,9 @@ export default function ProfilePage() {
   return (
     <div className="mobile-constrained">
 
-      {/* Affichage d'erreur uniquement si problème critique */}
-      {error && (
-        <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
+      {/* Affichage d'erreur uniquement si problème critique et après chargement initial */}
+      {error && !isLoading && (
+        <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50 animate-slideInFromRight">
           <p>⚠️ Problème de connexion</p>
           <p className="text-xs opacity-80">Vos données sont sauvegardées localement</p>
         </div>

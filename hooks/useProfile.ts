@@ -32,7 +32,7 @@ interface ProfileState {
 }
 
 export function useProfile() {
-  const { sessionToken, isSessionValid } = useSession()
+  const { sessionToken, isSessionValid, isInitializing } = useSession()
   
   const [state, setState] = useState<ProfileState>({
     profile: {},
@@ -49,13 +49,15 @@ export function useProfile() {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
       // Session obligatoire pour charger le profil
+      // Mais être plus tolérant pendant l'initialisation de la session
       if (!sessionToken || !isSessionValid) {
         setState(prev => ({
           ...prev,
           profile: {},
           isLoading: false,
           hasProfile: false,
-          error: 'Session requise pour charger votre profil'
+          // Ne pas afficher d'erreur si la session est en train de s'initialiser
+          error: null 
         }))
         return
       }
@@ -113,11 +115,12 @@ export function useProfile() {
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
 
-      // Session obligatoire pour sauvegarder
+      // Session obligatoire pour sauvegarder - mais être plus patient
       if (!sessionToken || !isSessionValid) {
         setState(prev => ({
           ...prev,
           isSaving: false,
+          // Afficher l'erreur seulement pour les tentatives de sauvegarde explicites
           error: 'Session requise pour sauvegarder votre profil'
         }))
         return
@@ -258,10 +261,23 @@ export function useProfile() {
     return summary
   }, [state.profile])
 
-  // Charger le profil au montage du composant
+  // Charger le profil au montage du composant avec patience pour l'initialisation
   useEffect(() => {
-    loadProfile()
-  }, [loadProfile])
+    // Attendre que la session soit complètement initialisée avant de charger
+    if (!isInitializing && isSessionValid) {
+      loadProfile()
+    } else if (!isInitializing && !isSessionValid) {
+      // Session définitivement non valide - état par défaut sans erreur
+      setState(prev => ({
+        ...prev,
+        profile: {},
+        isLoading: false,
+        hasProfile: false,
+        error: null
+      }))
+    }
+    // Si isInitializing est true, on attend patiemment
+  }, [isSessionValid, isInitializing, loadProfile])
 
   return {
     // État

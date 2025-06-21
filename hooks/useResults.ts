@@ -33,7 +33,7 @@ interface ResultsState {
 }
 
 export function useResults() {
-  const { sessionToken, isSessionValid } = useSession()
+  const { sessionToken, isSessionValid, isInitializing } = useSession()
   const { responses, getResponseCounts } = useUserResponses()
   
   const [state, setState] = useState<ResultsState>({
@@ -55,13 +55,15 @@ export function useResults() {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
       // Session obligatoire pour charger les résultats
+      // Mais être plus tolérant pendant l'initialisation de la session
       if (!sessionToken || !isSessionValid) {
         setState(prev => ({
           ...prev,
           results: null,
           isLoading: false,
           hasResults: false,
-          error: 'Session requise pour charger vos résultats'
+          // Ne pas afficher d'erreur si la session est en train de s'initialiser
+          error: null
         }))
         return
       }
@@ -330,10 +332,23 @@ export function useResults() {
     return calculatedAt > oneDayAgo
   }, [state.results])
 
-  // Charger les résultats au montage du composant
+  // Charger les résultats au montage du composant avec patience pour l'initialisation
   useEffect(() => {
-    loadResults()
-  }, [loadResults])
+    // Attendre que la session soit complètement initialisée avant de charger
+    if (!isInitializing && isSessionValid) {
+      loadResults()
+    } else if (!isInitializing && !isSessionValid) {
+      // Session définitivement non valide - état par défaut sans erreur
+      setState(prev => ({
+        ...prev,
+        results: null,
+        isLoading: false,
+        hasResults: false,
+        error: null
+      }))
+    }
+    // Si isInitializing est true, on attend patiemment
+  }, [isSessionValid, isInitializing, loadResults])
 
   return {
     // État

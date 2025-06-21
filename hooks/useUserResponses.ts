@@ -26,7 +26,7 @@ interface ResponsesState {
 }
 
 export function useUserResponses() {
-  const { sessionToken, isSessionValid } = useSession()
+  const { sessionToken, isSessionValid, isInitializing } = useSession()
   
   const [state, setState] = useState<ResponsesState>({
     responses: {
@@ -46,6 +46,7 @@ export function useUserResponses() {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
       // Session obligatoire pour charger les données
+      // Mais être plus tolérant pendant l'initialisation de la session
       if (!sessionToken || !isSessionValid) {
         setState(prev => ({
           ...prev,
@@ -55,7 +56,8 @@ export function useUserResponses() {
             priorities: {}
           },
           isLoading: false,
-          error: 'Session requise pour charger vos réponses'
+          // Ne pas afficher d'erreur si la session est en train de s'initialiser
+          error: null
         }))
         return
       }
@@ -273,13 +275,26 @@ export function useUserResponses() {
            questionId in state.responses.importanceDirect
   }, [state.responses])
 
-  // Charger les réponses au montage du composant
+  // Charger les réponses au montage du composant avec patience pour l'initialisation
   useEffect(() => {
-    if (isSessionValid) {
+    // Attendre que la session soit complètement initialisée avant de charger
+    if (!isInitializing && isSessionValid) {
       loadResponses()
+    } else if (!isInitializing && !isSessionValid) {
+      // Session définitivement non valide - état par défaut sans erreur
+      setState(prev => ({
+        ...prev,
+        responses: {
+          agreement: {},
+          importanceDirect: {},
+          priorities: {}
+        },
+        isLoading: false,
+        error: null
+      }))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSessionValid])
+    // Si isInitializing est true, on attend patiemment
+  }, [isSessionValid, isInitializing, loadResponses])
 
   return {
     // État
