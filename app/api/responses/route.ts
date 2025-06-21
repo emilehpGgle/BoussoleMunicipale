@@ -26,9 +26,10 @@ async function validateSession(sessionToken: string) {
 // Types pour les requêtes (sessionToken retiré du body)
 interface SaveResponseRequest {
   questionId: string
-  responseType: 'agreement' | 'importance_direct'
+  responseType: 'agreement' | 'importance_direct' | 'priority_ranking'
   agreementValue?: AgreementOptionKey
   importanceDirectValue?: ImportanceDirectOptionKey
+  priorityData?: Record<string, number>
 }
 
 // POST - Sauvegarder une réponse
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: SaveResponseRequest = await request.json()
-    const { questionId, responseType, agreementValue, importanceDirectValue } = body
+    const { questionId, responseType, agreementValue, importanceDirectValue, priorityData } = body
 
     // Validation des paramètres requis
     if (!questionId || !responseType) {
@@ -64,6 +65,8 @@ export async function POST(request: NextRequest) {
       response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue)
     } else if (responseType === 'importance_direct' && importanceDirectValue) {
       response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue)
+    } else if (responseType === 'priority_ranking' && priorityData) {
+      response = await responsesAPI.savePriorityResponse(session.id, questionId, priorityData)
     } else {
       return NextResponse.json(
         { error: 'Valeur de réponse manquante pour le type spécifié' },

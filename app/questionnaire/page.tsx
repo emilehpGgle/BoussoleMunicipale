@@ -14,6 +14,7 @@ import type { AgreementOptionKey, ImportanceDirectOptionKey } from "@/lib/bousso
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
+import { usePriorities } from "@/hooks/usePriorities"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 
@@ -167,26 +168,11 @@ export default function QuestionnairePage() {
     }
   }
 
-  // État pour gérer les priorités sélectionnées
-  const [selectedPriorities, setSelectedPriorities] = useState<Record<string, number>>({})
-
-  // Charger les priorités sauvegardées pour la question courante
-  useEffect(() => {
-    if (currentQuestion?.responseType === "priority_ranking") {
-      const saved = localStorage.getItem(`priority_${currentQuestion.id}`)
-      if (saved) {
-        try {
-          const priorities = JSON.parse(saved)
-          setSelectedPriorities(priorities)
-        } catch (e) {
-          console.error('Erreur lors du chargement des priorités:', e)
-          setSelectedPriorities({})
-        }
-      } else {
-        setSelectedPriorities({})
-      }
-    }
-  }, [currentQuestion])
+  // Hook pour gérer les priorités (remplace localStorage)
+  const { 
+    priorities: selectedPriorities, 
+    savePriorities
+  } = usePriorities()
 
   // Handler pour les questions de priorité
   const handlePrioritySelection = (priority: string) => {
@@ -210,10 +196,8 @@ export default function QuestionnairePage() {
       }
     }
 
-    setSelectedPriorities(newPriorities)
-
-    // Sauvegarder dans localStorage à chaque changement
-    localStorage.setItem(`priority_${currentQuestion.id}`, JSON.stringify(newPriorities))
+    // Sauvegarder immédiatement dans Supabase (plus de localStorage)
+    savePriorities(newPriorities)
     
     // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
     if (Object.keys(newPriorities).length === 3) {
@@ -235,15 +219,11 @@ export default function QuestionnairePage() {
     }
   }
 
-  const handlePrioritySave = async (priorities: Record<string, number>) => {
+  const handlePrioritySave = async () => {
     try {
-      // Convertir en format JSON string pour la sauvegarde
-      const priorityData = JSON.stringify(priorities)
-      // Sauvegarder comme réponse d'accord avec les données en format JSON
-      await saveAgreementResponse(currentQuestion.id, 'PA') // On utilise PA comme indicateur que la question a été répondue
-      
-      // Sauvegarder aussi les données de priorité dans le localStorage pour usage futur
-      localStorage.setItem(`priority_${currentQuestion.id}`, priorityData)
+      // Les priorités sont déjà sauvegardées via savePriorities du hook
+      // Sauvegarder aussi comme réponse d'accord pour marquer la question comme complétée
+      await saveAgreementResponse(currentQuestion.id, 'PA') // PA indique que la question a été répondue
       
       // Si c'est la dernière question, rediriger vers le profil
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
@@ -516,7 +496,7 @@ export default function QuestionnairePage() {
                   if (currentQuestion.responseType === "priority_ranking") {
                     // Pour les questions de priorité, sauvegarder les priorités sélectionnées
                     if (Object.keys(selectedPriorities).length === 3) {
-                      handlePrioritySave(selectedPriorities)
+                      handlePrioritySave()
                     }
                   } else {
                     // Pour les autres types de questions, utiliser la logique normale

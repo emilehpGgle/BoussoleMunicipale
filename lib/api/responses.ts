@@ -77,6 +77,51 @@ export class ResponsesAPI {
   }
 
   /**
+   * Sauvegarde une réponse de priorité pour une question
+   */
+  async savePriorityResponse(
+    sessionId: string,
+    questionId: string,
+    priorityData: Record<string, number>
+  ) {
+    // Validate inputs
+    if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
+      throw new Error('Session ID est requis et doit être une chaîne non vide')
+    }
+
+    if (!questionId || typeof questionId !== 'string' || questionId.trim().length === 0) {
+      throw new Error('Question ID est requis et doit être une chaîne non vide')
+    }
+
+    if (!priorityData || typeof priorityData !== 'object') {
+      throw new Error('Les données de priorité sont requises')
+    }
+
+    const response: UserResponseInsert = {
+      session_id: sessionId,
+      question_id: questionId,
+      response_type: 'priority_ranking' as const, // Type correct maintenant
+      priority_data: priorityData,
+    }
+
+    const { data, error } = await this.supabase
+      .from('user_responses')
+      .upsert(response, { 
+        onConflict: 'session_id,question_id,response_type',
+        ignoreDuplicates: false 
+      })
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Erreur lors de la sauvegarde de la réponse priorité:', error)
+      throw new Error(`Erreur lors de la sauvegarde: ${error.message}`)
+    }
+
+    return data
+  }
+
+  /**
    * Récupère toutes les réponses d'une session
    */
   async getSessionResponses(sessionId: string): Promise<UserResponse[]> {
@@ -129,6 +174,22 @@ export class ResponsesAPI {
       })
 
     return userImportanceDirectAnswers
+  }
+
+  /**
+   * Récupère les réponses de priorité pour une session
+   */
+  async getUserPriorities(sessionId: string): Promise<Record<string, Record<string, number>>> {
+    const responses = await this.getSessionResponses(sessionId)
+    const userPriorities: Record<string, Record<string, number>> = {}
+
+    responses
+      .filter(r => r.response_type === 'priority_ranking' && r.priority_data)
+      .forEach(response => {
+        userPriorities[response.question_id] = response.priority_data as Record<string, number>
+      })
+
+    return userPriorities
   }
 
   /**

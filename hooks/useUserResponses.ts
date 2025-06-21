@@ -14,6 +14,7 @@ interface SupabaseResponseRow {
 interface UserResponses {
   agreement: Record<string, AgreementOptionKey>
   importanceDirect: Record<string, ImportanceDirectOptionKey>
+  priorities: Record<string, Record<string, number>>
 }
 
 interface ResponsesState {
@@ -30,7 +31,8 @@ export function useUserResponses() {
   const [state, setState] = useState<ResponsesState>({
     responses: {
       agreement: {},
-      importanceDirect: {}
+      importanceDirect: {},
+      priorities: {}
     },
     isLoading: true,
     isSaving: false,
@@ -49,7 +51,8 @@ export function useUserResponses() {
           ...prev,
           responses: {
             agreement: {},
-            importanceDirect: {}
+            importanceDirect: {},
+            priorities: {}
           },
           isLoading: false,
           error: 'Session requise pour charger vos réponses'
@@ -73,7 +76,8 @@ export function useUserResponses() {
           // Convertir les réponses au format attendu
           const formattedResponses: UserResponses = {
             agreement: {},
-            importanceDirect: {}
+            importanceDirect: {},
+            priorities: {}
           }
 
           data.responses.forEach((resp: SupabaseResponseRow) => {
@@ -228,7 +232,8 @@ export function useUserResponses() {
           ...prev,
           responses: {
             agreement: {},
-            importanceDirect: {}
+            importanceDirect: {},
+            priorities: {}
           },
           lastSaved: null
         }))

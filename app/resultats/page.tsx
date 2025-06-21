@@ -28,6 +28,7 @@ import PoliticalCompassChart from "@/components/political-compass-chart"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
+import { usePriorities } from "@/hooks/usePriorities"
 import ShareModal from "@/components/share-modal"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { TopMatchModal } from "@/components/ui/top-match-modal"
@@ -113,6 +114,7 @@ export default function ResultsPage() {
     calculateAndSaveResults,
     hasResults
   } = useResults()
+  const { priorities: userPriorities } = usePriorities()
 
   // État consolidé de chargement
   const isLoading = responsesLoading || resultsLoading
@@ -129,16 +131,7 @@ export default function ResultsPage() {
     // Calculer la position politique de l'utilisateur (même logique que la carte)
     const userPosition = calculateUserPoliticalPosition(userAnswers)
 
-    // Récupérer les priorités de l'utilisateur depuis localStorage
-    const userPrioritiesData = localStorage.getItem('priority_q21_enjeux_prioritaires')
-    let userPriorities: Record<string, number> = {}
-    if (userPrioritiesData) {
-      try {
-        userPriorities = JSON.parse(userPrioritiesData)
-      } catch (e) {
-        console.error('Erreur lors du parsing des priorités utilisateur:', e)
-      }
-    }
+    // Les priorités sont maintenant récupérées via le hook usePriorities
 
     const newCalculatedScores = partiesData.map((party) => {
       // Utiliser la position politique du parti (partyPositions provient de political-map-calculator)
@@ -202,7 +195,7 @@ export default function ResultsPage() {
     // Trier par score décroissant
     newCalculatedScores.sort((a, b) => b.score - a.score)
     return newCalculatedScores
-  }, [userAnswers, userImportance])
+  }, [userAnswers, userImportance, userPriorities])
 
   // Calculer et sauvegarder les résultats si pas encore fait
   useEffect(() => {
@@ -530,18 +523,14 @@ export default function ResultsPage() {
                 // Obtenir la réponse directe d'importance si applicable
                 let userResponseText = "Non répondue"
                 if (question.responseType === "priority_ranking") {
-                  // Pour la question de priorité, récupérer les données du localStorage
-                  const userPrioritiesData = localStorage.getItem(`priority_${question.id}`)
-                  if (userPrioritiesData) {
-                    try {
-                      const priorities = JSON.parse(userPrioritiesData)
-                      const sortedPriorities = Object.entries(priorities)
-                        .sort(([,a], [,b]) => (a as number) - (b as number))
-                        .map(([priority, rank]) => `${rank}. ${priority}`)
-                      userResponseText = sortedPriorities.join(' • ')
-                    } catch {
-                      userResponseText = "Erreur de chargement"
-                    }
+                  // Pour la question de priorité, utiliser les données depuis Supabase
+                  if (userPriorities && Object.keys(userPriorities).length > 0) {
+                    const sortedPriorities = Object.entries(userPriorities)
+                      .sort(([,a], [,b]) => (a as number) - (b as number))
+                      .map(([priority, rank]) => `${rank}. ${priority}`)
+                    userResponseText = sortedPriorities.join(' • ')
+                  } else {
+                    userResponseText = "Aucune priorité sélectionnée"
                   }
                 } else if (userAnswer) {
                   if (question.responseType === "importance_direct") {
