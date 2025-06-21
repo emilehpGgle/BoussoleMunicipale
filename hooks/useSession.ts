@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 // Types pour la session
 interface Session {
@@ -17,6 +17,9 @@ interface SessionState {
 
 const SESSION_STORAGE_KEY = 'boussole_session_token'
 
+// Variable globale pour prévenir les créations multiples
+let globalSessionPromise: Promise<Session | null> | null = null
+
 export function useSession() {
   const [state, setState] = useState<SessionState>({
     session: null,
@@ -24,6 +27,9 @@ export function useSession() {
     error: null,
     isInitializing: false
   })
+
+  // Référence pour éviter les appels multiples
+  const initializationRef = useRef(false)
 
   // Créer une nouvelle session
   const createSession = async (): Promise<Session | null> => {
@@ -129,9 +135,21 @@ export function useSession() {
     }
   }
 
-  // Obtenir ou créer une session avec prévention des race conditions
+  // Obtenir ou créer une session avec prévention améliorée des race conditions
   const getOrCreateSession = async (): Promise<Session | null> => {
-    // Prévenir les appels concurrents
+    // Si une création de session est déjà en cours globalement, attendre
+    if (globalSessionPromise) {
+      console.log('🔄 Session en cours de création, attente...')
+      return globalSessionPromise
+    }
+
+    // Vérifier d'abord si on a déjà une session en mémoire
+    if (state.session) {
+      console.log('✅ Session déjà en mémoire')
+      return state.session
+    }
+
+    // Prévenir les appels concurrents pour cette instance
     if (state.isInitializing) {
       return new Promise((resolve) => {
         const checkState = () => {
@@ -145,49 +163,73 @@ export function useSession() {
       })
     }
 
-    // Vérifier d'abord si on a déjà une session en mémoire
-    if (state.session) {
-      return state.session
-    }
-
+    console.log('🎯 Début de l\'initialisation de session')
     setState(prev => ({ ...prev, isInitializing: true }))
 
-    try {
-      // Vérifier le localStorage (avec protection SSR)
-      if (typeof window !== 'undefined') {
-        const storedToken = localStorage.getItem(SESSION_STORAGE_KEY)
-        
-        if (storedToken) {
-          // Valider la session existante
-          const validSession = await validateSession(storedToken)
-          if (validSession) {
-            setState(prev => ({ 
-              ...prev, 
-              session: validSession, 
-              isLoading: false,
-              isInitializing: false
-            }))
-            return validSession
-          } else {
-            // Session expirée, la supprimer du localStorage
-            localStorage.removeItem(SESSION_STORAGE_KEY)
+    // Créer une promesse globale pour éviter les créations multiples
+    globalSessionPromise = (async () => {
+      try {
+        // Vérifier le localStorage (avec protection SSR)
+        if (typeof window !== 'undefined') {
+          const storedToken = localStorage.getItem(SESSION_STORAGE_KEY)
+          
+          if (storedToken) {
+            console.log('🔍 Token trouvé dans localStorage, validation...')
+            // Valider la session existante
+            const validSession = await validateSession(storedToken)
+            if (validSession) {
+              console.log('✅ Session valide récupérée')
+              setState(prev => ({ 
+                ...prev, 
+                session: validSession, 
+                isLoading: false,
+                isInitializing: false
+              }))
+              return validSession
+            } else {
+              console.log('❌ Session expirée, suppression du localStorage')
+              // Session expirée, la supprimer du localStorage
+              localStorage.removeItem(SESSION_STORAGE_KEY)
+            }
           }
         }
-      }
 
-      // Créer une nouvelle session
-      const newSession = await createSession()
-      setState(prev => ({ ...prev, isInitializing: false }))
-      return newSession
-    } catch (error) {
-      setState(prev => ({ ...prev, isInitializing: false }))
-      throw error
-    }
+        // Créer une nouvelle session seulement si nécessaire
+        console.log('🆕 Création d\'une nouvelle session')
+        const newSession = await createSession()
+        setState(prev => ({ ...prev, isInitializing: false }))
+        return newSession
+      } catch (error) {
+        console.error('❌ Erreur lors de l\'initialisation de session:', error)
+        setState(prev => ({ ...prev, isInitializing: false, error: error instanceof Error ? error.message : 'Erreur inconnue' }))
+        throw error
+      } finally {
+        // Nettoyer la promesse globale
+        globalSessionPromise = null
+      }
+    })()
+
+    return globalSessionPromise
   }
 
-  // Initialiser la session au chargement du composant
+  // Initialiser la session au chargement du composant avec protection contre les doubles appels
   useEffect(() => {
+    // Prévenir les doubles initialisations
+    if (initializationRef.current) {
+      console.log('🛑 Initialisation déjà en cours, skip')
+      return
+    }
+
+    initializationRef.current = true
+    console.log('🚀 Initialisation de useSession')
+    
     getOrCreateSession()
+      .then(session => {
+        console.log('✅ Session initialisée:', session ? 'Succès' : 'Échec')
+      })
+      .catch(error => {
+        console.error('❌ Erreur lors de l\'initialisation:', error)
+      })
   }, [])
 
   // Obtenir le token de session actuel avec protection SSR
