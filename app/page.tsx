@@ -1,4 +1,5 @@
 "use client"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
 import Image from "next/image"
@@ -8,12 +9,12 @@ import { GlowSection } from "@/components/ui/subtle-glow"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { boussoleQuestions } from "@/lib/boussole-data"
-import { useRouter } from "next/navigation"
+import ContinueOrRestartModal from "@/components/existing-responses-modal"
 
 export default function HomePage() {
   const { sessionToken } = useSession()
   const { getResponseCounts, isLoading } = useUserResponses()
-  const router = useRouter()
+  const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
 
   // Fonction pour gérer le clic sur "Commencer" - vérifie le statut du questionnaire
   const handleStartQuestionnaire = async () => {
@@ -31,11 +32,11 @@ export default function HomePage() {
         const totalQuestions = boussoleQuestions.length
         
         if (counts.total >= totalQuestions) {
-          // Questionnaire terminé - aller aux résultats
-          router.push('/resultats')
+          // Questionnaire terminé - ouvrir le modal pour choisir entre voir résultats ou recommencer
+          setIsExistingResponsesModalOpen(true)
         } else if (counts.total > 0) {
-          // Questionnaire en cours - continuer le questionnaire
-          router.push('/questionnaire')
+          // Questionnaire en cours - ouvrir le modal pour choisir entre continuer ou recommencer
+          setIsExistingResponsesModalOpen(true)
         } else {
           // Questionnaire pas commencé - ouvrir le modal du code postal
           const event = new CustomEvent('openPostalCodeModal')
@@ -286,6 +287,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Modal pour les réponses existantes */}
+      <ContinueOrRestartModal
+        isOpen={isExistingResponsesModalOpen}
+        onClose={() => setIsExistingResponsesModalOpen(false)}
+        targetPath="/"
+      />
     </div>
   )
 }
