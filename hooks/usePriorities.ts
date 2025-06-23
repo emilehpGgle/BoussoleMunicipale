@@ -87,10 +87,12 @@ export function usePriorities() {
 
   // Sauvegarder les priorités vers Supabase
   const savePriorities = useCallback(async (priorityData: Record<string, number>) => {
+    console.log('🔄 [usePriorities] Début sauvegarde priorités:', priorityData)
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
 
       if (!sessionToken || !isSessionValid) {
+        console.log('❌ [usePriorities] Session invalide pour sauvegarde')
         setState(prev => ({
           ...prev,
           isSaving: false,
@@ -104,6 +106,14 @@ export function usePriorities() {
         ...prev,
         priorities: priorityData
       }))
+      console.log('✅ [usePriorities] État local mis à jour:', priorityData)
+
+      const requestBody = {
+        questionId: 'q21_enjeux_prioritaires', // ID correct de la question de priorité
+        responseType: 'priority_ranking',
+        priorityData
+      }
+      console.log('📤 [usePriorities] Envoi requête API:', requestBody)
 
       const response = await fetch('/api/responses', {
         method: 'POST',
@@ -111,23 +121,26 @@ export function usePriorities() {
           'Authorization': `Bearer ${sessionToken}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          questionId: 'q21_enjeux_prioritaires', // ID correct de la question de priorité
-          responseType: 'priority_ranking',
-          priorityData
-        })
+        body: JSON.stringify(requestBody)
       })
+
+      console.log('📥 [usePriorities] Réponse API status:', response.status)
 
       if (response.ok) {
         const data = await response.json()
+        console.log('📥 [usePriorities] Réponse API data:', data)
         if (data.success) {
           setState(prev => ({
             ...prev,
             isSaving: false,
             lastSaved: new Date()
           }))
+          console.log('✅ [usePriorities] Sauvegarde réussie!')
           return
         }
+      } else {
+        const errorData = await response.json()
+        console.error('❌ [usePriorities] Erreur API:', errorData)
       }
 
       // En cas d'erreur API
@@ -138,7 +151,7 @@ export function usePriorities() {
       }))
 
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde des priorités:', error)
+      console.error('❌ [usePriorities] Exception lors de la sauvegarde:', error)
       setState(prev => ({
         ...prev,
         error: error instanceof Error ? error.message : 'Erreur de sauvegarde',

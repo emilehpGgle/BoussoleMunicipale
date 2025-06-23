@@ -175,12 +175,14 @@ export default function QuestionnairePage() {
   } = usePriorities()
 
   // Handler pour les questions de priorité
-  const handlePrioritySelection = (priority: string) => {
+  const handlePrioritySelection = async (priority: string) => {
+    console.log('🎯 Sélection de priorité:', priority)
     const currentRank = selectedPriorities[priority]
     const newPriorities = { ...selectedPriorities }
 
     if (currentRank) {
       // Si déjà sélectionné, on le désélectionne et on réorganise
+      console.log('🗑️ Désélection de:', priority, 'rang actuel:', currentRank)
       delete newPriorities[priority]
       // Réorganiser les rangs
       Object.keys(newPriorities).forEach(key => {
@@ -192,30 +194,42 @@ export default function QuestionnairePage() {
       // Ajouter la nouvelle priorité
       const nextRank = Object.keys(newPriorities).length + 1
       if (nextRank <= 3) {
+        console.log('✅ Ajout de:', priority, 'au rang:', nextRank)
         newPriorities[priority] = nextRank
+      } else {
+        console.log('❌ Impossible d\'ajouter:', priority, 'limite de 3 atteinte')
+        return // Ne pas continuer si on ne peut pas ajouter
       }
     }
 
-    // Sauvegarder immédiatement dans Supabase (plus de localStorage)
-    savePriorities(newPriorities)
+    console.log('💾 Nouvelles priorités à sauvegarder:', newPriorities)
     
-    // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
-    if (Object.keys(newPriorities).length === 3) {
-      setTimeout(() => {
-        if (terminateButtonRef.current) {
-          terminateButtonRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
-          })
-          // Petit effet de mise en évidence du bouton
-          terminateButtonRef.current.style.transform = 'scale(1.05)'
-          setTimeout(() => {
-            if (terminateButtonRef.current) {
-              terminateButtonRef.current.style.transform = 'scale(1)'
-            }
-          }, 200)
-        }
-      }, 300) // Délai pour laisser l'animation de sélection se terminer
+    try {
+      // Sauvegarder immédiatement dans Supabase avec gestion d'erreur
+      await savePriorities(newPriorities)
+      console.log('✅ Priorités sauvegardées avec succès')
+      
+      // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
+      if (Object.keys(newPriorities).length === 3) {
+        setTimeout(() => {
+          if (terminateButtonRef.current) {
+            terminateButtonRef.current.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            })
+            // Petit effet de mise en évidence du bouton
+            terminateButtonRef.current.style.transform = 'scale(1.05)'
+            setTimeout(() => {
+              if (terminateButtonRef.current) {
+                terminateButtonRef.current.style.transform = 'scale(1)'
+              }
+            }, 200)
+          }
+        }, 300) // Délai pour laisser l'animation de sélection se terminer
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la sauvegarde des priorités:', error)
+      // En cas d'erreur, ne pas changer l'état local pour éviter la désynchronisation
     }
   }
 
