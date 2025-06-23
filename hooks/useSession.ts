@@ -178,13 +178,18 @@ export function useSession() {
             // Valider la session existante
             const validSession = await validateSession(storedToken)
             if (validSession) {
-              console.log('✅ Session valide récupérée')
+              console.log('✅ Session valide récupérée:', {
+                id: validSession.id,
+                token: validSession.sessionToken?.substring(0, 10) + '...',
+                expires: validSession.expiresAt
+              })
               setState(prev => ({ 
                 ...prev, 
                 session: validSession, 
                 isLoading: false,
                 isInitializing: false
               }))
+              console.log('📊 État mis à jour - session stockée')
               return validSession
             } else {
               console.log('❌ Session expirée, suppression du localStorage')
@@ -238,7 +243,8 @@ export function useSession() {
     return state.session?.sessionToken || localStorage.getItem(SESSION_STORAGE_KEY)
   }
 
-  return {
+  // Debug des valeurs retournées
+  const returnValue = {
     // État de la session
     session: state.session,
     sessionToken: getSessionToken(),
@@ -256,4 +262,17 @@ export function useSession() {
     isSessionValid: !!state.session,
     hasStoredSession: typeof window !== 'undefined' ? !!localStorage.getItem(SESSION_STORAGE_KEY) : false
   }
+
+  // Log occasionnel pour debug (seulement 1 fois sur 10 pour éviter spam)
+  if (Math.random() < 0.1) {
+    console.log('🔍 [useSession] État retourné:', {
+      hasSession: !!state.session,
+      hasToken: !!returnValue.sessionToken,
+      isValid: returnValue.isSessionValid,
+      isLoading: returnValue.isLoading,
+      isInitializing: returnValue.isInitializing
+    })
+  }
+
+  return returnValue
 } 

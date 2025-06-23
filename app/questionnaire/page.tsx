@@ -211,24 +211,24 @@ export default function QuestionnairePage() {
     }).catch(error => {
       console.error('❌ Erreur lors de la sauvegarde des priorités:', error)
     })
-    
-    // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
-    if (Object.keys(newPriorities).length === 3) {
-      setTimeout(() => {
-        if (terminateButtonRef.current) {
-          terminateButtonRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center' 
-          })
-          // Petit effet de mise en évidence du bouton
-          terminateButtonRef.current.style.transform = 'scale(1.05)'
-          setTimeout(() => {
-            if (terminateButtonRef.current) {
-              terminateButtonRef.current.style.transform = 'scale(1)'
-            }
-          }, 200)
-        }
-      }, 300) // Délai pour laisser l'animation de sélection se terminer
+      
+      // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
+      if (Object.keys(newPriorities).length === 3) {
+        setTimeout(() => {
+          if (terminateButtonRef.current) {
+            terminateButtonRef.current.scrollIntoView({ 
+              behavior: 'smooth', 
+              block: 'center' 
+            })
+            // Petit effet de mise en évidence du bouton
+            terminateButtonRef.current.style.transform = 'scale(1.05)'
+            setTimeout(() => {
+              if (terminateButtonRef.current) {
+                terminateButtonRef.current.style.transform = 'scale(1)'
+              }
+            }, 200)
+          }
+        }, 300) // Délai pour laisser l'animation de sélection se terminer
     }
   }
 
