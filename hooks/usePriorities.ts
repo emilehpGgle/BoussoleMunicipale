@@ -14,7 +14,8 @@ interface PrioritiesState {
  * Remplace l'usage du localStorage par Supabase
  */
 export function usePriorities() {
-  const { sessionToken, isSessionValid, isInitializing } = useSession()
+  const sessionData = useSession()
+  const { sessionToken, isSessionValid, isInitializing } = sessionData
   
   const [state, setState] = useState<PrioritiesState>({
     priorities: {},
@@ -88,11 +89,34 @@ export function usePriorities() {
   // Sauvegarder les priorités vers Supabase
   const savePriorities = useCallback(async (priorityData: Record<string, number>) => {
     console.log('🔄 [usePriorities] Début sauvegarde priorités:', priorityData)
+    console.log('🔍 [usePriorities] État de session:', { 
+      sessionToken: sessionToken ? `${sessionToken.substring(0, 10)}...` : 'null', 
+      isSessionValid, 
+      isInitializing,
+      hasStoredSession: sessionData.hasStoredSession
+    })
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
 
-      if (!sessionToken || !isSessionValid) {
-        console.log('❌ [usePriorities] Session invalide pour sauvegarde')
+      // Attendre que la session soit initialisée si elle est en cours
+      if (isInitializing) {
+        console.log('⏳ [usePriorities] Session en cours d\'initialisation, attente...')
+        // Attendre jusqu'à 5 secondes que la session soit prête
+        for (let i = 0; i < 50; i++) {
+          await new Promise(resolve => setTimeout(resolve, 100))
+          if (!sessionData.isInitializing && sessionData.sessionToken) {
+            console.log('✅ [usePriorities] Session maintenant prête après attente')
+            break
+          }
+        }
+      }
+
+      // Utiliser le token le plus récent possible
+      const currentToken = sessionData.sessionToken || sessionToken
+      const currentIsValid = sessionData.isSessionValid || isSessionValid
+
+      if (!currentToken || !currentIsValid) {
+        console.log('❌ [usePriorities] Session invalide pour sauvegarde - sessionToken:', !!currentToken, 'isSessionValid:', currentIsValid)
         setState(prev => ({
           ...prev,
           isSaving: false,
@@ -118,7 +142,7 @@ export function usePriorities() {
       const response = await fetch('/api/responses', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${sessionToken}`,
+          'Authorization': `Bearer ${currentToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody)

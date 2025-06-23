@@ -177,6 +177,7 @@ export default function QuestionnairePage() {
   // Handler pour les questions de priorité
   const handlePrioritySelection = async (priority: string) => {
     console.log('🎯 Sélection de priorité:', priority)
+    console.log('📊 Priorités actuelles:', selectedPriorities)
     const currentRank = selectedPriorities[priority]
     const newPriorities = { ...selectedPriorities }
 
@@ -204,32 +205,30 @@ export default function QuestionnairePage() {
 
     console.log('💾 Nouvelles priorités à sauvegarder:', newPriorities)
     
-    try {
-      // Sauvegarder immédiatement dans Supabase avec gestion d'erreur
-      await savePriorities(newPriorities)
+    // Sauvegarder dans Supabase en arrière-plan sans bloquer l'UI
+    savePriorities(newPriorities).then(() => {
       console.log('✅ Priorités sauvegardées avec succès')
-      
-      // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
-      if (Object.keys(newPriorities).length === 3) {
-        setTimeout(() => {
-          if (terminateButtonRef.current) {
-            terminateButtonRef.current.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'center' 
-            })
-            // Petit effet de mise en évidence du bouton
-            terminateButtonRef.current.style.transform = 'scale(1.05)'
-            setTimeout(() => {
-              if (terminateButtonRef.current) {
-                terminateButtonRef.current.style.transform = 'scale(1)'
-              }
-            }, 200)
-          }
-        }, 300) // Délai pour laisser l'animation de sélection se terminer
-      }
-    } catch (error) {
+    }).catch(error => {
       console.error('❌ Erreur lors de la sauvegarde des priorités:', error)
-      // En cas d'erreur, ne pas changer l'état local pour éviter la désynchronisation
+    })
+    
+    // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
+    if (Object.keys(newPriorities).length === 3) {
+      setTimeout(() => {
+        if (terminateButtonRef.current) {
+          terminateButtonRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center' 
+          })
+          // Petit effet de mise en évidence du bouton
+          terminateButtonRef.current.style.transform = 'scale(1.05)'
+          setTimeout(() => {
+            if (terminateButtonRef.current) {
+              terminateButtonRef.current.style.transform = 'scale(1)'
+            }
+          }, 200)
+        }
+      }, 300) // Délai pour laisser l'animation de sélection se terminer
     }
   }
 
