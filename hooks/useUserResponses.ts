@@ -4,10 +4,11 @@ import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/ty
 
 // Interface pour les réponses Supabase
 interface SupabaseResponseRow {
-  response_type: 'agreement' | 'importance_direct'
+  response_type: 'agreement' | 'importance_direct' | 'priority_ranking'
   question_id: string
   agreement_value?: AgreementOptionKey
   importance_direct_value?: ImportanceDirectOptionKey
+  priority_data?: Record<string, number>
 }
 
 // Types pour les réponses (simplifiés)
@@ -82,11 +83,14 @@ export function useUserResponses() {
             priorities: {}
           }
 
-          data.responses.forEach((resp: SupabaseResponseRow) => {
+          data.responses.forEach((resp: any) => {
             if (resp.response_type === 'agreement' && resp.agreement_value) {
               formattedResponses.agreement[resp.question_id] = resp.agreement_value
             } else if (resp.response_type === 'importance_direct' && resp.importance_direct_value) {
               formattedResponses.importanceDirect[resp.question_id] = resp.importance_direct_value
+            } else if (resp.response_type === 'priority_ranking' && resp.priority_data) {
+              // Charger les réponses de priorité aussi
+              formattedResponses.priorities[resp.question_id] = resp.priority_data
             }
           })
 
@@ -252,27 +256,32 @@ export function useUserResponses() {
   const getResponseCounts = useCallback(() => {
     const uniqueQuestions = new Set([
       ...Object.keys(state.responses.agreement),
-      ...Object.keys(state.responses.importanceDirect)
+      ...Object.keys(state.responses.importanceDirect),
+      ...Object.keys(state.responses.priorities)
     ])
 
     return {
       agreement: Object.keys(state.responses.agreement).length,
       importanceDirect: Object.keys(state.responses.importanceDirect).length,
+      priorities: Object.keys(state.responses.priorities).length,
       total: uniqueQuestions.size,
       totalResponses: Object.keys(state.responses.agreement).length + 
-                     Object.keys(state.responses.importanceDirect).length
+                     Object.keys(state.responses.importanceDirect).length +
+                     Object.keys(state.responses.priorities).length
     }
   }, [state.responses])
 
   // Vérifier si une question a été répondue
-  const hasResponse = useCallback((questionId: string, responseType?: 'agreement' | 'importance_direct') => {
+  const hasResponse = useCallback((questionId: string, responseType?: 'agreement' | 'importance_direct' | 'priority_ranking') => {
     if (responseType) {
-      const key = responseType === 'importance_direct' ? 'importanceDirect' : responseType
+      const key = responseType === 'importance_direct' ? 'importanceDirect' : 
+                  responseType === 'priority_ranking' ? 'priorities' : responseType
       return questionId in state.responses[key]
     }
     
     return questionId in state.responses.agreement ||
-           questionId in state.responses.importanceDirect
+           questionId in state.responses.importanceDirect ||
+           questionId in state.responses.priorities
   }, [state.responses])
 
   // Charger les réponses au montage du composant avec patience pour l'initialisation

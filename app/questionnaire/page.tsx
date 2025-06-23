@@ -53,6 +53,12 @@ export default function QuestionnairePage() {
 
   useResults()
 
+  // Hook pour gérer les priorités (remplace localStorage)
+  const { 
+    priorities: selectedPriorities, 
+    savePriorities
+  } = usePriorities()
+
   // Calculer quelle question afficher basée sur les réponses existantes
   const calculateNextQuestionIndex = useCallback(() => {
     // Parcourir toutes les questions pour trouver la première non répondue
@@ -64,8 +70,8 @@ export default function QuestionnairePage() {
       if (question.responseType === "importance_direct") {
         hasResponse = userImportanceDirectAnswers[question.id] !== undefined
       } else if (question.responseType === "priority_ranking") {
-        // Pour les questions de priorité, vérifier si la réponse a été sauvegardée comme "PA"
-        hasResponse = userAnswers[question.id] !== undefined
+        // Pour les questions de priorité, vérifier aussi les priorités sélectionnées
+        hasResponse = userAnswers[question.id] !== undefined || Object.keys(selectedPriorities).length === 3
       } else {
         hasResponse = userAnswers[question.id] !== undefined
       }
@@ -78,7 +84,7 @@ export default function QuestionnairePage() {
     
     // Si toutes les questions ont été répondues, aller à la dernière
     return boussoleQuestions.length - 1
-  }, [userAnswers, userImportanceDirectAnswers])
+  }, [userAnswers, userImportanceDirectAnswers, selectedPriorities])
 
   // Initialiser l'index de question une fois que les réponses sont chargées
   useEffect(() => {
@@ -167,12 +173,6 @@ export default function QuestionnairePage() {
       // L'erreur est déjà gérée par le hook, on peut continuer l'UI
     }
   }
-
-  // Hook pour gérer les priorités (remplace localStorage)
-  const { 
-    priorities: selectedPriorities, 
-    savePriorities
-  } = usePriorities()
 
   // Handler pour les questions de priorité
   const handlePrioritySelection = async (priority: string) => {
