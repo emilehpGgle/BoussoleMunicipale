@@ -12,8 +12,6 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
-import { useUserResponses } from "@/hooks/useUserResponses"
-import { usePriorities } from "@/hooks/usePriorities"
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {
@@ -127,10 +125,6 @@ export default function ProfilePage() {
     
     // Alias pour compatibilité
   } = useProfile()
-
-  // ✅ Hook pour vérifier si le questionnaire principal est complété
-  const { userAnswers } = useUserResponses()
-  const { priorities } = usePriorities()
 
   // Obtenir toutes les questions dans l'ordre
   const getAllQuestions = () => [

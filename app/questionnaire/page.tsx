@@ -109,7 +109,7 @@ export default function QuestionnairePage() {
       setHasInitialized(true)
       console.log('🎯 [Questionnaire] Reprise à la question', nextQuestionIndex + 1)
     }
-  }, [isLoading, hasInitialized, userAnswers, selectedPriorities])
+  }, [isLoading, hasInitialized, userAnswers, selectedPriorities, calculateNextQuestionIndex])
 
   // ✅ Re-calculer si les données changent après l'initialisation (simplifié)
   useEffect(() => {
