@@ -22,6 +22,7 @@ export async function migrateQuestions() {
     agreement_options: question.agreementOptions,
     importance_options: question.importanceOptions,
     importance_direct_options: question.importanceDirectOptions || null,
+    priority_options: question.priorityOptions || null,
     custom_agreement_labels: question.customAgreementLabels || null,
     custom_importance_direct_labels: question.customImportanceDirectLabels || null,
     order_index: index + 1, // Ordre basé sur la position dans le tableau

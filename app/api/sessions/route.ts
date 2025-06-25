@@ -1,67 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 
-// Utility function for standardized error handling avec logs détaillés
+// ✅ Utility function pour la gestion d'erreurs simplifiée
 const handleAPIError = (error: unknown, context: string) => {
-  console.error(`❌ [API SESSIONS] Erreur lors de ${context}:`, {
+  console.error(`❌ [API SESSIONS] Erreur ${context}:`, {
     error,
     message: error instanceof Error ? error.message : String(error),
-    stack: error instanceof Error ? error.stack : undefined,
     timestamp: new Date().toISOString()
   })
   
   return NextResponse.json(
     { 
-      error: 'Erreur interne du serveur',
-      details: error instanceof Error ? error.message : String(error),
+      success: false,
+      error: error instanceof Error ? error.message : 'Erreur interne du serveur',
       context 
     },
     { status: 500 }
   )
 }
 
-// POST - Créer une nouvelle session
+// ✅ POST - Créer une nouvelle session (simplifié)
 export async function POST(request: NextRequest) {
   try {
-    // Récupérer et valider l'user agent depuis les headers
-    const rawUserAgent = request.headers.get('user-agent')
-    const userAgent = rawUserAgent 
-      ? rawUserAgent.slice(0, 255) // Truncate to reasonable length
-      : undefined
+    console.log('🆕 [API SESSIONS] Création session...')
 
-    // Vérifier les variables d'environnement
+    // ✅ Récupérer l'user agent (optionnel)
+    const rawUserAgent = request.headers.get('user-agent')
+    const userAgent = rawUserAgent?.slice(0, 255) || 'Unknown'
+
+    // ✅ Vérifier les variables d'environnement
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     
     if (!supabaseUrl || !supabaseKey) {
-      console.error('[API SESSIONS] Variables d\'environnement Supabase manquantes')
+      console.error('❌ [API SESSIONS] Variables d\'environnement Supabase manquantes')
       return NextResponse.json(
-        { success: false, message: 'Configuration serveur invalide' },
+        { success: false, error: 'Configuration serveur invalide' },
         { status: 500 }
       )
     }
 
-    // Créer l'instance d'API et une nouvelle session
+    // ✅ Créer l'instance d'API et une nouvelle session
     const sessionsAPI = new SessionsAPI()
     const session = await sessionsAPI.createSession(userAgent)
+
+    console.log('✅ [API SESSIONS] Session créée:', session.id)
 
     return NextResponse.json({ 
       success: true, 
       session: {
         id: session.id,
         sessionToken: session.session_token,
-        expiresAt: session.expires_at
+        expiresAt: session.expires_at,
+        createdAt: session.created_at
       },
       message: 'Session créée avec succès' 
     })
 
   } catch (error) {
-    console.error('💥 [API SESSIONS] Erreur attrapée dans POST:', error)
-    return handleAPIError(error, 'la création de la session')
+    return handleAPIError(error, 'création de session')
   }
 }
 
-// GET - Vérifier le statut d'une session
+// ✅ GET - Vérifier le statut d'une session (simplifié)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -69,15 +70,15 @@ export async function GET(request: NextRequest) {
 
     if (!sessionToken) {
       return NextResponse.json(
-        { error: 'sessionToken est requis' },
+        { success: false, error: 'sessionToken est requis' },
         { status: 400 }
       )
     }
 
-    // Créer l'instance d'API
+    // ✅ Créer l'instance d'API
     const sessionsAPI = new SessionsAPI()
 
-    // Récupérer et vérifier la session
+    // ✅ Récupérer et vérifier la session
     const session = await sessionsAPI.getSessionByToken(sessionToken)
     
     if (!session) {
@@ -88,7 +89,7 @@ export async function GET(request: NextRequest) {
       })
     }
 
-    // Mettre à jour l'activité de la session
+    // ✅ Mettre à jour l'activité de la session
     await sessionsAPI.updateSessionActivity(session.id)
 
     return NextResponse.json({
@@ -104,11 +105,11 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    return handleAPIError(error, 'la vérification de la session')
+    return handleAPIError(error, 'vérification de session')
   }
 }
 
-// DELETE - Supprimer une session
+// ✅ DELETE - Supprimer une session (simplifié)
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -116,15 +117,15 @@ export async function DELETE(request: NextRequest) {
 
     if (!sessionToken) {
       return NextResponse.json(
-        { error: 'sessionToken est requis' },
+        { success: false, error: 'sessionToken est requis' },
         { status: 400 }
       )
     }
 
-    // Créer l'instance d'API
+    // ✅ Créer l'instance d'API
     const sessionsAPI = new SessionsAPI()
 
-    // Supprimer la session
+    // ✅ Supprimer la session
     await sessionsAPI.deleteSessionByToken(sessionToken)
 
     return NextResponse.json({ 
@@ -133,6 +134,6 @@ export async function DELETE(request: NextRequest) {
     })
 
   } catch (error) {
-    return handleAPIError(error, 'la suppression de la session')
+    return handleAPIError(error, 'suppression de session')
   }
 } 

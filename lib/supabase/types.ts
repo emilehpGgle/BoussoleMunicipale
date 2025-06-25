@@ -23,12 +23,13 @@ export interface Database {
           id: string
           text: string
           category: string
-          response_type: 'agreement' | 'importance_direct'
+          response_type: 'agreement' | 'importance_direct' | 'priority_ranking'
           description: string | null
           response_format: 'standard' | 'priority' | 'frequency' | 'financing' | null
           agreement_options: AgreementOptionKey[]
           importance_options: ImportanceOptionKey[]
           importance_direct_options: ImportanceDirectOptionKey[] | null
+          priority_options: string[] | null
           custom_agreement_labels: Json | null
           custom_importance_direct_labels: Json | null
           order_index: number
@@ -39,12 +40,13 @@ export interface Database {
           id: string
           text: string
           category: string
-          response_type: 'agreement' | 'importance_direct'
+          response_type: 'agreement' | 'importance_direct' | 'priority_ranking'
           description?: string | null
           response_format?: 'standard' | 'priority' | 'frequency' | 'financing' | null
           agreement_options?: AgreementOptionKey[]
           importance_options?: ImportanceOptionKey[]
           importance_direct_options?: ImportanceDirectOptionKey[] | null
+          priority_options?: string[] | null
           custom_agreement_labels?: Json | null
           custom_importance_direct_labels?: Json | null
           order_index: number
@@ -55,12 +57,13 @@ export interface Database {
           id?: string
           text?: string
           category?: string
-          response_type?: 'agreement' | 'importance_direct'
+          response_type?: 'agreement' | 'importance_direct' | 'priority_ranking'
           description?: string | null
           response_format?: 'standard' | 'priority' | 'frequency' | 'financing' | null
           agreement_options?: AgreementOptionKey[]
           importance_options?: ImportanceOptionKey[]
           importance_direct_options?: ImportanceDirectOptionKey[] | null
+          priority_options?: string[] | null
           custom_agreement_labels?: Json | null
           custom_importance_direct_labels?: Json | null
           order_index?: number

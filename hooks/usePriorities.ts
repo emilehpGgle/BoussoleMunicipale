@@ -10,12 +10,11 @@ interface PrioritiesState {
 }
 
 /**
- * Hook pour gérer les réponses de priorité
+ * ✅ Hook simplifié pour gérer les réponses de priorité
  * Remplace l'usage du localStorage par Supabase
  */
 export function usePriorities() {
-  const sessionData = useSession()
-  const { sessionToken, isSessionValid, isInitializing } = sessionData
+  const { sessionToken, isSessionValid, isLoading: sessionLoading, error: sessionError } = useSession()
   
   const [state, setState] = useState<PrioritiesState>({
     priorities: {},
@@ -25,18 +24,23 @@ export function usePriorities() {
     lastSaved: null
   })
 
-  // Charger les priorités depuis Supabase
+  // ✅ Charger les priorités depuis Supabase (simplifié)
   const loadPriorities = useCallback(async () => {
     try {
       setState(prev => ({ ...prev, isLoading: true, error: null }))
+
+      // ✅ Attendre que la session soit prête
+      if (sessionLoading) {
+        setState(prev => ({ ...prev, isLoading: false }))
+        return
+      }
 
       if (!sessionToken || !isSessionValid) {
         setState(prev => ({
           ...prev,
           priorities: {},
           isLoading: false,
-          // Ne pas afficher d'erreur si la session est en train de s'initialiser
-          error: null
+          error: null // ✅ Pas d'erreur si pas de session
         }))
         return
       }
@@ -52,12 +56,12 @@ export function usePriorities() {
       if (response.ok) {
         const data = await response.json()
         if (data.success && data.responses) {
-          // Filtrer les réponses de priorité pour la question q21_enjeux_prioritaires
+          // ✅ Filtrer les réponses de priorité pour la question q21_enjeux_prioritaires
           const priorityResponses = data.responses.filter(
             (r: any) => r.response_type === 'priority_ranking' && r.question_id === 'q21_enjeux_prioritaires'
           )
           
-          // Extraire les priorités (question q21_enjeux_prioritaires)
+          // ✅ Extraire les priorités (question q21_enjeux_prioritaires)
           const priorities = priorityResponses.length > 0 
             ? priorityResponses[0].priority_data || {} 
             : {}
@@ -70,150 +74,118 @@ export function usePriorities() {
           }))
         }
       } else {
-        setState(prev => ({
-          ...prev,
-          isLoading: false,
-          error: 'Erreur lors du chargement des priorités'
-        }))
+        throw new Error(`Erreur API: ${response.status}`)
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des priorités:', error)
+      console.error('❌ [usePriorities] Erreur chargement:', error)
       setState(prev => ({
         ...prev,
         isLoading: false,
         error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
-  }, [sessionToken, isSessionValid])
+  }, [sessionToken, isSessionValid, sessionLoading])
 
-  // Sauvegarder les priorités vers Supabase
+  // ✅ Sauvegarder les priorités vers Supabase (logique simplifiée)
   const savePriorities = useCallback(async (priorityData: Record<string, number>) => {
-    console.log('🔄 [usePriorities] Début sauvegarde priorités:', priorityData)
-    console.log('🔍 [usePriorities] État de session:', { 
-      sessionToken: sessionToken ? `${sessionToken.substring(0, 10)}...` : 'null', 
-      isSessionValid, 
-      isInitializing,
-      hasStoredSession: sessionData.hasStoredSession
-    })
+    console.log('🔄 [usePriorities] Sauvegarde priorités:', priorityData)
+    
     try {
       setState(prev => ({ ...prev, isSaving: true, error: null }))
 
-      // Attendre que la session soit initialisée si elle est en cours
-      if (isInitializing) {
-        console.log('⏳ [usePriorities] Session en cours d\'initialisation, attente...')
-        // Attendre jusqu'à 5 secondes que la session soit prête
-        for (let i = 0; i < 50; i++) {
-          await new Promise(resolve => setTimeout(resolve, 100))
-          if (!sessionData.isInitializing && sessionData.sessionToken) {
-            console.log('✅ [usePriorities] Session maintenant prête après attente')
-            break
-          }
-        }
+      // ✅ Vérification simple : session requise
+      if (!sessionToken || !isSessionValid) {
+        throw new Error('Session requise pour sauvegarder les priorités')
       }
 
-      // Utiliser le token le plus récent possible
-      const currentToken = sessionData.sessionToken || sessionToken
-      const currentIsValid = sessionData.isSessionValid || isSessionValid
-
-      if (!currentToken || !currentIsValid) {
-        console.log('❌ [usePriorities] Session invalide pour sauvegarde - sessionToken:', !!currentToken, 'isSessionValid:', currentIsValid)
-        setState(prev => ({
-          ...prev,
-          isSaving: false,
-          error: 'Session requise pour sauvegarder les priorités'
-        }))
-        return
-      }
-
-      // Mettre à jour l'état local immédiatement
+      // ✅ Mettre à jour l'état local immédiatement pour UX
       setState(prev => ({
         ...prev,
         priorities: priorityData
       }))
-      console.log('✅ [usePriorities] État local mis à jour:', priorityData)
 
       const requestBody = {
-        questionId: 'q21_enjeux_prioritaires', // ID correct de la question de priorité
+        questionId: 'q21_enjeux_prioritaires',
         responseType: 'priority_ranking',
         priorityData
       }
+
       console.log('📤 [usePriorities] Envoi requête API:', requestBody)
 
       const response = await fetch('/api/responses', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${currentToken}`,
+          'Authorization': `Bearer ${sessionToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody)
       })
 
-      console.log('📥 [usePriorities] Réponse API status:', response.status)
-
       if (response.ok) {
         const data = await response.json()
-        console.log('📥 [usePriorities] Réponse API data:', data)
         if (data.success) {
           setState(prev => ({
             ...prev,
             isSaving: false,
-            lastSaved: new Date()
+            lastSaved: new Date(),
+            error: null
           }))
           console.log('✅ [usePriorities] Sauvegarde réussie!')
+          
+          // ✅ Recharger les données depuis la base après sauvegarde
+          await loadPriorities()
           return
+        } else {
+          throw new Error(data.error || 'Erreur de sauvegarde')
         }
       } else {
-        const errorData = await response.json()
-        console.error('❌ [usePriorities] Erreur API:', errorData)
+        const errorData = await response.json().catch(() => ({ error: 'Erreur réseau' }))
+        throw new Error(errorData.error || `Erreur HTTP ${response.status}`)
       }
 
-      // En cas d'erreur API
+    } catch (error) {
+      console.error('❌ [usePriorities] Erreur sauvegarde:', error)
       setState(prev => ({
         ...prev,
         isSaving: false,
-        error: 'Erreur lors de la sauvegarde des priorités'
+        error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
-
-    } catch (error) {
-      console.error('❌ [usePriorities] Exception lors de la sauvegarde:', error)
-      setState(prev => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Erreur de sauvegarde',
-        isSaving: false
-      }))
+      // ✅ Propager l'erreur pour que le composant puisse réagir
+      throw error
     }
   }, [sessionToken, isSessionValid])
 
-  // Charger les priorités au montage avec patience pour l'initialisation
+  // ✅ Charger automatiquement quand la session change
   useEffect(() => {
-    // Attendre que la session soit complètement initialisée avant de charger
-    if (!isInitializing && isSessionValid) {
-      loadPriorities()
-    } else if (!isInitializing && !isSessionValid) {
-      // Session définitivement non valide - état par défaut sans erreur
+    loadPriorities()
+  }, [loadPriorities])
+
+  // ✅ Si erreur de session, la propager
+  useEffect(() => {
+    if (sessionError && !sessionLoading) {
       setState(prev => ({
         ...prev,
-        priorities: {},
-        isLoading: false,
-        error: null
+        error: `Erreur de session: ${sessionError}`,
+        isLoading: false
       }))
     }
-    // Si isInitializing est true, on attend patiemment
-  }, [isSessionValid, isInitializing, loadPriorities])
+  }, [sessionError, sessionLoading])
 
   return {
-    // État
+    // ✅ État
     priorities: state.priorities,
-    isLoading: state.isLoading,
+    isLoading: state.isLoading || sessionLoading,
     isSaving: state.isSaving,
     error: state.error,
     lastSaved: state.lastSaved,
-
-    // Actions
+    
+    // ✅ Actions
     savePriorities,
     loadPriorities,
-
-    // Utilitaires
-    hasResponse: Object.keys(state.priorities).length > 0
+    
+    // ✅ Utilitaires
+    hasSelection: Object.keys(state.priorities).length > 0,
+    selectionCount: Object.keys(state.priorities).length,
+    isComplete: Object.keys(state.priorities).length === 3
   }
 } 

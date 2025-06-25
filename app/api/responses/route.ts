@@ -65,8 +65,33 @@ export async function POST(request: NextRequest) {
       response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue)
     } else if (responseType === 'importance_direct' && importanceDirectValue) {
       response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue)
-    } else if (responseType === 'priority_ranking' && priorityData) {
-      response = await responsesAPI.savePriorityResponse(session.id, questionId, priorityData)
+    } else if (responseType === 'priority_ranking') {
+      if (!priorityData) {
+        return NextResponse.json({
+          success: false,
+          error: 'priorityData est requis pour les réponses de priorité'
+        }, { status: 400 })
+      }
+
+      console.log('🎯 [RESPONSES API] Sauvegarde priorité - session:', session.id.substring(0, 10) + '...', 'question:', questionId)
+
+      try {
+        // Utiliser la méthode normale maintenant que la question existe
+        const result = await responsesAPI.savePriorityResponse(session.id, questionId, priorityData)
+        
+        console.log('✅ [RESPONSES API] Priorité sauvegardée avec succès')
+        return NextResponse.json({
+          success: true,
+          message: 'Réponse de priorité sauvegardée',
+          data: result
+        })
+      } catch (error) {
+        console.error('[responses] Response save failed:', error)
+        return NextResponse.json({
+          success: false,
+          error: error instanceof Error ? error.message : 'Erreur inconnue'
+        }, { status: 500 })
+      }
     } else {
       return NextResponse.json(
         { error: 'Valeur de réponse manquante pour le type spécifié' },

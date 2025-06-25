@@ -32,12 +32,12 @@ export default function QuestionnairePage() {
   // Référence pour le bouton "Terminer"
   const terminateButtonRef = useRef<HTMLButtonElement>(null)
 
-  // Intégration des hooks sécurisés
-  useSession()
+  // ✅ Intégration des hooks (simplifié)
+  const { sessionToken, isSessionValid, isLoading: sessionLoading, error: sessionError } = useSession()
   const {
     // État des réponses
-    isLoading,
-    error,
+    isLoading: responsesLoading,
+    error: responsesError,
     
     // Actions pour sauvegarder
     saveAgreementResponse,
@@ -53,25 +53,31 @@ export default function QuestionnairePage() {
 
   useResults()
 
-  // Hook pour gérer les priorités (remplace localStorage)
+  // ✅ Hook pour gérer les priorités (simplifié)
   const { 
     priorities: selectedPriorities, 
-    savePriorities
+    savePriorities,
+    isLoading: prioritiesLoading,
+    error: prioritiesError
   } = usePriorities()
 
-  // Calculer quelle question afficher basée sur les réponses existantes
+  // ✅ État de chargement global (combiné)
+  const isLoading = sessionLoading || responsesLoading || prioritiesLoading
+  const globalError = sessionError || responsesError || prioritiesError
+
+  // ✅ Calculer quelle question afficher basée sur les réponses existantes (simplifié)
   const calculateNextQuestionIndex = useCallback(() => {
     // Parcourir toutes les questions pour trouver la première non répondue
     for (let i = 0; i < boussoleQuestions.length; i++) {
       const question = boussoleQuestions[i]
       
-      // Vérifier si cette question a été répondue
+      // ✅ Vérifier si cette question a été répondue (logique simplifiée)
       let hasResponse = false
       if (question.responseType === "importance_direct") {
         hasResponse = userImportanceDirectAnswers[question.id] !== undefined
       } else if (question.responseType === "priority_ranking") {
-        // Pour les questions de priorité, vérifier aussi les priorités sélectionnées
-        hasResponse = userAnswers[question.id] !== undefined || Object.keys(selectedPriorities).length === 3
+        // ✅ Pour les questions de priorité, vérifier les priorités sélectionnées
+        hasResponse = Object.keys(selectedPriorities).length === 3
       } else {
         hasResponse = userAnswers[question.id] !== undefined
       }
@@ -86,7 +92,7 @@ export default function QuestionnairePage() {
     return boussoleQuestions.length - 1
   }, [userAnswers, userImportanceDirectAnswers, selectedPriorities])
 
-  // Initialiser l'index de question une fois que les réponses sont chargées
+  // ✅ Initialiser l'index de question une fois que les données sont chargées (simplifié)
   useEffect(() => {
     if (!isLoading && !hasInitialized) {
       const nextQuestionIndex = calculateNextQuestionIndex()
@@ -101,7 +107,7 @@ export default function QuestionnairePage() {
     }
   }, [isLoading, hasInitialized, calculateNextQuestionIndex])
 
-  // Nouvelle logique: re-calculer si les données changent après l'initialisation
+  // ✅ Re-calculer si les données changent après l'initialisation (simplifié)
   useEffect(() => {
     if (hasInitialized && !isLoading) {
       const responseCount = getResponseCounts().total
@@ -174,7 +180,7 @@ export default function QuestionnairePage() {
     }
   }
 
-  // Handler pour les questions de priorité
+  // Handler pour les questions de priorité avec mise à jour locale immédiate
   const handlePrioritySelection = async (priority: string) => {
     console.log('🎯 Sélection de priorité:', priority)
     console.log('📊 Priorités actuelles:', selectedPriorities)
@@ -204,12 +210,19 @@ export default function QuestionnairePage() {
     }
 
     console.log('💾 Nouvelles priorités à sauvegarder:', newPriorities)
+    console.log('📈 Comparaison avant/après:', {
+      avant: selectedPriorities,
+      après: newPriorities,
+      différence: Object.keys(newPriorities).length - Object.keys(selectedPriorities).length
+    })
     
     // Sauvegarder dans Supabase en arrière-plan sans bloquer l'UI
+    // IMPORTANT: savePriorities met déjà à jour l'état local dans usePriorities
     savePriorities(newPriorities).then(() => {
       console.log('✅ Priorités sauvegardées avec succès')
     }).catch(error => {
       console.error('❌ Erreur lors de la sauvegarde des priorités:', error)
+      // Même en cas d'erreur, l'état local devrait rester mis à jour
     })
       
       // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
@@ -232,19 +245,34 @@ export default function QuestionnairePage() {
     }
   }
 
+  // ✅ Handler pour sauvegarder les priorités (simplifié et robuste)
   const handlePrioritySave = async () => {
+    console.log('💾 [Questionnaire] Sauvegarde des priorités:', selectedPriorities)
+    
     try {
-      // Les priorités sont déjà sauvegardées via savePriorities du hook
-      // Sauvegarder aussi comme réponse d'accord pour marquer la question comme complétée
-      await saveAgreementResponse(currentQuestion.id, 'PA') // PA indique que la question a été répondue
+      // ✅ Vérification simple des priorités
+      if (Object.keys(selectedPriorities).length !== 3) {
+        console.warn('⚠️ [Questionnaire] Tentative de sauvegarde avec moins de 3 priorités')
+        return
+      }
+
+      // ✅ Vérification de la session
+      if (!sessionToken || !isSessionValid) {
+        console.error('❌ [Questionnaire] Session invalide pour sauvegarde')
+        return
+      }
+
+      // ✅ Sauvegarder via le hook
+      await savePriorities(selectedPriorities)
       
-      // Si c'est la dernière question, rediriger vers le profil
+      console.log('✅ [Questionnaire] Priorités sauvegardées avec succès')
+      
+      // ✅ Redirection ou progression automatique
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
         setTimeout(() => {
           router.push('/profil')
         }, 800)
       } else {
-        // Auto-progression
         setIsTransitioning(true)
         setTimeout(() => {
           setCurrentQuestionIndex(currentQuestionIndex + 1)
@@ -252,8 +280,11 @@ export default function QuestionnairePage() {
           setIsTransitioning(false)
         }, 250)
       }
-    } catch (err) {
-      console.error('Erreur lors de la sauvegarde des priorités:', err)
+      
+    } catch (error) {
+      console.error('❌ [Questionnaire] Erreur lors de la sauvegarde des priorités:', error)
+      // ✅ L'erreur est déjà gérée par le hook usePriorities, 
+      // l'utilisateur verra l'erreur dans l'interface
     }
   }
 
@@ -313,7 +344,7 @@ export default function QuestionnairePage() {
       >
 
       {/* Affichage d&apos;erreur uniquement si problème critique */}
-      {error && (
+      {globalError && (
         <div className="fixed top-4 right-4 bg-destructive/10 border border-destructive/20 text-destructive px-4 py-2 rounded-lg text-sm z-50">
           <p>⚠️ Problème de connexion</p>
           <p className="text-xs opacity-80">Vos réponses sont sauvegardées localement</p>

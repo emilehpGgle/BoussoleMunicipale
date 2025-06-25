@@ -97,13 +97,17 @@ export class ResponsesAPI {
       throw new Error('Les données de priorité sont requises')
     }
 
+    console.log('🔄 [RESPONSES API] Sauvegarde priorité - session:', sessionId?.substring(0, 10) + '...', 'question:', questionId)
+
+    // Utiliser upsert standard maintenant que la contrainte est résolue
     const response: UserResponseInsert = {
       session_id: sessionId,
       question_id: questionId,
-      response_type: 'priority_ranking' as const, // Type correct maintenant
+      response_type: 'priority_ranking' as const,
       priority_data: priorityData,
     }
 
+    // Utiliser upsert avec la clé primaire pour éviter les doublons
     const { data, error } = await this.supabase
       .from('user_responses')
       .upsert(response, { 
@@ -114,10 +118,11 @@ export class ResponsesAPI {
       .single()
 
     if (error) {
-      console.error('Erreur lors de la sauvegarde de la réponse priorité:', error)
+      console.error('❌ [RESPONSES API] Erreur sauvegarde priorité:', error)
       throw new Error(`Erreur lors de la sauvegarde: ${error.message}`)
     }
 
+    console.log('✅ [RESPONSES API] Sauvegarde priorité réussie!')
     return data
   }
 
