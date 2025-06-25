@@ -296,24 +296,8 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    console.log('📋 [Profil] handleSubmit appelée')
-    console.log('🔍 [Profil] État des données:', {
-      userAnswersCount: Object.keys(userAnswers).length,
-      prioritiesCount: Object.keys(priorities).length,
-      hasMainQuestionnaire: Object.keys(userAnswers).length >= 20, // 20 questions principales + priorités
-      hasPriorities: Object.keys(priorities).length === 3
-    })
-    
-    // ✅ Vérifier si le questionnaire principal est déjà complété
-    const questionnaireCompleted = Object.keys(userAnswers).length >= 20 && Object.keys(priorities).length === 3
-    
-    if (questionnaireCompleted) {
-      console.log('🎯 [Profil] Questionnaire principal déjà complété, redirection vers les résultats')
-      router.push("/resultats")
-    } else {
-      console.log('📝 [Profil] Questionnaire principal non complété, redirection vers le questionnaire')
-      router.push("/questionnaire")
-    }
+    console.log('📋 [Profil] Profil complété, redirection vers les résultats')
+    router.push("/resultats")
   }
 
   // Obtenir l'aperçu d'une réponse pour affichage compact

@@ -97,31 +97,19 @@ export default function QuestionnairePage() {
     if (!isLoading && !hasInitialized) {
       const nextQuestionIndex = calculateNextQuestionIndex()
       
-      console.log('🔍 [Questionnaire] Vérification état complétion:', {
+      console.log('🔍 [Questionnaire] Vérification position:', {
         userAnswersCount: Object.keys(userAnswers).length,
         prioritiesCount: Object.keys(selectedPriorities).length,
         nextQuestionIndex,
         totalQuestions: boussoleQuestions.length
       })
       
-      // ✅ Vérifier si le questionnaire est déjà complètement terminé
-      if (nextQuestionIndex === boussoleQuestions.length - 1 && 
-          Object.keys(selectedPriorities).length === 3 &&
-          Object.keys(userAnswers).length >= 20) {
-        console.log('🎯 [Questionnaire] Questionnaire déjà complété, redirection vers les résultats')
-        router.push('/resultats')
-        return
-      }
-      
-      // Si on a des réponses et qu'on n'est pas à la première question
-      if (nextQuestionIndex > 0) {
-        console.log(`🎯 [Questionnaire] Reprendre au questionnaire à la question ${nextQuestionIndex + 1}/${boussoleQuestions.length}`)
-        setCurrentQuestionIndex(nextQuestionIndex)
-      }
-      
+      // ✅ Continuer là où on en était
+      setCurrentQuestionIndex(nextQuestionIndex)
       setHasInitialized(true)
+      console.log('🎯 [Questionnaire] Reprise à la question', nextQuestionIndex + 1)
     }
-  }, [isLoading, hasInitialized, calculateNextQuestionIndex, userAnswers, selectedPriorities, router])
+  }, [isLoading, hasInitialized, userAnswers, selectedPriorities])
 
   // ✅ Re-calculer si les données changent après l'initialisation (simplifié)
   useEffect(() => {
@@ -151,25 +139,16 @@ export default function QuestionnairePage() {
       
       console.log('📝 [Questionnaire] Réponse d\'accord sauvegardée pour Q' + (currentQuestionIndex + 1))
       
-      // Si c'est la dernière question, rediriger automatiquement vers les résultats
-      if (currentQuestionIndex === boussoleQuestions.length - 1) {
-        console.log('🎯 [Questionnaire] Dernière question standard complétée, redirection vers les résultats')
-        // Délai pour permettre à l'utilisateur de voir sa sélection
-        setTimeout(() => {
-          router.push('/resultats')
-        }, 800) // Délai légèrement plus long pour la dernière question
-      } else {
-        // Auto-progression avec animation "swoosh" pour les autres questions
-        setIsTransitioning(true)
-        setTimeout(() => {
-          setCurrentQuestionIndex(currentQuestionIndex + 1)
-          setQuestionKey(prev => prev + 1) // Force la réanimation
-          setIsTransitioning(false)
-        }, 250) // Délai pour permettre l'animation de sortie (légèrement plus rapide)
-      }
-    } catch (err) {
-      console.error('Erreur lors de la sauvegarde de la réponse:', err)
-      // L'erreur est déjà gérée par le hook, on peut continuer l'UI
+      // ✅ Navigation normale vers la question suivante
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex + 1)
+        setQuestionKey(prev => prev + 1)
+        setIsTransitioning(false)
+      }, 250)
+      
+    } catch (error) {
+      console.error('❌ [Questionnaire] Erreur sauvegarde réponse d\'accord:', error)
     }
   }
 
@@ -180,25 +159,16 @@ export default function QuestionnairePage() {
       
       console.log('📝 [Questionnaire] Réponse d\'importance directe sauvegardée pour Q' + (currentQuestionIndex + 1))
       
-      // Si c'est la dernière question, rediriger automatiquement vers les résultats
-      if (currentQuestionIndex === boussoleQuestions.length - 1) {
-        console.log('🎯 [Questionnaire] Dernière question d\'importance complétée, redirection vers les résultats')
-        // Délai pour permettre à l'utilisateur de voir sa sélection
-        setTimeout(() => {
-          router.push('/resultats')
-        }, 800) // Délai légèrement plus long pour la dernière question
-      } else {
-        // Auto-progression avec animation "swoosh" pour les autres questions
-        setIsTransitioning(true)
-        setTimeout(() => {
-          setCurrentQuestionIndex(currentQuestionIndex + 1)
-          setQuestionKey(prev => prev + 1) // Force la réanimation
-          setIsTransitioning(false)
-        }, 250) // Délai pour permettre l'animation de sortie (légèrement plus rapide)
-      }
-    } catch (err) {
-      console.error('Erreur lors de la sauvegarde de la réponse importance directe:', err)
-      // L'erreur est déjà gérée par le hook, on peut continuer l'UI
+      // ✅ Navigation normale vers la question suivante
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentQuestionIndex(currentQuestionIndex + 1)
+        setQuestionKey(prev => prev + 1)
+        setIsTransitioning(false)
+      }, 250)
+      
+    } catch (error) {
+      console.error('❌ [Questionnaire] Erreur sauvegarde réponse d\'importance:', error)
     }
   }
 
@@ -285,35 +255,24 @@ export default function QuestionnairePage() {
 
       // ✅ Vérification de la session
       if (!sessionToken || !isSessionValid) {
-        console.error('❌ [Questionnaire] Session invalide pour sauvegarde')
+        console.error('❌ [Questionnaire] Session invalide pour sauvegarde priorités')
         return
       }
 
       // ✅ Sauvegarder via le hook
       await savePriorities(selectedPriorities)
-      
       console.log('✅ [Questionnaire] Priorités sauvegardées avec succès')
       
-      // ✅ Navigation corrigée : après Q21 (dernière question) → Résultats !
-      if (currentQuestionIndex === boussoleQuestions.length - 1) {
-        console.log('🎯 [Questionnaire] Dernière question complétée, redirection vers les résultats')
-        setTimeout(() => {
-          router.push('/resultats')
-        }, 800)
-      } else {
-        console.log('➡️ [Questionnaire] Question intermédiaire, passage à la suivante')
-        setIsTransitioning(true)
-        setTimeout(() => {
-          setCurrentQuestionIndex(currentQuestionIndex + 1)
-          setQuestionKey(prev => prev + 1)
-          setIsTransitioning(false)
-        }, 250)
-      }
+      // ✅ Navigation après la Q21 → Profil (pas résultats!)
+      console.log('🎯 [Questionnaire] Q21 complétée, redirection vers le profil')
+      
+      // Délai pour permettre à l'utilisateur de voir ses sélections
+      setTimeout(() => {
+        router.push('/profil')
+      }, 1000)
       
     } catch (error) {
-      console.error('❌ [Questionnaire] Erreur lors de la sauvegarde des priorités:', error)
-      // ✅ L'erreur est déjà gérée par le hook usePriorities, 
-      // l'utilisateur verra l'erreur dans l'interface
+      console.error('❌ [Questionnaire] Erreur sauvegarde priorités:', error)
     }
   }
 
