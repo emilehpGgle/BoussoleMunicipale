@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
  * API route pour exécuter la migration complète des données
  * GET /api/migrate - Lance la migration
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
   try {
     console.log('🚀 [MIGRATE API] Début de la migration')
@@ -99,6 +100,7 @@ export async function GET(_request: NextRequest) {
 /**
  * POST /api/migrate - Vérification simple des questions
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function POST(_request: NextRequest) {
   try {
     console.log('🔍 [MIGRATE API] Vérification simple des questions')
