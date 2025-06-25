@@ -65,15 +65,30 @@ export async function POST(request: NextRequest) {
 // ✅ GET - Vérifier le statut d'une session (simplifié)
 export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const sessionToken = searchParams.get('sessionToken')
-
-    if (!sessionToken) {
+    console.log('🔍 [API SESSIONS] Validation session...')
+    
+    // ✅ Extraire le sessionToken depuis le header Authorization
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      console.log('❌ [API SESSIONS] Header Authorization manquant ou invalide')
       return NextResponse.json(
-        { success: false, error: 'sessionToken est requis' },
+        { success: false, error: 'Header Authorization Bearer requis' },
         { status: 400 }
       )
     }
+    
+    const sessionToken = authHeader.substring(7) // Retirer 'Bearer '
+    
+    // ✅ Validation basique du format
+    if (!sessionToken || sessionToken.length < 10) {
+      console.log('❌ [API SESSIONS] Format sessionToken invalide:', sessionToken)
+      return NextResponse.json(
+        { success: false, error: 'Format de sessionToken invalide' },
+        { status: 400 }
+      )
+    }
+
+    console.log('🔍 [API SESSIONS] Validation token:', sessionToken.substring(0, 8) + '...')
 
     // ✅ Créer l'instance d'API
     const sessionsAPI = new SessionsAPI()
@@ -82,15 +97,20 @@ export async function GET(request: NextRequest) {
     const session = await sessionsAPI.getSessionByToken(sessionToken)
     
     if (!session) {
+      console.log('❌ [API SESSIONS] Session non trouvée en base')
       return NextResponse.json({
         success: false,
         valid: false,
         message: 'Session invalide ou expirée'
-      })
+      }, { status: 401 })
     }
+
+    console.log('✅ [API SESSIONS] Session trouvée:', session.id)
 
     // ✅ Mettre à jour l'activité de la session
     await sessionsAPI.updateSessionActivity(session.id)
+
+    console.log('✅ [API SESSIONS] Session validée avec succès')
 
     return NextResponse.json({
       success: true,
@@ -105,7 +125,13 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    return handleAPIError(error, 'vérification de session')
+    console.error('❌ [API SESSIONS] Erreur validation:', error)
+    return NextResponse.json({
+      success: false,
+      valid: false,
+      error: error instanceof Error ? error.message : 'Erreur interne',
+      message: 'Erreur lors de la validation'
+    }, { status: 500 })
   }
 }
 
