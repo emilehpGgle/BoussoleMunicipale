@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
  * API route pour exécuter la migration complète des données
  * GET /api/migrate - Lance la migration
  */
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     console.log('🚀 [MIGRATE API] Début de la migration')
     
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     
     // Test de connexion d'abord
     console.log('🔗 [MIGRATE API] Test de connexion Supabase...')
-    const { data: testData, error: testError } = await supabase
+    const { error: testError } = await supabase
       .from('user_sessions')
       .select('count')
       .limit(1)
@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     if (!existingQuestions || existingQuestions.length === 0) {
       console.log('➕ [MIGRATE API] Insertion de la question q21_enjeux_prioritaires...')
       
-      const { data: insertData, error: insertError } = await supabase
+      const { error: insertError } = await supabase
         .from('questions')
         .upsert({
           id: 'q21_enjeux_prioritaires',
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
 /**
  * POST /api/migrate - Vérification simple des questions
  */
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
   try {
     console.log('🔍 [MIGRATE API] Vérification simple des questions')
     
