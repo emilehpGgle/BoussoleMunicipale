@@ -98,8 +98,10 @@ export default function ResultsPage() {
   const [showFloatingShare, setShowFloatingShare] = useState(false)
   const [showTopMatchModal, setShowTopMatchModal] = useState(false)
 
-  // Intégration des hooks sécurisés
-  useSession()
+  // ✅ Utiliser correctement le hook useSession et récupérer ses valeurs
+  const { isSessionValid, isLoading: sessionLoading } = useSession()
+  
+  // ✅ Attendre que la session soit prête avant de charger les données
   const { 
     userAnswers, 
     userImportanceDirectAnswers: userImportance, 
@@ -116,10 +118,10 @@ export default function ResultsPage() {
   } = useResults()
   const { priorities: userPriorities } = usePriorities()
 
-  // État consolidé de chargement
-  const isLoading = responsesLoading || resultsLoading
+  // ✅ État consolidé de chargement - inclure le chargement de session
+  const isLoading = sessionLoading || responsesLoading || resultsLoading
 
-  // Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
+  // ✅ Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
   const calculatedScores = useMemo(() => {
     if (!userAnswers || Object.keys(userAnswers).length === 0) {
       return []
@@ -197,6 +199,8 @@ export default function ResultsPage() {
     return newCalculatedScores
   }, [userAnswers, userImportance, userPriorities])
 
+  const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
+
   // Calculer et sauvegarder les résultats si pas encore fait
   useEffect(() => {
     if (!isLoading && !hasResults && Object.keys(userAnswers).length > 0) {
@@ -246,10 +250,19 @@ export default function ResultsPage() {
     }
   }, [isLoading]) // Re-observer après le chargement
 
-  const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
-
-
-
+  // ✅ Afficher un message différent si la session n'est pas valide
+  if (!sessionLoading && !isSessionValid) {
+    return (
+      <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
+        <p className="text-xl text-muted-foreground mb-4">
+          Problème de session. Veuillez retourner à l&apos;accueil et recommencer.
+        </p>
+        <Button asChild>
+          <Link href="/">Retour à l&apos;accueil</Link>
+        </Button>
+      </div>
+    )
+  }
 
   if (isLoading) {
     return (
