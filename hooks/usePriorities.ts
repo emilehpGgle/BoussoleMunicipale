@@ -98,7 +98,7 @@ export function usePriorities() {
         throw new Error('Session requise pour sauvegarder les priorités')
       }
 
-      // ✅ Mettre à jour l'état local immédiatement pour UX
+      // ✅ Mettre à jour l'état local immédiatement pour UX fluide
       setState(prev => ({
         ...prev,
         priorities: priorityData
@@ -132,8 +132,8 @@ export function usePriorities() {
           }))
           console.log('✅ [usePriorities] Sauvegarde réussie!')
           
-          // ✅ Recharger les données depuis la base après sauvegarde
-          await loadPriorities()
+          // ✅ Supprimé le rechargement automatique pour éviter le clignotement
+          // L'état local est déjà mis à jour et reflète les bonnes données
           return
         } else {
           throw new Error(data.error || 'Erreur de sauvegarde')

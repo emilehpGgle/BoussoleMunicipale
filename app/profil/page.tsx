@@ -290,7 +290,7 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    router.push("/resultats") // Naviguer vers les résultats après completion du profil
+    router.push("/questionnaire") // Naviguer vers le questionnaire principal après completion du profil
   }
 
   // Obtenir l'aperçu d'une réponse pour affichage compact
