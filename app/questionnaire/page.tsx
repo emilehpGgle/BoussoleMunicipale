@@ -97,15 +97,31 @@ export default function QuestionnairePage() {
     if (!isLoading && !hasInitialized) {
       const nextQuestionIndex = calculateNextQuestionIndex()
       
+      console.log('🔍 [Questionnaire] Vérification état complétion:', {
+        userAnswersCount: Object.keys(userAnswers).length,
+        prioritiesCount: Object.keys(selectedPriorities).length,
+        nextQuestionIndex,
+        totalQuestions: boussoleQuestions.length
+      })
+      
+      // ✅ Vérifier si le questionnaire est déjà complètement terminé
+      if (nextQuestionIndex === boussoleQuestions.length - 1 && 
+          Object.keys(selectedPriorities).length === 3 &&
+          Object.keys(userAnswers).length >= 20) {
+        console.log('🎯 [Questionnaire] Questionnaire déjà complété, redirection vers les résultats')
+        router.push('/resultats')
+        return
+      }
+      
       // Si on a des réponses et qu'on n'est pas à la première question
       if (nextQuestionIndex > 0) {
-        console.log(`🎯 Reprendre au questionnaire à la question ${nextQuestionIndex + 1}/${boussoleQuestions.length}`)
+        console.log(`🎯 [Questionnaire] Reprendre au questionnaire à la question ${nextQuestionIndex + 1}/${boussoleQuestions.length}`)
         setCurrentQuestionIndex(nextQuestionIndex)
       }
       
       setHasInitialized(true)
     }
-  }, [isLoading, hasInitialized, calculateNextQuestionIndex])
+  }, [isLoading, hasInitialized, calculateNextQuestionIndex, userAnswers, selectedPriorities, router])
 
   // ✅ Re-calculer si les données changent après l'initialisation (simplifié)
   useEffect(() => {
@@ -133,11 +149,14 @@ export default function QuestionnairePage() {
       // Sauvegarder via notre hook sécurisé
       await saveAgreementResponse(currentQuestion.id, optionKey)
       
-      // Si c'est la dernière question, rediriger automatiquement vers le profil
+      console.log('📝 [Questionnaire] Réponse d\'accord sauvegardée pour Q' + (currentQuestionIndex + 1))
+      
+      // Si c'est la dernière question, rediriger automatiquement vers les résultats
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
+        console.log('🎯 [Questionnaire] Dernière question standard complétée, redirection vers les résultats')
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/profil')
+          router.push('/resultats')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -159,11 +178,14 @@ export default function QuestionnairePage() {
       // Sauvegarder via notre hook sécurisé
       await saveImportanceDirectResponse(currentQuestion.id, optionKey)
       
-      // Si c'est la dernière question, rediriger automatiquement vers le profil
+      console.log('📝 [Questionnaire] Réponse d\'importance directe sauvegardée pour Q' + (currentQuestionIndex + 1))
+      
+      // Si c'est la dernière question, rediriger automatiquement vers les résultats
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
+        console.log('🎯 [Questionnaire] Dernière question d\'importance complétée, redirection vers les résultats')
         // Délai pour permettre à l'utilisateur de voir sa sélection
         setTimeout(() => {
-          router.push('/profil')
+          router.push('/resultats')
         }, 800) // Délai légèrement plus long pour la dernière question
       } else {
         // Auto-progression avec animation "swoosh" pour les autres questions
@@ -248,6 +270,11 @@ export default function QuestionnairePage() {
   // ✅ Handler pour sauvegarder les priorités (simplifié et robuste)
   const handlePrioritySave = async () => {
     console.log('💾 [Questionnaire] Sauvegarde des priorités:', selectedPriorities)
+    console.log('🔍 [Questionnaire] Position actuelle:', {
+      currentQuestionIndex,
+      totalQuestions: boussoleQuestions.length,
+      isLastQuestion: currentQuestionIndex === boussoleQuestions.length - 1
+    })
     
     try {
       // ✅ Vérification simple des priorités
@@ -267,12 +294,14 @@ export default function QuestionnairePage() {
       
       console.log('✅ [Questionnaire] Priorités sauvegardées avec succès')
       
-      // ✅ Redirection ou progression automatique
+      // ✅ Navigation corrigée : après Q21 (dernière question) → Résultats !
       if (currentQuestionIndex === boussoleQuestions.length - 1) {
+        console.log('🎯 [Questionnaire] Dernière question complétée, redirection vers les résultats')
         setTimeout(() => {
-          router.push('/profil')
+          router.push('/resultats')
         }, 800)
       } else {
+        console.log('➡️ [Questionnaire] Question intermédiaire, passage à la suivante')
         setIsTransitioning(true)
         setTimeout(() => {
           setCurrentQuestionIndex(currentQuestionIndex + 1)
@@ -289,7 +318,14 @@ export default function QuestionnairePage() {
   }
 
   const goToNextQuestion = () => {
+    console.log('➡️ [Questionnaire] goToNextQuestion appelée:', {
+      currentQuestionIndex,
+      totalQuestions: boussoleQuestions.length,
+      isLastQuestion: currentQuestionIndex === boussoleQuestions.length - 1
+    })
+    
     if (currentQuestionIndex < boussoleQuestions.length - 1) {
+      console.log('📝 [Questionnaire] Passage à la question suivante')
       setIsTransitioning(true)
       setTimeout(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
@@ -297,9 +333,9 @@ export default function QuestionnairePage() {
         setIsTransitioning(false)
       }, 250)
     } else {
-      // Sauvegarde automatique dans Supabase via les hooks
-      // Les données sont déjà synchronisées via nos hooks
-      router.push("/profil")
+      // ✅ Questionnaire terminé → Résultats !
+      console.log('🎯 [Questionnaire] Questionnaire complet, redirection vers les résultats')
+      router.push("/resultats")
     }
   }
 

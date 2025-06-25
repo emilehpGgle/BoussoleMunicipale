@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
+import { useUserResponses } from "@/hooks/useUserResponses"
+import { usePriorities } from "@/hooks/usePriorities"
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {
@@ -125,6 +127,10 @@ export default function ProfilePage() {
     
     // Alias pour compatibilité
   } = useProfile()
+
+  // ✅ Hook pour vérifier si le questionnaire principal est complété
+  const { userAnswers } = useUserResponses()
+  const { priorities } = usePriorities()
 
   // Obtenir toutes les questions dans l'ordre
   const getAllQuestions = () => [
@@ -290,7 +296,24 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    router.push("/questionnaire") // Naviguer vers le questionnaire principal après completion du profil
+    console.log('📋 [Profil] handleSubmit appelée')
+    console.log('🔍 [Profil] État des données:', {
+      userAnswersCount: Object.keys(userAnswers).length,
+      prioritiesCount: Object.keys(priorities).length,
+      hasMainQuestionnaire: Object.keys(userAnswers).length >= 20, // 20 questions principales + priorités
+      hasPriorities: Object.keys(priorities).length === 3
+    })
+    
+    // ✅ Vérifier si le questionnaire principal est déjà complété
+    const questionnaireCompleted = Object.keys(userAnswers).length >= 20 && Object.keys(priorities).length === 3
+    
+    if (questionnaireCompleted) {
+      console.log('🎯 [Profil] Questionnaire principal déjà complété, redirection vers les résultats')
+      router.push("/resultats")
+    } else {
+      console.log('📝 [Profil] Questionnaire principal non complété, redirection vers le questionnaire')
+      router.push("/questionnaire")
+    }
   }
 
   // Obtenir l'aperçu d'une réponse pour affichage compact
