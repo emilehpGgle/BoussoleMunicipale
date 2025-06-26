@@ -592,6 +592,7 @@ export default function ProfilePage() {
             alt="" 
             width={256}
             height={192}
+            quality={90}
             className="object-contain decorative-image-left"
           />
         </div>

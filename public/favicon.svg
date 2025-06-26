@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <style>
+      .logo-bg { fill: transparent; }
+    </style>
+  </defs>
+  
+  <!-- Fond transparent forcé -->
+  <rect width="64" height="64" class="logo-bg"/>
+  
+  <!-- Votre logo PNG intégré dans le SVG -->
+  <image href="/logo-main_sans_ecriture.png" x="0" y="0" width="64" height="64" style="background: transparent;"/>
+</svg> 

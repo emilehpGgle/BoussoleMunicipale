@@ -109,6 +109,7 @@ const PositionScale: React.FC<{
                   alt={`Logo ${party.name}`}
                   width={24}
                   height={24}
+                  quality={95}
                   className="w-6 h-6 object-contain"
                 />
               </div>
@@ -252,6 +253,7 @@ export default function PartyDetailPage() {
                 alt={`Logo de ${party.name}`}
                 fill
                 style={{ objectFit: "contain" }}
+                quality={95}
               />
             </LogoContainer>
             <div className="flex-1">

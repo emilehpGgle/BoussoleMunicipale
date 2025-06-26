@@ -354,6 +354,7 @@ export default function QuestionnairePage() {
             alt="" 
             width={320}
             height={240}
+            quality={90}
             className="object-contain decorative-image-right"
           />
         </div>

@@ -114,6 +114,7 @@ export default function HomePage() {
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
                 priority
+                quality={95}
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>

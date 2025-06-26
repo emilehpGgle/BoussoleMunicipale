@@ -107,6 +107,7 @@ export default function SiteHeader() {
                 fill
                 style={{ objectFit: "contain" }}
                 priority
+                quality={95}
                 className="transition-opacity duration-200"
               />
             </div>
@@ -165,6 +166,7 @@ export default function SiteHeader() {
                             alt="Boussole Municipale Logo"
                             fill
                             style={{ objectFit: "contain" }}
+                            quality={95}
                           />
                         </div>
                       </Link>
