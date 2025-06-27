@@ -9,7 +9,13 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ExternalLink, FileText, Info, User, CheckCircle, XCircle, MinusCircle } from "lucide-react"
+import { ArrowLeft, ExternalLink, FileText, Info, CheckCircle, XCircle, MinusCircle } from "lucide-react"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { partiesData, boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
 import type { Party, Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
@@ -21,125 +27,7 @@ const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }>
   </div>
 )
 
-// Composant pour l'échelle de comparaison visuelle
-const PositionScale: React.FC<{
-  userPosition: AgreementOptionKey | null
-  partyPosition: string | null
-  question: BoussoleQuestion
-  party: Party
-}> = ({ userPosition, partyPosition, party }) => {
-  const positions = [
-    { key: 'FD', label: 'Fortement en désaccord', short: 'FD' },
-    { key: 'PD', label: 'Plutôt en désaccord', short: 'PD' },
-    { key: 'N', label: 'Neutre', short: 'N' },
-    { key: 'PA', label: 'Plutôt d\'accord', short: 'PA' },
-    { key: 'FA', label: 'Fortement d\'accord', short: 'FA' }
-  ]
-
-  return (
-    <div className="space-y-6">
-      {/* Position de l'utilisateur en haut */}
-      {userPosition && (
-        <div className="flex justify-center">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-12 bg-blue-600 rounded-t-full rounded-bl-full rounded-br-full shadow-lg flex items-center justify-center relative">
-              <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm">
-                <User className="h-4 w-4 text-blue-600" />
-              </div>
-              {/* Pointe du pin */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-0 h-0" 
-                   style={{
-                     borderLeft: '5px solid transparent',
-                     borderRight: '5px solid transparent', 
-                     borderTop: '5px solid rgb(37, 99, 235)'
-                   }}></div>
-            </div>
-            <div className="mt-2 text-sm font-medium text-blue-700">
-              Votre position
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Échelle visuelle */}
-      <div className="relative">
-        {/* Ligne de base */}
-        <div className="flex items-center justify-between relative">
-          <div className="absolute inset-0 top-1/2 h-1 bg-gradient-to-r from-red-200 via-yellow-200 via-gray-200 via-blue-200 to-green-200 rounded-full -translate-y-px shadow-sm"></div>
-          
-          {/* Points de l'échelle */}
-          {positions.map((pos) => {
-            const isUserPosition = userPosition === pos.key
-            const isPartyPosition = partyPosition === pos.key
-            const hasPosition = isUserPosition || isPartyPosition
-            
-            return (
-              <div key={pos.key} className="relative flex flex-col items-center">
-                {/* Point sur l'échelle */}
-                <div className={`w-4 h-4 rounded-full border-2 transition-all duration-300 ${
-                  hasPosition 
-                    ? 'border-white bg-gradient-to-br from-white to-gray-50 shadow-lg scale-125 ring-2 ring-blue-300/50' 
-                    : 'border-gray-300 bg-white/80 shadow-sm hover:scale-105'
-                }`} />
-                
-                {/* Label de la position */}
-                <span className="text-xs text-muted-foreground mt-1 font-medium">
-                  {pos.short}
-                </span>
-              </div>
-            )
-          })}
-        </div>
-        
-        {/* Labels des extrêmes */}
-        <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-          <span>En désaccord</span>
-          <span>D&apos;accord</span>
-        </div>
-      </div>
-
-      {/* Position du parti en bas */}
-      {partyPosition && partyPosition !== "?" && (
-        <div className="flex justify-center">
-          <div className="flex flex-col items-center">
-            <div className="w-10 h-12 bg-gray-600 rounded-t-full rounded-bl-full rounded-br-full shadow-lg flex items-center justify-center relative">
-              <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center shadow-sm overflow-hidden">
-                <Image
-                  src={party.logoUrl || "/placeholder.svg"}
-                  alt={`Logo ${party.name}`}
-                  width={24}
-                  height={24}
-                  quality={95}
-                  className="w-6 h-6 object-contain"
-                />
-              </div>
-              {/* Pointe du pin */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-0 h-0"
-                   style={{
-                     borderLeft: '5px solid transparent',
-                     borderRight: '5px solid transparent', 
-                     borderTop: '5px solid rgb(75, 85, 99)'
-                   }}></div>
-            </div>
-            <div className="mt-2 text-sm font-medium text-gray-700">
-              Position du parti
-            </div>
-          </div>
-        </div>
-      )}
-      
-      {/* Résumé textuel */}
-      {userPosition && partyPosition && partyPosition !== "?" && (
-        <div className="flex items-center justify-center gap-2 text-sm">
-          {getComparisonIcon(userPosition, partyPosition)}
-          <span className="text-muted-foreground">
-            {getComparisonText(userPosition, partyPosition)}
-          </span>
-        </div>
-      )}
-    </div>
-  )
-}
+// Fonction pour obtenir l'icône de comparaison
 
 // Fonction pour obtenir l'icône de comparaison
 const getComparisonIcon = (userPosition: AgreementOptionKey, partyPosition: string) => {
@@ -159,11 +47,11 @@ const getComparisonIcon = (userPosition: AgreementOptionKey, partyPosition: stri
   const difference = Math.abs(userValue - partyValue)
   
   if (difference === 0) {
-    return <CheckCircle className="h-4 w-4 text-emerald-600" />
+    return <CheckCircle className="h-5 w-5 text-green-600" />
   } else if (difference === 1) {
-    return <MinusCircle className="h-4 w-4 text-amber-600" />
+    return <MinusCircle className="h-5 w-5 text-yellow-600" />
   } else {
-    return <XCircle className="h-4 w-4 text-rose-600" />
+    return <XCircle className="h-5 w-5 text-red-600" />
   }
 }
 
@@ -253,7 +141,6 @@ export default function PartyDetailPage() {
                 alt={`Logo de ${party.name}`}
                 fill
                 style={{ objectFit: "contain" }}
-                quality={95}
               />
             </LogoContainer>
             <div className="flex-1">
@@ -318,18 +205,18 @@ export default function PartyDetailPage() {
             }
           </CardDescription>
           {hasUserResponses && (
-            <div className="flex items-center justify-center gap-6 text-xs text-gray-600 mt-3 bg-white/60 p-3 rounded-lg border border-gray-100">
-              <div className="flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-emerald-600" />
-                <span className="font-medium">Position identique</span>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
+              <div className="flex items-center gap-1">
+                <CheckCircle className="h-3 w-3 text-green-600" />
+                <span>Position identique</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MinusCircle className="h-4 w-4 text-amber-600" />
-                <span className="font-medium">Position similaire</span>
+              <div className="flex items-center gap-1">
+                <MinusCircle className="h-3 w-3 text-yellow-600" />
+                <span>Position similaire</span>
               </div>
-              <div className="flex items-center gap-2">
-                <XCircle className="h-4 w-4 text-rose-600" />
-                <span className="font-medium">Position différente</span>
+              <div className="flex items-center gap-1">
+                <XCircle className="h-3 w-3 text-red-600" />
+                <span>Position différente</span>
               </div>
             </div>
           )}
@@ -346,54 +233,81 @@ export default function PartyDetailPage() {
                   ? "Position incertaine"
                   : "Non spécifiée"
 
-            // Position de l'utilisateur pour l'affichage dans l'échelle
-            // (userPositionLabel non utilisé dans l'affichage final)
-
             return (
-              <Card key={question.id} className="bg-card/50 rounded-xl overflow-hidden">
-                <CardHeader className="pb-3">
-                  <p className="text-xs text-muted-foreground mb-0.5">Question {index + 1}</p>
-                  <CardTitle className="text-lg font-medium text-foreground">{question.text}</CardTitle>
+              <Card key={question.id} className="bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-medium text-muted-foreground">Question {index + 1}</p>
+                  </div>
+                  <CardTitle className="text-base font-medium text-foreground leading-snug">{question.text}</CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm space-y-4">
-                  {/* Échelle de comparaison visuelle */}
-                  {hasUserResponses || partyPos?.position ? (
-                    <div className="bg-gradient-to-br from-slate-50 to-gray-50 p-5 rounded-xl border border-gray-100 shadow-sm">
-                      <PositionScale 
-                        userPosition={userPos || null}
-                        partyPosition={partyPos?.position || null}
-                        question={question}
-                        party={party}
-                      />
+                <CardContent className="pt-2 space-y-4">
+                  {/* Affichage simple inspiré de la page résultats */}
+                  {hasUserResponses && userPos ? (
+                    <div className="space-y-3">
+                      <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3">
+                        <p className="text-sm font-semibold text-blue-800 mb-0.5">Votre réponse</p>
+                        <p className="text-foreground">{getAgreementLabel(question, userPos)}</p>
+                      </div>
+                      
+                      {partyPos?.position && partyPos.position !== "?" ? (
+                         <div className="bg-muted/30 border rounded-lg p-3 space-y-2">
+                           <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold text-foreground">Position du parti</p>
+                            <div className="flex items-center gap-2">
+                               <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger>
+                                    {getComparisonIcon(userPos, partyPos.position)}
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p>{getComparisonText(userPos, partyPos.position)}</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </div>
+                           </div>
+                           <p className="text-foreground font-medium" style={{ color: party.color }}>{partyPositionLabel}</p>
+                         </div>
+                      ) : (
+                        <div className="bg-muted/30 border rounded-lg p-3 text-center">
+                          <p className="text-sm text-muted-foreground italic">
+                            {partyPos?.position === "?" ? "Position incertaine" : "Position non spécifiée"}
+                          </p>
+                        </div>
+                      )}
                     </div>
-                  ) : (
+                  ) : partyPos?.position && partyPos.position !== "?" ? (
                     /* Affichage simple si pas de réponse utilisateur */
-                    <div className="text-center py-2">
-                      <p>
-                        <span className="font-semibold text-primary">Position du parti :</span> {partyPositionLabel}
-                      </p>
+                     <div className="bg-muted/30 border rounded-lg p-3">
+                        <p className="text-sm font-semibold text-foreground">Position du parti</p>
+                        <p className="font-medium" style={{ color: party.color }}>{partyPositionLabel}</p>
+                     </div>
+                  ) : (
+                    <div className="bg-muted/30 border rounded-lg p-3 text-center">
+                      <p className="text-sm text-muted-foreground italic">Position non spécifiée</p>
                     </div>
                   )}
-                  
+
                   {/* Sources et notes */}
                   {partyPos?.source && (
-                    <div className="flex items-start gap-1.5 text-muted-foreground">
-                      <FileText className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 text-xs text-muted-foreground pt-2 border-t border-dashed">
+                      <FileText className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
                       <p>
                         <span className="font-medium">Source :</span> {partyPos.source}
                       </p>
                     </div>
                   )}
                   {partyPos?.note && (
-                    <div className="flex items-start gap-1.5 text-muted-foreground bg-muted/50 p-2 rounded-md">
-                      <Info className="h-4 w-4 mt-0.5 flex-shrink-0 text-accent" />
+                    <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <Info className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
                       <p>
                         <span className="font-medium">Note :</span> {partyPos.note}
                       </p>
                     </div>
                   )}
                   {partyPos?.quote && (
-                    <blockquote className="border-l-4 border-primary pl-3 italic text-foreground/80">
+                    <blockquote className="border-l-2 border-primary pl-3 italic text-xs text-foreground/80">
                       &quot;{partyPos.quote}&quot;
                     </blockquote>
                   )}

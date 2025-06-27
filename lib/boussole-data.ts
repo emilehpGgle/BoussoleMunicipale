@@ -59,6 +59,7 @@ export interface Party {
   shortName?: string
   leader: string
   logoUrl: string
+  color: string
   websiteUrl?: string
   orientation?: string
   mainIdeasSummary?: string
@@ -308,6 +309,7 @@ export const partiesData: Party[] = [
     shortName: "ACQ",
     leader: "Alain Giasson",
     logoUrl: "/logos/alliance-citoyenne-white-bg.svg", // Logo blanc simple
+    color: "#0D47A1",
     websiteUrl: "https://metroquebec.com/local/118385/c-est-quoi-l-alliance-citoyenne-de-quebec/",
     orientation: "Centriste avec tendance pragmatique",
     strengths: ["Développement économique", "Services de proximité"],
@@ -373,6 +375,7 @@ export const partiesData: Party[] = [
     shortName: "EPQ",
     leader: "Stevens Melançon",
     logoUrl: "/logos/equipe-priorite-quebec-new.png", // Updated
+    color: "#004b87",
     websiteUrl: "https://equipeprioritequebec.ca/",
     orientation: "Centre-droit, pro-développement économique",
     strengths: ["Développement économique", "Gestion financière"],
@@ -438,6 +441,7 @@ export const partiesData: Party[] = [
     shortName: "LQ",
     leader: "André Simard", // Note: Sam Hamad is mentioned in the name, but André Simard is often cited as current leader. Clarify if needed.
     logoUrl: "/logos/leadership-quebec-new.png", // Updated
+    color: "#004a99",
     websiteUrl: "https://leadershipquebec.ca/",
     orientation: "Droite économique, pro-entreprise",
     strengths: ["Développement économique", "Réduction de la dette"],
@@ -503,6 +507,7 @@ export const partiesData: Party[] = [
     shortName: "QD",
     leader: "Claude Villeneuve",
     logoUrl: "/logos/quebec-dabord-new.png", // Updated
+    color: "#00aef0",
     websiteUrl: "https://quebecdabord.com/",
     orientation: "Centre, pragmatique",
     strengths: ["Équilibre entre services et fiscalité"],
@@ -568,6 +573,7 @@ export const partiesData: Party[] = [
     shortName: "QFF",
     leader: "Bruno Marchand",
     logoUrl: "/logos/quebec-forte-et-fiere-new.png", // Updated
+    color: "#FDB813",
     websiteUrl: "https://quebecforteetfiere.org/",
     orientation: "Centre-gauche, progressiste",
     strengths: ["Environnement", "Transport collectif", "Logement"],
@@ -633,6 +639,7 @@ export const partiesData: Party[] = [
     shortName: "RC",
     leader: "Stéphane Lachance",
     logoUrl: "/logos/respect-citoyens-new.png", // Updated
+    color: "#D32F2F",
     websiteUrl: "https://www.respectcitoyens.org/",
     orientation: "Droite conservatrice",
     strengths: ["Réduction des taxes", "Développement économique"],
@@ -698,6 +705,7 @@ export const partiesData: Party[] = [
     shortName: "TQ",
     leader: "Jacquelyn Smith",
     logoUrl: "/logos/transition-quebec-new.png", // Updated
+    color: "#00965e",
     websiteUrl: "https://transitionqc.org/",
     orientation: "Gauche écologiste",
     strengths: ["Environnement", "Transport collectif", "Justice sociale"],

@@ -18,53 +18,53 @@ interface SessionState {
 
 // ✅ SINGLETON GLOBAL pour éviter les multiples initialisations
 let globalSessionState: SessionState = {
-  sessionToken: null,
-  isSessionValid: false,
-  isLoading: true,
-  isInitializing: true,
-  error: null
+    sessionToken: null,
+    isSessionValid: false,
+    isLoading: true,
+    isInitializing: true,
+    error: null
 }
 
 let globalInitialized = false
 let globalInitializing = false
 const listeners: Set<(state: SessionState) => void> = new Set()
-
+  
 // ✅ Fonction pour notifier tous les listeners
 const notifyListeners = () => {
   listeners.forEach(listener => listener(globalSessionState))
 }
 
-// ✅ Fonction pour créer une nouvelle session
-const createSession = async (): Promise<{ sessionToken: string } | null> => {
-  try {
-    console.log('🆕 [useSession] Création nouvelle session...')
-    
-    const response = await fetch('/api/sessions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+  // ✅ Fonction pour créer une nouvelle session
+  const createSession = async (): Promise<{ sessionToken: string } | null> => {
+    try {
+      console.log('🆕 [useSession] Création nouvelle session...')
+      
+      const response = await fetch('/api/sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
 
-    if (!response.ok) {
-      throw new Error(`Erreur ${response.status}: ${response.statusText}`)
-    }
+      if (!response.ok) {
+        throw new Error(`Erreur ${response.status}: ${response.statusText}`)
+      }
 
-    const data = await response.json()
-    
-    if (data.success && data.session) {
-      console.log('✅ [useSession] Session créée:', data.session.sessionToken)
+      const data = await response.json()
+      
+      if (data.success && data.session) {
+        console.log('✅ [useSession] Session créée:', data.session.sessionToken)
       // ✅ Sauvegarder dans localStorage
       localStorage.setItem('boussole_session_token', data.session.sessionToken)
-      return { sessionToken: data.session.sessionToken }
-    } else {
-      throw new Error(data.message || 'Échec de création de session')
+        return { sessionToken: data.session.sessionToken }
+      } else {
+        throw new Error(data.message || 'Échec de création de session')
+      }
+    } catch (error) {
+      console.error('❌ [useSession] Erreur création session:', error)
+      return null
     }
-  } catch (error) {
-    console.error('❌ [useSession] Erreur création session:', error)
-    return null
   }
-}
 
 // ✅ Fonction pour valider une session existante
 const validateSession = async (token: string): Promise<boolean> => {
@@ -92,8 +92,8 @@ const validateSession = async (token: string): Promise<boolean> => {
 const initializeGlobalSession = async () => {
   if (globalInitializing || globalInitialized) {
     console.log('🔄 [useSession] Initialisation déjà en cours ou terminée')
-    return
-  }
+      return
+    }
 
   globalInitializing = true
   console.log('🚀 [useSession] Initialisation session GLOBALE')
@@ -140,12 +140,12 @@ const initializeGlobalSession = async () => {
       globalSessionState = {
         sessionToken: null,
         isSessionValid: false,
-        isLoading: false,
-        isInitializing: false,
-        error: 'Impossible de créer une session'
+          isLoading: false,
+          isInitializing: false,
+          error: 'Impossible de créer une session'
       }
       console.error('❌ [useSession] Échec initialisation session GLOBALE')
-    }
+      }
   } catch (error) {
     console.error('❌ [useSession] Erreur lors de l\'initialisation GLOBALE:', error)
     globalSessionState = {
@@ -181,7 +181,7 @@ export function useSession() {
     }
     
     listeners.add(listener)
-    
+
     // ✅ Initialiser si pas encore fait
     if (!globalInitialized && !globalInitializing) {
       initializeGlobalSession()

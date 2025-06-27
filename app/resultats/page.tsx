@@ -396,7 +396,6 @@ export default function ResultsPage() {
             alt="" 
             width={256}
             height={192}
-            quality={90}
             className="object-contain decorative-image-left"
           />
         </div>
@@ -408,7 +407,6 @@ export default function ResultsPage() {
             alt="" 
             width={288}
             height={216}
-            quality={90}
             className="object-contain decorative-image-right"
           />
         </div>

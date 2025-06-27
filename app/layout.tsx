@@ -22,9 +22,19 @@ export const metadata: Metadata = {
     telephone: false,
   },
   icons: {
-    icon: "/logo-main_sans_ecriture.png",
-    apple: "/logo-main_sans_ecriture.png",
-    shortcut: "/logo-main_sans_ecriture.png",
+    icon: [
+      {
+        url: "/logo-main_sans_ecriture.png",
+        sizes: "any",
+      },
+    ],
+    apple: [
+      {
+        url: "/logo-main_sans_ecriture.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
+    ],
   },
   openGraph: {
     title: "Boussole Municipale - Trouvez votre parti municipal",
@@ -59,15 +69,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" suppressHydrationWarning>
-      <head>
-        <style dangerouslySetInnerHTML={{
-          __html: `
-            link[rel*="icon"] {
-              background-color: transparent !important;
-            }
-          `
-        }} />
-      </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="flex flex-col min-h-screen bg-white">

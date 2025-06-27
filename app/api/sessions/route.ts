@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 [API SESSIONS] Validation session...')
-    
+
     // ✅ Extraire le sessionToken depuis le header Authorization
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
