@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { FileText, BarChart3, Users, Compass, Share2 } from "lucide-react" // Added Share2
+import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react" // Added Share2 and HelpCircle
 import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
@@ -76,7 +76,8 @@ export default function HomePage() {
                 <ColoredText variant="gradient" intensity="medium">Boussole Électorale Municipale</ColoredText> - Spécialisée pour Québec
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg">
-                La seule boussole électorale dédiée aux <strong>élections municipales</strong> de Québec. Questionnaire gratuit de 5 minutes pour découvrir vos affinités avec les partis municipaux. Déneigement, pistes cyclables, transport en commun : votre boussole électorale locale !
+                Découvrez quel parti municipal vous correspond vraiment ! Notre boussole électorale gratuite vous guide en 5 minutes à travers les enjeux locaux qui comptent.
+                Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques sur ce qui vous touche au quotidien.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <div className="flex flex-col gap-2">
@@ -85,7 +86,7 @@ export default function HomePage() {
                     onClick={handleStartQuestionnaire}
                     className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
                   >
-                    Commencer le questionnaire
+                    Découvrez vos affinités politiques
                   </Button>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
                 </div>
@@ -93,9 +94,12 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-primary text-primary hover:bg-primary/10 hover:text-primary rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift"
+                  className="border-primary text-primary hover:bg-primary/10 hover:text-primary rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift border-2"
                 >
-                  <Link href="#comment-ca-marche">Comment ça marche ?</Link>
+                  <Link href="#comment-ca-marche" className="flex items-center gap-2">
+                    <HelpCircle className="w-5 h-5" />
+                    Comment ça marche ?
+                  </Link>
                 </Button>
               </div>
             </div>
@@ -218,7 +222,7 @@ export default function HomePage() {
             </p>
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
               <Link href="/questionnaire">
-                Essayer Notre Boussole Municipale
+                Découvrez vos affinités politiques
               </Link>
             </Button>
           </div>
@@ -333,7 +337,7 @@ export default function HomePage() {
               onClick={handleStartQuestionnaire}
               className="bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
             >
-              Commencer maintenant
+              Découvrez vos affinités politiques
             </Button>
           </div>
         </div>

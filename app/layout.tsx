@@ -10,17 +10,19 @@ import { Toaster } from "sonner"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Boussole Électorale Municipale - La Boussole Électorale de Québec",
-  description: "🗳️ Boussole électorale spécialisée pour les élections MUNICIPALES de Québec. Questionnaire gratuit de 5 minutes : découvrez quel parti municipal partage vos idées. Déneigement, transport en commun, services municipaux - votre boussole électorale locale !",
+  title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",
+  description: "🗳️ Découvrez quel parti municipal vous correspond vraiment ! Notre boussole électorale gratuite vous guide en 5 minutes à travers les enjeux locaux qui comptent. Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques sur ce qui vous touche au quotidien.",
   keywords: [
     "boussole électorale",
     "élections municipales québec",
     "test politique",
     "partis politiques québec",
-    "tramway quebec",
+    "troisième lien",
     "services municipaux",
     "déneigement québec",
-    "pistes cyclables"
+    "pistes cyclables",
+    "fiscalité locale",
+    "aménagement urbain"
   ],
   authors: [{ name: "Boussole Électorale Québec" }],
   creator: "Boussole Électorale Québec",
@@ -46,8 +48,8 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Boussole Électorale Municipale | Québec - Spécialisée Elections Locales",
-    description: "🗳️ Questionnaire gratuit et anonyme en 5 minutes. Déneigement, transport en commun, services municipaux - votre boussole électorale municipale.",
+    title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",
+    description: "Découvrez quel parti municipal vous correspond vraiment ! Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques.",
     url: "https://boussole-municipale.vercel.app",
     siteName: "Boussole Électorale Municipale Québec",
     locale: "fr_CA",
@@ -63,8 +65,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Boussole Électorale Municipale Québec 🗳️", 
-    description: "La boussole électorale spécialisée pour les élections municipales ! Questionnaire gratuit en 5 minutes pour découvrir vos affinités avec les partis locaux.",
+    title: "Boussole Électorale Municipale - Votre guide 2025 🗳️",
+    description: "Découvrez quel parti municipal vous correspond vraiment ! Services municipaux, troisième lien, aménagement urbain, fiscalité locale.",
     images: ["/hero-illustration.png"]
   },
   robots: {
