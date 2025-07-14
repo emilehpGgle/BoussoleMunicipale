@@ -1,5 +1,6 @@
 "use client"
 
+import type { Metadata } from "next"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -20,6 +21,32 @@ import { ButtonWithEffects } from "@/components/ui/button-effects"
 
 
 // questions constant is already defined from boussoleQuestions
+
+// Métadonnées SEO optimisées pour la page questionnaire
+export const metadata: Metadata = {
+  title: "Questionnaire Boussole Électorale Municipale 2025 | Québec",
+  description: "Questionnaire de la boussole électorale spécialisée MUNICIPALE : 21 questions sur les enjeux locaux de Québec 2025. Bruno Marchand, tramway, logement, environnement. Découvrez vos affinités avec les partis municipaux en 5 minutes !",
+  keywords: [
+    // Parasitage + spécialisation municipale
+    "boussole électorale",
+    "boussole électorale municipale", 
+    "boussole électorale locale",
+    "boussole électorale 2025",
+    "la boussole électorale",
+    "boussole électorale québec",
+    "bruno marchand",
+    "élections municipales 2025",
+    "politique gauche droite",
+    "bruno marchand tramway",
+    "maire de québec",
+    "questionnaire politique municipal"
+  ].join(", "),
+  openGraph: {
+    title: "Questionnaire Boussole Électorale Municipale Québec 2025",
+    description: "La seule boussole électorale dédiée aux élections municipales. 21 questions sur les enjeux locaux de votre ville.",
+    type: "website"
+  }
+}
 
 export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -130,7 +157,21 @@ export default function QuestionnairePage() {
   }, [searchParams, router])
 
   const currentQuestion = boussoleQuestions[currentQuestionIndex]
-  const progress = ((currentQuestionIndex + 1) / boussoleQuestions.length) * 100
+  const isAnswered = (() => {
+    if (currentQuestion.responseType === "importance_direct") {
+      return userImportanceDirectAnswers[currentQuestion.id] !== undefined
+    } else if (currentQuestion.responseType === "priority_ranking") {
+      // Pour les questions de priorité, vérifier qu'on a bien 3 priorités sélectionnées
+      return Object.keys(selectedPriorities).length === 3
+    } else {
+      return userAnswers[currentQuestion.id] !== undefined
+    }
+  })()
+
+  // Calculer le nombre de questions réellement répondues
+  const answeredQuestionsCount = getResponseCounts().agreement
+  const totalQuestions = boussoleQuestions.length
+  const progress = (answeredQuestionsCount / totalQuestions) * 100
 
   const handleAnswer = async (optionKey: AgreementOptionKey) => {
     try {
@@ -308,16 +349,6 @@ export default function QuestionnairePage() {
       }, 250)
     }
   }
-
-  const isAnswered = (() => {
-    if (currentQuestion.responseType === "importance_direct") {
-      return userImportanceDirectAnswers[currentQuestion.id] !== undefined
-    } else if (currentQuestion.responseType === "priority_ranking") {
-      return userAnswers[currentQuestion.id] !== undefined
-    } else {
-      return userAnswers[currentQuestion.id] !== undefined
-    }
-  })()
 
   // État de chargement pendant l'initialisation
   if (isLoading) {

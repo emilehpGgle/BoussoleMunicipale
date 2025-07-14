@@ -278,20 +278,18 @@ export function useUserResponses() {
 
   // Obtenir le nombre de réponses par type
   const getResponseCounts = useCallback(() => {
-    const uniqueQuestions = new Set([
-      ...Object.keys(state.responses.agreement),
-      ...Object.keys(state.responses.importanceDirect),
-      ...Object.keys(state.responses.priorities)
-    ])
+    const agreementCount = Object.keys(state.responses.agreement).length
+    const importanceDirectCount = Object.keys(state.responses.importanceDirect).length
+    const prioritiesCount = Object.keys(state.responses.priorities).length
 
+    // On ne compte que les réponses d'accord pour le total des questions
+    // car chaque question a une seule réponse d'accord
     return {
-      agreement: Object.keys(state.responses.agreement).length,
-      importanceDirect: Object.keys(state.responses.importanceDirect).length,
-      priorities: Object.keys(state.responses.priorities).length,
-      total: uniqueQuestions.size,
-      totalResponses: Object.keys(state.responses.agreement).length + 
-                     Object.keys(state.responses.importanceDirect).length +
-                     Object.keys(state.responses.priorities).length
+      agreement: agreementCount,
+      importanceDirect: importanceDirectCount,
+      priorities: prioritiesCount,
+      total: agreementCount, // Seules les réponses d'accord comptent pour la progression
+      totalResponses: agreementCount + importanceDirectCount + prioritiesCount
     }
   }, [state.responses])
 

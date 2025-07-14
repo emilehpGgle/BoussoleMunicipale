@@ -234,8 +234,12 @@ export function useProfile() {
   // Obtenir le pourcentage de complétion du profil
   const getCompletionPercentage = useCallback(() => {
     const requiredFields = [
-      'age', 'gender', 'occupation', 'residenceType', 'residenceArea',
-      'politicalInterest', 'previousVoting', 'mainConcerns', 'informationSources'
+      'age_group',
+      'gender',
+      'household_income',
+      'education_level',
+      'housing_status',
+      'main_transport'
     ]
     
     const completedFields = requiredFields.filter(field => hasProfileField(field))
