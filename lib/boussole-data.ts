@@ -114,13 +114,12 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q6_densification_quartiers",
-    text: "Évaluez l'importance de densifier davantage les quartiers existants plutôt que d'étendre le développement en périphérie.",
+    text: "La Ville devrait faciliter la densification du centre-ville avant d'autoriser le développement en périphérie.",
     category: "Habitation et aménagement urbain",
-    responseType: "importance_direct",
-    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    responseType: "agreement",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    importanceDirectOptions: ["TI", "AI", "NI", "PI", "PTI", "IDK"],
-    description: "Cette question mesure la priorité accordée à la densification versus l'étalement urbain.",
+    description: "Cette question mesure la priorité accordée à la séquence de développement urbain.",
   },
   {
     id: "q7_restrictions_airbnb",
@@ -228,7 +227,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q17_soutien_organismes_communautaires",
-    text: "La Ville devrait augmenter son soutien financier aux organismes communautaires.",
+    text: "La Ville devrait augmenter son soutien financier aux organismes communautaires qui fournissent des services sociaux essentiels (itinérance, aide alimentaire, etc.).",
     category: "Développement économique et social",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -252,8 +251,8 @@ export const boussoleQuestions: Question[] = [
     }
   },
   {
-    id: "q19_investissement_infrastructures_culturelles_sportives",
-    text: "Évaluez l'importance d'investir davantage dans les infrastructures culturelles et sportives de quartier.",
+    id: "q19_investissement_infrastructures_loisirs_sportives",
+    text: "Évaluez l'importance d'investir davantage dans les infrastructures de loisirs et sportives de quartier.",
     category: "Sécurité publique et services municipaux",
     responseType: "importance_direct",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
@@ -282,7 +281,7 @@ export const boussoleQuestions: Question[] = [
       "Logement abordable", 
       "Environnement et espaces verts",
       "Sécurité publique",
-      "Développement économique",
+      "Gestion des finances municipales",
       "Services municipaux",
       "Projet de tramway",
       "Troisième lien routier",

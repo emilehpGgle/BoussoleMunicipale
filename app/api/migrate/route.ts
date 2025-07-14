@@ -60,7 +60,7 @@ export async function GET(_request: NextRequest) {
             'Logement abordable', 
             'Environnement et espaces verts',
             'Sécurité publique',
-            'Développement économique',
+            'Gestion des finances municipales',
             'Services municipaux',
             'Projet de tramway',
             'Troisième lien routier',

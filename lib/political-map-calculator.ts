@@ -228,9 +228,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
 
   'quebec_dabord': {
     // Claude Villeneuve - Critique gestion actuelle, pragmatique
-    q1_tramway: 'PD',                              // Critique le projet actuel
+    q1_tramway: 'PA',                              // Pour le tramway (position corrigée)
     q2_pistes_cyclables: 'N',                      // Neutre
-    q3_troisieme_lien: 'PA',                       // Pour le 3e lien
+    q3_troisieme_lien: 'FD',                       // Contre le 3e lien (position corrigée)
     q4_secteur_prive_transport: 'PA',              // Pour l'efficacité privée
     q5_quotas_logements_abordables: 'N',           // Préfère autres solutions
     q6_densification_quartiers: 'N',               // Neutre
@@ -264,7 +264,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q10_transition_carboneutre: 'PD',              // Contre (coûts économiques)
     q11_collecte_residus_alimentaires: 'N',        // Neutre (si rentable)
     q12_augmentation_taxes: 'FD',                  // "Réduction des taxes" (priorité)
-    q13_participation_citoyenne: 'N',              // Neutre (consultation ciblée)
+    q13_participation_citoyenne: 'PA',             // Pour (plus de pouvoir aux citoyens via conseils)
     q14_reduction_dette: 'FA',                     // Fortement pour (santé financière)
     q15_avantages_fiscaux_entreprises: 'FA',       // Fortement pour (attraction économique)
     q16_achat_local: 'N',                         // Neutre (libre marché)
