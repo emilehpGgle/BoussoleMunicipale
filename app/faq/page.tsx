@@ -6,25 +6,16 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec 2025",
-  description: "Réponses aux questions sur la boussole électorale municipale pour les élections de Québec 2025. Différence avec les boussoles provinciales ? Comment fonctionne notre boussole électorale locale ? Bruno Marchand tramway position ?",
+  title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec",
+  description: "Réponses aux questions sur la boussole électorale municipale pour les élections de Québec. Différence avec les boussoles provinciales ? Comment fonctionne notre boussole électorale locale ? Positions sur le déneigement, transport en commun et services municipaux ?",
   keywords: [
-    // Parasitage + différenciation municipale
     "boussole électorale",
-    "boussole électorale municipale",
-    "boussole électorale locale", 
-    "boussole électorale 2025",
-    "la boussole électorale",
-    "bruno marchand",
-    "bruno marchand tramway",
-    "élections municipales 2025",
-    "politique gauche droite",
-    "maire de québec",
-    "boussole électorale québec",
-    "partis politiques québec",
-    "boussole électorale jeunesse",
-    "questionnaire politique municipal"
-  ].join(", "),
+    "élections municipales québec",
+    "services municipaux",
+    "déneigement québec",
+    "transport en commun",
+    "pistes cyclables"
+  ],
   openGraph: {
     title: "FAQ - Questions sur la Boussole Électorale Municipale Québec 2025",
     description: "Toutes vos questions sur notre boussole électorale spécialisée pour les élections municipales de Québec. Découvrez la différence avec les boussoles provinciales."
@@ -32,93 +23,39 @@ export const metadata: Metadata = {
 }
 
 export default function FAQPage() {
-  const faqData = [
+  const faqs = [
     {
-      category: "Généralités",
+      category: "La Boussole",
       questions: [
         {
-          q: "Qu'est-ce que la Boussole Électorale Municipale 2025 ?",
-          a: "La Boussole Électorale Municipale 2025 est un questionnaire politique gratuit et anonyme spécialisé pour les élections MUNICIPALES de Québec. Contrairement aux boussoles électorales généralistes (provinciales/fédérales), nous nous concentrons exclusivement sur les enjeux locaux qui affectent votre quotidien : tramway, logement, services municipaux."
+          q: "Qu'est-ce que la Boussole Électorale Municipale ?",
+          a: "La Boussole Électorale Municipale est un questionnaire politique gratuit et anonyme spécialisé pour les élections MUNICIPALES de Québec. Contrairement aux boussoles électorales généralistes (provinciales/fédérales), nous nous concentrons sur les enjeux qui vous touchent directement : déneigement, transport en commun, pistes cyclables, etc."
         },
         {
-          q: "Quelle est la différence avec les autres boussoles électorales ?",
-          a: "Notre boussole électorale municipale se distingue des boussoles provinciales ou fédérales par sa spécialisation locale. Nous analysons uniquement les partis et candidats municipaux de Québec (Bruno Marchand, etc.) sur des enjeux hyperlocaux. Les autres boussoles électorales traitent d'enjeux généraux (santé, éducation) qui ne relèvent pas du municipal."
-        },
-        {
-          q: "Comment fonctionne la boussole électorale ?",
-          a: "Notre boussole électorale analyse vos réponses sur 21 enjeux municipaux (tramway, logement, environnement, finances). Vous indiquez votre niveau d'accord et l'importance de chaque enjeu. Notre algorithme compare vos positions avec celles des partis politiques québécois et calcule un pourcentage de compatibilité."
-        },
-        {
-          q: "Combien de temps prend le questionnaire ?",
-          a: "Le questionnaire de la boussole électorale prend environ 5 minutes à compléter. Il contient 21 questions sur les enjeux municipaux de Québec. Vous pouvez le faire à votre rythme et reprendre plus tard si nécessaire."
+          q: "En quoi notre boussole est-elle différente ?",
+          a: "Notre boussole électorale est la seule à se concentrer exclusivement sur les partis et candidats municipaux de Québec sur des enjeux hyperlocaux comme le déneigement, les pistes cyclables et les services municipaux. Les autres boussoles électorales traitent d'enjeux généraux (santé, éducation) qui ne relèvent pas du municipal."
         }
       ]
     },
     {
-      category: "Élections Municipales 2025",
+      category: "Élections Municipales",
       questions: [
         {
-          q: "Quand ont lieu les élections municipales québec 2025 ?",
-          a: "Les élections municipales de Québec auront lieu en novembre 2025. La date exacte sera confirmée par la Ville de Québec. Notre boussole électorale vous aide à vous préparer en identifiant vos affinités politiques avec les partis municipaux."
+          q: "Quels sont les principaux partis politiques municipaux ?",
+          a: "Les principaux partis politiques de Québec incluent : Équipe Priorité Québec, Québec d'Abord, Transition Québec, Leadership Québec, Respect Citoyens, Québec Forte et Fière, et Alliance Citoyenne. Notre test analyse les positions de tous ces partis."
         },
         {
-          q: "Quels sont les partis politiques municipaux de Québec ?",
-          a: "Les principaux partis politiques québec pour les élections municipales 2025 incluent : Équipe Priorité Québec (Bruno Marchand), Québec d'Abord, Transition Québec, Leadership Québec, Respect Citoyens, Québec Forte et Fière, et Alliance Citoyenne. Notre test analyse les positions de tous ces partis."
-        },
-        {
-          q: "Quelle est la position de Bruno Marchand sur le tramway ?",
-          a: "Bruno Marchand, maire sortant avec Équipe Priorité Québec, soutient le projet de tramway québec. Sa position est généralement favorable au développement du transport en commun structurant. Notre boussole électorale vous permet de comparer votre opinion sur le tramway avec celle de tous les partis."
+          q: "Quels sont les principaux enjeux municipaux ?",
+          a: "Les enjeux municipaux clés incluent : le déneigement, l'entretien des rues, les pistes cyclables, le transport en commun (incluant le projet de tramway), la crise du logement, la densification urbaine, la transition écologique, les finances municipales, la démocratie participative, et la sécurité publique."
         }
       ]
     },
     {
-      category: "Fonctionnement du Test",
+      category: "Méthodologie",
       questions: [
         {
-          q: "Comment interpréter mon positionnement politique gauche-droite ?",
-          a: "Votre position sur la carte politique gauche-droite se base sur deux axes : économique (interventionnisme vs libéralisme) et social (progressisme vs conservatisme). Plus vous êtes à gauche, plus vous favorisez l'intervention publique et les valeurs progressistes. À droite, vous privilégiez le libre marché et des approches plus traditionnelles."
-        },
-        {
-          q: "La boussole électorale est-elle fiable ?",
-          a: "Notre boussole électorale se base sur les programmes officiels et déclarations publiques vérifiées des partis politiques québec. Nous mettons à jour régulièrement les positions. Cependant, c'est un outil d'aide à la décision qui ne remplace pas vos propres recherches sur les candidats et leurs programmes."
-        },
-        {
-          q: "Mes données sont-elles privées ?",
-          a: "Absolument ! Notre boussole électorale est entièrement anonyme. Nous ne collectons aucune donnée personnelle. Vos réponses restent sur votre appareil et ne sont jamais transmises ou stockées sur nos serveurs."
-        }
-      ]
-    },
-    {
-      category: "Enjeux Municipaux",
-      questions: [
-        {
-          q: "Quels sont les principaux enjeux municipaux québec 2025 ?",
-          a: "Les enjeux municipaux clés pour 2025 incluent : le projet de tramway quebec, la crise du logement, la densification urbaine, la transition écologique, les finances municipales, la démocratie participative, et la sécurité publique. Notre boussole électorale couvre tous ces aspects pour identifier vos priorités."
-        },
-        {
-          q: "Comment les partis se positionnent-ils sur l'environnement ?",
-          a: "Les partis politiques québec ont des approches variées : certains priorisent la transition énergétique et les espaces verts, d'autres mettent l'accent sur l'équilibre avec le développement économique. Notre boussole électorale vous aide à identifier quel parti partage votre vision environnementale."
-        },
-        {
-          q: "Qu'en est-il des finances municipales ?",
-          a: "Les approches diffèrent entre les partis : gestion rigoureuse vs investissements publics, taxation vs services, endettement acceptable vs équilibre budgétaire. La boussole électorale évalue votre position sur ces questions financières cruciales."
-        }
-      ]
-    },
-    {
-      category: "Résultats et Partage",
-      questions: [
-        {
-          q: "Comment interpréter mes affinités politiques ?",
-          a: "Vos affinités politiques sont exprimées en pourcentage de compatibilité avec chaque parti. Plus le pourcentage est élevé, plus vos réponses correspondent aux positions du parti. Un score de 70%+ indique une forte affinité, 50-70% une affinité modérée, moins de 50% une affinité faible."
-        },
-        {
-          q: "Puis-je partager mes résultats ?",
-          a: "Oui ! Vous pouvez partager vos résultats de la boussole électorale sur les réseaux sociaux ou par email. Cela peut encourager le débat démocratique et inciter vos proches à faire également le questionnaire."
-        },
-        {
-          q: "Que faire si aucun parti ne me correspond ?",
-          a: "C&apos;est normal ! La politique municipale est complexe. Vous pouvez : 1) Consulter les pages détaillées des partis les mieux classés, 2) Prioriser les enjeux les plus importants pour vous, 3) Considérer les candidats individuels qui peuvent différer de leur parti, 4) Vous informer davantage sur les programmes complets."
+          q: "Comment interpréter mon positionnement politique ?",
+          a: "Votre position sur la carte politique se base sur deux axes : libre marché vs interventionnisme municipal (gestion des services) et progressisme vs conservatisme (vision de la ville). Plus vous êtes du côté interventionnisme, plus vous favorisez une gestion publique des services municipaux."
         }
       ]
     }
@@ -157,7 +94,7 @@ export default function FAQPage() {
       </Card>
 
       {/* FAQ par catégorie */}
-      {faqData.map((category, categoryIndex) => (
+      {faqs.map((category, categoryIndex) => (
         <Card key={categoryIndex} className="mb-6">
           <CardHeader>
             <CardTitle className="text-xl">{category.category}</CardTitle>

@@ -70,13 +70,13 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
-                <Compass className="w-5 h-5 mr-2" /> La boussole électorale MUNICIPALE 2025 de Québec
+                <Compass className="w-5 h-5 mr-2" /> La boussole électorale MUNICIPALE de Québec
               </span>
               <h1 className="tracking-tight text-foreground">
                 <ColoredText variant="gradient" intensity="medium">Boussole Électorale Municipale</ColoredText> - Spécialisée pour Québec
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg">
-                La seule boussole électorale dédiée aux <strong>élections municipales</strong> de Québec. Questionnaire gratuit de 5 minutes pour découvrir vos affinités avec les partis municipaux. Bruno Marchand, tramway, logement : votre boussole électorale locale !
+                La seule boussole électorale dédiée aux <strong>élections municipales</strong> de Québec. Questionnaire gratuit de 5 minutes pour découvrir vos affinités avec les partis municipaux. Déneigement, pistes cyclables, transport en commun : votre boussole électorale locale !
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <div className="flex flex-col gap-2">
@@ -194,6 +194,7 @@ export default function HomePage() {
             <div className="p-6 bg-primary/10 border-2 border-primary rounded-xl shadow-lg">
               <h3 className="font-semibold mb-3 text-primary">🏘️ Municipal (Notre spécialité)</h3>
               <ul className="text-sm text-foreground space-y-2">
+                <li>• Analyse complète des services municipaux</li>
                 <li>• <strong>Tramway et transport local</strong></li>
                 <li>• <strong>Logement et zonage</strong></li>
                 <li>• <strong>Parcs et services de proximité</strong></li>
@@ -242,8 +243,7 @@ export default function HomePage() {
             <h2 className="mb-6 text-foreground">Pourquoi une boussole électorale spécialisée pour le municipal ?</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
               Contrairement aux boussoles électorales provinciales ou fédérales, notre boussole électorale municipale se concentre sur les enjeux qui affectent votre quotidien direct : transport local (tramway), logement abordable, services municipaux. 
-              Les élections municipales 2025 de Québec nécessitent une boussole électorale locale adaptée aux réalités de votre ville. 
-              Que vous soyez intéressé par les positions de Bruno Marchand ou d&apos;autres candidats municipaux, notre questionnaire politique municipal vous guide sur l&apos;axe politique gauche-droite spécifique aux enjeux locaux. 
+              Les élections municipales de Québec nécessitent une boussole électorale locale adaptée aux réalités de votre ville. Que vous soyez intéressé par les positions des différents partis sur le déneigement, les pistes cyclables, le transport en commun ou d&apos;autres enjeux municipaux, notre questionnaire politique municipal vous guide sur les axes du libre marché et de l&apos;interventionnisme municipal spécifiques aux enjeux locaux.
               Pourtant, seulement <ColoredText variant="primary" intensity="bold">40% des citoyens</ColoredText> votent aux municipales. 
               Votre voix compte encore plus !
             </p>

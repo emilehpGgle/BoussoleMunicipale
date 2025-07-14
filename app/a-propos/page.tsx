@@ -5,20 +5,15 @@ import { BarChart3, Users, Shield, Target, CheckCircle } from "lucide-react"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "À Propos | Boussole Électorale 2025 - Test Politique Municipal Québec",
-  description: "Découvrez comment fonctionne notre boussole électorale pour les élections municipales de Québec 2025. Méthodologie, calcul des affinités politiques, positionnement gauche-droite des partis municipaux.",
+  title: "À Propos | Boussole Électorale - Test Politique Municipal Québec",
+  description: "Découvrez comment fonctionne notre boussole électorale pour les élections municipales de Québec. Méthodologie, calcul des affinités politiques, positionnement sur les axes du libre marché et de l'interventionnisme municipal.",
   keywords: [
-    "boussole électorale québec",
-    "méthodologie test politique",
-    "élections municipales 2025", 
-    "partis politiques québec",
-    "affinités politiques",
-    "politique gauche droite",
-    "outil démocratique",
-    "comparaison partis municipaux",
-    "bruno marchand",
-    "tramway quebec"
-  ].join(", "),
+    "élections municipales québec",
+    "test politique municipal",
+    "services municipaux",
+    "déneigement québec",
+    "transport en commun"
+  ],
   openGraph: {
     title: "Comment fonctionne la Boussole Électorale Municipale Québec 2025",
     description: "Méthodologie transparente de notre test politique pour les élections municipales. Découvrez comment nous calculons vos affinités avec les partis politiques."
@@ -98,10 +93,11 @@ export default function AboutPage() {
           </div>
           
           <div>
-            <h3 className="font-semibold mb-2">4. Positionnement Gauche-Droite</h3>
-            <p className="text-muted-foreground">
-              Visualisez votre position et celle des partis sur une carte <strong>politique gauche droite</strong> 
-              selon deux axes : économique (interventionnisme vs libéralisme) et social (progressisme vs conservatisme).
+            <h3 className="font-semibold mb-2">4. Positionnement sur les Axes Municipaux</h3>
+            <p className="text-muted-foreground mb-6">
+              Notre boussole électorale utilise deux axes principaux pour positionner les partis et les citoyens :
+              <br />- L&apos;axe du libre marché vs interventionnisme municipal (gestion des services)
+              <br />- L&apos;axe progressiste vs conservateur (vision de la ville)
             </p>
           </div>
         </CardContent>
