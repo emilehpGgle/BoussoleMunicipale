@@ -1,198 +1,241 @@
-import Link from "next/link"
-import { ArrowLeft, Target, Users, Code, Mail } from "lucide-react"
+import { Metadata } from "next"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { BarChart3, Users, Shield, Target, CheckCircle } from "lucide-react"
+import Link from "next/link"
 
-export default function AProposPage() {
+export const metadata: Metadata = {
+  title: "À Propos | Boussole Électorale 2025 - Test Politique Municipal Québec",
+  description: "Découvrez comment fonctionne notre boussole électorale pour les élections municipales de Québec 2025. Méthodologie, calcul des affinités politiques, positionnement gauche-droite des partis municipaux.",
+  keywords: [
+    "boussole électorale québec",
+    "méthodologie test politique",
+    "élections municipales 2025", 
+    "partis politiques québec",
+    "affinités politiques",
+    "politique gauche droite",
+    "outil démocratique",
+    "comparaison partis municipaux",
+    "bruno marchand",
+    "tramway quebec"
+  ].join(", "),
+  openGraph: {
+    title: "Comment fonctionne la Boussole Électorale Municipale Québec 2025",
+    description: "Méthodologie transparente de notre test politique pour les élections municipales. Découvrez comment nous calculons vos affinités avec les partis politiques."
+  }
+}
+
+export default function AboutPage() {
   return (
-    <div className="container max-w-4xl py-8 px-4 md:px-6">
-      <div className="mb-6">
-        <Button variant="ghost" asChild className="mb-4">
-          <Link href="/" className="flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            Retour à l&apos;accueil
-          </Link>
-        </Button>
-        
-        <h1 className="text-3xl font-bold text-foreground mb-4">
-          À Propos de la Boussole Municipale
+    <div className="container max-w-4xl mx-auto py-8 px-4">
+      {/* En-tête avec titre SEO optimisé */}
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold mb-4">
+          À Propos de la Boussole Électorale 2025
         </h1>
-        <p className="text-muted-foreground text-lg">
-          Un outil citoyen pour mieux comprendre le paysage politique municipal de Québec.
+        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          Découvrez comment notre test politique vous aide à identifier vos affinités avec les partis municipaux de Québec pour les élections 2025.
         </p>
       </div>
 
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5" />
-              Notre Mission
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm leading-relaxed">
-              La Boussole Municipale a été créée pour aider les citoyens de Québec à mieux 
-              comprendre les enjeux municipaux et à identifier leurs affinités avec les différents 
-              partis politiques. Notre objectif est de promouvoir une participation citoyenne 
-              éclairée aux élections municipales.
+      {/* Section Mission */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-6 w-6 text-primary" />
+            Notre Mission pour les Élections Municipales 2025
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-muted-foreground mb-4">
+            La Boussole électorale municipale de Québec est un outil d&apos;aide à la décision qui permet aux citoyens de comparer leurs positions avec celles des partis politiques municipaux.
+          </p>
+
+          <p className="text-muted-foreground mb-4">
+            L&apos;outil a été développé par une équipe indépendante de chercheurs et d&apos;experts en politique municipale.
+          </p>
+
+          <p className="text-muted-foreground mb-4">
+            Notre objectif est d&apos;aider les citoyens à mieux comprendre les enjeux et les positions des différents partis politiques municipaux.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Section Méthodologie */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-6 w-6 text-primary" />
+            Méthodologie du Test Politique
+          </CardTitle>
+          <CardDescription>
+            Comment nous calculons vos affinités politiques avec les partis municipaux
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div>
+            <h3 className="font-semibold mb-2">1. Questions sur les Enjeux Municipaux</h3>
+            <p className="text-muted-foreground">
+              21 questions couvrent les grands enjeux des <strong>élections municipales québec 2025</strong> : 
+              transport (tramway), logement, environnement, gouvernance, développement économique et sécurité publique.
             </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              Comment ça fonctionne
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div>
-              <h4 className="font-semibold text-sm mb-1">Questionnaire ciblé</h4>
-              <p className="text-sm text-muted-foreground">
-                20 questions sur les enjeux municipaux clés : transport, logement, environnement, 
-                développement économique et plus.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-1">Positions des partis</h4>
-              <p className="text-sm text-muted-foreground">
-                Les positions sont recherchées et compilées à partir des programmes officiels, 
-                déclarations publiques et sites web des partis.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-sm mb-1">Calcul des affinités</h4>
-              <p className="text-sm text-muted-foreground">
-                Un algorithme compare vos réponses avec les positions des partis pour calculer 
-                votre pourcentage d&apos;affinité avec chacun.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Enjeux couverts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-3 text-sm">
-              <div>
-                <h4 className="font-semibold mb-1">Transport et mobilité</h4>
-                <ul className="text-muted-foreground space-y-1 text-xs">
-                  <li>• Projet de tramway</li>
-                  <li>• Pistes cyclables</li>
-                  <li>• Troisième lien</li>
-                  <li>• Transport en commun</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Logement</h4>
-                <ul className="text-muted-foreground space-y-1 text-xs">
-                  <li>• Logement abordable</li>
-                  <li>• Densification</li>
-                  <li>• Airbnb</li>
-                  <li>• Zonage</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Environnement</h4>
-                <ul className="text-muted-foreground space-y-1 text-xs">
-                  <li>• Espaces verts</li>
-                  <li>• Transition carboneutre</li>
-                  <li>• Gestion des déchets</li>
-                  <li>• Développement durable</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Économie et gouvernance</h4>
-                <ul className="text-muted-foreground space-y-1 text-xs">
-                  <li>• Fiscalité municipale</li>
-                  <li>• Dette publique</li>
-                  <li>• Développement économique</li>
-                  <li>• Démocratie participative</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Code className="w-5 h-5" />
-              Transparence et neutralité
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm leading-relaxed mb-3">
-              Cet outil est développé de manière indépendante et ne favorise aucun parti politique. 
-              Nous nous efforçons de présenter les positions de chaque parti de manière équitable 
-              et factuelle.
+          </div>
+          
+          <div>
+            <h3 className="font-semibold mb-2">2. Positions des Partis Politiques</h3>
+            <p className="text-muted-foreground">
+              Nous analysons les programmes officiels et déclarations publiques des <strong>partis politiques québec</strong> 
+              pour positionner chaque parti sur chaque enjeu municipal.
             </p>
-            <div className="space-y-2 text-sm">
+          </div>
+          
+          <div>
+            <h3 className="font-semibold mb-2">3. Calcul des Affinités Politiques</h3>
+            <p className="text-muted-foreground">
+              Notre algorithme compare vos réponses avec les positions des partis en pondérant selon l&apos;importance 
+              que vous accordez à chaque enjeu. Le résultat : un pourcentage d&apos;affinité avec chaque parti municipal.
+            </p>
+          </div>
+          
+          <div>
+            <h3 className="font-semibold mb-2">4. Positionnement Gauche-Droite</h3>
+            <p className="text-muted-foreground">
+              Visualisez votre position et celle des partis sur une carte <strong>politique gauche droite</strong> 
+              selon deux axes : économique (interventionnisme vs libéralisme) et social (progressisme vs conservatisme).
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Section Transparence */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-6 w-6 text-primary" />
+            Transparence et Neutralité
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-semibold mb-1">Sources</h4>
-                <p className="text-muted-foreground">
-                  Programmes officiels, sites web des partis, déclarations publiques, 
-                  couverture médiatique vérifiée.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-1">Mise à jour</h4>
-                <p className="text-muted-foreground">
-                  Les informations sont régulièrement mises à jour pour refléter l&apos;évolution 
-                  des positions des partis.
+                <h4 className="font-medium">Sources Vérifiées</h4>
+                <p className="text-sm text-muted-foreground">
+                  Positions basées sur les programmes officiels et déclarations publiques vérifiées
                 </p>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Limitations importantes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm">
-              <p className="font-semibold text-amber-800 mb-2">Avertissement</p>
-              <p className="text-amber-700 mb-2">
-                La Boussole Municipale est un outil informatif qui ne remplace pas une recherche 
-                personnelle approfondie sur les candidats et leurs programmes.
-              </p>
-              <ul className="text-amber-700 space-y-1 text-xs">
-                <li>• Les positions peuvent évoluer pendant la campagne</li>
-                <li>• Certaines nuances ne peuvent être capturées dans un questionnaire</li>
-                <li>• Les candidats individuels peuvent avoir des positions différentes de leur parti</li>
-                <li>• Cet outil ne constitue pas une recommandation de vote</li>
-              </ul>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium">Données Anonymes</h4>
+                <p className="text-sm text-muted-foreground">
+                  Aucune donnée personnelle collectée, test entièrement anonyme
+                </p>
+              </div>
             </div>
-          </CardContent>
-        </Card>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium">Outil Indépendant</h4>
+                <p className="text-sm text-muted-foreground">
+                  Non affilié à aucun parti politique, développé de manière indépendante
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h4 className="font-medium">Mise à Jour Continue</h4>
+                <p className="text-sm text-muted-foreground">
+                  Positions mises à jour selon l&apos;évolution des programmes électoraux
+                </p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Mail className="w-5 h-5" />
-              Contact et feedback
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm leading-relaxed">
-              Nous accueillons vos commentaires, suggestions et corrections. Si vous remarquez 
-              une erreur dans les positions des partis ou si vous avez des suggestions 
-              d&apos;amélioration, n&apos;hésitez pas à nous en faire part.
-            </p>
-            <div className="mt-4 p-3 bg-muted rounded-lg">
-              <p className="text-sm text-muted-foreground">
-                Ce projet est open source et développé par des bénévoles passionnés de démocratie 
-                locale et de technologie civique.
+      {/* Section Enjeux Municipaux */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-6 w-6 text-primary" />
+            Les Grands Enjeux Municipaux 2025
+          </CardTitle>
+          <CardDescription>
+            Découvrez les thématiques couvertes par notre boussole électorale
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="font-medium mb-2">🚊 Transport et Mobilité</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Projet de <strong>tramway quebec</strong>, transport en commun, circulation automobile, 
+                pistes cyclables, stationnement
               </p>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            
+            <div>
+              <h4 className="font-medium mb-2">🏠 Logement et Urbanisme</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Crise du logement, densification urbaine, patrimoine, développement des quartiers
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-medium mb-2">🌱 Environnement</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Lutte aux changements climatiques, espaces verts, gestion des déchets, protection des milieux naturels
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-medium mb-2">💰 Finances Municipales</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Taxation municipale, gestion budgétaire, investissements publics, endettement
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-medium mb-2">🏛️ Gouvernance</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Démocratie participative, transparence, conseils de quartier, consultation citoyenne
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-medium mb-2">👮 Sécurité et Services</h4>
+              <p className="text-sm text-muted-foreground mb-4">
+                Sécurité publique, services municipaux, itinérance, inclusion sociale
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Call to Action */}
+      <Card className="text-center">
+        <CardContent className="pt-6">
+          <h3 className="text-2xl font-bold mb-4">
+            Prêt à découvrir vos affinités politiques ?
+          </h3>
+          <p className="text-muted-foreground mb-6">
+            Commencez votre <strong>test politique gratuit</strong> maintenant et découvrez quel parti municipal 
+            de Québec partage le mieux vos idées pour les élections 2025.
+          </p>
+          <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+            <Link href="/questionnaire">
+              Commencer le Test Politique
+            </Link>
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   )
 } 

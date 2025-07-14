@@ -70,14 +70,13 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
-                <Compass className="w-5 h-5 mr-2" /> Votre boussole citoyenne
+                <Compass className="w-5 h-5 mr-2" /> La boussole électorale MUNICIPALE 2025 de Québec
               </span>
               <h1 className="tracking-tight text-foreground">
-                Découvrez quel candidat municipal partage <ColoredText variant="gradient" intensity="medium">vos idées.</ColoredText>
+                <ColoredText variant="gradient" intensity="medium">Boussole Électorale Municipale</ColoredText> - Spécialisée pour Québec
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg">
-                Notre boussole interactive vous aide à comprendre les enjeux locaux et à trouver les candidats qui
-                correspondent à vos priorités. Simple, neutre et personnalisé.
+                La seule boussole électorale dédiée aux <strong>élections municipales</strong> de Québec. Questionnaire gratuit de 5 minutes pour découvrir vos affinités avec les partis municipaux. Bruno Marchand, tramway, logement : votre boussole électorale locale !
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <div className="flex flex-col gap-2">
@@ -176,6 +175,55 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Section de différenciation municipal vs autres niveaux */}
+      <section className="section-contained w-full py-12 md:py-16 bg-muted/30">
+        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
+          <h2 className="text-center mb-8 text-foreground animate-slideInUp">
+            Municipal vs Provincial/Fédéral : Pourquoi une boussole électorale spécialisée ?
+          </h2>
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="p-6 bg-card rounded-xl shadow-soft">
+              <h3 className="font-semibold mb-3 text-foreground">🏛️ Fédéral/Provincial</h3>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li>• Enjeux généraux nationaux</li>
+                <li>• Santé, éducation, économie</li>
+                <li>• Boussole électorale généraliste</li>
+                <li>• Impact indirect sur le quotidien</li>
+              </ul>
+            </div>
+            <div className="p-6 bg-primary/10 border-2 border-primary rounded-xl shadow-lg">
+              <h3 className="font-semibold mb-3 text-primary">🏘️ Municipal (Notre spécialité)</h3>
+              <ul className="text-sm text-foreground space-y-2">
+                <li>• <strong>Tramway et transport local</strong></li>
+                <li>• <strong>Logement et zonage</strong></li>
+                <li>• <strong>Parcs et services de proximité</strong></li>
+                <li>• <strong>Impact direct quotidien</strong></li>
+              </ul>
+            </div>
+            <div className="p-6 bg-card rounded-xl shadow-soft">
+              <h3 className="font-semibold mb-3 text-foreground">❓ Autres Boussoles</h3>
+              <ul className="text-sm text-muted-foreground space-y-2">
+                <li>• Questions génériques</li>
+                <li>• Partis provinciaux/fédéraux</li>
+                <li>• Pas adaptées aux enjeux locaux</li>
+                <li>• Bruno Marchand non inclus</li>
+              </ul>
+            </div>
+          </div>
+          <div className="text-center mt-8">
+            <p className="text-muted-foreground mb-4">
+              <strong>C&apos;est pourquoi</strong> notre boussole électorale municipale existe : 
+              pour les enjeux qui touchent vraiment votre quartier, votre ville, votre quotidien.
+            </p>
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+              <Link href="/questionnaire">
+                Essayer Notre Boussole Municipale
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* Section éducative avec glow subtil */}
       <GlowSection 
         glowProps={{ 
@@ -191,9 +239,11 @@ export default function HomePage() {
             className="animate-slideInUp"
             style={{ animationDelay: "0.2s" }}
           >
-            <h2 className="mb-6 text-foreground">Pourquoi les élections municipales sont-elles importantes ?</h2>
+            <h2 className="mb-6 text-foreground">Pourquoi une boussole électorale spécialisée pour le municipal ?</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
-              Votre ville influence directement votre quotidien : transports, parcs, taxes, services de proximité. 
+              Contrairement aux boussoles électorales provinciales ou fédérales, notre boussole électorale municipale se concentre sur les enjeux qui affectent votre quotidien direct : transport local (tramway), logement abordable, services municipaux. 
+              Les élections municipales 2025 de Québec nécessitent une boussole électorale locale adaptée aux réalités de votre ville. 
+              Que vous soyez intéressé par les positions de Bruno Marchand ou d&apos;autres candidats municipaux, notre questionnaire politique municipal vous guide sur l&apos;axe politique gauche-droite spécifique aux enjeux locaux. 
               Pourtant, seulement <ColoredText variant="primary" intensity="bold">40% des citoyens</ColoredText> votent aux municipales. 
               Votre voix compte encore plus !
             </p>
