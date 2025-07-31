@@ -15,10 +15,11 @@ import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
 import { usePriorities } from "@/hooks/usePriorities"
-import { useOptimizedTransition } from "@/hooks/useOptimizedTransition"
+import { useSweepTransitions, useReducedMotion, useAnimationPerformance } from "@/hooks/useSweepTransitions"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
+import { SwipeContainer, useTouchSupport } from "@/components/ui/swipe-container"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -27,10 +28,25 @@ export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
   
-  // Hook optimisé pour les transitions
-  const { isTransitioning, transitionKey, startTransition, cleanup } = useOptimizedTransition({
-    duration: 100
+  // Hooks pour les animations optimisées
+  const prefersReducedMotion = useReducedMotion()
+  const { isLowPerformance, optimizedDuration } = useAnimationPerformance()
+  const isTouchDevice = useTouchSupport()
+  
+  // Hook pour les transitions de balayage
+  const { 
+    isTransitioning, 
+    transitionKey, 
+    startSweepTransition, 
+    animationClasses,
+    canInteract,
+    cleanup 
+  } = useSweepTransitions({
+    duration: prefersReducedMotion ? 150 : optimizedDuration,
+    exitDuration: prefersReducedMotion ? 100 : Math.max(optimizedDuration - 100, 200),
+    preloadNext: !isLowPerformance
   })
+  
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -150,11 +166,13 @@ export default function QuestionnairePage() {
   const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100
 
   const handleAnswer = async (optionKey: AgreementOptionKey) => {
+    if (!canInteract) return // Empêcher les clics multiples pendant la transition
+    
     try {
-      // ✅ Navigation immédiate avec transition optimisée
-      startTransition(() => {
+      // Démarrer la transition de balayage avec navigation
+      startSweepTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-      })
+      }, 'forward')
       
       // Sauvegarder en arrière-plan (non-bloquant)
       saveAgreementResponse(currentQuestion.id, optionKey).then(() => {
@@ -169,11 +187,13 @@ export default function QuestionnairePage() {
   }
 
   const handleImportanceDirectAnswer = async (optionKey: ImportanceDirectOptionKey) => {
+    if (!canInteract) return // Empêcher les clics multiples pendant la transition
+    
     try {
-      // ✅ Navigation immédiate avec transition optimisée
-      startTransition(() => {
+      // Démarrer la transition de balayage avec navigation
+      startSweepTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-      })
+      }, 'forward')
       
       // Sauvegarder en arrière-plan (non-bloquant)
       saveImportanceDirectResponse(currentQuestion.id, optionKey).then(() => {
@@ -292,6 +312,8 @@ export default function QuestionnairePage() {
   }
 
   const goToNextQuestion = () => {
+    if (!canInteract) return // Empêcher les clics multiples pendant la transition
+    
     console.log('➡️ [Questionnaire] goToNextQuestion appelée:', {
       currentQuestionIndex,
       totalQuestions: boussoleQuestions.length,
@@ -300,9 +322,9 @@ export default function QuestionnairePage() {
     
     if (currentQuestionIndex < boussoleQuestions.length - 1) {
       console.log('📝 [Questionnaire] Passage à la question suivante')
-      startTransition(() => {
+      startSweepTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-      })
+      }, 'forward')
     } else {
       // ✅ Questionnaire terminé → Résultats !
       console.log('🎯 [Questionnaire] Questionnaire complet, redirection vers les résultats')
@@ -311,12 +333,27 @@ export default function QuestionnairePage() {
   }
 
   const goToPreviousQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      startTransition(() => {
+    if (currentQuestionIndex > 0 && canInteract) {
+      startSweepTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex - 1)
-      })
+      }, 'backward')
     }
   }
+
+  // Gestionnaires pour les gestes de balayage tactiles
+  const handleSwipeLeft = useCallback(() => {
+    // Balayage vers la gauche = question suivante (uniquement si répondue)
+    if (isAnswered && canInteract && currentQuestionIndex < boussoleQuestions.length - 1) {
+      goToNextQuestion()
+    }
+  }, [isAnswered, canInteract, currentQuestionIndex, goToNextQuestion])
+
+  const handleSwipeRight = useCallback(() => {
+    // Balayage vers la droite = question précédente
+    if (canInteract && currentQuestionIndex > 0) {
+      goToPreviousQuestion()
+    }
+  }, [canInteract, currentQuestionIndex, goToPreviousQuestion])
 
   // État de chargement pendant l'initialisation
   if (isLoading) {
@@ -383,12 +420,19 @@ export default function QuestionnairePage() {
           />
         </div>
 
-        <Card 
-          key={transitionKey} 
-          className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'} will-change-transform`}
+        <SwipeContainer
+          onSwipeLeft={isTouchDevice ? handleSwipeLeft : undefined}
+          onSwipeRight={isTouchDevice ? handleSwipeRight : undefined}
+          disabled={!isTouchDevice || !canInteract}
+          threshold={60}
+          className="swipe-wrapper flex-1"
         >
+          <Card 
+            key={transitionKey} 
+            className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${animationClasses.containerClass} will-change-transform`}
+          >
           <div className="flex items-start gap-3 mb-3 question-header">
-            <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>
+            <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${animationClasses.contentClass}`}>
               {currentQuestion.text}
             </h2>
             {currentQuestion.description && (
@@ -412,7 +456,7 @@ export default function QuestionnairePage() {
             )}
           </div>
 
-          <div className={`question-grid grid gap-1.5 mb-3 flex-1 ${!isTransitioning ? 'question-content-enter' : ''}`}>
+          <div className={`question-grid grid gap-1.5 mb-3 flex-1 ${animationClasses.contentClass}`}>
             {currentQuestion.responseType === "priority_ranking" && currentQuestion.priorityOptions ? (
               // Questions de priorité
               <div className="space-y-3">
@@ -452,7 +496,7 @@ export default function QuestionnairePage() {
                               : canSelect 
                                 ? "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150 border-2 border-transparent hover:border-primary/30"
                                 : "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60"
-                          } ${!isTransitioning ? 'option-button-enter' : ''}`}
+                          } ${animationClasses.optionClass}`}
                         onClick={() => handlePrioritySelection(priority)}
                       >
                         <span className="flex-1 leading-tight">{priority}</span>
@@ -483,7 +527,7 @@ export default function QuestionnairePage() {
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft"
                           : "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150"
-                      } ${!isTransitioning ? 'option-button-enter' : ''}`}
+                      } ${animationClasses.optionClass}`}
                     onClick={() => handleImportanceDirectAnswer(optionKey)}
                   >
                     {isSelected && (
@@ -508,7 +552,7 @@ export default function QuestionnairePage() {
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft"
                           : "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150"
-                      } ${!isTransitioning ? 'option-button-enter' : ''}`}
+                      } ${animationClasses.optionClass}`}
                     onClick={() => handleAnswer(optionKey)}
                   >
                     {isSelected && (

@@ -142,33 +142,49 @@
     border-color: hsl(var(--teal-special));
   }
 
-  /* Animations pour les transitions optimisées du questionnaire */
-  @keyframes questionSlideIn {
+  /* Animations de balayage optimisées pour le questionnaire */
+  
+  /* Easing curves optimisées pour les transitions naturelles */
+  :root {
+    --transition-enter: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* easeOutQuad naturel */
+    --transition-exit: cubic-bezier(0.55, 0.085, 0.68, 0.53); /* easeInQuad rapide */
+    --transition-duration-enter: 350ms; /* Timing optimal pour fluidité */
+    --transition-duration-exit: 250ms; /* Plus rapide pour sortie */
+  }
+
+  /* Animation de balayage d'entrée - slide depuis la droite */
+  @keyframes questionSweepIn {
     0% {
       opacity: 0;
-      transform: translateX(20px);
+      transform: translateX(40px) scale(0.98);
+    }
+    60% {
+      opacity: 0.8;
+      transform: translateX(-2px) scale(1);
     }
     100% {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateX(0) scale(1);
     }
   }
 
-  @keyframes questionSlideOut {
+  /* Animation de balayage de sortie - slide vers la gauche */
+  @keyframes questionSweepOut {
     0% {
       opacity: 1;
-      transform: translateX(0);
+      transform: translateX(0) scale(1);
     }
     100% {
       opacity: 0;
-      transform: translateX(-10px);
+      transform: translateX(-30px) scale(0.98);
     }
   }
 
-  @keyframes questionFadeIn {
+  /* Animation de contenu avec légère montée */
+  @keyframes contentFadeUp {
     0% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(12px);
     }
     100% {
       opacity: 1;
@@ -176,29 +192,83 @@
     }
   }
 
-  .question-enter {
-    animation: questionSlideIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  /* Animation d'options en cascade */
+  @keyframes optionCascade {
+    0% {
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
   }
 
-  .question-exit {
-    animation: questionSlideOut 0.15s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+  /* Classes d'animation principales */
+  .question-sweep-enter {
+    animation: questionSweepIn var(--transition-duration-enter) var(--transition-enter) forwards;
+    will-change: transform, opacity;
+  }
+
+  .question-sweep-exit {
+    animation: questionSweepOut var(--transition-duration-exit) var(--transition-exit) forwards;
+    will-change: transform, opacity;
   }
 
   .question-content-enter {
-    animation: questionFadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.02s both;
+    animation: contentFadeUp calc(var(--transition-duration-enter) * 0.8) var(--transition-enter) 50ms both;
+    will-change: transform, opacity;
   }
 
-  /* Transitions simplifiées pour les boutons d'options */
+  /* Options avec cascade temporelle */
   .option-button-enter {
     opacity: 0;
-    animation: questionFadeIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+    animation: optionCascade calc(var(--transition-duration-enter) * 0.7) var(--transition-enter) both;
+    will-change: transform, opacity;
   }
 
-  .option-button-enter:nth-child(1) { animation-delay: 0.03s; }
-  .option-button-enter:nth-child(2) { animation-delay: 0.05s; }
-  .option-button-enter:nth-child(3) { animation-delay: 0.07s; }
-  .option-button-enter:nth-child(4) { animation-delay: 0.09s; }
-  .option-button-enter:nth-child(5) { animation-delay: 0.11s; }
+  .option-button-enter:nth-child(1) { animation-delay: 80ms; }
+  .option-button-enter:nth-child(2) { animation-delay: 100ms; }
+  .option-button-enter:nth-child(3) { animation-delay: 120ms; }
+  .option-button-enter:nth-child(4) { animation-delay: 140ms; }
+  .option-button-enter:nth-child(5) { animation-delay: 160ms; }
+  .option-button-enter:nth-child(6) { animation-delay: 180ms; }
+
+  /* Support accessibilité - respect des préférences utilisateur */
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --transition-duration-enter: 150ms;
+      --transition-duration-exit: 100ms;
+    }
+    
+    .question-sweep-enter,
+    .question-sweep-exit,
+    .question-content-enter,
+    .option-button-enter {
+      animation-duration: 150ms;
+      animation-timing-function: ease-out;
+    }
+    
+    @keyframes questionSweepIn {
+      0% { opacity: 0; transform: translateX(10px); }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+    
+    @keyframes questionSweepOut {
+      0% { opacity: 1; transform: translateX(0); }
+      100% { opacity: 0; transform: translateX(-10px); }
+    }
+    
+    @keyframes contentFadeUp {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+    
+    @keyframes optionCascade {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+  }
 
   /* Animation pour les messages d'erreur */
   @keyframes slideInFromRight {

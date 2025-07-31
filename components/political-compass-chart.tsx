@@ -13,7 +13,10 @@ import {
   calculatePoliticalDistance,
   partyPositions,
   axisConfiguration,
-  type UserAnswers
+  type UserAnswers,
+  calculateScaledPoliticalMap,
+  calculateMapBounds,
+  normalizePositionForDisplay
 } from '@/lib/political-map-calculator'
 import { partiesData } from '@/lib/boussole-data'
 import Image from 'next/image'
@@ -29,19 +32,23 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
   const [isFullscreen, setIsFullscreen] = useState(false)
   const router = useRouter();
 
-  // Calcul de la position de l'utilisateur
-  const userPosition = useMemo(() => {
-    return calculateUserPoliticalPosition(userAnswers)
+  // Calcul de la position de l'utilisateur avec centrage dynamique et dézoom
+  const scaledPoliticalMap = useMemo(() => {
+    const userPosition = calculateUserPoliticalPosition(userAnswers)
+    return calculateScaledPoliticalMap(userPosition, 0.6) // Facteur de dézoom de 0.6
   }, [userAnswers])
 
-  // Description de la position politique
-  const positionDescription = useMemo(() => {
-    return getPoliticalPositionDescription(userPosition)
-  }, [userPosition])
+  const userPosition = scaledPoliticalMap.scaled.user
+  const scaledPartyPositions = scaledPoliticalMap.scaled.parties
 
-  // Calcul des distances avec les partis
+  // Description de la position politique (basée sur la position originale)
+  const positionDescription = useMemo(() => {
+    return getPoliticalPositionDescription(scaledPoliticalMap.original.user)
+  }, [scaledPoliticalMap.original.user])
+
+  // Calcul des distances avec les partis (utilisant les positions transformées)
   const partyDistances = useMemo(() => {
-    return Object.entries(partyPositions).map(([partyId, position]) => {
+    return Object.entries(scaledPartyPositions).map(([partyId, position]) => {
       const party = partiesData.find(p => p.id === partyId)
       const distance = calculatePoliticalDistance(userPosition, position)
       return {
@@ -51,13 +58,27 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
         partyId
       }
     }).filter(item => item.party).sort((a, b) => a.distance - b.distance)
-  }, [userPosition])
+  }, [userPosition, scaledPartyPositions])
+
+  // Calcul des limites de la carte pour l'affichage adaptatif
+  const mapBounds = useMemo(() => {
+    const allPositions = [userPosition, ...Object.values(scaledPartyPositions)]
+    return calculateMapBounds(allPositions, 30) // Padding de 30 pour l'espacement
+  }, [userPosition, scaledPartyPositions])
 
   // Fonction pour convertir les coordonnées politiques en coordonnées SVG
+  // Utilise maintenant le système de centrage dynamique avec échelle adaptative
   const toSVGCoords = (position: PoliticalPosition, width: number, height: number) => {
     const padding = 40
-    const x = ((position.x + 100) / 200) * (width - 2 * padding) + padding
-    const y = height - (((position.y + 100) / 200) * (height - 2 * padding) + padding)
+    const canvasSize = Math.min(width, height) - 2 * padding
+    
+    // Normaliser la position pour l'affichage avec les nouvelles limites
+    const normalized = normalizePositionForDisplay(position, mapBounds, canvasSize)
+    
+    // Centrer dans le SVG et inverser Y pour l'affichage SVG
+    const x = normalized.x + padding + (width - canvasSize - 2 * padding) / 2
+    const y = height - (normalized.y + padding + (height - canvasSize - 2 * padding) / 2)
+    
     return { x, y }
   }
 
@@ -281,17 +302,27 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Badge de position */}
+          {/* Badge de position avec indicateur de centrage dynamique */}
           <div className="flex items-center justify-center gap-4 flex-wrap">
             <Badge variant="secondary" className="text-sm px-3 py-1">
-              Position économique: {userPosition.x > 0 ? 'Libre marché' : 'Interventionnisme'} ({Math.abs(userPosition.x).toFixed(0)})
+              Position économique: {userPosition.x > 0 ? 'Libre marché' : 'Interventionnisme'} ({Math.abs(userPosition.x).toFixed(1)})
             </Badge>
             <Badge variant="secondary" className="text-sm px-3 py-1">
-              Position sociale: {userPosition.y > 0 ? 'Progressiste' : 'Conservateur'} ({Math.abs(userPosition.y).toFixed(0)})
+              Position sociale: {userPosition.y > 0 ? 'Progressiste' : 'Conservateur'} ({Math.abs(userPosition.y).toFixed(1)})
             </Badge>
-            <Badge variant="outline" className="text-sm px-3 py-1 border-primary text-primary">
-              {positionDescription}
-            </Badge>
+            {/* Badge raffiné pour la description de position politique */}
+            {positionDescription && (
+              <Badge
+                variant="outline"
+                className="text-xs px-2 py-1 border border-blue-200 bg-blue-50/70 text-blue-800 font-medium rounded-full flex items-center gap-1 shadow-sm"
+              >
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" className="inline-block mr-1">
+                  <circle cx="12" cy="12" r="10" stroke="#60a5fa" strokeWidth="2" fill="#e0f2fe" />
+                  <path d="M12 7v5l3 3" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {positionDescription}
+              </Badge>
+            )}
           </div>
 
           {/* Graphique SVG responsive */}
@@ -344,6 +375,9 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
             <strong>Note :</strong> Cette carte positionne votre profil politique selon deux axes principaux : 
             économique (interventionnisme ↔ libre marché) et social/environnemental (conservateur ↔ progressiste). 
             Les positions des partis sont approximatives et basées sur leurs programmes publics.
+            <br />
+            <strong>🎯 Centrage dynamique :</strong> La carte est automatiquement recentrée sur le centre politique 
+            local de Québec et redimensionnée pour une meilleure lisibilité des distances entre positions.
           </div>
         </CardContent>
       </Card>
@@ -368,14 +402,15 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
           {/* Badges dans la modal */}
           <div className="flex items-center justify-center gap-2 flex-wrap mb-4">
             <Badge variant="secondary" className="text-xs px-2 py-1">
-              Économique: {userPosition.x > 0 ? 'Libre marché' : 'Interventionnisme'} ({Math.abs(userPosition.x).toFixed(0)})
+              Économique: {userPosition.x > 0 ? 'Libre marché' : 'Interventionnisme'} ({Math.abs(userPosition.x).toFixed(1)})
             </Badge>
             <Badge variant="secondary" className="text-xs px-2 py-1">
-              Social: {userPosition.y > 0 ? 'Progressiste' : 'Conservateur'} ({Math.abs(userPosition.y).toFixed(0)})
+              Social: {userPosition.y > 0 ? 'Progressiste' : 'Conservateur'} ({Math.abs(userPosition.y).toFixed(1)})
             </Badge>
             <Badge variant="outline" className="text-xs px-2 py-1 border-primary text-primary">
               {positionDescription}
             </Badge>
+
           </div>
 
           {/* Graphique en plein écran */}

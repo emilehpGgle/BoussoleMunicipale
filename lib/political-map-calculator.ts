@@ -173,6 +173,219 @@ export function calculatePriorityCompatibility(
   return Math.min(100, Math.max(0, compatibilityScore))
 }
 
+// ============================================================================
+// 🧠 SYSTÈME DE CENTRAGE DYNAMIQUE ET DÉZOOM GRAPHIQUE
+// ============================================================================
+
+/**
+ * Calcule le centre politique moyen d'un ensemble de positions
+ * Utilisé pour recentrer dynamiquement la carte électorale
+ */
+export function calculateMeanCenter(positions: PoliticalPosition[]): PoliticalPosition {
+  if (positions.length === 0) {
+    return { x: 0, y: 0 }
+  }
+  
+  const total = positions.length
+  const meanX = positions.reduce((sum, p) => sum + p.x, 0) / total
+  const meanY = positions.reduce((sum, p) => sum + p.y, 0) / total
+  
+  return { x: meanX, y: meanY }
+}
+
+/**
+ * Recentre une position par rapport à un centre de référence
+ * Déplace tous les points pour que le centre soit à (0,0)
+ */
+export function recentrePosition(position: PoliticalPosition, center: PoliticalPosition): PoliticalPosition {
+  return {
+    x: position.x - center.x,
+    y: position.y - center.y
+  }
+}
+
+/**
+ * Applique un facteur de dézoom à une position
+ * Réduit l'échelle pour que les distances paraissent moins extrêmes
+ * @param position Position à redimensionner
+ * @param zoomFactor Facteur de zoom (0.6 = dézoom de 40%, 1.0 = taille normale)
+ */
+export function scalePosition(position: PoliticalPosition, zoomFactor = 0.6): PoliticalPosition {
+  return {
+    x: position.x * zoomFactor,
+    y: position.y * zoomFactor
+  }
+}
+
+/**
+ * Applique le centrage dynamique et le dézoom à une position utilisateur
+ * @param userPosition Position brute de l'utilisateur
+ * @param partyPositions Positions des partis pour calculer le centre
+ * @param zoomFactor Facteur de dézoom (défaut: 0.6)
+ * @returns Position utilisateur recentrée et redimensionnée
+ */
+export function applyDynamicScaling(
+  userPosition: PoliticalPosition, 
+  partyPositions: PoliticalPosition[], 
+  zoomFactor = 0.6
+): PoliticalPosition {
+  const center = calculateMeanCenter(partyPositions)
+  const recentred = recentrePosition(userPosition, center)
+  return scalePosition(recentred, zoomFactor)
+}
+
+/**
+ * Applique le centrage dynamique et le dézoom à toutes les positions des partis
+ * @param partyPositions Positions brutes des partis
+ * @param zoomFactor Facteur de dézoom (défaut: 0.6)
+ * @returns Positions des partis recentrées et redimensionnées
+ */
+export function applyDynamicScalingToParties(
+  partyPositions: PoliticalPosition[], 
+  zoomFactor = 0.6
+): PoliticalPosition[] {
+  const center = calculateMeanCenter(partyPositions)
+  
+  return partyPositions.map(position => {
+    const recentred = recentrePosition(position, center)
+    return scalePosition(recentred, zoomFactor)
+  })
+}
+
+/**
+ * Calcule les positions des partis avec centrage dynamique et dézoom
+ * Version optimisée qui applique les transformations en une seule passe
+ * @param zoomFactor Facteur de dézoom (défaut: 0.6)
+ * @returns Positions des partis recentrées et redimensionnées
+ */
+export function calculateScaledPartyPositions(zoomFactor = 0.6): Record<string, PoliticalPosition> {
+  const rawPositions = calculatePartyPositions()
+  const positionsArray = Object.values(rawPositions)
+  const center = calculateMeanCenter(positionsArray)
+  
+  const scaledPositions: Record<string, PoliticalPosition> = {}
+  
+  Object.entries(rawPositions).forEach(([partyId, position]) => {
+    const recentred = recentrePosition(position, center)
+    scaledPositions[partyId] = scalePosition(recentred, zoomFactor)
+  })
+  
+  return scaledPositions
+}
+
+/**
+ * Interface pour les résultats de transformation
+ * Contient les positions originales et transformées
+ */
+export interface ScaledPoliticalMap {
+  original: {
+    user: PoliticalPosition
+    parties: Record<string, PoliticalPosition>
+    center: PoliticalPosition
+  }
+  scaled: {
+    user: PoliticalPosition
+    parties: Record<string, PoliticalPosition>
+    center: PoliticalPosition
+  }
+  zoomFactor: number
+}
+
+/**
+ * Calcule une carte politique complète avec centrage dynamique et dézoom
+ * @param userPosition Position brute de l'utilisateur
+ * @param zoomFactor Facteur de dézoom (défaut: 0.6)
+ * @returns Carte politique avec positions originales et transformées
+ */
+export function calculateScaledPoliticalMap(
+  userPosition: PoliticalPosition, 
+  zoomFactor = 0.6
+): ScaledPoliticalMap {
+  const rawPartyPositions = calculatePartyPositions()
+  const partyPositionsArray = Object.values(rawPartyPositions)
+  const center = calculateMeanCenter(partyPositionsArray)
+  
+  // Positions originales
+  const original = {
+    user: userPosition,
+    parties: rawPartyPositions,
+    center
+  }
+  
+  // Positions transformées
+  const scaledParties: Record<string, PoliticalPosition> = {}
+  Object.entries(rawPartyPositions).forEach(([partyId, position]) => {
+    const recentred = recentrePosition(position, center)
+    scaledParties[partyId] = scalePosition(recentred, zoomFactor)
+  })
+  
+  const recentredUser = recentrePosition(userPosition, center)
+  const scaledUser = scalePosition(recentredUser, zoomFactor)
+  
+  const scaled = {
+    user: scaledUser,
+    parties: scaledParties,
+    center: { x: 0, y: 0 } // Le centre transformé est toujours à (0,0)
+  }
+  
+  return {
+    original,
+    scaled,
+    zoomFactor
+  }
+}
+
+// ============================================================================
+// 📊 FONCTIONS UTILITAIRES POUR L'AFFICHAGE
+// ============================================================================
+
+/**
+ * Calcule les limites de la carte politique pour l'affichage
+ * @param positions Positions à analyser
+ * @param padding Marge autour des points (défaut: 20)
+ * @returns Limites min/max pour l'affichage
+ */
+export function calculateMapBounds(
+  positions: PoliticalPosition[], 
+  padding = 20
+): { minX: number; maxX: number; minY: number; maxY: number } {
+  if (positions.length === 0) {
+    return { minX: -padding, maxX: padding, minY: -padding, maxY: padding }
+  }
+  
+  const xs = positions.map(p => p.x)
+  const ys = positions.map(p => p.y)
+  
+  return {
+    minX: Math.min(...xs) - padding,
+    maxX: Math.max(...xs) + padding,
+    minY: Math.min(...ys) - padding,
+    maxY: Math.max(...ys) + padding
+  }
+}
+
+/**
+ * Normalise une position pour l'affichage dans un canvas/SVG
+ * @param position Position à normaliser
+ * @param bounds Limites de la carte
+ * @param canvasSize Taille du canvas (défaut: 400)
+ * @returns Position normalisée pour l'affichage
+ */
+export function normalizePositionForDisplay(
+  position: PoliticalPosition,
+  bounds: { minX: number; maxX: number; minY: number; maxY: number },
+  canvasSize = 400
+): { x: number; y: number } {
+  const rangeX = bounds.maxX - bounds.minX
+  const rangeY = bounds.maxY - bounds.minY
+  
+  const normalizedX = ((position.x - bounds.minX) / rangeX) * canvasSize
+  // Ne pas inverser Y pour maintenir la cohérence avec le centrage dynamique
+  const normalizedY = ((position.y - bounds.minY) / rangeY) * canvasSize
+  
+  return { x: normalizedX, y: normalizedY }
+}
+
 /**
  * Réponses hypothétiques des partis aux questions de la boussole
  * Basées sur leurs programmes et positions publiques
@@ -251,27 +464,27 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'respect_citoyens': {
-    // Stéphane Lachance - Populiste local, administration pragmatique ✏️ CORRIGÉ selon feedback agent AI
-    q1_tramway: 'FD',                              // "Critique les grands projets coûteux"
-    q2_pistes_cyclables: 'N',                      // ✏️ Agent AI : Neutre (pas d'opposition systématique)
-    q3_troisieme_lien: 'FA',                       // Pour (développement économique)
-    q4_secteur_prive_transport: 'PA',              // ✏️ ÉQUILIBRÉ : Pour efficacité mais pas idéologique
-    q5_quotas_logements_abordables: 'N',           // ✏️ Agent AI : Neutre (pas d'opposition forte publique)
-    q6_densification_quartiers: 'FD',              // Contre (préfère choix libre)
-    q7_etalement_urbain: 'FD',                     // Contre l'étalement
-    q8_stationnements_centre_ville: 'FA',          // Pour l'automobile
-    q9_protection_espaces_verts: 'PA',             // ✏️ Agent AI : Pour qualité de vie de quartier
-    q10_transition_carboneutre: 'N',               // ✏️ Agent AI : Neutre (pas de rejet explicite)
-    q11_collecte_residus_alimentaires: 'N',        // ✏️ Agent AI : Neutre (aucune mention publique)
-    q12_augmentation_taxes: 'FD',                  // "Réduction des taxes" (priorité)
-    q13_participation_citoyenne: 'FD',             // Contre bureaucratie excessive
-    q14_reduction_dette: 'PA',                     // ✏️ ÉQUILIBRÉ : Pour mais pas obsessionnel
-    q15_avantages_fiscaux_entreprises: 'PA',       // ✏️ ÉQUILIBRÉ : Pour attraction mais mesuré
-    q16_achat_local: 'FD',                         // Contre interventions
-    q17_soutien_organismes_communautaires: 'N',    // ✏️ ÉQUILIBRÉ : Neutre (soutien ciblé possible)
-    q18_augmentation_effectifs_policiers: 'FA',    // Pour (sécurité publique)
-    q19_cameras_surveillance: 'PD',                // Plutôt contre
-    q20_couvre_feu: 'N',                          // ✏️ Agent AI : Neutre (pas abordé publiquement)
+    // Stéphane Lachance - Populiste local, administration pragmatique ✏️ CORRIGÉ selon analyse plateforme détaillée
+    q1_tramway: 'FD',                              // 🟥 Position explicite contre le projet
+    q2_pistes_cyclables: 'PD',                     // 🟧 Équité entre modes, priorité automobilistes
+    q3_troisieme_lien: 'FA',                       // 🟩 Fortement en faveur
+    q4_secteur_prive_transport: 'N',               // 🟨 Non abordé clairement
+    q5_quotas_logements_abordables: 'PD',          // 🟧 Contre obligations imposées aux promoteurs
+    q6_densification_quartiers: 'PD',              // 🟧 Refus des tours, préserver quartiers
+    q7_etalement_urbain: 'N',                      // 🟨 Aucune mention dans plateforme
+    q8_stationnements_centre_ville: 'N',           // 🟨 Ni favorable, ni opposé - non abordé
+    q9_protection_espaces_verts: 'N',              // 🟨 Mention "qualité de vie" mais pas mesures concrètes
+    q10_transition_carboneutre: 'N',               // 🟨 Non mentionné → neutre
+    q11_collecte_residus_alimentaires: 'N',        // 🟨 Aucun engagement spécifique
+    q12_augmentation_taxes: 'FD',                  // 🟩 Réduction taxes (priorité)
+    q13_participation_citoyenne: 'FA',             // 🟩 Référendums obligatoires - plateforme très claire
+    q14_reduction_dette: 'PA',                     // 🟧 Rigueur budgétaire valorisée mais pas dogmatique
+    q15_avantages_fiscaux_entreprises: 'N',        // 🟨 Non précisé
+    q16_achat_local: 'N',                          // 🟨 Non précisé
+    q17_soutien_organismes_communautaires: 'N',    // 🟨 Non abordé spécifiquement
+    q18_augmentation_effectifs_policiers: 'FA',    // 🟩 Engagement fort sur sécurité
+    q19_cameras_surveillance: 'PD',                // 🟧 Favorise réinsertion mais critique approche actuelle
+    q20_couvre_feu: 'N',                          // 🟨 Pas d'engagement clair
   },
 
   'equipe_priorite_quebec': {
