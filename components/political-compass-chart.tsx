@@ -377,7 +377,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
             Les positions des partis sont approximatives et basées sur leurs programmes publics.
             <br />
             <strong>🎯 Centrage dynamique :</strong> La carte est automatiquement recentrée sur le centre politique 
-            local de Québec et redimensionnée pour une meilleure lisibilité des distances entre positions.
+            local de la municipalité et redimensionnée pour une meilleure lisibilité des distances entre positions.
           </div>
         </CardContent>
       </Card>
