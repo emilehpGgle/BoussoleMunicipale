@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, lazy, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react" // Added Share2 and HelpCircle
 import Image from "next/image"
@@ -9,7 +9,9 @@ import { GlowSection } from "@/components/ui/subtle-glow"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { boussoleQuestions } from "@/lib/boussole-data"
-import ContinueOrRestartModal from "@/components/existing-responses-modal"
+
+// Lazy loading du modal (pas critique pour le first paint)
+const ContinueOrRestartModal = lazy(() => import("@/components/existing-responses-modal"))
 
 export default function HomePage() {
   const { sessionToken } = useSession()
@@ -70,14 +72,13 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
-                <Compass className="w-5 h-5 mr-2" /> La boussole électorale MUNICIPALE de Québec
+                <Compass className="w-5 h-5 mr-2" /> Votre boussole pour les élections municipales
               </span>
               <h1 className="tracking-tight text-foreground">
-                <ColoredText variant="gradient" intensity="medium">Boussole Électorale Municipale</ColoredText> - Spécialisée pour Québec
+                <ColoredText variant="gradient" intensity="medium">Boussole Électorale Municipale</ColoredText>
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg">
-                Découvrez quel parti municipal vous correspond vraiment ! Notre boussole électorale gratuite vous guide en 5 minutes à travers les enjeux locaux qui comptent.
-                Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques sur ce qui vous touche au quotidien.
+                Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <div className="flex flex-col gap-2">
@@ -89,6 +90,9 @@ export default function HomePage() {
                     Découvrez vos affinités politiques
                   </Button>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
+                  <Link href="/faq" className="text-sm text-primary underline hover:text-primary/80 mt-2 text-center sm:text-left">
+                    Questions fréquentes
+                  </Link>
                 </div>
                 <Button
                   size="lg"
@@ -111,8 +115,8 @@ export default function HomePage() {
               }}
             >
               <Image
-                src="/hero-illustration.png"
-                alt="Illustration de citoyens diversifiés autour d'une boussole"
+                src="/hero-illustration.webp"
+                alt="Boussole électorale municipale Québec 2025 - Illustration de citoyens autour d'une boussole électorale municipale de Québec"
                 fill
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
@@ -179,46 +183,36 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Section de différenciation municipal vs autres niveaux */}
+      {/* Section pourquoi c'est important */}
       <section className="section-contained w-full py-12 md:py-16 bg-muted/30">
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <h2 className="text-center mb-8 text-foreground animate-slideInUp">
-            Municipal vs Provincial/Fédéral : Pourquoi une boussole électorale spécialisée ?
+            Pourquoi vos élections municipales comptent autant ?
           </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="p-6 bg-card rounded-xl shadow-soft">
-              <h3 className="font-semibold mb-3 text-foreground">🏛️ Fédéral/Provincial</h3>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Enjeux généraux nationaux</li>
-                <li>• Santé, éducation, économie</li>
-                <li>• Boussole électorale généraliste</li>
-                <li>• Impact indirect sur le quotidien</li>
-              </ul>
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <h3 className="font-semibold mb-4 text-foreground text-lg">🚌 Transport quotidien</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Bus, métro, vélo, routes : votre municipalité décide comment vous vous déplacez au quotidien.
+              </p>
             </div>
-            <div className="p-6 bg-primary/10 border-2 border-primary rounded-xl shadow-lg">
-              <h3 className="font-semibold mb-3 text-primary">🏘️ Municipal (Notre spécialité)</h3>
-              <ul className="text-sm text-foreground space-y-2">
-                <li>• Analyse complète des services municipaux</li>
-                <li>• <strong>Tramway et transport local</strong></li>
-                <li>• <strong>Logement et zonage</strong></li>
-                <li>• <strong>Parcs et services de proximité</strong></li>
-                <li>• <strong>Impact direct quotidien</strong></li>
-              </ul>
+            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <h3 className="font-semibold mb-4 text-foreground text-lg">🏠 Votre quartier</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                Logement, parcs, bibliothèques, déneigement : les services qui façonnent votre qualité de vie locale.
+              </p>
             </div>
-            <div className="p-6 bg-card rounded-xl shadow-soft">
-              <h3 className="font-semibold mb-3 text-foreground">❓ Autres Boussoles</h3>
-              <ul className="text-sm text-muted-foreground space-y-2">
-                <li>• Questions génériques</li>
-                <li>• Partis provinciaux/fédéraux</li>
-                <li>• Pas adaptées aux enjeux locaux</li>
-                <li>• Bruno Marchand non inclus</li>
-              </ul>
+            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <h3 className="font-semibold mb-4 text-foreground text-lg">💰 Vos taxes</h3>
+              <p className="text-base text-muted-foreground leading-relaxed">
+                La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez.
+              </p>
             </div>
           </div>
           <div className="text-center mt-8">
             <p className="text-muted-foreground mb-4">
-              <strong>C&apos;est pourquoi</strong> notre boussole électorale municipale existe : 
-              pour les enjeux qui touchent vraiment votre quartier, votre ville, votre quotidien.
+              <strong>Le problème ?</strong> Il n'existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
+              C'est pourquoi nous avons créé cette boussole.
             </p>
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
               <Link href="/questionnaire">
@@ -244,12 +238,11 @@ export default function HomePage() {
             className="animate-slideInUp"
             style={{ animationDelay: "0.2s" }}
           >
-            <h2 className="mb-6 text-foreground">Pourquoi une boussole électorale spécialisée pour le municipal ?</h2>
+            <h2 className="mb-6 text-foreground">Votre vote municipal a plus d'impact que vous pensez</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
-              Contrairement aux boussoles électorales provinciales ou fédérales, notre boussole électorale municipale se concentre sur les enjeux qui affectent votre quotidien direct : transport local (tramway), logement abordable, services municipaux. 
-              Les élections municipales de Québec nécessitent une boussole électorale locale adaptée aux réalités de votre ville. Que vous soyez intéressé par les positions des différents partis sur le déneigement, les pistes cyclables, le transport en commun ou d&apos;autres enjeux municipaux, notre questionnaire politique municipal vous guide sur les axes du libre marché et de l&apos;interventionnisme municipal spécifiques aux enjeux locaux.
-              Pourtant, seulement <ColoredText variant="primary" intensity="bold">40% des citoyens</ColoredText> votent aux municipales. 
-              Votre voix compte encore plus !
+              Transport, logement, parcs, déneigement, taxes : votre ville décide de tout ce qui façonne votre quotidien. 
+              Pourtant, seulement <ColoredText variant="primary" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales. 
+              Résultat ? Votre voix compte encore plus ! Notre boussole vous aide à faire un choix éclairé en quelques minutes.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
@@ -272,12 +265,12 @@ export default function HomePage() {
             ].map((item, index) => (
               <div
                 key={item.label}
-                className="p-6 bg-card rounded-xl shadow-soft animate-slideInUp card-interactive-effects"
+                className="p-8 bg-card rounded-xl shadow-soft animate-slideInUp card-interactive-effects hover:shadow-md transition-shadow duration-200"
                 style={{ animationDelay: `${index * 0.15 + 0.4}s` }}
               >
-                <div className="text-3xl font-bold text-primary mb-2">{item.stat}</div>
-                <div className="text-lg font-semibold text-foreground mb-2">{item.label}</div>
-                <div className="text-sm text-muted-foreground">{item.description}</div>
+                <div className="text-4xl font-bold text-primary mb-3">{item.stat}</div>
+                <div className="text-lg font-semibold text-foreground mb-3">{item.label}</div>
+                <div className="text-base text-muted-foreground leading-relaxed">{item.description}</div>
               </div>
             ))}
           </div>
@@ -312,11 +305,13 @@ export default function HomePage() {
               style={{ animationDelay: "0.6s" }}
             >
               <Image
-                src="/Image_parc_crisp.png"
-                alt="Illustration d'un parc municipal avec des citoyens"
+                src="/Image_parc.webp"
+                alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
                 fill
                 style={{ objectFit: "cover" }}
                 className="rounded-2xl"
+                quality={90}
+                loading="lazy"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -343,12 +338,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Modal pour les réponses existantes */}
-      <ContinueOrRestartModal
-        isOpen={isExistingResponsesModalOpen}
-        onClose={() => setIsExistingResponsesModalOpen(false)}
-        targetPath="/"
-      />
+      {/* Modal pour les réponses existantes - avec lazy loading */}
+      <Suspense fallback={<div />}>
+        <ContinueOrRestartModal
+          isOpen={isExistingResponsesModalOpen}
+          onClose={() => setIsExistingResponsesModalOpen(false)}
+          targetPath="/"
+        />
+      </Suspense>
     </div>
   )
 }

@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import SiteHeader from "@/components/site-header"
 import SiteFooter from "@/components/site-footer"
 import { Toaster } from "sonner"
+import { Analytics } from "@/components/analytics"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -79,6 +80,9 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app"
   }
 }
 
@@ -145,11 +149,43 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
+        <Analytics />
         {/* Structured Data pour les Rich Snippets */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(structuredData)
+          }}
+        />
+        {/* Organization Schema pour SEO local et Knowledge Panel */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "Boussole Électorale Québec",
+              "url": "https://boussole-municipale.vercel.app",
+              "logo": "https://boussole-municipale.vercel.app/logo-main_sans_ecriture.png",
+              "description": "Boussole électorale municipale de Québec 2025 : test politique gratuit pour découvrir vos affinités avec les partis municipaux.",
+              "sameAs": [
+                "https://www.facebook.com/boussolemunicipale",
+                "https://twitter.com/boussoleqc",
+                "https://www.linkedin.com/company/boussole-municipale/"
+              ],
+              "contactPoint": [{
+                "@type": "ContactPoint",
+                "contactType": "customer support",
+                "email": "info@boussolemunicipale.ca",
+                "url": "https://boussole-municipale.vercel.app/a-propos"
+              }],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Québec",
+                "addressRegion": "QC",
+                "addressCountry": "CA"
+              }
+            })
           }}
         />
       </head>

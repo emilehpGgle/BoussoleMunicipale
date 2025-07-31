@@ -24,7 +24,8 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🆕 [API SESSIONS] Création session...')
 
-    // ✅ Récupérer l'user agent (optionnel)
+    // ✅ Récupérer l'IP et l'user agent
+    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const rawUserAgent = request.headers.get('user-agent')
     const userAgent = rawUserAgent?.slice(0, 255) || 'Unknown'
 
@@ -40,11 +41,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ✅ Créer l'instance d'API et une nouvelle session
+    // ✅ Créer l'instance d'API
     const sessionsAPI = new SessionsAPI()
+    
+    // ✅ Vérifier le rate limiting par IP
+    const rateLimitCheck = await sessionsAPI.checkIPRateLimit(clientIP)
+    if (!rateLimitCheck.allowed) {
+      console.warn('⚠️ [API SESSIONS] Rate limit dépassé pour IP:', clientIP, 'Sessions:', rateLimitCheck.sessionCount)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Trop de tentatives récentes. Veuillez patienter avant de créer une nouvelle session.',
+          retryAfter: 3600 // 1 heure en secondes
+        },
+        { status: 429 } // Too Many Requests
+      )
+    }
+
+    // ✅ Créer une nouvelle session
     const session = await sessionsAPI.createSession(userAgent)
 
-    console.log('✅ [API SESSIONS] Session créée:', session.id)
+    console.log('✅ [API SESSIONS] Session créée:', session.id, 'IP:', clientIP)
 
     return NextResponse.json({ 
       success: true, 
@@ -161,5 +178,40 @@ export async function DELETE(request: NextRequest) {
 
   } catch (error) {
     return handleAPIError(error, 'suppression de session')
+  }
+}
+
+// ✅ PUT - Monitoring des activités suspectes (admin uniquement)
+export async function PUT() {
+  try {
+    // ✅ Vérification simple pour l'environnement de développement
+    if (process.env.NODE_ENV !== 'development') {
+      return NextResponse.json(
+        { success: false, error: 'Accès non autorisé' },
+        { status: 403 }
+      )
+    }
+
+    console.log('📊 [API SESSIONS] Récupération des statistiques de sécurité...')
+
+    // ✅ Créer l'instance d'API
+    const sessionsAPI = new SessionsAPI()
+
+    // ✅ Détecter l'activité suspecte
+    const suspiciousActivity = await sessionsAPI.detectSuspiciousActivity()
+    const sessionStats = await sessionsAPI.getSessionStats()
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        suspicious: suspiciousActivity,
+        stats: sessionStats,
+        timestamp: new Date().toISOString()
+      },
+      message: 'Statistiques récupérées avec succès'
+    })
+
+  } catch (error) {
+    return handleAPIError(error, 'récupération des statistiques')
   }
 } 

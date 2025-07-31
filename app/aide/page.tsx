@@ -2,6 +2,21 @@ import Link from "next/link"
 import { ArrowLeft, HelpCircle, Users, Share2, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Aide et Support | Boussole Électorale Municipale Québec",
+  description: "Aide et support pour la Boussole Électorale Municipale. Questions fréquentes et assistance pour utiliser le test politique municipal de Québec 2025.",
+  keywords: [
+    "aide boussole électorale",
+    "support technique",
+    "questions fréquentes",
+    "assistance municipale québec"
+  ],
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app/aide"
+  }
+}
 
 export default function AidePage() {
   return (

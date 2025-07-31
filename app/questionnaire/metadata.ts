@@ -15,5 +15,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Questionnaire Boussole Électorale Municipale Québec",
     description: "Test politique gratuit et anonyme pour découvrir vos affinités avec les partis municipaux de Québec. 21 questions sur les enjeux locaux en 5 minutes."
+  },
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app/questionnaire"
   }
 } 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -165,9 +165,9 @@ export function TopMatchModal({
                 </Badge>
                 <Sparkles className="h-4 w-4 text-primary" />
               </div>
-              <h2 className="text-xl font-bold text-foreground">
+              <DialogTitle className="text-xl font-bold text-foreground">
                 Vos meilleurs alignements (Partis)
-              </h2>
+              </DialogTitle>
             </motion.div>
 
             {/* Carte du parti - Style identique à la page résultats */}

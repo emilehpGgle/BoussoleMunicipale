@@ -1,8 +1,10 @@
 import { Metadata } from "next"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, Users, Shield, Target, CheckCircle } from "lucide-react"
+import { BarChart3, Shield, Target, CheckCircle } from "lucide-react"
 import Link from "next/link"
+import Head from "next/head"
+import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 export const metadata: Metadata = {
   title: "À Propos | Boussole Électorale - Test Politique Municipal Québec",
@@ -17,12 +19,70 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Comment fonctionne la Boussole Électorale Municipale Québec 2025",
     description: "Méthodologie transparente de notre test politique pour les élections municipales. Découvrez comment nous calculons vos affinités avec les partis politiques."
+  },
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app/a-propos"
   }
 }
 
 export default function AboutPage() {
+  // Structured Data pour l'organisation
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Boussole Électorale Québec",
+    "description": "Boussole électorale spécialisée pour les élections municipales de Québec 2025. Outil gratuit et anonyme pour découvrir vos affinités avec les partis politiques municipaux.",
+    "url": "https://boussole-municipale.vercel.app",
+    "logo": "https://boussole-municipale.vercel.app/logo-main.webp",
+    "foundingDate": "2025-01-01",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "areaServed": "QC",
+      "availableLanguage": ["French"]
+    },
+    "areaServed": {
+      "@type": "City",
+      "name": "Quebec City",
+      "addressRegion": "QC",
+      "addressCountry": "CA"
+    },
+    "sameAs": [
+      "https://boussole-municipale.vercel.app"
+    ],
+    "knowsAbout": [
+      "élections municipales Québec",
+      "partis politiques municipaux",
+      "boussole électorale",
+      "test politique municipal",
+      "services municipaux Québec"
+    ],
+    "makesOffer": {
+      "@type": "Offer",
+      "itemOffered": {
+        "@type": "Service",
+        "name": "Boussole Électorale Municipale",
+        "description": "Test politique gratuit pour découvrir vos affinités avec les partis municipaux de Québec"
+      },
+      "price": "0",
+      "priceCurrency": "CAD"
+    }
+  }
+
   return (
+    <>
+      {/* Balisage Organization JSON-LD pour SEO */}
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </Head>
+      
     <div className="container max-w-4xl mx-auto py-8 px-4">
+      {/* Breadcrumbs avec structured data */}
+      <Breadcrumbs items={breadcrumbConfigs.about} />
+      
       {/* En-tête avec titre SEO optimisé */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">
@@ -61,7 +121,7 @@ export default function AboutPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-6 w-6 text-primary" />
-            Méthodologie du Test Politique
+            <h2>Méthodologie du Test Politique</h2>
           </CardTitle>
           <CardDescription>
             Comment nous calculons vos affinités politiques avec les partis municipaux
@@ -103,13 +163,16 @@ export default function AboutPage() {
         </CardContent>
       </Card>
 
-      {/* Section Transparence */}
+      {/* Section Fiabilité */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-6 w-6 text-primary" />
-            Transparence et Neutralité
+            <h2>Fiabilité et Transparence</h2>
           </CardTitle>
+          <CardDescription>
+            Pourquoi faire confiance à notre boussole électorale municipale
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
@@ -156,15 +219,15 @@ export default function AboutPage() {
         </CardContent>
       </Card>
 
-      {/* Section Enjeux Municipaux */}
+      {/* Section Enjeux */}
       <Card className="mb-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Users className="h-6 w-6 text-primary" />
-            Les Grands Enjeux Municipaux 2025
+            <Target className="h-6 w-6 text-primary" />
+            <h2>Enjeux Couverts</h2>
           </CardTitle>
           <CardDescription>
-            Découvrez les thématiques couvertes par notre boussole électorale
+            Les domaines municipaux analysés par notre boussole électorale
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -233,5 +296,6 @@ export default function AboutPage() {
         </CardContent>
       </Card>
     </div>
+    </>
   )
 } 

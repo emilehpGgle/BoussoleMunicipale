@@ -98,14 +98,14 @@ export default function SiteHeader() {
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md shadow-soft">
         <div className="container flex h-20 max-w-7xl items-center">
-          {/* Logo - Maintenant toujours aligné à gauche */}
-          <Link href="/" className="flex items-center shrink-0 h-[56px] mr-4">
-            <div className="relative h-full w-36 sm:w-44 md:w-[190px] opacity-95">
+          {/* Logo - Parfaitement aligné à gauche */}
+          <Link href="/" className="flex items-center shrink-0 h-[56px]">
+            <div className="relative h-full w-36 sm:w-40 md:w-44">
               <Image
-                src="/logo-main.png"
+                src="/logo-main.webp"
                 alt="Boussole Municipale Logo"
                 fill
-                style={{ objectFit: "contain" }}
+                style={{ objectFit: "contain", objectPosition: "left center" }}
                 priority
                 quality={95}
                 className="transition-opacity duration-200"
@@ -162,7 +162,7 @@ export default function SiteHeader() {
                       <Link href="/" className="block h-[50px]">
                         <div className="relative h-full w-36 sm:w-40">
                           <Image
-                            src="/logo-main.png"
+                            src="/logo-main.webp"
                             alt="Boussole Municipale Logo"
                             fill
                             style={{ objectFit: "contain" }}

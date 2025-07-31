@@ -1,7 +1,7 @@
-# 20 Questions Révisées pour la Boussole Électorale Municipale de Québec 2025
+# 21 Questions Révisées pour la Boussole Électorale Municipale de Québec 2025
 
 ## Format des questions
-Chaque question est désormais présentée sous deux formats :
+Chaque question est désormais présentée sous trois formats :
 
 1. **Format accord/désaccord** : Permet aux répondants de se positionner sur une échelle de Likert à 5 niveaux :
    - Fortement en désaccord
@@ -17,6 +17,8 @@ Chaque question est désormais présentée sous deux formats :
    - Neutre (3)
    - Assez important (4)
    - Très important (5)
+
+3. **Format classement par priorité** : Permet aux répondants de classer leurs priorités municipales par ordre d'importance (1er, 2e, 3e choix) parmi une liste d'enjeux prédéfinis.
 
 ## Questions
 
@@ -114,7 +116,31 @@ Chaque question est désormais présentée sous deux formats :
     *Format* : Accord/désaccord
     *Importance* : Quelle importance accordez-vous à cette question?
 
-## Note méthodologique
-Ces questions ont été révisées pour offrir deux types de réponses : l'accord/désaccord (échelle de Likert classique) et l'importance (échelle d'importance). Cette double approche permet de mieux cerner non seulement la position des répondants sur chaque enjeu, mais aussi l'importance qu'ils y accordent, ce qui enrichit l'analyse et la pertinence de la boussole électorale.
+### Priorités municipales
 
-Les questions alternent entre formulation directe (accord/désaccord) et évaluation d'importance pour varier les modes de réponse tout en couvrant l'ensemble des enjeux majeurs de la campagne municipale de Québec 2025.
+21. **Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d'importance : 1er, 2e et 3e choix)**
+    *Format* : Classement par priorité
+    *Note* : Cette question permet de déterminer les enjeux municipaux prioritaires selon chaque citoyen.
+    
+    **Options de priorités disponibles :**
+    - Transport et mobilité
+    - Logement abordable
+    - Environnement et espaces verts
+    - Sécurité publique
+    - Gestion des finances municipales
+    - Services municipaux
+    - Projet de tramway
+    - Troisième lien routier
+    - Lutte aux changements climatiques
+    - Patrimoine et identité
+
+## Note méthodologique
+Ces questions ont été révisées pour offrir trois types de réponses : 
+
+1. **Accord/désaccord** (échelle de Likert classique)
+2. **Importance** (échelle d'importance) 
+3. **Classement par priorité** (sélection et classement des 3 enjeux prioritaires)
+
+Cette triple approche permet de mieux cerner non seulement la position des répondants sur chaque enjeu, mais aussi l'importance qu'ils y accordent et leurs priorités municipales globales, ce qui enrichit l'analyse et la pertinence de la boussole électorale.
+
+Les questions alternent entre formulation directe (accord/désaccord), évaluation d'importance, et classement par priorité pour varier les modes de réponse tout en couvrant l'ensemble des enjeux majeurs de la campagne municipale de Québec 2025. La question finale de classement des priorités permet d'identifier les enjeux les plus importants pour chaque citoyen et d'adapter l'analyse des résultats en conséquence.

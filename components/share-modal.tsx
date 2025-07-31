@@ -278,7 +278,7 @@ export default function ShareModal({
               </button>
               <button onClick={handleTwitterShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-black text-white transition-transform group-hover:scale-110 overflow-hidden">
-                  <Image src="/X.png" alt="X Logo" width={48} height={48} />
+                  <Image src="/X.png" alt="X Logo" width={48} height={48} loading="lazy" />
                 </div>
                 <span className="text-xs">X</span>
               </button>

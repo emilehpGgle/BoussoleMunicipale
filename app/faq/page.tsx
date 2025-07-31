@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
+import Head from "next/head"
+import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 export const metadata: Metadata = {
   title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec",
@@ -19,6 +21,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "FAQ - Questions sur la Boussole Électorale Municipale Québec 2025",
     description: "Toutes vos questions sur notre boussole électorale spécialisée pour les élections municipales de Québec. Découvrez la différence avec les boussoles provinciales."
+  },
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app/faq"
   }
 }
 
@@ -61,8 +66,50 @@ export default function FAQPage() {
     }
   ]
 
+  // Génère le balisage FAQ JSON-LD pour les 3 premières questions
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Qu'est-ce que la Boussole Électorale Municipale ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "La Boussole Électorale Municipale est un questionnaire politique gratuit et anonyme spécialisé pour les élections MUNICIPALES de Québec. Contrairement aux boussoles électorales généralistes (provinciales/fédérales), nous nous concentrons sur les enjeux qui vous touchent directement : déneigement, transport en commun, pistes cyclables, etc."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "En quoi notre boussole est-elle différente ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Notre boussole électorale est la seule à se concentrer exclusivement sur les partis et candidats municipaux de Québec sur des enjeux hyperlocaux comme le déneigement, les pistes cyclables et les services municipaux. Les autres boussoles électorales traitent d'enjeux généraux (santé, éducation) qui ne relèvent pas du municipal."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quels sont les principaux partis politiques municipaux ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Les principaux partis politiques de Québec incluent : Équipe Priorité Québec, Québec d'Abord, Transition Québec, Leadership Québec, Respect Citoyens, Québec Forte et Fière, et Alliance Citoyenne. Notre test analyse les positions de tous ces partis."
+        }
+      }
+    ]
+  }
+
   return (
     <div className="container max-w-4xl mx-auto py-8 px-4">
+      {/* Breadcrumbs avec structured data */}
+      <Breadcrumbs items={breadcrumbConfigs.faq} />
+      
+      {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        />
+      </Head>
       {/* En-tête SEO optimisé */}
       <div className="text-center mb-12">
         <h1 className="text-4xl font-bold mb-4">
@@ -116,20 +163,23 @@ export default function FAQPage() {
         </Card>
       ))}
 
-      {/* Section aide supplémentaire */}
-      <Card className="mb-8">
+      {/* Section d'aide */}
+      <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-6 w-6 text-primary" />
-            Besoin d&apos;aide supplémentaire ?
+            <h2>Besoin d&apos;aide ?</h2>
           </CardTitle>
+          <CardDescription>
+            Ressources supplémentaires pour vous aider
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div className="flex items-start gap-3">
               <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium mb-1">Besoin d&apos;aide supplémentaire ?</h4>
+                <h3 className="font-medium mb-1">Besoin d&apos;aide supplémentaire ?</h3>
                 <p className="text-sm text-muted-foreground">
                   Consultez notre page <Link href="/a-propos" className="text-primary hover:underline">À Propos</Link> pour 
                   comprendre la méthodologie complète de la boussole électorale.
@@ -140,7 +190,7 @@ export default function FAQPage() {
             <div className="flex items-start gap-3">
               <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium mb-1">Questionnaire Politique</h4>
+                <h3 className="font-medium mb-1">Questionnaire Politique</h3>
                 <p className="text-sm text-muted-foreground">
                   Commencez dès maintenant votre <Link href="/questionnaire" className="text-primary hover:underline">questionnaire gratuit</Link> pour 
                   découvrir vos affinités avec les partis municipaux.
@@ -154,9 +204,9 @@ export default function FAQPage() {
       {/* Call to Action final */}
       <Card className="text-center">
         <CardContent className="pt-6">
-          <h3 className="text-2xl font-bold mb-4">
+          <h2 className="text-2xl font-bold mb-4">
             Prêt à découvrir vos affinités politiques ?
-          </h3>
+          </h2>
           <p className="text-muted-foreground mb-6">
             Utilisez notre <strong>boussole électorale</strong> pour identifier quel parti municipal de Québec 
             partage le mieux vos idées pour les <strong>élections 2025</strong>.
@@ -172,9 +222,21 @@ export default function FAQPage() {
                 En Savoir Plus
               </Link>
             </Button>
+            <Button asChild variant="ghost" size="lg">
+              <Link href="/resultats">
+                Voir les résultats boussole électorale municipale
+              </Link>
+            </Button>
           </div>
         </CardContent>
       </Card>
+
+      {/* Lien retour vers l'accueil */}
+      <div className="text-center mt-8">
+        <Link href="/" className="text-primary underline hover:text-primary/80 text-base">
+          Retour à la boussole électorale municipale
+        </Link>
+      </div>
     </div>
   )
 } 

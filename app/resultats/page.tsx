@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState, useEffect, useMemo } from "react"
+import { lazy, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { ArrowLeft, Share2, Info, ArrowRight } from "lucide-react"
@@ -24,15 +25,17 @@ import {
   partyPositions,
 } from "@/lib/political-map-calculator"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import PoliticalCompassChart from "@/components/political-compass-chart"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { usePriorities } from "@/hooks/usePriorities"
-import ShareModal from "@/components/share-modal"
 import { PageWithGlow } from "@/components/ui/background-glow"
-import { TopMatchModal } from "@/components/ui/top-match-modal"
 
+// Lazy loading des modals (pas critiques pour le first paint)
+const ShareModal = lazy(() => import("@/components/share-modal"))
+const TopMatchModal = lazy(() => import("@/components/ui/top-match-modal").then(module => ({ default: module.TopMatchModal })))
+import Head from "next/head"
+import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 
 interface CalculatedPartyScore {
@@ -92,6 +95,9 @@ declare global {
     }
   }
 }
+
+// Lazy loading du composant PoliticalCompassChart (lourd et pas critique)
+const PoliticalCompassChart = lazy(() => import("@/components/political-compass-chart"))
 
 export default function ResultsPage() {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
@@ -341,7 +347,7 @@ export default function ResultsPage() {
         {!imageError && (
           <Image
             src={party.logoUrl || "/placeholder.svg?width=80&height=80&query=Logo+non+disponible"}
-            alt={`Logo ${party.name}`}
+            alt={`Logo ${party.name} élections municipales Québec 2025`}
             width={size.width}
             height={size.height}
             style={{ 
@@ -375,8 +381,50 @@ export default function ResultsPage() {
     )
   }
 
-      return (
-      <PageWithGlow intensity="subtle">
+  // Balisage Quiz/Survey JSON-LD pour SEO
+  const quizJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    "name": "Boussole Électorale Municipale de Québec 2025",
+    "description": "Questionnaire politique gratuit pour découvrir vos affinités avec les partis municipaux de Québec lors des élections 2025. 21 questions sur les enjeux locaux.",
+    "about": [
+      "élections municipales Québec 2025",
+      "partis politiques municipaux",
+      "affinités politiques locales"
+    ],
+    "audience": {
+      "@type": "Audience",
+      "audienceType": "Citoyens de la Ville de Québec"
+    },
+    "numberOfQuestions": 21,
+    "educationalLevel": "Adultes",
+    "provider": {
+      "@type": "Organization",
+      "name": "Boussole Électorale Québec",
+      "url": "https://boussole-municipale.vercel.app"
+    },
+    "hasPart": [
+      {
+        "@type": "Question",
+        "name": "Êtes-vous favorable au projet de tramway à Québec ?",
+        "text": "Êtes-vous favorable au projet de tramway à Québec ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Oui, Non, Ne sais pas"
+        }
+      }
+    ]
+  }
+
+  return (
+    <PageWithGlow intensity="subtle">
+      {/* Balisage Quiz/Survey JSON-LD pour SEO Rich Snippets */}
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(quizJsonLd) }}
+        />
+      </Head>
       <div className="relative min-h-screen mobile-constrained">
 
       {/* Affichage d'erreur uniquement si problème critique */}
@@ -392,28 +440,33 @@ export default function ResultsPage() {
         {/* Chat qui dort - premier tiers de la page */}
         <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none decorative-frame-left">
           <Image 
-            src="/Image_parc_chat_dort.png" 
-            alt="" 
+            src="/Image_parc_chat_dort.webp" 
+            alt="Chat qui dort dans un parc municipal de Québec - Illustration boussole électorale municipale 2025" 
             width={256}
             height={192}
             className="object-contain decorative-image-left"
+            loading="lazy"
           />
         </div>
         
         {/* Famille - troisième tiers de la page */}
         <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none decorative-frame-right">
           <Image 
-            src="/Image_famille.png" 
-            alt="" 
+            src="/Image_famille.webp" 
+            alt="Famille dans un parc municipal de Québec - Illustration résultats boussole électorale municipale 2025" 
             width={288}
             height={216}
             className="object-contain decorative-image-right"
+            loading="lazy"
           />
         </div>
       </div>
 
       {/* Contenu principal avec overlay mobile */}
       <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none section-contained">
+        {/* Breadcrumbs avec structured data */}
+        <Breadcrumbs items={breadcrumbConfigs.results} />
+        
         <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-4">
           <div className="flex-1 mobile-section-border lg:border-l-0 lg:pl-0">
             <h1 className="text-foreground mb-3">Vos Résultats</h1> {/* font-bold is now in globals.css for h1 */}
@@ -519,7 +572,9 @@ export default function ResultsPage() {
         </Card>
 
         {/* Carte de positionnement politique 2D */}
-        <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
+        <Suspense fallback={<div className="h-full w-full bg-muted/30 rounded-lg flex items-center justify-center">Chargement de la carte politique...</div>}>
+          <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
+        </Suspense>
 
                  <Card className="shadow-soft rounded-2xl subtle-glow">
            <CardHeader>
@@ -581,9 +636,9 @@ export default function ResultsPage() {
                         </p>
                       </div>
                       <div className="space-y-2">
-                        <h5 className="text-sm font-semibold text-muted-foreground">
+                        <h4 className="text-sm font-semibold text-muted-foreground">
                           {question.responseType === "priority_ranking" ? "Priorités des partis :" : "Positions des partis :"}
-                        </h5>
+                        </h4>
                         {question.responseType === "priority_ranking" ? (
                           // Affichage spécial pour la question de priorité
                           calculatedScores.map(({ party }) => {
@@ -678,35 +733,39 @@ export default function ResultsPage() {
           </Button>
         </div>
 
-        {/* Modal de partage */}
-        <ShareModal
-          isOpen={isShareModalOpen}
-          onClose={() => setIsShareModalOpen(false)}
-          results={results}
-          politicalPosition={results?.politicalPosition}
-          userAnswers={userAnswers}
-          userImportance={userImportance}
-          calculatedScores={calculatedScores}
-          topParties={topParties}
-        />
+        {/* Modal de partage - avec lazy loading */}
+        <Suspense fallback={<div />}>
+          <ShareModal
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+            results={results}
+            politicalPosition={results?.politicalPosition}
+            userAnswers={userAnswers}
+            userImportance={userImportance}
+            calculatedScores={calculatedScores}
+            topParties={topParties}
+          />
+        </Suspense>
 
-        {/* Modal pour le "Top Match" */}
-        <TopMatchModal
-          isOpen={showTopMatchModal}
-          onClose={() => setShowTopMatchModal(false)}
-          topMatch={topParties.length > 0 ? {
-            partyId: topParties[0].party.id,
-            score: topParties[0].score,
-            percentage: topParties[0].score,
-            rank: 1
-          } : null}
-          onViewPartyProfile={() => setShowTopMatchModal(false)}
-          results={results}
-          userAnswers={userAnswers}
-          userImportance={userImportance}
-          calculatedScores={calculatedScores}
-          topParties={topParties}
-        />
+        {/* Modal pour le "Top Match" - avec lazy loading */}
+        <Suspense fallback={<div />}>
+          <TopMatchModal
+            isOpen={showTopMatchModal}
+            onClose={() => setShowTopMatchModal(false)}
+            topMatch={topParties.length > 0 ? {
+              partyId: topParties[0].party.id,
+              score: topParties[0].score,
+              percentage: topParties[0].score,
+              rank: 1
+            } : null}
+            onViewPartyProfile={() => setShowTopMatchModal(false)}
+            results={results}
+            userAnswers={userAnswers}
+            userImportance={userImportance}
+            calculatedScores={calculatedScores}
+            topParties={topParties}
+          />
+        </Suspense>
       </div>
     </div>
     </PageWithGlow>

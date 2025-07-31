@@ -1,6 +1,19 @@
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Politique de Confidentialité | Boussole Électorale Municipale Québec",
+  description: "Politique de confidentialité de la Boussole Électorale Municipale. Protection des données personnelles et informations de collecte pour les élections municipales de Québec 2025.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app/confidentialite"
+  }
+}
 
 export default function ConfidentialitePage() {
   return (

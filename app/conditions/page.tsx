@@ -1,6 +1,19 @@
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Conditions d'Utilisation | Boussole Électorale Municipale Québec",
+  description: "Conditions d'utilisation de la Boussole Électorale Municipale. Conditions légales et responsabilités pour l'utilisation du test politique municipal de Québec 2025.",
+  robots: {
+    index: false,
+    follow: true,
+  },
+  alternates: {
+    canonical: "https://boussole-municipale.vercel.app/conditions"
+  }
+}
 
 export default function ConditionsPage() {
   return (

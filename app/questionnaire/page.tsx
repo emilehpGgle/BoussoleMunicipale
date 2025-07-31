@@ -17,6 +17,7 @@ import { useResults } from "@/hooks/useResults"
 import { usePriorities } from "@/hooks/usePriorities"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { ButtonWithEffects } from "@/components/ui/button-effects"
+import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -141,10 +142,9 @@ export default function QuestionnairePage() {
     }
   })()
 
-  // Calculer le nombre de questions réellement répondues
-  const answeredQuestionsCount = getResponseCounts().agreement
+  // Calculer la progression basée sur la position actuelle dans le questionnaire
   const totalQuestions = boussoleQuestions.length
-  const progress = (answeredQuestionsCount / totalQuestions) * 100
+  const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100
 
   const handleAnswer = async (optionKey: AgreementOptionKey) => {
     try {
@@ -366,14 +366,19 @@ export default function QuestionnairePage() {
 
       {/* Contenu principal optimisé pour l&apos;espace vertical */}
       <div className="container max-w-4xl py-4 md:py-6 px-4 md:px-6 mobile-content-overlay section-contained flex flex-col questionnaire-compact">
+        {/* Titre principal pour la hiérarchie des headings */}
+        <h1 className="sr-only">Questionnaire Boussole Électorale Municipale Québec 2025</h1>
+        
+        {/* Breadcrumbs avec structured data */}
+        <Breadcrumbs items={breadcrumbConfigs.questionnaire} />
+        
         <div className="mb-3 progress-container">
           <div className="flex justify-between items-center mb-2">
             <div className="text-sm font-medium text-muted-foreground">
               Question {currentQuestionIndex + 1} sur {boussoleQuestions.length}
             </div>
-            {/* Affichage du nombre de réponses */}
             <div className="text-xs text-muted-foreground">
-              {getResponseCounts().total} réponses enregistrées
+              {Math.round(progress)}% complété
             </div>
           </div>
           <Progress
@@ -521,7 +526,7 @@ export default function QuestionnairePage() {
             )}
           </div>
 
-          <div className="navigation-buttons flex flex-col sm:flex-row justify-between gap-2 mt-auto pt-2">
+          <div className="navigation-buttons flex flex-col xs:flex-row justify-between gap-3 mt-auto pt-4">
             <Button
               variant="outline"
               onClick={goToPreviousQuestion}

@@ -282,13 +282,19 @@ export function useUserResponses() {
     const importanceDirectCount = Object.keys(state.responses.importanceDirect).length
     const prioritiesCount = Object.keys(state.responses.priorities).length
 
-    // On ne compte que les réponses d'accord pour le total des questions
-    // car chaque question a une seule réponse d'accord
+    // Calculer le total de QUESTIONS répondues (pas de réponses individuelles)
+    // Chaque question a un ID unique, donc on compte les questions distinctes
+    const answeredQuestionIds = new Set([
+      ...Object.keys(state.responses.agreement),
+      ...Object.keys(state.responses.importanceDirect),
+      ...(prioritiesCount > 0 ? ['q21_enjeux_prioritaires'] : [])
+    ])
+    
     return {
       agreement: agreementCount,
       importanceDirect: importanceDirectCount,
       priorities: prioritiesCount,
-      total: agreementCount, // Seules les réponses d'accord comptent pour la progression
+      total: answeredQuestionIds.size, // Nombre de questions distinctes répondues
       totalResponses: agreementCount + importanceDirectCount + prioritiesCount
     }
   }, [state.responses])

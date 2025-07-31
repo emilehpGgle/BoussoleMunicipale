@@ -279,6 +279,79 @@ export class SessionsAPI {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
     return uuidRegex.test(token)
   }
+
+  /**
+   * Détecte des patterns suspects dans les sessions
+   */
+  async detectSuspiciousActivity(): Promise<{
+    suspiciousIPs: string[]
+    rapidCreations: number
+    duplicateUserAgents: number
+  }> {
+    const { data, error } = await this.supabase
+      .from('user_sessions')
+      .select('ip_address, user_agent, created_at')
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()) // Dernières 24h
+
+    if (error) {
+      console.error('Erreur lors de la détection d\'activité suspecte:', error)
+      return { suspiciousIPs: [], rapidCreations: 0, duplicateUserAgents: 0 }
+    }
+
+    // Analyser les IPs avec trop de sessions
+    const ipCounts: Record<string, number> = {}
+    const userAgentCounts: Record<string, number> = {}
+    
+    data.forEach(session => {
+      if (session.ip_address) {
+        ipCounts[session.ip_address] = (ipCounts[session.ip_address] || 0) + 1
+      }
+      if (session.user_agent) {
+        userAgentCounts[session.user_agent] = (userAgentCounts[session.user_agent] || 0) + 1
+      }
+    })
+
+    // IPs avec plus de 5 sessions en 24h = suspect
+    const suspiciousIPs = Object.entries(ipCounts)
+      .filter(([, count]) => count > 5)
+      .map(([ip]) => ip)
+
+    // Créations rapides (plus de 10 en 1h)
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000)
+    const rapidCreations = data.filter(s => new Date(s.created_at) > oneHourAgo).length
+
+    // User agents dupliqués (même UA, créations multiples)
+    const duplicateUserAgents = Object.values(userAgentCounts).filter(count => count > 3).length
+
+    return {
+      suspiciousIPs,
+      rapidCreations,
+      duplicateUserAgents
+    }
+  }
+
+  /**
+   * Vérifie si une IP a déjà créé trop de sessions récemment
+   */
+  async checkIPRateLimit(ipAddress: string): Promise<{ allowed: boolean; sessionCount: number }> {
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString()
+    
+    const { data, error } = await this.supabase
+      .from('user_sessions')
+      .select('id')
+      .eq('ip_address', ipAddress)
+      .gte('created_at', oneHourAgo)
+
+    if (error) {
+      console.error('Erreur lors de la vérification du rate limit:', error)
+      return { allowed: true, sessionCount: 0 } // En cas d'erreur, autoriser
+    }
+
+    const sessionCount = data.length
+    const allowed = sessionCount < 3 // Max 3 sessions par heure par IP
+
+    return { allowed, sessionCount }
+  }
 }
 
 // Instance singleton pour utilisation dans l'application

@@ -47,7 +47,7 @@ export function useResults() {
   })
 
   // Constantes pour le calcul de complétion
-  const TOTAL_QUESTIONS = 20
+  const TOTAL_QUESTIONS = 21
 
   // Charger les résultats depuis Supabase uniquement
   const loadResults = useCallback(async () => {
@@ -121,9 +121,9 @@ export function useResults() {
     try {
       setState(prev => ({ ...prev, isCalculating: true, error: null }))
 
-      // Vérifier qu'on a des réponses
+      // Vérifier qu'on a suffisamment de réponses pour calculer les résultats
       const counts = getResponseCounts()
-      if (counts.total === 0) {
+      if (counts.agreement === 0 && counts.importanceDirect === 0) {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
 

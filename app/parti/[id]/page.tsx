@@ -195,6 +195,15 @@ export default function PartyDetailPage() {
         </CardContent>
       </Card>
 
+      {/* Bouton d'appel à l'action pour le questionnaire */}
+      <div className="text-center">
+        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 mt-4">
+          <Link href="/questionnaire">
+            Faire le questionnaire
+          </Link>
+        </Button>
+      </div>
+
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Positions détaillées sur les enjeux</CardTitle>

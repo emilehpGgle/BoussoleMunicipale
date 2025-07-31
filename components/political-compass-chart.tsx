@@ -65,9 +65,13 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
   const PoliticalMapSVG = ({ width, height, isFullscreenMode = false }: { width: number, height: number, isFullscreenMode?: boolean }) => (
     <svg 
       viewBox={`0 0 ${width} ${height}`}
+      aria-label="Carte politique municipale - Résultats boussole électorale municipale de Québec 2025"
+      role="img"
+      focusable="false"
       className={`w-full h-auto max-w-full overflow-visible ${isFullscreenMode ? 'min-h-[80vh]' : ''}`}
       style={{ aspectRatio: `${width}/${height}` }}
     >
+      <desc>Carte politique municipale de Québec 2025 générée par la boussole électorale municipale. Affiche la position de l&apos;utilisateur et des partis sur deux axes : économique et social.</desc>
       {/* Grille de fond */}
       <defs>
         <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
