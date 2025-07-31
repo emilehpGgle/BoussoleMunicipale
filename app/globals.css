@@ -110,15 +110,15 @@
     @apply transition-colors duration-200 ease-in-out;
   }
 
-  /* General button enhancements */
+  /* General button enhancements - optimisés */
   .btn-base-effects {
-    @apply transition-all duration-200 ease-in-out;
+    @apply transition-colors duration-150 ease-out;
   }
   .btn-hover-lift {
-    @apply hover:-translate-y-0.5 hover:shadow-md;
+    @apply hover:-translate-y-0.5 hover:shadow-md transition-transform duration-150 ease-out;
   }
   .btn-primary-hover-effects {
-    @apply hover:brightness-110;
+    @apply hover:brightness-105 transition-all duration-150 ease-out;
   }
 
   /* Enhanced button borders - subtle but visible */
@@ -142,33 +142,33 @@
     border-color: hsl(var(--teal-special));
   }
 
-  /* Animations pour les transitions "swoosh" du questionnaire */
+  /* Animations pour les transitions optimisées du questionnaire */
   @keyframes questionSlideIn {
     0% {
       opacity: 0;
-      transform: translateX(50px) scale(0.95);
+      transform: translateX(20px);
     }
     100% {
       opacity: 1;
-      transform: translateX(0) scale(1);
+      transform: translateX(0);
     }
   }
 
   @keyframes questionSlideOut {
     0% {
       opacity: 1;
-      transform: translateX(0) scale(1);
+      transform: translateX(0);
     }
     100% {
       opacity: 0;
-      transform: translateX(-30px) scale(0.98);
+      transform: translateX(-10px);
     }
   }
 
   @keyframes questionFadeIn {
     0% {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(10px);
     }
     100% {
       opacity: 1;
@@ -177,27 +177,28 @@
   }
 
   .question-enter {
-    animation: questionSlideIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: questionSlideIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
 
   .question-exit {
-    animation: questionSlideOut 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+    animation: questionSlideOut 0.15s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
   }
 
   .question-content-enter {
-    animation: questionFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+    animation: questionFadeIn 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.02s both;
   }
 
-  /* Transitions fluides pour les boutons d'options */
+  /* Transitions simplifiées pour les boutons d'options */
   .option-button-enter {
-    animation: questionFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+    opacity: 0;
+    animation: questionFadeIn 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
   }
 
-  .option-button-enter:nth-child(1) { animation-delay: 0.08s; }
-  .option-button-enter:nth-child(2) { animation-delay: 0.12s; }
-  .option-button-enter:nth-child(3) { animation-delay: 0.16s; }
-  .option-button-enter:nth-child(4) { animation-delay: 0.2s; }
-  .option-button-enter:nth-child(5) { animation-delay: 0.24s; }
+  .option-button-enter:nth-child(1) { animation-delay: 0.03s; }
+  .option-button-enter:nth-child(2) { animation-delay: 0.05s; }
+  .option-button-enter:nth-child(3) { animation-delay: 0.07s; }
+  .option-button-enter:nth-child(4) { animation-delay: 0.09s; }
+  .option-button-enter:nth-child(5) { animation-delay: 0.11s; }
 
   /* Animation pour les messages d'erreur */
   @keyframes slideInFromRight {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from "react"
+import { useState, useEffect, useCallback, useRef, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ArrowLeft, HelpCircle, CheckCircle2 } from "lucide-react"
@@ -15,6 +15,7 @@ import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
 import { usePriorities } from "@/hooks/usePriorities"
+import { useOptimizedTransition } from "@/hooks/useOptimizedTransition"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
@@ -24,9 +25,12 @@ import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 export default function QuestionnairePage() {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
-  const [isTransitioning, setIsTransitioning] = useState(false)
-  const [questionKey, setQuestionKey] = useState(0) // Pour forcer le re-render avec animations
   const [hasInitialized, setHasInitialized] = useState(false) // Nouveau: pour éviter les doubles initialisations
+  
+  // Hook optimisé pour les transitions
+  const { isTransitioning, transitionKey, startTransition, cleanup } = useOptimizedTransition({
+    duration: 100
+  })
   const router = useRouter()
   const searchParams = useSearchParams()
   
@@ -66,8 +70,8 @@ export default function QuestionnairePage() {
   const isLoading = sessionLoading || responsesLoading || prioritiesLoading
   const globalError = sessionError || responsesError || prioritiesError
 
-  // ✅ Calculer quelle question afficher basée sur les réponses existantes (simplifié)
-  const calculateNextQuestionIndex = useCallback(() => {
+  // ✅ Calculer quelle question afficher (optimisé avec useMemo)
+  const nextQuestionIndex = useMemo(() => {
     // Parcourir toutes les questions pour trouver la première non répondue
     for (let i = 0; i < boussoleQuestions.length; i++) {
       const question = boussoleQuestions[i]
@@ -93,11 +97,9 @@ export default function QuestionnairePage() {
     return boussoleQuestions.length - 1
   }, [userAnswers, userImportanceDirectAnswers, selectedPriorities])
 
-  // ✅ Initialiser l'index de question une fois que les données sont chargées (simplifié)
+  // ✅ Initialiser l'index de question une fois que les données sont chargées (optimisé)
   useEffect(() => {
     if (!isLoading && !hasInitialized) {
-      const nextQuestionIndex = calculateNextQuestionIndex()
-      
       console.log('🔍 [Questionnaire] Vérification position:', {
         userAnswersCount: Object.keys(userAnswers).length,
         prioritiesCount: Object.keys(selectedPriorities).length,
@@ -110,25 +112,26 @@ export default function QuestionnairePage() {
       setHasInitialized(true)
       console.log('🎯 [Questionnaire] Reprise à la question', nextQuestionIndex + 1)
     }
-  }, [isLoading, hasInitialized, userAnswers, selectedPriorities, calculateNextQuestionIndex])
+  }, [isLoading, hasInitialized, nextQuestionIndex])
 
-  // ✅ Re-calculer si les données changent après l'initialisation (simplifié)
+  // ✅ Re-calculer si les données changent après l'initialisation (optimisé)
   useEffect(() => {
-    if (hasInitialized && !isLoading) {
-      const responseCount = getResponseCounts().total
-      if (responseCount > 0 && currentQuestionIndex === 0) {
-        const newIndex = calculateNextQuestionIndex()
-        if (newIndex > 0) {
-          console.log(`🎯 Correction: aller à la question ${newIndex + 1}`)
-          setCurrentQuestionIndex(newIndex)
-        }
-      }
+    if (hasInitialized && !isLoading && nextQuestionIndex > currentQuestionIndex) {
+      console.log(`🎯 Correction: aller à la question ${nextQuestionIndex + 1}`)
+      setCurrentQuestionIndex(nextQuestionIndex)
     }
-  }, [hasInitialized, isLoading, currentQuestionIndex, calculateNextQuestionIndex, getResponseCounts])
+  }, [hasInitialized, isLoading, currentQuestionIndex, nextQuestionIndex])
 
   useEffect(() => {
     // Logic for postal code check can be added here if needed
   }, [searchParams, router])
+
+  // Cleanup des transitions au démontage
+  useEffect(() => {
+    return () => {
+      cleanup()
+    }
+  }, [cleanup])
 
   const currentQuestion = boussoleQuestions[currentQuestionIndex]
   const isAnswered = (() => {
@@ -148,41 +151,39 @@ export default function QuestionnairePage() {
 
   const handleAnswer = async (optionKey: AgreementOptionKey) => {
     try {
-      // Sauvegarder via notre hook sécurisé
-      await saveAgreementResponse(currentQuestion.id, optionKey)
-      
-      console.log('📝 [Questionnaire] Réponse d\'accord sauvegardée pour Q' + (currentQuestionIndex + 1))
-      
-      // ✅ Navigation normale vers la question suivante
-      setIsTransitioning(true)
-      setTimeout(() => {
+      // ✅ Navigation immédiate avec transition optimisée
+      startTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-        setQuestionKey(prev => prev + 1)
-        setIsTransitioning(false)
-      }, 250)
+      })
+      
+      // Sauvegarder en arrière-plan (non-bloquant)
+      saveAgreementResponse(currentQuestion.id, optionKey).then(() => {
+        console.log('📝 [Questionnaire] Réponse d\'accord sauvegardée pour Q' + (currentQuestionIndex + 1))
+      }).catch(error => {
+        console.error('❌ [Questionnaire] Erreur sauvegarde réponse d\'accord:', error)
+      })
       
     } catch (error) {
-      console.error('❌ [Questionnaire] Erreur sauvegarde réponse d\'accord:', error)
+      console.error('❌ [Questionnaire] Erreur navigation:', error)
     }
   }
 
   const handleImportanceDirectAnswer = async (optionKey: ImportanceDirectOptionKey) => {
     try {
-      // Sauvegarder via notre hook sécurisé
-      await saveImportanceDirectResponse(currentQuestion.id, optionKey)
-      
-      console.log('📝 [Questionnaire] Réponse d\'importance directe sauvegardée pour Q' + (currentQuestionIndex + 1))
-      
-      // ✅ Navigation normale vers la question suivante
-      setIsTransitioning(true)
-      setTimeout(() => {
+      // ✅ Navigation immédiate avec transition optimisée
+      startTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-        setQuestionKey(prev => prev + 1)
-        setIsTransitioning(false)
-      }, 250)
+      })
+      
+      // Sauvegarder en arrière-plan (non-bloquant)
+      saveImportanceDirectResponse(currentQuestion.id, optionKey).then(() => {
+        console.log('📝 [Questionnaire] Réponse d\'importance directe sauvegardée pour Q' + (currentQuestionIndex + 1))
+      }).catch(error => {
+        console.error('❌ [Questionnaire] Erreur sauvegarde réponse d\'importance:', error)
+      })
       
     } catch (error) {
-      console.error('❌ [Questionnaire] Erreur sauvegarde réponse d\'importance:', error)
+      console.error('❌ [Questionnaire] Erreur navigation:', error)
     }
   }
 
@@ -299,12 +300,9 @@ export default function QuestionnairePage() {
     
     if (currentQuestionIndex < boussoleQuestions.length - 1) {
       console.log('📝 [Questionnaire] Passage à la question suivante')
-      setIsTransitioning(true)
-      setTimeout(() => {
+      startTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
-        setQuestionKey(prev => prev + 1)
-        setIsTransitioning(false)
-      }, 250)
+      })
     } else {
       // ✅ Questionnaire terminé → Résultats !
       console.log('🎯 [Questionnaire] Questionnaire complet, redirection vers les résultats')
@@ -314,12 +312,9 @@ export default function QuestionnairePage() {
 
   const goToPreviousQuestion = () => {
     if (currentQuestionIndex > 0) {
-      setIsTransitioning(true)
-      setTimeout(() => {
+      startTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex - 1)
-        setQuestionKey(prev => prev + 1)
-        setIsTransitioning(false)
-      }, 250)
+      })
     }
   }
 
@@ -389,8 +384,8 @@ export default function QuestionnairePage() {
         </div>
 
         <Card 
-          key={questionKey} 
-          className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'} transition-all duration-300`}
+          key={transitionKey} 
+          className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${isTransitioning ? 'question-exit' : 'question-enter'} will-change-transform`}
         >
           <div className="flex items-start gap-3 mb-3 question-header">
             <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${!isTransitioning ? 'question-content-enter' : ''}`}>

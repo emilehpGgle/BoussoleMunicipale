@@ -1,98 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/client'
+import { migrateQuestions, migrateParties, migratePartyPositions, verifyMigration } from '@/lib/migration-script'
 
 /**
  * API route pour exécuter la migration complète des données
- * GET /api/migrate - Lance la migration
+ * GET /api/migrate - Lance la migration COMPLÈTE (questions + partis + positions)
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function GET(_request: NextRequest) {
   try {
-    console.log('🚀 [MIGRATE API] Début de la migration')
+    console.log('🚀 [MIGRATE API] Début de la migration COMPLÈTE')
+    console.log('=' .repeat(50))
     
-    const supabase = createClient()
+    // Étape 1: Migrer TOUTES les questions (incluant nos corrections importance_direct → agreement)
+    console.log('📝 [MIGRATE API] Migration des questions...')
+    await migrateQuestions()
     
-    // Test de connexion d'abord
-    console.log('🔗 [MIGRATE API] Test de connexion Supabase...')
-    const { error: testError } = await supabase
-      .from('user_sessions')
-      .select('count')
-      .limit(1)
+    // Étape 2: Migrer les partis (incluant nos corrections de positions)
+    console.log('🏛️ [MIGRATE API] Migration des partis...')
+    await migrateParties()
     
-    if (testError) {
-      console.error('❌ [MIGRATE API] Erreur de connexion:', testError)
-      throw new Error(`Connexion Supabase échouée: ${testError.message}`)
-    }
+    // Étape 3: Migrer les positions des partis (avec nos corrections)
+    console.log('📊 [MIGRATE API] Migration des positions...')
+    await migratePartyPositions()
     
-    console.log('✅ [MIGRATE API] Connexion OK')
+    // Étape 4: Vérifier que tout est synchronisé
+    console.log('🔍 [MIGRATE API] Vérification finale...')
+    const verification = await verifyMigration()
     
-    // Vérifier si les questions existent déjà
-    console.log('🔍 [MIGRATE API] Vérification des questions existantes...')
-    const { data: existingQuestions, error: questionsError } = await supabase
-      .from('questions')
-      .select('id')
-      .eq('id', 'q21_enjeux_prioritaires')
-    
-    if (questionsError) {
-      console.error('❌ [MIGRATE API] Erreur lors de la vérification:', questionsError)
-    } else {
-      console.log('📊 [MIGRATE API] Questions q21 trouvées:', existingQuestions?.length || 0)
-    }
-    
-    // Insérer manuellement la question q21 si elle n'existe pas
-    if (!existingQuestions || existingQuestions.length === 0) {
-      console.log('➕ [MIGRATE API] Insertion de la question q21_enjeux_prioritaires...')
-      
-      const { error: insertError } = await supabase
-        .from('questions')
-        .upsert({
-          id: 'q21_enjeux_prioritaires',
-          text: 'Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d\'importance : 1er, 2e et 3e choix)',
-          category: 'Priorités municipales',
-          response_type: 'priority_ranking',
-          description: 'Sélectionnez vos 3 enjeux municipaux prioritaires et classez-les par ordre d\'importance.',
-          response_format: 'priority',
-          agreement_options: ['FA', 'PA', 'N', 'PD', 'FD', 'IDK'],
-          importance_options: [5, 4, 3, 2, 1],
-          importance_direct_options: null,
-          priority_options: [
-            'Transport et mobilité',
-            'Logement abordable', 
-            'Environnement et espaces verts',
-            'Sécurité publique',
-            'Gestion des finances municipales',
-            'Services municipaux',
-            'Projet de tramway',
-            'Troisième lien routier',
-            'Lutte aux changements climatiques',
-            'Patrimoine et identité'
-          ],
-          custom_agreement_labels: null,
-          custom_importance_direct_labels: null,
-          order_index: 21
-        })
-      
-      if (insertError) {
-        console.error('❌ [MIGRATE API] Erreur insertion q21:', insertError)
-        throw new Error(`Insertion échouée: ${insertError.message}`)
-      }
-      
-      console.log('✅ [MIGRATE API] Question q21_enjeux_prioritaires insérée avec succès')
-    }
+    console.log('=' .repeat(50))
+    console.log('🎉 [MIGRATE API] Migration complète terminée avec succès!')
     
     return NextResponse.json({
       success: true,
-      message: 'Migration de la question q21 terminée',
-      questionsFound: existingQuestions?.length || 0
+      message: 'Migration complète terminée - Base de données synchronisée avec les dernières corrections',
+      ...verification
     })
     
   } catch (error) {
-    console.error('❌ [MIGRATE API] Erreur:', error)
+    console.error('❌ [MIGRATE API] Erreur lors de la migration complète:', error)
     
     return NextResponse.json({
       success: false,
       error: error instanceof Error ? error.message : 'Erreur inconnue',
-      message: 'Erreur lors de la migration'
+      message: 'Erreur lors de la migration complète - Base de données NON synchronisée'
     }, { status: 500 })
   }
 }

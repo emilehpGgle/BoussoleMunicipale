@@ -617,6 +617,8 @@ export default function ProfilePage() {
         <p className="text-sm text-muted-foreground max-w-xl mx-auto">
           {currentInfo.description}
         </p>
+        
+
       </div>
 
       {/* Progress global */}

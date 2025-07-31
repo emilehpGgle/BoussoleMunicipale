@@ -123,12 +123,12 @@ export function useResults() {
 
       // Vérifier qu'on a suffisamment de réponses pour calculer les résultats
       const counts = getResponseCounts()
-      if (counts.agreement === 0 && counts.importanceDirect === 0) {
+      if (counts.total === 0) {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
 
       // Calcul du pourcentage de complétion
-      const primaryResponsesCount = counts.agreement + counts.importanceDirect
+      const primaryResponsesCount = counts.agreement // Toutes les questions principales sont maintenant de type agreement
       const maxExpectedResponses = TOTAL_QUESTIONS
       const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 

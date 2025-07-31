@@ -86,24 +86,29 @@ export default function ContinueOrRestartModal({
       // Effacer toutes les réponses
       await clearAllResponses()
       
-      // Si on veut aller à l'accueil, y aller
-      // Sinon recommencer le questionnaire
-      if (targetPath === "/") {
-        // Petit délai pour que les états se stabilisent
+      // Toujours déclencher l'ouverture du modal de code postal après effacement
+      setTimeout(() => {
+        // Aller à l'accueil d'abord
+        if (targetPath === "/") {
+          router.push("/")
+        }
+        
+        // Puis déclencher l'événement pour ouvrir le modal de code postal
         setTimeout(() => {
-          window.location.href = "/"
-        }, 100)
-      } else {
-        // Petite pause pour que le clearing soit effectif
-        setTimeout(() => {
-          window.location.href = "/questionnaire"
-        }, 200)
-      }
+          const event = new CustomEvent('openPostalCodeModal')
+          window.dispatchEvent(event)
+        }, 150) // Petit délai pour que la redirection se fasse d'abord
+        
+      }, 100)
       
     } catch (error) {
       console.error("Erreur lors de l'effacement des réponses:", error)
-      // En cas d'erreur, fermer quand même le modal
+      // En cas d'erreur, fermer quand même le modal et déclencher le modal postal
       onClose()
+      setTimeout(() => {
+        const event = new CustomEvent('openPostalCodeModal')
+        window.dispatchEvent(event)
+      }, 100)
     } finally {
       setIsClearing(false)
     }

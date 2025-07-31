@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useSession } from './useSession'
 
 interface PrioritiesState {
@@ -183,9 +183,9 @@ export function usePriorities() {
     savePriorities,
     loadPriorities,
     
-    // ✅ Utilitaires
-    hasSelection: Object.keys(state.priorities).length > 0,
-    selectionCount: Object.keys(state.priorities).length,
-    isComplete: Object.keys(state.priorities).length === 3
+    // ✅ Utilitaires (mémoisés)
+    hasSelection: useMemo(() => Object.keys(state.priorities).length > 0, [state.priorities]),
+    selectionCount: useMemo(() => Object.keys(state.priorities).length, [state.priorities]),
+    isComplete: useMemo(() => Object.keys(state.priorities).length === 3, [state.priorities])
   }
 } 

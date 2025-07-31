@@ -227,14 +227,14 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'quebec_dabord': {
-    // Claude Villeneuve - Critique gestion actuelle, pragmatique
-    q1_tramway: 'PA',                              // Pour le tramway (position corrigée)
-    q2_pistes_cyclables: 'N',                      // Neutre
-    q3_troisieme_lien: 'FD',                       // Contre le 3e lien (position corrigée)
-    q4_secteur_prive_transport: 'PA',              // Pour l'efficacité privée
+    // Claude Villeneuve - Centre, pragmatique (positions peu documentées) ✏️ CORRIGÉ
+    q1_tramway: 'PA',                              // ✏️ CORRIGÉ : Soutien probable basé sur continuité majorité pro-tramway
+    q2_pistes_cyclables: 'N',                      // ✏️ CORRIGÉ : Position non documentée publiquement
+    q3_troisieme_lien: 'PA',                       // Pour les connexions
+    q4_secteur_prive_transport: 'N',               // ✏️ CORRIGÉ : Pas de position documentée sur privatisation
     q5_quotas_logements_abordables: 'N',           // Préfère autres solutions
     q6_densification_quartiers: 'N',               // Neutre
-    q7_etalement_urbain: 'N',                      // Neutre
+    q7_etalement_urbain: 'PA',                     // Pour le développement équilibré
     q8_stationnements_centre_ville: 'PA',          // Pour l'automobile
     q9_protection_espaces_verts: 'PA',             // Pour la protection
     q10_transition_carboneutre: 'N',               // Neutre (pragmatisme)
@@ -243,82 +243,82 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q13_participation_citoyenne: 'PA',             // Pour la consultation
     q14_reduction_dette: 'PA',                     // Pour la réduction
     q15_avantages_fiscaux_entreprises: 'PA',       // Pour l'attraction
-    q16_achat_local: 'PA',                         // Pour l'économie locale
-    q17_soutien_organismes_communautaires: 'N',    // Selon les budgets
-    q18_augmentation_effectifs_policiers: 'N',     // Neutre
-    q19_cameras_surveillance: 'N',                 // Neutre
-    q20_couvre_feu: 'N',                          // Selon les circonstances
+    q16_achat_local: 'PD',                         // Libre marché
+    q17_soutien_organismes_communautaires: 'N',    // ✏️ CORRIGÉ : Selon les budgets (non confirmé publiquement)
+    q18_augmentation_effectifs_policiers: 'PA',    // Pour la sécurité
+    q19_cameras_surveillance: 'PA',                // Pour la sécurité
+    q20_couvre_feu: 'PA',                          // Mesures de sécurité
   },
 
   'respect_citoyens': {
-    // Stéphane Lachance - Droite municipale conservatrice (contexte réaliste)
-    q1_tramway: 'PD',                              // "Critique les grands projets coûteux"
-    q2_pistes_cyclables: 'N',                      // Neutre (équilibre besoins)
-    q3_troisieme_lien: 'PA',                       // Pour (développement économique)
-    q4_secteur_prive_transport: 'PA',              // Pour efficacité privée
-    q5_quotas_logements_abordables: 'PD',          // "Contre interventions réglementaires"
-    q6_densification_quartiers: 'PD',              // Contre (préfère choix libre)
-    q7_etalement_urbain: 'PA',                     // Pour (développement libre)
-    q8_stationnements_centre_ville: 'PA',          // Pour l'automobile
-    q9_protection_espaces_verts: 'N',              // Neutre (équilibre développement)
-    q10_transition_carboneutre: 'PD',              // Contre (coûts économiques)
-    q11_collecte_residus_alimentaires: 'N',        // Neutre (si rentable)
+    // Stéphane Lachance - Populiste local, administration pragmatique ✏️ CORRIGÉ selon feedback agent AI
+    q1_tramway: 'FD',                              // "Critique les grands projets coûteux"
+    q2_pistes_cyclables: 'N',                      // ✏️ Agent AI : Neutre (pas d'opposition systématique)
+    q3_troisieme_lien: 'FA',                       // Pour (développement économique)
+    q4_secteur_prive_transport: 'PA',              // ✏️ ÉQUILIBRÉ : Pour efficacité mais pas idéologique
+    q5_quotas_logements_abordables: 'N',           // ✏️ Agent AI : Neutre (pas d'opposition forte publique)
+    q6_densification_quartiers: 'FD',              // Contre (préfère choix libre)
+    q7_etalement_urbain: 'FD',                     // Contre l'étalement
+    q8_stationnements_centre_ville: 'FA',          // Pour l'automobile
+    q9_protection_espaces_verts: 'PA',             // ✏️ Agent AI : Pour qualité de vie de quartier
+    q10_transition_carboneutre: 'N',               // ✏️ Agent AI : Neutre (pas de rejet explicite)
+    q11_collecte_residus_alimentaires: 'N',        // ✏️ Agent AI : Neutre (aucune mention publique)
     q12_augmentation_taxes: 'FD',                  // "Réduction des taxes" (priorité)
-    q13_participation_citoyenne: 'PA',             // Pour (plus de pouvoir aux citoyens via conseils)
-    q14_reduction_dette: 'FA',                     // Fortement pour (santé financière)
-    q15_avantages_fiscaux_entreprises: 'FA',       // Fortement pour (attraction économique)
-    q16_achat_local: 'N',                         // Neutre (libre marché)
-    q17_soutien_organismes_communautaires: 'PD',   // Contre (efficacité privée)
-    q18_augmentation_effectifs_policiers: 'PA',    // Pour (sécurité publique)
-    q19_cameras_surveillance: 'PA',                // Pour (sécurité moderne)
-    q20_couvre_feu: 'N',                          // Neutre (selon circonstances)
+    q13_participation_citoyenne: 'FD',             // Contre bureaucratie excessive
+    q14_reduction_dette: 'PA',                     // ✏️ ÉQUILIBRÉ : Pour mais pas obsessionnel
+    q15_avantages_fiscaux_entreprises: 'PA',       // ✏️ ÉQUILIBRÉ : Pour attraction mais mesuré
+    q16_achat_local: 'FD',                         // Contre interventions
+    q17_soutien_organismes_communautaires: 'N',    // ✏️ ÉQUILIBRÉ : Neutre (soutien ciblé possible)
+    q18_augmentation_effectifs_policiers: 'FA',    // Pour (sécurité publique)
+    q19_cameras_surveillance: 'PD',                // Plutôt contre
+    q20_couvre_feu: 'N',                          // ✏️ Agent AI : Neutre (pas abordé publiquement)
   },
 
   'equipe_priorite_quebec': {
-    // Stevens Melançon - Centre pragmatique
-    q1_tramway: 'N',                               // Neutre (révision possible)
+    // Stevens Melançon - Centre-droit prudent, gestionnaire ✏️ CORRIGÉ selon feedback agent AI
+    q1_tramway: 'N',                               // ✏️ Agent AI : Neutre (héritiers Québec 21, critiques mais pas fermement opposés)
     q2_pistes_cyclables: 'PA',                     // Pour le transport actif
-    q3_troisieme_lien: 'N',                        // Neutre
-    q4_secteur_prive_transport: 'N',               // Mix public-privé
-    q5_quotas_logements_abordables: 'N',           // Solutions variées
-    q6_densification_quartiers: 'N',               // Selon les secteurs
-    q7_etalement_urbain: 'N',                      // Planification équilibrée
-    q8_stationnements_centre_ville: 'N',           // Équilibre
-    q9_protection_espaces_verts: 'PA',             // Pour la protection
-    q10_transition_carboneutre: 'PA',              // Pour la transition
-    q11_collecte_residus_alimentaires: 'PA',       // Pour les services
-    q12_augmentation_taxes: 'N',                   // Selon les besoins
-    q13_participation_citoyenne: 'PA',             // Pour la participation
-    q14_reduction_dette: 'N',                      // Équilibre
-    q15_avantages_fiscaux_entreprises: 'N',        // Selon les cas
-    q16_achat_local: 'PA',                         // Pour l'économie locale
-    q17_soutien_organismes_communautaires: 'PA',   // Soutien aux organismes
-    q18_augmentation_effectifs_policiers: 'N',     // Selon les besoins
-    q19_cameras_surveillance: 'N',                 // Neutre
+    q3_troisieme_lien: 'PA',                       // Pour le développement
+    q4_secteur_prive_transport: 'PA',              // Mix public-privé
+    q5_quotas_logements_abordables: 'N',           // ✏️ CORRIGÉ : Solutions variées
+    q6_densification_quartiers: 'N',               // ✏️ Agent AI : Neutre (gestionnaire plutôt qu'idéologue)
+    q7_etalement_urbain: 'PD',                     // Contre l'étalement
+    q8_stationnements_centre_ville: 'FA',          // Pour l'automobile
+    q9_protection_espaces_verts: 'N',              // ✏️ CORRIGÉ : Neutre
+    q10_transition_carboneutre: 'N',               // ✏️ Agent AI : Neutre (neutres ou silencieux)
+    q11_collecte_residus_alimentaires: 'N',        // ✏️ Agent AI : Neutre (non abordé)
+    q12_augmentation_taxes: 'PD',                  // ✏️ ÉQUILIBRÉ : Contre hausses mais pas extrême
+    q13_participation_citoyenne: 'N',              // Selon les besoins
+    q14_reduction_dette: 'PA',                     // ✏️ ÉQUILIBRÉ : Gestionnaire responsable
+    q15_avantages_fiscaux_entreprises: 'PA',       // ✏️ ÉQUILIBRÉ : Pour développement mesuré
+    q16_achat_local: 'FD',                         // Contre interventions
+    q17_soutien_organismes_communautaires: 'PA',   // ✏️ ÉQUILIBRÉ : Soutien ciblé efficace
+    q18_augmentation_effectifs_policiers: 'FA',    // Pour la sécurité
+    q19_cameras_surveillance: 'PA',                // Pour la sécurité
     q20_couvre_feu: 'N',                          // Selon les circonstances
   },
 
   'leadership_quebec': {
-    // André Simard - Vision développement économique
-    q1_tramway: 'N',                               // Neutre (révision)
-    q2_pistes_cyclables: 'PA',                     // Pour l'attractivité
+    // André Simard - Centre-droit, efficacité et SRB ✏️ CORRIGÉ
+    q1_tramway: 'PD',                              // Plutôt contre (propose SRB+ alternatif)
+    q2_pistes_cyclables: 'PD',                     // ✏️ CORRIGÉ : Sam Hamad critique la réduction de voies automobiles
     q3_troisieme_lien: 'PA',                       // Pour le développement
-    q4_secteur_prive_transport: 'PA',              // Pour l'efficacité
-    q5_quotas_logements_abordables: 'N',           // Préfère incitatifs
-    q6_densification_quartiers: 'PA',              // Pour le développement
-    q7_etalement_urbain: 'N',                      // Planification
-    q8_stationnements_centre_ville: 'N',           // Équilibre
-    q9_protection_espaces_verts: 'PA',             // Pour l'attractivité
-    q10_transition_carboneutre: 'PA',              // Pour l'innovation
-    q11_collecte_residus_alimentaires: 'PA',       // Services de qualité
-    q12_augmentation_taxes: 'PD',                  // Préfère efficacité
-    q13_participation_citoyenne: 'PA',             // Pour la consultation
-    q14_reduction_dette: 'PA',                     // Pour la santé fiscale
+    q4_secteur_prive_transport: 'N',               // ✏️ CORRIGÉ : Centré sur efficacité du SRB, pas idéologie privé
+    q5_quotas_logements_abordables: 'PD',          // Préfère incitatifs
+    q6_densification_quartiers: 'N',               // Planification
+    q7_etalement_urbain: 'PD',                     // Contre l'étalement
+    q8_stationnements_centre_ville: 'FA',          // Pour l'automobile
+    q9_protection_espaces_verts: 'N',              // ✏️ CORRIGÉ : Neutre (aucune prise de position visible)
+    q10_transition_carboneutre: 'N',               // ✏️ CORRIGÉ : Neutre (pas abordé publiquement)
+    q11_collecte_residus_alimentaires: 'PD',       // Services selon efficacité
+    q12_augmentation_taxes: 'FD',                  // Fortement contre
+    q13_participation_citoyenne: 'PD',             // Préfère efficacité
+    q14_reduction_dette: 'FA',                     // Fortement pour la santé fiscale
     q15_avantages_fiscaux_entreprises: 'FA',       // Fortement pour
-    q16_achat_local: 'PA',                         // Pour l'économie
-    q17_soutien_organismes_communautaires: 'N',    // Selon budgets
-    q18_augmentation_effectifs_policiers: 'N',     // Selon besoins
-    q19_cameras_surveillance: 'N',                 // Technologie utile
+    q16_achat_local: 'FD',                         // Libre marché
+    q17_soutien_organismes_communautaires: 'PD',   // Préfère efficacité privée
+    q18_augmentation_effectifs_policiers: 'FA',    // Pour la sécurité
+    q19_cameras_surveillance: 'N',                 // Technologie selon efficacité
     q20_couvre_feu: 'N',                          // Selon circonstances
   },
 

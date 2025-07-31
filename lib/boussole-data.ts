@@ -80,12 +80,11 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q2_pistes_cyclables",
-    text: "Évaluez l'importance du développement des pistes cyclables, même si cela réduit l'espace pour les voitures.",
+    text: "La municipalité devrait développer davantage les pistes cyclables, même si cela réduit l'espace pour les voitures.",
     category: "Mobilité et transport",
-    responseType: "importance_direct",
-    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    responseType: "agreement",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    importanceDirectOptions: ["TI", "AI", "NI", "PI", "PTI", "IDK"],
     description: "Cette question évalue la priorité accordée aux transports actifs versus l'automobile.",
   },
   {
@@ -139,12 +138,11 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q9_protection_espaces_verts",
-    text: "Évaluez l'importance d'investir dans la protection et l'agrandissement des espaces verts, même au détriment du développement immobilier.",
+    text: "La municipalité devrait investir davantage dans la protection et l'agrandissement des espaces verts, même au détriment du développement immobilier.",
     category: "Environnement et développement durable",
-    responseType: "importance_direct",
-    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    responseType: "agreement",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    importanceDirectOptions: ["TI", "AI", "NI", "PI", "PTI", "IDK"],
     description: "Cette question évalue la priorité accordée aux espaces verts face à la pression immobilière.",
   },
   {
@@ -182,12 +180,11 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q13_pouvoir_conseils_quartier",
-    text: "Évaluez l'importance de donner plus de pouvoir décisionnel aux conseils de quartier sur les projets locaux.",
+    text: "La municipalité devrait donner plus de pouvoir décisionnel aux conseils de quartier sur les projets locaux.",
     category: "Gouvernance et finances municipales",
-    responseType: "importance_direct",
-    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    responseType: "agreement",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    importanceDirectOptions: ["TI", "AI", "NI", "PI", "PTI", "IDK"],
     description: "Cette question évalue la priorité accordée à la décentralisation de la gouvernance municipale.",
   },
   {
@@ -217,12 +214,11 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q16_limitation_touristes",
-    text: "Évaluez l'importance de limiter le nombre de touristes dans certains secteurs pour préserver la qualité de vie des résidents.",
+    text: "La municipalité devrait limiter le nombre de touristes dans certains secteurs pour préserver la qualité de vie des résidents.",
     category: "Développement économique et social",
-    responseType: "importance_direct",
-    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    responseType: "agreement",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    importanceDirectOptions: ["TI", "AI", "NI", "PI", "PTI", "IDK"],
     description: "Cette question mesure la priorité accordée à l'équilibre entre tourisme et vie locale.",
   },
   {
@@ -252,12 +248,11 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q19_investissement_infrastructures_loisirs_sportives",
-    text: "Évaluez l'importance d'investir davantage dans les infrastructures de loisirs et sportives de quartier.",
+    text: "La municipalité devrait investir davantage dans les infrastructures de loisirs et sportives de quartier.",
     category: "Sécurité publique et services municipaux",
-    responseType: "importance_direct",
-    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"], // Utilisé comme fallback
+    responseType: "agreement",
+    agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    importanceDirectOptions: ["TI", "AI", "NI", "PI", "PTI", "IDK"],
     description: "Cette question évalue la priorité accordée aux services de proximité.",
   },
   {

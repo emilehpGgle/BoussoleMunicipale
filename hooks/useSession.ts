@@ -69,7 +69,7 @@ const notifyListeners = () => {
 // ✅ Fonction pour valider une session existante
 const validateSession = async (token: string): Promise<boolean> => {
   try {
-    console.log('🔍 [useSession] Validation token:', token.substring(0, 8) + '...')
+    // Log supprimé pour réduire le bruit
     
     const response = await fetch('/api/sessions', {
       method: 'GET',
@@ -91,23 +91,22 @@ const validateSession = async (token: string): Promise<boolean> => {
 // ✅ Initialisation globale unique
 const initializeGlobalSession = async () => {
   if (globalInitializing || globalInitialized) {
-    console.log('🔄 [useSession] Initialisation déjà en cours ou terminée')
-      return
+        return
     }
 
   globalInitializing = true
-  console.log('🚀 [useSession] Initialisation session GLOBALE')
+  // Initialisation session globale
 
   try {
     // ✅ D'abord vérifier si on a déjà une session dans localStorage
     const existingToken = localStorage.getItem('boussole_session_token')
     
     if (existingToken) {
-      console.log('🔍 [useSession] Session existante trouvée, validation...')
+      // Validation session existante
       const isValid = await validateSession(existingToken)
       
       if (isValid) {
-        console.log('✅ [useSession] Session existante valide')
+        // Session valide
         globalSessionState = {
           sessionToken: existingToken,
           isSessionValid: true,

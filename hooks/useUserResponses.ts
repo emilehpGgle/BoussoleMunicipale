@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSession } from './useSession'
 import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
 
@@ -41,12 +41,13 @@ export function useUserResponses() {
     lastSaved: null
   })
 
-  console.log('🔄 [useUserResponses] Hook appelé - Session:', {
-    hasToken: !!sessionToken,
-    isValid: isSessionValid,
-    isInitializing,
-    responseCount: Object.keys(state.responses.agreement).length
-  })
+  // Logs nettoyés - seulement si nécessaire
+  if (process.env.NODE_ENV === 'development' && sessionToken && isSessionValid && !isInitializing) {
+    console.log('🔄 [useUserResponses] Session prête:', {
+      hasToken: !!sessionToken,
+      responseCount: Object.keys(state.responses.agreement).length
+    })
+  }
 
   // Charger les réponses depuis Supabase uniquement
   const loadResponses = useCallback(async () => {
@@ -82,14 +83,18 @@ export function useUserResponses() {
           'Content-Type': 'application/json'
         }
       })
-      
-      console.log('📡 [useUserResponses] Réponse API:', response.status, response.ok)
+
+      console.log('📡 [useUserResponses] Réponse API:', {
+        status: response.status,
+        ok: response.ok
+      })
       
       if (response.ok) {
         const data = await response.json()
         console.log('📊 [useUserResponses] Données reçues:', {
           success: data.success,
-          responseCount: data.responses?.length || 0
+          responseCount: data.responses?.length || 0,
+          hasResponses: !!data?.responses
         })
         
         if (data.success && Array.isArray(data.responses)) {
@@ -276,8 +281,8 @@ export function useUserResponses() {
     }
   }, [sessionToken, isSessionValid])
 
-  // Obtenir le nombre de réponses par type
-  const getResponseCounts = useCallback(() => {
+  // Obtenir le nombre de réponses par type (optimisé avec mémoïsation)
+  const getResponseCounts = useMemo(() => {
     const agreementCount = Object.keys(state.responses.agreement).length
     const importanceDirectCount = Object.keys(state.responses.importanceDirect).length
     const prioritiesCount = Object.keys(state.responses.priorities).length
@@ -348,7 +353,7 @@ export function useUserResponses() {
     loadResponses,
 
     // Utilitaires
-    getResponseCounts,
+    getResponseCounts: useCallback(() => getResponseCounts, [getResponseCounts]),
     hasResponse,
     
     // Getters pour compatibilité avec le code existant
