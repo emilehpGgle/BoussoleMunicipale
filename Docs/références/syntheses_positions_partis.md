@@ -59,6 +59,58 @@ Alliance citoyenne de Québec se positionne comme un parti centre-droit libertar
 
 ---
 
+## Leadership Québec (LQ)
+
+**Leader :** Sam Hamad  
+**Orientation politique :** Centre-droit, développement économique  
+**Couleur :** Bleu royal (#0057B7)
+
+### 🎯 Vision générale
+Leadership Québec, dirigé par Sam Hamad, se positionne comme un parti centriste à tendance économique forte. Il promet des infrastructures structurantes, une réduction de la charge fiscale et une approche pragmatique de la mobilité, de l'habitation et de la gestion municipale.
+
+### 📍 Positions détaillées par enjeu
+
+#### Transport et mobilité
+- **Tramway :** Fortement contre — Rejet du tramway au profit d’un SRB structurant
+- **SRB :** Fortement pour — Promesse d’un SRB structurant entre Charlesbourg, le centre-ville et Sainte-Foy
+- **3e lien :** Neutre — Pas de rejet explicite, sujet abordé de façon stratégique
+- **Pistes cyclables / mobilité active :** Neutre — Volonté d’équilibre mais sans priorité affirmée
+- **Transport privé :** Plutôt pour — Opposition à ce qui est perçu comme une « guerre à l’auto »
+
+#### Habitation et développement urbain
+- **Densification :** Pour — Prône la densification planifiée et intégrée
+- **Accélération des permis de construction :** Fortement pour — Souhaite lever les freins réglementaires
+- **Logement abordable :** Pour — Engagement à augmenter l’offre et la disponibilité des logements
+
+#### Finances et gouvernance
+- **Taxe d’immatriculation :** Fortement contre — Promesse d’abrogation de la taxe Marchand
+- **Fiscalité en général :** Contre — Volonté de contenir les taxes et améliorer l’efficacité de la gestion municipale
+- **Gestion :** Fortement pour — Prône une culture de résultats et une modernisation de l’appareil municipal
+
+#### Environnement
+- **Transition écologique :** Neutre à favorable — Mention d’innovation et de durabilité, sans engagement fort
+- **Espaces verts :** Neutre — Non abordé explicitement
+
+#### Sécurité et vie urbaine
+- **Vision sécuritaire :** Non précisé — Accent mis sur la qualité de vie et la proximité
+
+### 💪 Forces identifiées
+- Vision structurante des transports collectifs
+- Réduction des charges fiscales
+- Accent mis sur l'efficacité municipale
+
+### ⚠️ Réserves identifiées
+- Manque de clarté sur certains enjeux environnementaux
+- Moins engagé sur les enjeux sociaux et participatifs
+
+### 📚 Sources principales
+1. Site officiel de Leadership Québec (2025)
+2. Monquartier.quebec (2025)
+3. Radio-Canada (2025)
+4. Journal de Québec (2025)
+
+---
+
 ## Respect citoyens (RC)
 
 **Leader :** Stéphane Lachance  

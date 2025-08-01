@@ -513,27 +513,28 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'leadership_quebec': {
-    // André Simard - Centre-droit, efficacité et SRB ✏️ CORRIGÉ
-    q1_tramway: 'PD',                              // Plutôt contre (propose SRB+ alternatif)
-    q2_pistes_cyclables: 'PD',                     // ✏️ CORRIGÉ : Sam Hamad critique la réduction de voies automobiles
-    q3_troisieme_lien: 'PA',                       // Pour le développement
-    q4_secteur_prive_transport: 'N',               // ✏️ CORRIGÉ : Centré sur efficacité du SRB, pas idéologie privé
-    q5_quotas_logements_abordables: 'PD',          // Préfère incitatifs
-    q6_densification_quartiers: 'N',               // Planification
-    q7_etalement_urbain: 'PD',                     // Contre l'étalement
-    q8_stationnements_centre_ville: 'FA',          // Pour l'automobile
-    q9_protection_espaces_verts: 'N',              // ✏️ CORRIGÉ : Neutre (aucune prise de position visible)
-    q10_transition_carboneutre: 'N',               // ✏️ CORRIGÉ : Neutre (pas abordé publiquement)
-    q11_collecte_residus_alimentaires: 'PD',       // Services selon efficacité
-    q12_augmentation_taxes: 'FD',                  // Fortement contre
-    q13_participation_citoyenne: 'PD',             // Préfère efficacité
-    q14_reduction_dette: 'FA',                     // Fortement pour la santé fiscale
-    q15_avantages_fiscaux_entreprises: 'FA',       // Fortement pour
-    q16_achat_local: 'FD',                         // Libre marché
-    q17_soutien_organismes_communautaires: 'PD',   // Préfère efficacité privée
-    q18_augmentation_effectifs_policiers: 'FA',    // Pour la sécurité
-    q19_cameras_surveillance: 'N',                 // Technologie selon efficacité
-    q20_couvre_feu: 'N',                          // Selon circonstances
+    // Sam Hamad - Centre-droit pragmatique et technocratique ✏️ MISE À JOUR selon déclarations publiques 2025
+    q1_tramway: 'PD',                              // 🟧 « Je ne suis pas contre, mais ce n'est pas un bon projet pour le moment »
+    q2_pistes_cyclables: 'FD',                     // 🟥 Accuse Marchand d'« une guerre à l'auto »
+    q3_troisieme_lien: 'PA',                       // 🟧 Appui au SRB pour connecter banlieues
+    q4_secteur_prive_transport: 'N',               // 🟨 Aucun soutien explicite aux partenariats privé-public mentionné
+    q5_quotas_logements_abordables: 'PD',          // 🟧 Peu d'intérêt pour les mesures interventionnistes
+    q6_densification_quartiers: 'N',               // 🟨 N'aborde pas clairement la question
+    q7_restrictions_airbnb: 'N',                   // 🟨 Non abordé dans les communiqués
+    q8_assouplissement_zonage: 'PA',               // 🟧 Compatible avec logique de simplification réglementaire
+    q9_protection_espaces_verts: 'N',              // 🟨 Non mentionné dans la plateforme
+    q10_transition_carboneutre: 'PD',              // 🟧 Pas d'objectifs annoncés, priorité à fiscalité/transports
+    q11_reduction_dechets: 'N',                    // 🟨 Aucun programme ou priorité sur ce dossier
+    q12_augmentation_taxes: 'FD',                  // 🟥 Promet abolition de la « taxe Marchand »
+    q13_pouvoir_conseils_quartier: 'N',            // 🟨 Valorise écoute citoyenne sans appuyer structures formelles
+    q14_reduction_dette: 'FA',                     // 🟩 Discours axé sur rigueur budgétaire
+    q15_avantages_fiscaux_entreprises: 'PA',       // 🟧 Favorise attractivité économique
+    q16_limitation_touristes: 'N',                 // 🟨 Non abordé dans la plateforme
+    q17_soutien_organismes_communautaires: 'PA',   // 🟧 Valorise OBNL efficaces et engagement citoyen
+    q18_augmentation_effectifs_policiers: 'N',     // 🟨 Aucun engagement clair sur augmentation/réduction
+    q19_investissement_infrastructures_loisirs_sportives: 'PA', // 🟧 Projets pour tous quartiers et jeunes familles
+    q20_protection_patrimoine: 'N',                // 🟨 Non abordé dans plateforme 2025
+    q21_enjeux_prioritaires: 'PA',                 // 🟧 Mobilité (SRB), rigueur fiscale, relance économique, implication
   },
 
   'alliance_citoyenne': {

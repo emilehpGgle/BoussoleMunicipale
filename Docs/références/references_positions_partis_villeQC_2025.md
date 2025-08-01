@@ -105,6 +105,56 @@ Ce fichier documente toutes les sources utilisées pour définir et ajuster les 
 
 ---
 
+## Leadership Québec
+
+**Dernière mise à jour :** 2025-08-01
+
+### Sources utilisées :
+
+1. **Site officiel de Leadership Québec**
+   - URL : https://leadershipquebec.ca
+   - Date d'accès : 2025-08-01
+   - Contenu : Plateforme officielle et promesses électorales
+
+2. **Promesse d'abolir la taxe marchand**
+   - URL : https://leadershipquebec.ca/sam-hamad-promet-dabolir-la-taxe-marchand-sur-limmatriculation/
+   - Date d'accès : 2025-08-01
+   - Contenu : Position fiscale
+
+3. **Promesse sur le SRB**
+   - URL : https://monquartier.quebec/2025/sam-hamad-devoile-son-srb/
+   - Date d'accès : 2025-08-01
+   - Contenu : Mobilité, transport collectif, alternative au tramway
+
+4. **Radio-Canada - Élections municipales**
+   - URL : https://ici.radio-canada.ca/nouvelle/2146420/municipal-quebec-mairie-elections
+   - Date d'accès : 2025-08-01
+   - Contenu : Positionnement général, ambitions et posture politique
+
+5. **Journal de Québec - Guerre à l'auto**
+   - URL : https://www.journaldequebec.com/2025/07/10/retrait-des-voitures-du-viaduc-mendel--guerre-a-lauto-pour-les-uns-sage-decision-pour-les-autres
+   - Date d'accès : 2025-08-01
+   - Contenu : Mobilité, opposition à certaines mesures jugées anti-automobile
+
+6. **Journal de Québec - Campagne à venir**
+   - URL : https://www.journaldequebec.com/2025/07/26/a-quoi-sattendre-de-la-campagne-municipale-a-venir
+   - Date d'accès : 2025-08-01
+   - Contenu : Positionnement stratégique et enjeux abordés
+
+### Positions clés identifiées :
+- **Orientation :** Centre-droit pro-développement économique
+- **Tramway :** Contre — propose le SRB comme alternative
+- **SRB (Service rapide par bus) :** Pour — projet structurant alternatif au tramway
+- **Taxes :** Contre — abrogation de la taxe d’immatriculation et autres mesures allégeant le fardeau fiscal
+- **3e lien :** Neutre à favorable — pas de rejet clair, mais aucune priorité annoncée
+- **Densification :** Pour — densification responsable intégrée aux pôles de développement
+- **Habitation :** Pour — volonté d'accélérer la construction et soutenir l'offre de logements
+- **Transport actif :** Neutre — volonté d'équilibre, mais pas d'engagement fort
+- **Environnement :** Neutre à favorable — innovation et développement durable évoqués, mais peu de détails
+- **Orientation générale :** Pragmatisme économique, efficacité de gestion, investissements structurants
+
+---
+
 ## Méthodologie
 
 ### Critères de sélection des sources :
