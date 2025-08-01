@@ -302,7 +302,7 @@ export const partiesData: Party[] = [
     name: "Alliance citoyenne de Québec",
     shortName: "ACQ",
     leader: "Alain Giasson",
-    logoUrl: "/logos/alliance-citoyenne-white-bg.svg", // Logo blanc simple
+    logoUrl: "/logos/alliance-citoyenne.png",
     color: "#0D47A1",
     websiteUrl: "https://metroquebec.com/local/118385/c-est-quoi-l-alliance-citoyenne-de-quebec/",
     orientation: "Centriste avec tendance pragmatique",
