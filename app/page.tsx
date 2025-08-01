@@ -115,7 +115,7 @@ export default function HomePage() {
               }}
             >
               <Image
-                src="/hero-illustration.webp"
+                src="/hero-illustration-v2.webp"
                 alt="Boussole électorale municipale Québec 2025 - Illustration de citoyens autour d'une boussole électorale municipale de Québec"
                 fill
                 style={{ objectFit: "cover" }}
@@ -305,7 +305,7 @@ export default function HomePage() {
               style={{ animationDelay: "0.6s" }}
             >
               <Image
-                src="/Image_parc.webp"
+                src="/Image_parc_crisp.webp"
                 alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
                 fill
                 style={{ objectFit: "cover" }}

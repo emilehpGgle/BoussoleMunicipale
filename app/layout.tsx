@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/hero-illustration.png",
+        url: "/hero-illustration-v2.webp",
         width: 1200,
         height: 630,
         alt: "Boussole Électorale Municipale - Spécialisée pour les élections municipales de Québec"
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Boussole Électorale Municipale - Votre guide 2025 🗳️",
     description: "Découvrez quel parti municipal vous correspond vraiment ! Services municipaux, troisième lien, aménagement urbain, fiscalité locale.",
-    images: ["/hero-illustration.png"]
+    images: ["/hero-illustration-v2.webp"]
   },
   robots: {
     index: true,

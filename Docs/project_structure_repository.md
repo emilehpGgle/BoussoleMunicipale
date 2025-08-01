@@ -222,7 +222,7 @@ L'application utilise le système App Router de Next.js avec TypeScript et Tailw
 ### Ressources Visuelles ✅
 
 *   `/public/` - Assets statiques du projet
-    *   `├── (F) hero-illustration.png` ✅ - Illustration page d'accueil
+    *   `├── (F) hero-illustration-v2.webp` ✅ - Illustration page d'accueil (version 2)
     *   `├── (F) logo-main.png` ✅ - Logo principal application
     *   `├── (F) boussole-municipale-logo-footer.svg` ✅ - Logo footer
     *   `├── (F) X.png` ✅ - Logo plateforme X (Twitter)
