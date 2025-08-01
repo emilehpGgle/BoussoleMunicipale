@@ -98,7 +98,7 @@ export function SwipeContainer({
   }, [disabled])
 
   // Gestionnaire de fin de touch
-  const handleTouchEnd = useCallback((e: React.TouchEvent) => {
+  const handleTouchEnd = useCallback(() => {
     if (disabled || !touchStartRef.current || isSwipingRef.current) return
     
     const direction = calculateSwipe()
@@ -180,6 +180,7 @@ export function useTouchSupport() {
       return (
         'ontouchstart' in window ||
         navigator.maxTouchPoints > 0 ||
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (navigator as any).msMaxTouchPoints > 0
       )
     }

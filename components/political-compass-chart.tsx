@@ -11,7 +11,6 @@ import {
   calculateUserPoliticalPosition, 
   getPoliticalPositionDescription,
   calculatePoliticalDistance,
-  partyPositions,
   axisConfiguration,
   type UserAnswers,
   calculateScaledPoliticalMap,

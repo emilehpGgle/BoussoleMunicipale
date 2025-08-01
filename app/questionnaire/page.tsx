@@ -35,7 +35,6 @@ export default function QuestionnairePage() {
   
   // Hook pour les transitions de balayage
   const { 
-    isTransitioning, 
     transitionKey, 
     startSweepTransition, 
     animationClasses,
@@ -63,9 +62,6 @@ export default function QuestionnairePage() {
     // Actions pour sauvegarder
     saveAgreementResponse,
     saveImportanceDirectResponse,
-    
-    // Utilitaires
-    getResponseCounts,
     
     // Aliases pour compatibilité
     userAnswers,
@@ -367,12 +363,11 @@ export default function QuestionnairePage() {
     )
   }
 
-
-      return (
-      <PageWithGlow 
-        intensity="subtle"
-        className="relative questionnaire-compact mobile-constrained"
-      >
+  return (
+    <PageWithGlow 
+      intensity="subtle"
+      className="relative questionnaire-compact mobile-constrained"
+    >
 
       {/* Affichage d&apos;erreur uniquement si problème critique */}
       {globalError && (
@@ -603,6 +598,7 @@ export default function QuestionnairePage() {
             )}
           </div>
         </Card>
+        </SwipeContainer>
 
         <div className="mt-1 text-center">
           <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">

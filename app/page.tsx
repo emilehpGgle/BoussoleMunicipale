@@ -211,8 +211,8 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-8">
             <p className="text-muted-foreground mb-4">
-              <strong>Le problème ?</strong> Il n'existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
-              C'est pourquoi nous avons créé cette boussole.
+              <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
+              C&apos;est pourquoi nous avons créé cette boussole.
             </p>
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
               <Link href="/questionnaire">
@@ -238,7 +238,7 @@ export default function HomePage() {
             className="animate-slideInUp"
             style={{ animationDelay: "0.2s" }}
           >
-            <h2 className="mb-6 text-foreground">Votre vote municipal a plus d'impact que vous pensez</h2>
+            <h2 className="mb-6 text-foreground">Votre vote municipal a plus d&apos;impact que vous pensez</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
               Transport, logement, parcs, déneigement, taxes : votre ville décide de tout ce qui façonne votre quotidien. 
               Pourtant, seulement <ColoredText variant="primary" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales. 

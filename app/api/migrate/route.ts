@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { migrateQuestions, migrateParties, migratePartyPositions, verifyMigration } from '@/lib/migration-script'
+import { createClient } from '@/lib/supabase/client'
 
 /**
  * API route pour exécuter la migration complète des données
