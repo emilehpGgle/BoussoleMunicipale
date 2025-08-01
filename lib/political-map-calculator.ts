@@ -403,11 +403,11 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_stationnements_centre_ville: 'PD',          // Réduire les stationnements
     q9_protection_espaces_verts: 'PA',             // Protection environnement
     q10_transition_carboneutre: 'FA',              // Fortement pour la transition
-    q11_collecte_residus_alimentaires: 'PA',       // Pour les services environnementaux
+    q11_collecte_residus_alimentaires: 'FA',       // Fortement pour (60% participation citoyenne atteinte)
     q12_augmentation_taxes: 'PA',                  // Accepte hausses pour services
     q13_participation_citoyenne: 'PA',             // Pour la participation
-    q14_reduction_dette: 'N',                      // Neutre (équilibre)
-    q15_avantages_fiscaux_entreprises: 'N',        // Neutre
+    q14_reduction_dette: 'PD',                     // Investit massivement (réserve climat 1,17 milliards)
+    q15_avantages_fiscaux_entreprises: 'PA',       // Vision économie-environnement intégrée
     q16_achat_local: 'PA',                         // Pour l'achat local
     q17_soutien_organismes_communautaires: 'PA',   // Soutien aux organismes
     q18_augmentation_effectifs_policiers: 'N',     // Neutre sur la police
@@ -464,27 +464,28 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'respect_citoyens': {
-    // Stéphane Lachance - Populiste local, administration pragmatique ✏️ CORRIGÉ selon analyse plateforme détaillée
-    q1_tramway: 'FD',                              // 🟥 Position explicite contre le projet
-    q2_pistes_cyclables: 'PD',                     // 🟧 Équité entre modes, priorité automobilistes
-    q3_troisieme_lien: 'FA',                       // 🟩 Fortement en faveur
-    q4_secteur_prive_transport: 'N',               // 🟨 Non abordé clairement
-    q5_quotas_logements_abordables: 'PD',          // 🟧 Contre obligations imposées aux promoteurs
-    q6_densification_quartiers: 'PD',              // 🟧 Refus des tours, préserver quartiers
-    q7_etalement_urbain: 'N',                      // 🟨 Aucune mention dans plateforme
-    q8_stationnements_centre_ville: 'N',           // 🟨 Ni favorable, ni opposé - non abordé
-    q9_protection_espaces_verts: 'N',              // 🟨 Mention "qualité de vie" mais pas mesures concrètes
-    q10_transition_carboneutre: 'N',               // 🟨 Non mentionné → neutre
-    q11_collecte_residus_alimentaires: 'N',        // 🟨 Aucun engagement spécifique
-    q12_augmentation_taxes: 'FD',                  // 🟩 Réduction taxes (priorité)
-    q13_participation_citoyenne: 'FA',             // 🟩 Référendums obligatoires - plateforme très claire
-    q14_reduction_dette: 'PA',                     // 🟧 Rigueur budgétaire valorisée mais pas dogmatique
-    q15_avantages_fiscaux_entreprises: 'N',        // 🟨 Non précisé
-    q16_achat_local: 'N',                          // 🟨 Non précisé
-    q17_soutien_organismes_communautaires: 'N',    // 🟨 Non abordé spécifiquement
-    q18_augmentation_effectifs_policiers: 'FA',    // 🟩 Engagement fort sur sécurité
-    q19_cameras_surveillance: 'PD',                // 🟧 Favorise réinsertion mais critique approche actuelle
-    q20_couvre_feu: 'N',                          // 🟨 Pas d'engagement clair
+    // Stéphane Lachance - Conservateur-populiste, localiste ✏️ MISE À JOUR selon plateforme électorale
+    q1_tramway: 'FD',                              // 🟥 S'oppose aux grands projets jugés coûteux
+    q2_pistes_cyclables: 'PD',                     // 🟧 Critique la perte de voies pour automobilistes
+    q3_troisieme_lien: 'FA',                       // 🟩 Projet prioritaire du parti
+    q4_secteur_prive_transport: 'PA',              // 🟧 Ouvert aux modèles mixtes avec supervision
+    q5_quotas_logements_abordables: 'N',           // 🟨 Rejette quotas obligatoires mais reconnaît le besoin
+    q6_densification_quartiers: 'FD',              // 🟥 Opposé à densification imposée
+    q7_restrictions_airbnb: 'FD',                  // 🟥 Défend liberté d'usage des propriétés
+    q8_assouplissement_zonage: 'FA',               // 🟩 Réduire freins bureaucratiques
+    q9_protection_espaces_verts: 'PA',             // 🟧 Favorise milieux sains sans lourdeur réglementaire
+    q10_transition_carboneutre: 'FD',              // 🟥 S'oppose aux plans jugés idéologiques
+    q11_reduction_dechets: 'N',                    // 🟨 Thème secondaire dans plateforme
+    q12_augmentation_taxes: 'FD',                  // 🟥 Refus clair de toute hausse
+    q13_pouvoir_conseils_quartier: 'PD',           // 🟧 Méfiance envers structures intermédiaires
+    q14_reduction_dette: 'FA',                     // 🟩 Objectif majeur : saine gestion
+    q15_avantages_fiscaux_entreprises: 'FA',       // 🟩 Stimuler économie locale
+    q16_limitation_touristes: 'N',                 // 🟨 Souhaite retombées économiques équilibrées
+    q17_soutien_organismes_communautaires: 'PA',   // 🟧 Appuie services proximité sans excès
+    q18_augmentation_effectifs_policiers: 'N',     // 🟨 Priorise prévention et services proximité
+    q19_investissement_infrastructures_loisirs_sportives: 'FA', // 🟩 Installations accessibles ancrées quartiers
+    q20_protection_patrimoine: 'PA',               // 🟧 Valorise patrimoine sans approche contraignante
+    q21_enjeux_prioritaires: 'FA',                 // 🟩 3e lien, fiscalité, développement économique, participation
   },
 
   'equipe_priorite_quebec': {
@@ -536,27 +537,27 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'alliance_citoyenne': {
-    // Alain Giasson - Démocratie participative
-    q1_tramway: 'PA',                              // Pour avec consultation
-    q2_pistes_cyclables: 'PA',                     // Pour le transport actif
-    q3_troisieme_lien: 'PD',                       // Contre (consultation citoyenne)
-    q4_secteur_prive_transport: 'PD',              // Préfère public
-    q5_quotas_logements_abordables: 'PA',          // Pour l'accessibilité
-    q6_densification_quartiers: 'PA',              // Avec consultation
-    q7_etalement_urbain: 'PD',                     // Contre
-    q8_stationnements_centre_ville: 'PD',          // Pour transport collectif
-    q9_protection_espaces_verts: 'PA',             // Protection importante
-    q10_transition_carboneutre: 'PA',              // Pour la transition
-    q11_collecte_residus_alimentaires: 'PA',       // Services aux citoyens
-    q12_augmentation_taxes: 'N',                   // Selon consultation
-    q13_participation_citoyenne: 'FA',             // Fortement pour
-    q14_reduction_dette: 'N',                      // Équilibre
-    q15_avantages_fiscaux_entreprises: 'N',        // Selon les cas
-    q16_achat_local: 'PA',                         // Pour la communauté
-    q17_soutien_organismes_communautaires: 'FA',   // Fortement pour
-    q18_augmentation_effectifs_policiers: 'PD',    // Préfère prévention
-    q19_cameras_surveillance: 'PD',                // Contre surveillance
-    q20_couvre_feu: 'PD',                         // Contre mesures répressives
+    // Alain Giasson / Daniel Brisson - Centre-droit libertarien
+    q1_tramway: 'PD',                              // Plutôt contre (révision complète nécessaire)
+    q2_pistes_cyclables: 'PA',                     // Pour mais approche équilibrée
+    q3_troisieme_lien: 'FA',                       // Fortement pour (projet spécifique jetée Beauport-Île d'Orléans)
+    q4_secteur_prive_transport: 'PA',              // Favorable aux partenariats public-privé
+    q5_quotas_logements_abordables: 'PA',          // Soutient mesures pour augmenter l'offre
+    q6_densification_quartiers: 'PD',              // Contre densification imposée (liberté choix résidentiel)
+    q7_etalement_urbain: 'PA',                     // Pour libre choix développement résidentiel
+    q8_stationnements_centre_ville: 'FA',          // Veut abolir les parcomètres
+    q9_protection_espaces_verts: 'PA',             // Protection importante mais équilibrée
+    q10_transition_carboneutre: 'PD',              // Sceptique des politiques climatiques coûteuses
+    q11_collecte_residus_alimentaires: 'FD',       // Oppose mesures contraignantes citoyens
+    q12_augmentation_taxes: 'FD',                  // Fortement contre (veut réduire taxes)
+    q13_participation_citoyenne: 'FA',             // Retour autonomie aux citoyens
+    q14_reduction_dette: 'PA',                     // Réduction dépenses publiques
+    q15_avantages_fiscaux_entreprises: 'PA',       // Développement économique pro-entreprise
+    q16_achat_local: 'PD',                         // Contre intervention marché (libre marché)
+    q17_soutien_organismes_communautaires: 'PD',   // Préfère initiatives privées (réduction intervention)
+    q18_augmentation_effectifs_policiers: 'PA',    // Sécurité publique (tendance conservatrice)
+    q19_cameras_surveillance: 'PA',                // Technologie sécuritaire acceptable
+    q20_couvre_feu: 'PD',                         // Contre mesures restrictives libertés individuelles
   },
 }
 
