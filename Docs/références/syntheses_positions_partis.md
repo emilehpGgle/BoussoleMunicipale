@@ -71,11 +71,12 @@ Leadership Québec, dirigé par Sam Hamad, se positionne comme un parti centrist
 ### 📍 Positions détaillées par enjeu
 
 #### Transport et mobilité
-- **Tramway :** Fortement contre — Rejet du tramway au profit d’un SRB structurant
-- **SRB :** Fortement pour — Promesse d’un SRB structurant entre Charlesbourg, le centre-ville et Sainte-Foy
+- **Tramway :** Fortement contre — Veut abandonner le projet malgré pénalités de 153-371M$ ⁷
+- **SRB :** Fortement pour — Promesse d'un SRB structurant entre Charlesbourg, le centre-ville et Sainte-Foy
 - **3e lien :** Neutre — Pas de rejet explicite, sujet abordé de façon stratégique
-- **Pistes cyclables / mobilité active :** Neutre — Volonté d’équilibre mais sans priorité affirmée
-- **Transport privé :** Plutôt pour — Opposition à ce qui est perçu comme une « guerre à l’auto »
+- **Pistes cyclables / mobilité active :** Fortement contre — Accuse Marchand d'une « guerre à l'auto »
+- **Transport privé :** Neutre — Aucun soutien explicite aux partenariats privé-public
+- **RTC :** Critique sévère — Dénonce la gestion, la dette (+59% 2021-2024) et le coût du service àVélo ⁷
 
 #### Habitation et développement urbain
 - **Densification :** Pour — Prône la densification planifiée et intégrée
@@ -83,9 +84,10 @@ Leadership Québec, dirigé par Sam Hamad, se positionne comme un parti centrist
 - **Logement abordable :** Pour — Engagement à augmenter l’offre et la disponibilité des logements
 
 #### Finances et gouvernance
-- **Taxe d’immatriculation :** Fortement contre — Promesse d’abrogation de la taxe Marchand
-- **Fiscalité en général :** Contre — Volonté de contenir les taxes et améliorer l’efficacité de la gestion municipale
-- **Gestion :** Fortement pour — Prône une culture de résultats et une modernisation de l’appareil municipal
+- **Taxe d'immatriculation :** Fortement contre — Promesse "#GMON60$" d'annulation rapide de la hausse ⁷
+- **Fiscalité en général :** Contre — Volonté de contenir les taxes et améliorer l'efficacité de la gestion municipale
+- **Gestion :** Fortement pour — Prône une culture de résultats et une modernisation de l'appareil municipal
+- **Éthique :** Questions soulevées — Liens d'affaires avec les frères Trudel (immobilier) et conflits d'intérêts potentiels ⁷
 
 #### Environnement
 - **Transition écologique :** Neutre à favorable — Mention d’innovation et de durabilité, sans engagement fort
@@ -108,6 +110,75 @@ Leadership Québec, dirigé par Sam Hamad, se positionne comme un parti centrist
 2. Monquartier.quebec (2025)
 3. Radio-Canada (2025)
 4. Journal de Québec (2025)
+5. Journal de Québec - Guerre à l'auto (2025)
+6. Journal de Québec - Campagne à venir (2025)
+7. Journal de Québec - Vérification des déclarations Sam Hamad (mai 2025)
+
+---
+
+## Québec d'abord (QD)
+
+**Leader :** Claude Villeneuve  
+**Orientation politique :** Centre pragmatique  
+**Couleur :** Vert forêt (#388E3C)
+
+### 🎯 Vision générale
+Québec d'abord se positionne comme un parti pragmatique et proche des citoyens, axé sur la transparence, l'efficacité municipale et une gestion de proximité. Le parti évite les prises de position idéologiques tranchées et mise sur la modération et la consultation publique.
+
+### 📍 Positions détaillées par enjeu
+
+#### Transport et mobilité
+- **Tramway :** Fortement pour — Villeneuve exige un tramway sans délai dès validation CDPQ ¹
+- **Pistes cyclables :** Plutôt contre — Déplore l'imposition de pistes cyclables sans concertation ²
+- **3e lien :** Plutôt pour — Appuie le projet avec réserves (transport collectif + camions) ³
+- **Transport privé :** Neutre — Aucune mention explicite des PPP ou privatisation
+
+#### Habitation et développement urbain
+- **Logement abordable :** Plutôt pour — Soutient l'accélération des logements abordables ⁴
+- **Densification :** Plutôt contre — Demande de report pour projet dense sur Henri-Bourassa ⁵
+- **Assouplissement zonage :** Plutôt pour — Favorise la souplesse pour accélérer les constructions ⁴
+- **Restrictions Airbnb :** Neutre — Aucune déclaration retrouvée
+
+#### Environnement
+- **Transition carboneutre :** Neutre — Aucun objectif clair en matière d'environnement
+- **Espaces verts :** Plutôt pour — Appui au corridor vert autour de Maizerets ⁶
+- **Réduction déchets :** Neutre — Aucun engagement identifié
+
+#### Finances et gouvernance
+- **Taxes :** Plutôt contre — Critique les hausses déguisées par tarifs ⁷
+- **Conseils de quartier :** Plutôt contre — Réservé sur la décentralisation citoyenne directe ⁸
+- **Réduction dette :** Plutôt pour — Appel à une gestion rigoureuse et simplifiée ⁹
+- **Avantages fiscaux entreprises :** Plutôt pour — Favorise l'entrepreneuriat local et l'attraction ¹⁰
+
+#### Sécurité et services
+- **Effectifs policiers :** Neutre — Aucun commentaire public retrouvé
+- **Infrastructures sportives :** Plutôt pour — Favorable aux équipements de proximité ¹¹
+
+#### Patrimoine
+- **Protection patrimoine :** Plutôt pour — Opposé aux projets nuisibles aux quartiers patrimoniaux ¹²
+
+### 💪 Forces identifiées
+- Attachement au dialogue citoyen et à la consultation
+- Positionnement modéré permettant de rallier un large électorat
+- Esprit pragmatique et gestion de proximité
+
+### ⚠️ Réserves identifiées
+- Absence de positions fortes sur certains grands dossiers
+- Approche parfois perçue comme attentiste
+
+### 📚 Sources principales
+1. Monquartier.quebec (2025) — Exigence tramway sans délai
+2. Monlimoilou.com (2025) — Pistes cyclables, densification
+3. Radio-Canada (2025) — 3e lien sous conditions
+4. Monquartier.quebec (2025) — Logement, assouplissement zonage
+5. Monlimoilou.com (2025) — Report projet Henri-Bourassa
+6. Monquartier.quebec (2025) — Corridor vert Maizerets
+7. Monquartier.quebec (2025) — Critique hausses déguisées
+8. Monlimoilou.com (2025) — Réserves décentralisation
+9. Monquartier.quebec (2025) — Gestion rigoureuse simplifiée
+10. Monquartier.quebec (2025) — Entrepreneuriat local
+11. Monquartier.quebec (2025) — Équipements proximité
+12. Monlimoilou.com (2025) — Protection quartiers patrimoniaux
 
 ---
 
@@ -241,6 +312,149 @@ Québec, forte et fière représente une approche social-démocrate progressiste
 
 ---
 
+## Transition Québec (TQ)
+
+**Leader :** Jackie Smith  
+**Orientation politique :** Écologiste progressiste, gauche municipale  
+**Couleur :** Vert (#00965e)
+
+### 🎯 Vision générale
+Transition Québec, dirigé par Jackie Smith, se positionne comme le parti le plus à gauche de l'échiquier municipal avec un programme écologiste ambitieux. Le parti prône une approche radicale sur les enjeux environnementaux, de justice sociale et de mobilité durable, tout en mettant l'accent sur la participation citoyenne et la défense du français à Québec.
+
+### 📍 Positions détaillées par enjeu
+
+#### Transport et mobilité
+- **Tramway :** Fortement pour — Priorité absolue pour la mobilité durable ¹
+- **3e lien :** Fortement contre — "C'est tellement insultant... un projet qui n'a aucun sens" ²
+- **Transport gratuit :** Fortement pour — "Continuer à pousser pour la gratuité du transport en commun" ¹
+- **Pistes cyclables :** Fortement pour — Mobilité verte prioritaire
+- **Transport privé :** Fortement contre — Opposition à la privatisation
+
+#### Habitation et développement urbain
+- **Logement abordable :** Fortement pour — "Le coût du logement sera un incontournable de la prochaine campagne" ³
+- **Restrictions Airbnb :** Fortement pour — "Nous lutterons énergiquement contre... les locations de type Airbnb" ³
+- **Évictions :** Fortement contre — "Nous lutterons énergiquement contre les évictions" ³
+- **Promoteurs immobiliers :** Fortement contre — "Nous nous tiendrons debout devant la pression de promoteurs" ³
+- **Densification :** Fortement pour — Contre l'étalement urbain
+- **Gentrification :** Fortement contre — "D'immenses inquiétudes sur la gentrification" ⁵
+
+#### Environnement
+- **Qualité de l'air :** Priorité absolue — "L'enjeu numéro 1 des gens de Limoilou" ⁵
+- **Industries polluantes :** Fortement contre — "On ne peut pas faire confiance aux industries qui polluent sans impunité" ⁵
+- **Transition carboneutre :** Fortement pour — "Faire face aux changements climatiques" ¹
+- **Espaces verts :** Fortement pour — Protection prioritaire
+
+#### Finances et gouvernance
+- **Taxes :** Position nuancée — "Il faut alléger le fardeau des citoyens" vs financer la transition ¹
+- **Participation citoyenne :** Fortement pour — "Démocratie participative", sondages citoyens ¹
+- **Avantages fiscaux entreprises :** Fortement contre — Opposition aux promoteurs ³
+
+#### Culture et identité
+- **Francophonie :** Fortement pour — "Relancera le Réseau des villes francophones et francophiles d'Amérique" ⁶
+- **Saint-Jean :** Fortement pour — "Augmenter sa contribution à la fête nationale sur les Plaines d'Abraham" ⁶
+- **Patrimoine culturel :** Plutôt pour — Focus sur patrimoine francophone
+
+#### Justice sociale
+- **Organismes communautaires :** Fortement pour — Soutien Centre des femmes Basse-Ville ⁴
+- **Femmes vulnérables :** Fortement pour — Protection prioritaire ⁴
+- **Coût de la vie :** Fortement pour — Allègement du fardeau des citoyens ¹
+
+### 💪 Forces identifiées
+- Vision écologiste cohérente et ambitieuse
+- Engagement ferme pour la justice sociale
+- Opposition claire aux intérêts immobiliers
+- Leadership sur les enjeux environnementaux locaux
+- Promotion de la francophonie municipale
+
+### ⚠️ Réserves identifiées
+- Positions parfois perçues comme trop radicales
+- Tension entre allègement fiscal et financement de la transition
+- Opposition systématique au secteur privé
+
+### 🎯 Priorités officielles
+1. **Logement abordable** — "Coût du logement sera un incontournable"
+2. **Qualité de l'air** — Enjeu numéro 1 de Limoilou
+3. **Mobilité durable** — Tramway et transport gratuit
+4. **Francophonie** — Réseau des villes francophones d'Amérique
+
+### 📚 Sources principales
+1. Journal de Québec - Jackie Smith candidate (mai 2025)
+2. Journal de Québec - Critique 3e lien (juillet 2025)
+3. Transition Québec - Logement abordable (juin 2025)
+4. Transition Québec - Projet John Howard (juin 2025)
+5. Bilan municipal Limoilou (novembre 2022)
+6. Transition Québec - Saint-Jean francophone (juin 2025)
+
+---
+
+## Équipe Priorité Québec (EPQ)
+
+**Leader :** Stevens Mélançon (chef par intérim)  
+**Orientation politique :** Centre pragmatique, opposition constructive  
+**Couleur :** Bleu marine (#004b87)
+
+### 🎯 Vision générale
+Équipe Priorité Québec se positionne comme la deuxième opposition officielle à l'hôtel de ville, avec une approche pragmatique centrée sur les citoyens. Le parti privilégie l'acceptabilité sociale des projets, l'inclusion et une approche équilibrée des enjeux municipaux, tout en s'opposant aux réglementations jugées excessives.
+
+### 📍 Positions détaillées par enjeu
+
+#### Transport et mobilité
+- **Tramway :** Neutre — Approche équilibrée demandant l'acceptabilité sociale et des évaluations responsables ¹
+- **3e lien :** Plutôt pour — Position nuancée, déçu du corridor choisi mais représente les citoyens de l'est qui l'espéraient ²
+- **Pistes cyclables :** Plutôt pour — Favorise la mobilité durable avec acceptabilité sociale
+- **Transport privé :** Plutôt pour — Ouvert aux partenariats selon l'orientation pro-entreprise
+- **Transport en commun :** Pour — Développement de projets considérant les préoccupations intergénérationnelles
+
+#### Habitation et développement urbain
+- **Logements abordables :** Neutre — Favorable à l'accès au logement mais peu de détails sur les mécanismes ¹
+- **Densification :** Neutre — Position équilibrée sur le développement urbain
+- **Assouplissement zonage :** Plutôt pour — Compatible avec l'approche de développement économique
+
+#### Environnement
+- **Éco-responsabilité :** Fortement pour — Priorité officielle pour laisser un environnement plus sain aux générations futures ¹
+- **Transition carboneutre :** Plutôt pour — Intègre les dimensions environnementales dans la gouvernance
+- **Espaces verts :** Pour — Dans le cadre d'un développement durable intégré
+
+#### Finances et gouvernance
+- **Gestion responsable :** Fortement pour — Gestion responsable des fonds publics comme priorité officielle ¹
+- **Participation citoyenne :** Fortement pour — "Citoyens au cœur des décisions municipales" ¹
+- **Transparence :** Pour — Compatible avec les valeurs d'excellence et d'équité affichées
+
+#### Culture et liberté
+- **Liberté artistique :** Fortement pour — Opposition ferme aux règlements linguistiques restrictifs pour les artistes de rue ³
+- **Culture et loisirs :** Fortement pour — Revitalisation des investissements culturels et récréatifs dans les arrondissements ¹
+- **Réglementation culturelle :** Fortement contre — Critique du "nationalisme de façade" et des "règlements absurdes" ³
+
+#### Développement économique
+- **Développement intégré :** Fortement pour — Gouvernance intégrant dimensions environnementale, sociale et économique ¹
+- **Avantages fiscaux entreprises :** Plutôt pour — Compatible avec l'orientation favorable aux entreprises
+
+### 💪 Forces identifiées
+- Approche pragmatique et équilibrée
+- Opposition constructive basée sur l'acceptabilité sociale
+- Valeurs de respect, équité, excellence et innovation
+- Focus sur la participation citoyenne effective
+
+### ⚠️ Réserves identifiées
+- Opposition aux réglementations excessives
+- Critique du "nationalisme de façade" en politique municipale
+- Méfiance envers les décisions prises sans acceptabilité sociale
+
+### 🎯 Priorités officielles
+1. **Environnement éco-responsable** — Pour les générations futures
+2. **Développement économique intégré** — Dimensions environnementale, sociale et économique
+3. **Cohésion sociale** — Initiatives d'inclusion et d'ouverture
+4. **Transport avec acceptabilité sociale** — Projets considérant les préoccupations intergénérationnelles
+5. **Gestion responsable** — Fonds publics et transparence
+6. **Culture et loisirs** — Revitalisation des investissements dans les arrondissements
+
+### 📚 Sources principales
+1. Site officiel Équipe Priorité Québec (2025)
+2. Déclarations publiques Stevens Mélançon sur le 3e lien (2025)
+3. Déclarations publiques Stevens Mélançon sur la liberté artistique (2025)
+
+---
+
 ## Méthodologie de synthèse
 
 ### Critères d'évaluation
@@ -255,4 +469,4 @@ Québec, forte et fière représente une approche social-démocrate progressiste
 - **Contre (PD) :** Opposition avec réserves
 - **Fortement contre (FD) :** Opposition ferme et prioritaire
 
-*Dernière mise à jour : 2025-01-XX*
+*Dernière mise à jour : 2025-08-02*
