@@ -390,7 +390,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
             Les positions des partis sont basées sur leurs programmes publics et déclarations officielles.
             <br />
             <strong>📊 Calcul de compatibilité :</strong> Le score combine votre positionnement politique (70%) 
-            et l'alignement de vos priorités municipales (30%) pour une évaluation globale plus précise.
+            et l&apos;alignement de vos priorités municipales (30%) pour une évaluation globale plus précise.
           </div>
         </CardContent>
       </Card>

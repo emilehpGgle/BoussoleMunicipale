@@ -124,7 +124,7 @@ export default function QuestionnairePage() {
       setHasInitialized(true)
       console.log('🎯 [Questionnaire] Reprise à la question', nextQuestionIndex + 1)
     }
-  }, [isLoading, hasInitialized, nextQuestionIndex])
+  }, [isLoading, hasInitialized, nextQuestionIndex, selectedPriorities, userAnswers])
 
   // ✅ Ne plus forcer la redirection automatique après l'initialisation
   // Ceci permettra à l'utilisateur de naviguer librement avec le bouton Précédent
@@ -313,7 +313,7 @@ export default function QuestionnairePage() {
     }
   }
 
-  const goToNextQuestion = () => {
+  const goToNextQuestion = useCallback(() => {
     if (!canInteract) return // Empêcher les clics multiples pendant la transition
     
     console.log('➡️ [Questionnaire] goToNextQuestion appelée:', {
@@ -332,15 +332,15 @@ export default function QuestionnairePage() {
       console.log('🎯 [Questionnaire] Questionnaire complet, redirection vers les résultats')
       router.push("/resultats")
     }
-  }
+  }, [canInteract, currentQuestionIndex, startSweepTransition, router])
 
-  const goToPreviousQuestion = () => {
+  const goToPreviousQuestion = useCallback(() => {
     if (currentQuestionIndex > 0 && canInteract) {
       startSweepTransition(() => {
         setCurrentQuestionIndex(currentQuestionIndex - 1)
       }, 'backward')
     }
-  }
+  }, [currentQuestionIndex, canInteract, startSweepTransition])
 
   // Gestionnaires pour les gestes de balayage tactiles
   const handleSwipeLeft = useCallback(() => {

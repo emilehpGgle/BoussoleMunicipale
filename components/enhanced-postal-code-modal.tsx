@@ -54,9 +54,9 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   // Monitor response state changes
   React.useEffect(() => {
     if (isSessionValid && !responsesLoading) {
-      getResponseCounts
+      // Les réponses sont déjà chargées via useUserResponses
     }
-  }, [responsesLoading, responses, isSessionValid, getResponseCounts])
+  }, [responsesLoading, responses, isSessionValid])
 
   // Nettoyage du composant
   React.useEffect(() => {
