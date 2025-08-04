@@ -43,7 +43,7 @@ export default function SiteHeader() {
 
   // Gérer le clic sur "Commencer" - vérifier s'il y a des réponses existantes
   const handleStartQuestionnaire = () => {
-    const responseCounts = getResponseCounts()
+    const responseCounts = getResponseCounts
     
     console.log('📊 [handleStartQuestionnaire] Response counts:', responseCounts)
     
@@ -67,7 +67,7 @@ export default function SiteHeader() {
   useEffect(() => {
     const handleOpenModal = () => {
       // Quand on vient de la page d'accueil, vérifier s'il y a des réponses existantes
-      const responseCounts = getResponseCounts()
+      const responseCounts = getResponseCounts
       
       console.log('📊 [handleOpenModal] Response counts from home page:', responseCounts)
       

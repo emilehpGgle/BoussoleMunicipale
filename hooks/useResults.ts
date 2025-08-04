@@ -122,14 +122,13 @@ export function useResults() {
       setState(prev => ({ ...prev, isCalculating: true, error: null }))
 
       // Vérifier qu'on a suffisamment de réponses pour calculer les résultats
-      const counts = getResponseCounts() // getResponseCounts retourne une fonction
-      const actualCounts = counts() // Appeler la fonction pour obtenir les vrais comptages
-      if (actualCounts.total === 0) {
+      const counts = getResponseCounts
+      if (counts.total === 0) {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
 
       // Calcul du pourcentage de complétion
-      const primaryResponsesCount = actualCounts.agreement // Utiliser actualCounts au lieu de counts
+      const primaryResponsesCount = counts.agreement
       const maxExpectedResponses = TOTAL_QUESTIONS
       const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 
@@ -184,7 +183,7 @@ export function useResults() {
         politicalPosition: { x: politicalPosition.x, y: politicalPosition.y },
         completionPercentage,
         totalQuestions: TOTAL_QUESTIONS,
-        answeredQuestions: actualCounts.total,
+        answeredQuestions: counts.total,
         calculatedAt: new Date().toISOString()
       }
 

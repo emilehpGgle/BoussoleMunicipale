@@ -30,7 +30,7 @@ export default function HomePage() {
 
       // Si on a une session, vérifier le statut du questionnaire
       if (!isLoading) {
-        const counts = getResponseCounts()
+        const counts = getResponseCounts
         const totalQuestions = boussoleQuestions.length
         
         if (counts.total >= totalQuestions) {

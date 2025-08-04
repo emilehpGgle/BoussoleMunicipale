@@ -30,7 +30,7 @@ export default function ContinueOrRestartModal({
   const { clearAllResponses, getResponseCounts, responses } = useUserResponses()
   const router = useRouter()
   
-  const responseCounts = getResponseCounts()
+  const responseCounts = getResponseCounts
   const hasResponses = responseCounts.total > 0
   const isCompleted = responseCounts.total >= boussoleQuestions.length
 

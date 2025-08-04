@@ -353,7 +353,7 @@ export function useUserResponses() {
     loadResponses,
 
     // Utilitaires
-    getResponseCounts: useCallback(() => getResponseCounts, [getResponseCounts]),
+    getResponseCounts,
     hasResponse,
     
     // Getters pour compatibilité avec le code existant

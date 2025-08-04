@@ -54,7 +54,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   // Monitor response state changes
   React.useEffect(() => {
     if (isSessionValid && !responsesLoading) {
-      getResponseCounts()
+      getResponseCounts
     }
   }, [responsesLoading, responses, isSessionValid, getResponseCounts])
 
@@ -127,7 +127,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         // Fonction pour vérifier les réponses existantes après le chargement
         const checkExistingResponses = () => {
           if (!responsesLoading) {
-            const counts = getResponseCounts()
+            const counts = getResponseCounts
             console.log('🔍 Vérification des réponses existantes:', counts)
             
             // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
@@ -362,7 +362,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               
               // Vérifier s'il y a des réponses existantes avant de continuer
               if (isSessionValid && !responsesLoading) {
-                const counts = getResponseCounts()
+                const counts = getResponseCounts
                 
                 if (counts.total > 0) {
                   setIsExistingResponsesModalOpen(true)
