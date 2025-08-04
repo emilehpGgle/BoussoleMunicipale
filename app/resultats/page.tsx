@@ -130,6 +130,10 @@ export default function ResultsPage() {
   // ✅ Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
   const calculatedScores = useMemo(() => {
     if (!userAnswers || Object.keys(userAnswers).length === 0) {
+      console.log('🚫 [ResultsPage] Pas de réponses utilisateur disponibles:', {
+        userAnswers: !!userAnswers,
+        userAnswersKeys: userAnswers ? Object.keys(userAnswers).length : 0
+      })
       return []
     }
 
@@ -167,13 +171,22 @@ export default function ResultsPage() {
 
       // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
       const scoreDetails: CalculatedPartyScore["details"] = boussoleQuestions.map((question) => {
-        const userAnswer = userAnswers[question.id] || 'N'
+        let userAnswer: AgreementOptionKey | undefined
+        
+        // Gestion spéciale pour les questions de priorité - pas de réponse d'accord/désaccord
+        if (question.responseType === "priority_ranking") {
+          userAnswer = undefined // Les priorités ne sont pas stockées dans userAnswers
+        } else {
+          userAnswer = userAnswers[question.id] || 'N'
+        }
+        
         const partyPositionEntry = party.positions.find((p) => p.questionId === question.id)
         const currentImportance = userImportance[question.id] ? convertImportanceDirectToNumeric(userImportance[question.id]!) : 3
         let questionMatchValue = 0
         let weightedQuestionScore = 0
 
-        if (userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
+        // Calculer les scores seulement pour les questions qui ne sont pas de type priority_ranking
+        if (question.responseType !== "priority_ranking" && userAnswer && userAnswer !== "IDK" && partyPositionEntry && partyPositionEntry.position !== "?") {
           const userScore = _agreementScoreValues[userAnswer]
           const partyScore = _agreementScoreValues[partyPositionEntry.position]
           const diff = Math.abs(userScore - partyScore)
@@ -285,11 +298,11 @@ export default function ResultsPage() {
     )
   }
 
-  if (!isLoading && Object.keys(userAnswers).length === 0) {
+  if (!isLoading && (!userAnswers || Object.keys(userAnswers).length === 0)) {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p className="text-xl text-muted-foreground mb-4">
-          Nous n&apos;avons pas pu trouver vos réponses. Avez-vous complété le questionnaire ?
+          Aucune réponse disponible pour calculer les résultats. Veuillez d&apos;abord répondre au questionnaire.
         </p>
         <Button asChild>
           <Link href="/questionnaire">Répondre au questionnaire</Link>

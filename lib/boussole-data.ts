@@ -394,7 +394,7 @@ export const partiesData: Party[] = [
       ["Respect", "Équité", "Excellence", "Innovation"],
       ["Réglementations excessives", "Nationalisme de façade", "Décisions sans acceptabilité sociale"],
     ),
-    priorities: ["Environnement éco-responsable", "Développement économique intégré", "Cohésion sociale", "Transport avec acceptabilité sociale"],
+    priorities: ["Environnement et espaces verts", "Services municipaux", "Transport et mobilité"],
     positions: [
       {
         questionId: questionIdMap[0],

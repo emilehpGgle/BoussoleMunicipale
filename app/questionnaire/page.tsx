@@ -126,13 +126,19 @@ export default function QuestionnairePage() {
     }
   }, [isLoading, hasInitialized, nextQuestionIndex])
 
-  // ✅ Re-calculer si les données changent après l'initialisation (optimisé)
+  // ✅ Ne plus forcer la redirection automatique après l'initialisation
+  // Ceci permettra à l'utilisateur de naviguer librement avec le bouton Précédent
+  // La redirection automatique n'a lieu que lors de l'initialisation initiale
+  
+  // Désactivé car cela empêche la navigation manuelle vers les questions précédentes
+  /*
   useEffect(() => {
     if (hasInitialized && !isLoading && nextQuestionIndex > currentQuestionIndex) {
       console.log(`🎯 Correction: aller à la question ${nextQuestionIndex + 1}`)
       setCurrentQuestionIndex(nextQuestionIndex)
     }
   }, [hasInitialized, isLoading, currentQuestionIndex, nextQuestionIndex])
+  */
 
   useEffect(() => {
     // Logic for postal code check can be added here if needed
@@ -484,7 +490,7 @@ export default function QuestionnairePage() {
                         key={priority}
                         variant={isSelected ? "standard" : "subtle"}
                         disabled={!canSelect && !isSelected}
-                        className={`option-button justify-between py-3 md:py-4 px-3 md:px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
+                        className={`option-button justify-between py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                           ${
                             isSelected
                               ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
@@ -517,7 +523,7 @@ export default function QuestionnairePage() {
                   <ButtonWithEffects
                     key={optionKey}
                     variant={isSelected ? "standard" : "subtle"}
-                    className={`option-button justify-start py-3 px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
+                    className={`option-button justify-start py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                       ${
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft"
@@ -542,7 +548,7 @@ export default function QuestionnairePage() {
                   <ButtonWithEffects
                     key={optionKey}
                     variant={isSelected ? "standard" : "subtle"}
-                    className={`option-button justify-start py-3 px-4 text-left rounded-xl text-sm md:text-base font-medium min-h-0 w-full
+                    className={`option-button justify-start py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                       ${
                         isSelected
                           ? "bg-primary text-primary-foreground shadow-soft"
@@ -565,9 +571,9 @@ export default function QuestionnairePage() {
               variant="outline"
               onClick={goToPreviousQuestion}
               disabled={currentQuestionIndex === 0}
-              className="flex items-center gap-2 rounded-xl px-4 py-2 text-muted-foreground hover:text-foreground hover:border-foreground/50 border-border btn-base-effects btn-hover-lift text-sm"
+              className="flex items-center gap-2 rounded-xl px-5 py-3 md:px-6 md:py-4 text-muted-foreground hover:text-foreground hover:border-foreground/50 border-border btn-base-effects btn-hover-lift text-sm md:text-base min-h-[48px] md:min-h-[52px] w-full xs:w-auto touch-manipulation"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4 md:h-5 md:w-5" />
               Précédent
             </Button>
 
@@ -591,7 +597,7 @@ export default function QuestionnairePage() {
                     ? Object.keys(selectedPriorities).length !== 3
                     : !isAnswered
                 }
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-4 py-2 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm transition-transform duration-200"
+                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 py-3 md:px-6 md:py-4 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm md:text-base min-h-[48px] md:min-h-[52px] w-full xs:w-auto transition-transform duration-200 touch-manipulation"
               >
                 Terminer
               </Button>

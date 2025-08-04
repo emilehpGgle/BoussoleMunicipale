@@ -13,13 +13,15 @@ import {
   calculatePoliticalDistance,
   axisConfiguration,
   type UserAnswers,
-  calculateScaledPoliticalMap,
+  calculatePartyPositions,
   calculateMapBounds,
-  normalizePositionForDisplay
+  normalizePositionForDisplay,
+  calculateExactCompatibility
 } from '@/lib/political-map-calculator'
 import { partiesData } from '@/lib/boussole-data'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { usePriorities } from '@/hooks/usePriorities'
 
 interface PoliticalCompassChartProps {
   userAnswers: UserAnswers
@@ -30,43 +32,55 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const router = useRouter();
+  const { priorities: userPriorities } = usePriorities()
 
-  // Calcul de la position de l'utilisateur avec centrage dynamique et dézoom
-  const scaledPoliticalMap = useMemo(() => {
-    const userPosition = calculateUserPoliticalPosition(userAnswers)
-    return calculateScaledPoliticalMap(userPosition, 0.6) // Facteur de dézoom de 0.6
+  // Calcul des positions originales (sans compression)
+  const userPosition = useMemo(() => {
+    return calculateUserPoliticalPosition(userAnswers)
   }, [userAnswers])
 
-  const userPosition = scaledPoliticalMap.scaled.user
-  const scaledPartyPositions = scaledPoliticalMap.scaled.parties
+  const partyPositions = useMemo(() => {
+    return calculatePartyPositions()
+  }, [])
 
-  // Description de la position politique (basée sur la position originale)
+  // Description de la position politique
   const positionDescription = useMemo(() => {
-    return getPoliticalPositionDescription(scaledPoliticalMap.original.user)
-  }, [scaledPoliticalMap.original.user])
+    return getPoliticalPositionDescription(userPosition)
+  }, [userPosition])
 
-  // Calcul des distances avec les partis (utilisant les positions transformées)
+  // Calcul des distances avec les partis (utilisant les positions originales et le calcul unifié)
   const partyDistances = useMemo(() => {
-    return Object.entries(scaledPartyPositions).map(([partyId, position]) => {
+    return Object.entries(partyPositions).map(([partyId, position]) => {
       const party = partiesData.find(p => p.id === partyId)
       const distance = calculatePoliticalDistance(userPosition, position)
+      
+      // Utiliser le calcul exact identique à resultats/page.tsx
+      const partyPriorities = party?.priorities || []
+      const compatibility = calculateExactCompatibility(
+        userPosition, 
+        position, 
+        userPriorities || {}, 
+        partyPriorities
+      )
+      
       return {
         party,
         position,
         distance,
+        compatibility,
         partyId
       }
-    }).filter(item => item.party).sort((a, b) => a.distance - b.distance)
-  }, [userPosition, scaledPartyPositions])
+    }).filter(item => item.party).sort((a, b) => b.compatibility - a.compatibility) // Trier par compatibilité décroissante
+  }, [userPosition, partyPositions, userPriorities])
 
   // Calcul des limites de la carte pour l'affichage adaptatif
   const mapBounds = useMemo(() => {
-    const allPositions = [userPosition, ...Object.values(scaledPartyPositions)]
+    const allPositions = [userPosition, ...Object.values(partyPositions)]
     return calculateMapBounds(allPositions, 30) // Padding de 30 pour l'espacement
-  }, [userPosition, scaledPartyPositions])
+  }, [userPosition, partyPositions])
 
   // Fonction pour convertir les coordonnées politiques en coordonnées SVG
-  // Utilise maintenant le système de centrage dynamique avec échelle adaptative
+  // Utilise les positions originales sans compression
   const toSVGCoords = (position: PoliticalPosition, width: number, height: number) => {
     const padding = 40
     const canvasSize = Math.min(width, height) - 2 * padding
@@ -344,7 +358,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
           {/* Parti le plus proche */}
           {partyDistances.length > 0 && (
             <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
-              <h4 className="font-semibold text-primary mb-2">Parti le plus proche idéologiquement :</h4>
+              <h4 className="font-semibold text-primary mb-2">Parti le plus compatible :</h4>
               <div className="flex items-center gap-3">
                 {partyDistances[0].party?.logoUrl && (
                   <div className="bg-white rounded-lg p-2 shadow-sm">
@@ -362,7 +376,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
                     {partyDistances[0].party?.name}
                   </p>
                   <p className="text-sm text-primary/80">
-                    Distance idéologique : {partyDistances[0].distance.toFixed(1)} points
+                    Compatibilité : {partyDistances[0].compatibility}% (70% politique + 30% priorités)
                   </p>
                 </div>
               </div>
@@ -373,10 +387,10 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
           <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
             <strong>Note :</strong> Cette carte positionne votre profil politique selon deux axes principaux : 
             économique (interventionnisme ↔ libre marché) et social/environnemental (conservateur ↔ progressiste). 
-            Les positions des partis sont approximatives et basées sur leurs programmes publics.
+            Les positions des partis sont basées sur leurs programmes publics et déclarations officielles.
             <br />
-            <strong>🎯 Centrage dynamique :</strong> La carte est automatiquement recentrée sur le centre politique 
-            local de la municipalité et redimensionnée pour une meilleure lisibilité des distances entre positions.
+            <strong>📊 Calcul de compatibilité :</strong> Le score combine votre positionnement politique (70%) 
+            et l'alignement de vos priorités municipales (30%) pour une évaluation globale plus précise.
           </div>
         </CardContent>
       </Card>

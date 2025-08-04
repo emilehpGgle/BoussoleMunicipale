@@ -122,13 +122,14 @@ export function useResults() {
       setState(prev => ({ ...prev, isCalculating: true, error: null }))
 
       // Vérifier qu'on a suffisamment de réponses pour calculer les résultats
-      const counts = getResponseCounts()
-      if (counts.total === 0) {
+      const counts = getResponseCounts() // getResponseCounts retourne une fonction
+      const actualCounts = counts() // Appeler la fonction pour obtenir les vrais comptages
+      if (actualCounts.total === 0) {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
 
       // Calcul du pourcentage de complétion
-      const primaryResponsesCount = counts.agreement // Toutes les questions principales sont maintenant de type agreement
+      const primaryResponsesCount = actualCounts.agreement // Utiliser actualCounts au lieu de counts
       const maxExpectedResponses = TOTAL_QUESTIONS
       const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 
@@ -147,13 +148,16 @@ export function useResults() {
         partyPositions[partyId] = calculateUserPoliticalPosition(answers)
       })
       
-      // Calculer les distances et scores de compatibilité
+      // NOTE: useResults.ts garde sa logique existante simple
+      // Les priorités seront gérées au niveau des composants qui affichent les résultats
+      
+      // Calculer les scores de compatibilité avec le système unifié 70/30
       const partyScores: Record<string, number> = {}
       const partyDistances: { partyId: string; distance: number; score: number }[] = []
       
       Object.entries(partyPositions).forEach(([partyId, partyPos]) => {
         const distance = calculatePoliticalDistance(politicalPosition, partyPos)
-        // Convertir distance en pourcentage de compatibilité
+        // Convertir distance en pourcentage de compatibilité (logique politique pure)
         const maxDistance = 283 // Distance maximale théorique sqrt(200^2 + 200^2)
         const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
         
@@ -180,7 +184,7 @@ export function useResults() {
         politicalPosition: { x: politicalPosition.x, y: politicalPosition.y },
         completionPercentage,
         totalQuestions: TOTAL_QUESTIONS,
-        answeredQuestions: counts.total,
+        answeredQuestions: actualCounts.total,
         calculatedAt: new Date().toISOString()
       }
 

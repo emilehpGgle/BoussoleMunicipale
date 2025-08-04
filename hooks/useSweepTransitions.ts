@@ -12,6 +12,7 @@ interface TransitionState {
   isTransitioning: boolean
   direction: 'enter' | 'exit' | 'idle'
   transitionKey: number
+  navigationDirection: 'forward' | 'backward'
 }
 
 /**
@@ -30,7 +31,8 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
   const [state, setState] = useState<TransitionState>({
     isTransitioning: false,
     direction: 'idle',
-    transitionKey: 0
+    transitionKey: 0,
+    navigationDirection: 'forward'
   })
   
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -59,15 +61,16 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
   // Démarrer une transition de balayage
   const startSweepTransition = useCallback((
     callback?: () => void,
-    direction: 'forward' | 'backward' = 'forward'
+    navigationDirection: 'forward' | 'backward' = 'forward'
   ) => {
     cleanup()
     
-    // Phase de sortie
+    // Phase de sortie avec direction
     setState(prev => ({
       ...prev,
       isTransitioning: true,
-      direction: 'exit'
+      direction: 'exit',
+      navigationDirection
     }))
     
     onTransitionStart?.()
@@ -77,11 +80,12 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
       // Exécuter le callback (changement de contenu)
       callback?.()
       
-      // Phase d'entrée avec nouvelle clé
+      // Phase d'entrée avec nouvelle clé et même direction
       setState(prev => ({
         isTransitioning: true,
         direction: 'enter',
-        transitionKey: prev.transitionKey + 1
+        transitionKey: prev.transitionKey + 1,
+        navigationDirection
       }))
       
       // Fin de la transition d'entrée
@@ -105,7 +109,8 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
     setState(prev => ({
       isTransitioning: false,
       direction: 'idle',
-      transitionKey: prev.transitionKey + 1
+      transitionKey: prev.transitionKey + 1,
+      navigationDirection: 'forward'
     }))
     callback?.()
   }, [cleanup])
@@ -116,7 +121,8 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
     setState({
       isTransitioning: false,
       direction: 'idle',
-      transitionKey: 0
+      transitionKey: 0,
+      navigationDirection: 'forward'
     })
   }, [cleanup])
 
@@ -125,11 +131,13 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
     return cleanup
   }, [cleanup])
 
-  // Classes CSS pour les animations
+  // Classes CSS pour les animations basées sur la direction
   const getAnimationClasses = useCallback(() => {
+    const isBackward = state.navigationDirection === 'backward'
+    
     if (!state.isTransitioning) {
       return {
-        containerClass: 'question-sweep-enter',
+        containerClass: isBackward ? 'question-sweep-enter-back' : 'question-sweep-enter',
         contentClass: 'question-content-enter',
         optionClass: 'option-button-enter'
       }
@@ -137,7 +145,7 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
     
     if (state.direction === 'exit') {
       return {
-        containerClass: 'question-sweep-exit',
+        containerClass: isBackward ? 'question-sweep-exit-back' : 'question-sweep-exit',
         contentClass: '',
         optionClass: ''
       }
@@ -145,7 +153,7 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
     
     if (state.direction === 'enter') {
       return {
-        containerClass: 'question-sweep-enter',
+        containerClass: isBackward ? 'question-sweep-enter-back' : 'question-sweep-enter',
         contentClass: 'question-content-enter',
         optionClass: 'option-button-enter'
       }
@@ -156,7 +164,7 @@ export function useSweepTransitions(options: UseSweepTransitionsOptions = {}) {
       contentClass: '',
       optionClass: ''
     }
-  }, [state.direction, state.isTransitioning])
+  }, [state.direction, state.isTransitioning, state.navigationDirection])
 
   return {
     // État de transition

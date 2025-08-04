@@ -19,6 +19,7 @@ import {
 import { partiesData, boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
 import type { Party, Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
+import { usePriorities } from "@/hooks/usePriorities"
 import type { AgreementOptionKey } from "@/lib/supabase/types"
 
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
@@ -83,6 +84,7 @@ export default function PartyDetailPage() {
   
   // Récupération des réponses de l'utilisateur
   const { responses: userResponses } = useUserResponses()
+  const { priorities: userPriorities } = usePriorities()
 
   // Détecter la source (page de partage ou page de résultats)
   const source = searchParams.get('source')
@@ -118,8 +120,8 @@ export default function PartyDetailPage() {
     )
   }
 
-  // Vérifier si l'utilisateur a des réponses
-  const hasUserResponses = Object.keys(userResponses.agreement).length > 0
+  // Vérifier si l'utilisateur a des réponses (incluant les priorités)
+  const hasUserResponses = Object.keys(userResponses.agreement).length > 0 || (userPriorities && Object.keys(userPriorities).length > 0)
 
   return (
     <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8">
@@ -232,6 +234,59 @@ export default function PartyDetailPage() {
         </CardHeader>
         <CardContent className="space-y-6">
           {boussoleQuestions.map((question: BoussoleQuestion, index: number) => {
+            // Gestion spéciale pour la question de priorités (Q21)
+            if (question.responseType === "priority_ranking") {
+              // Pour la Q21, afficher les priorités au lieu des positions d'accord/désaccord
+              const hasUserPriorities = userPriorities && Object.keys(userPriorities).length > 0
+              const partyPriorities = party.priorities || []
+              
+              // Formater les priorités utilisateur
+              let userPrioritiesText = "Aucune priorité sélectionnée"
+              if (hasUserPriorities) {
+                const sortedPriorities = Object.entries(userPriorities)
+                  .sort(([,a], [,b]) => (a as number) - (b as number))
+                  .map(([priority, rank]) => `${rank}. ${priority}`)
+                userPrioritiesText = sortedPriorities.join(' • ')
+              }
+              
+              // Formater les priorités du parti
+              const partyPrioritiesText = partyPriorities.length > 0 
+                ? partyPriorities.slice(0, 3).map((p, i) => `${i + 1}. ${p}`).join(' • ')
+                : "Aucune priorité définie"
+
+              return (
+                <Card key={question.id} className="bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-xs font-medium text-muted-foreground">Question {index + 1}</p>
+                    </div>
+                    <CardTitle className="text-base font-medium text-foreground leading-snug">{question.text}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-2 space-y-4">
+                    {hasUserPriorities ? (
+                      <div className="space-y-3">
+                        <div className="bg-blue-50/50 border border-blue-200 rounded-lg p-3">
+                          <p className="text-sm font-semibold text-blue-800 mb-0.5">Vos priorités</p>
+                          <p className="text-foreground">{userPrioritiesText}</p>
+                        </div>
+                        
+                        <div className="bg-muted/30 border rounded-lg p-3">
+                          <p className="text-sm font-semibold text-foreground mb-1">Priorités du parti</p>
+                          <p className="text-foreground font-medium text-blue-700">{partyPrioritiesText}</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-muted/30 border rounded-lg p-3">
+                        <p className="text-sm font-semibold text-foreground mb-1">Priorités du parti</p>
+                        <p className="font-medium text-blue-700">{partyPrioritiesText}</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              )
+            }
+            
+            // Logique normale pour les autres questions (Q1-Q20)
             const partyPos = partyQuestionsMap.get(question.id)
             const userPos = userResponses.agreement[question.id]
             
@@ -276,7 +331,7 @@ export default function PartyDetailPage() {
                               </TooltipProvider>
                             </div>
                            </div>
-                           <p className="text-foreground font-medium" style={{ color: party.color }}>{partyPositionLabel}</p>
+                           <p className="text-foreground font-medium text-blue-700">{partyPositionLabel}</p>
                          </div>
                       ) : (
                         <div className="bg-muted/30 border rounded-lg p-3 text-center">
@@ -290,7 +345,7 @@ export default function PartyDetailPage() {
                     /* Affichage simple si pas de réponse utilisateur */
                      <div className="bg-muted/30 border rounded-lg p-3">
                         <p className="text-sm font-semibold text-foreground">Position du parti</p>
-                        <p className="font-medium" style={{ color: party.color }}>{partyPositionLabel}</p>
+                        <p className="font-medium text-blue-700">{partyPositionLabel}</p>
                      </div>
                   ) : (
                     <div className="bg-muted/30 border rounded-lg p-3 text-center">
