@@ -460,7 +460,7 @@ export const partiesData: Party[] = [
       ["SRB structurant", "Réduction de la fiscalité", "Discours pro-développement"],
       ["Peu d'engagement environnemental", "Logement social ou culture"],
     ),
-    priorities: ["Mobilité (SRB)", "Rigueur fiscale", "Relance économique", "Implication citoyenne"],
+    priorities: ["Transport et mobilité", "Gestion des finances municipales", "Services municipaux"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -606,7 +606,7 @@ export const partiesData: Party[] = [
       ["Continuité gestionnaire", "Proximité citoyenne"],
       ["Positions peu documentées", "Visibilité limitée"],
     ),
-    priorities: ["Services municipaux", "Transport et mobilité", "Développement économique"],
+    priorities: ["Services municipaux", "Transport et mobilité", "Logement abordable"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -738,7 +738,7 @@ export const partiesData: Party[] = [
       ["Gestion budgétaire stricte", "Proximité citoyenne", "Opposition aux grands projets coûteux"],
       ["Méfiance envers la centralisation", "Réglementations excessives"],
     ),
-    priorities: ["Troisième lien routier", "Fiscalité", "Développement économique", "Participation citoyenne"],
+    priorities: ["Gestion des finances municipales", "Services municipaux", "Troisième lien routier"],
     positions: [
       {
         questionId: questionIdMap[0],
@@ -884,7 +884,7 @@ export const partiesData: Party[] = [
       ["Vision écologiste cohérente", "Engagement ferme justice sociale", "Opposition claire intérêts immobiliers", "Leadership environnemental local", "Promotion francophonie municipale"],
       ["Positions parfois perçues comme trop radicales", "Tension entre allègement fiscal et financement transition", "Opposition systématique secteur privé"],
     ),
-    priorities: ["Logement abordable", "Qualité de l'air", "Mobilité durable", "Francophonie"],
+    priorities: ["Logement abordable", "Environnement et espaces verts", "Transport et mobilité"],
     positions: [
       {
         questionId: questionIdMap[0],

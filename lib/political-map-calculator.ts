@@ -314,20 +314,20 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'quebec_dabord': {
-    // Claude Villeneuve - Centre pragmatique ✏️ MISE À JOUR selon analyse officielle 2025
-    q1_tramway: 'FA',                              // 🟩 Exige tramway sans délai dès validation CDPQ
-    q2_pistes_cyclables: 'PD',                     // 🟧 Déplore imposition sans concertation
-    q3_troisieme_lien: 'PA',                       // 🟧 Appuie avec réserves (transport collectif + camions)
+    // Claude Villeneuve - Centre-progressiste pragmatique ✏️ MISE À JOUR selon déclarations jan-mai 2025
+    q1_tramway: 'PA',                              // 🟧 CORRIGÉ : "Si pour avoir le tramway, ça prend un 3e lien, deale me in" (appui conditionnel)
+    q2_pistes_cyclables: 'N',                      // 🟨 CORRIGÉ : "Je ne déteste pas les pistes cyclables, au contraire" mais contre mauvaise implémentation
+    q3_troisieme_lien: 'PA',                       // 🟧 CONFIRMÉ : "Prêt à appuyer s'il répond aux besoins" (navigation, intégration urbaine)
     q4_secteur_prive_transport: 'N',               // 🟨 Aucune mention explicite PPP/privatisation
     q5_quotas_logements_abordables: 'PA',          // 🟧 Soutient accélération logements abordables
     q6_densification_quartiers: 'PD',              // 🟧 Demande report projet dense Henri-Bourassa
     q7_restrictions_airbnb: 'N',                   // 🟨 Aucune déclaration retrouvée
     q8_assouplissement_zonage: 'PA',               // 🟧 Favorise souplesse pour accélérer constructions
     q9_protection_espaces_verts: 'PA',             // 🟧 Appui corridor vert Maizerets
-    q10_transition_carboneutre: 'N',               // 🟨 Aucun objectif clair environnement
-    q11_reduction_dechets: 'N',                    // 🟨 Aucun engagement identifié
+    q10_transition_carboneutre: 'PA',              // 🟧 CORRIGÉ : "Il faut adapter nos tuyaux, avoir une ville plus perméable" (adaptation climatique)
+    q11_reduction_dechets: 'PA',                   // 🟧 CORRIGÉ : Exemple pavé alvéolé, perméabilisation urbaine
     q12_augmentation_taxes: 'PD',                  // 🟧 Critique hausses déguisées par tarifs
-    q13_pouvoir_conseils_quartier: 'PD',           // 🟧 Réservé sur décentralisation citoyenne directe
+    q13_pouvoir_conseils_quartier: 'N',            // 🟨 CORRIGÉ : Met l'accent sur écoute citoyenne et proximité mais pas structures formelles
     q14_reduction_dette: 'PA',                     // 🟧 Appel gestion rigoureuse et simplifiée
     q15_avantages_fiscaux_entreprises: 'PA',       // 🟧 Favorise entrepreneuriat local
     q16_limitation_touristes: 'N',                 // 🟨 Pas de position recensée
@@ -364,18 +364,18 @@ export const partyAnswers: Record<string, UserAnswers> = {
   },
 
   'equipe_priorite_quebec': {
-    // Stevens Melançon - Révisé pour cohérence avec priorités progressistes ✏️ CORRECTION MAJEURE
-    q1_tramway: 'PA',                               // ✏️ CORRIGÉ : Pour le transport durable (cohérent avec priorités)
+    // Stevens Melançon - Centre-vert pragmatique ✏️ CORRECTION MAJEURE selon virage environnemental 2022-2025
+    q1_tramway: 'FD',                               // ✏️ Opposition catégorique pour raisons environnementales (coupes d'arbres, îlots chaleur)
     q2_pistes_cyclables: 'PA',                     // Pour le transport actif
-    q3_troisieme_lien: 'PD',                       // ✏️ CORRIGÉ : Préfère solutions durables
+    q3_troisieme_lien: 'PA',                       // ✏️ Stevens favorable historiquement (déçu tracé échoisi) - position parti à clarifier
     q4_secteur_prive_transport: 'N',               // ✏️ CORRIGÉ : Neutre sur privatisation
     q5_quotas_logements_abordables: 'PA',          // ✏️ CORRIGÉ : Soutien logement abordable
     q6_densification_quartiers: 'PA',              // ✏️ CORRIGÉ : Pour développement durable
     q7_restrictions_airbnb: 'PA',                  // ✏️ NOUVEAU : Protection parc locatif
-    q8_assouplissement_zonage: 'PA',               // Pour faciliter construction
-    q9_protection_espaces_verts: 'PA',             // ✏️ CORRIGÉ : Cohérent avec priorités environnementales
-    q10_transition_carboneutre: 'PA',              // ✏️ CORRIGÉ : Soutien transition écologique
-    q11_reduction_dechets: 'PA',                   // ✏️ NOUVEAU : Gestion environnementale
+    q8_assouplissement_zonage: 'PA',               // Pour faciliter construction (mais avec acceptabilité sociale)
+    q9_protection_espaces_verts: 'FA',             // ✏️ CORRIGÉ : Combat principal - "Ce sont des écosystèmes vivants" (2025)
+    q10_transition_carboneutre: 'FA',              // ✏️ CORRIGÉ : "Questions environnementales une priorité" - virage écoresponsable
+    q11_reduction_dechets: 'FA',                   // ✏️ CORRIGÉ : Cohérent avec virage écologique 2022
     q12_augmentation_taxes: 'N',                   // ✏️ CORRIGÉ : Équilibré fiscal
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ NOUVEAU : Démocratie participative
     q14_reduction_dette: 'N',                      // ✏️ CORRIGÉ : Gestionnaire équilibré
@@ -385,7 +385,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q18_augmentation_effectifs_policiers: 'N',     // ✏️ CORRIGÉ : Approche équilibrée sécurité
     q19_investissement_infrastructures_loisirs_sportives: 'PA', // ✏️ NOUVEAU : Services de proximité
     q20_protection_patrimoine: 'PA',               // ✏️ NOUVEAU : Préservation identité
-    q21_enjeux_prioritaires: 'FA',                 // ✏️ NOUVEAU : Environnement, services, transport, cohésion
+    q21_enjeux_prioritaires: 'FA',                 // ✏️ Environnement + développement durable + acceptabilité sociale
   },
 
   'leadership_quebec': {

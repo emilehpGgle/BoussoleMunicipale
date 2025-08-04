@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -58,12 +58,13 @@ export default function ContinueOrRestartModal({
   const nextQuestionIndex = calculateNextQuestionIndex()
   const nextQuestionNumber = nextQuestionIndex + 1
 
-  // Si pas de réponses, aller directement à la destination
-  if (!hasResponses && isOpen) {
-    onClose()
-    router.push(targetPath)
-    return null
-  }
+  // Si pas de réponses, fermer le modal avec useEffect
+  React.useEffect(() => {
+    if (!hasResponses && isOpen) {
+      onClose()
+      router.push(targetPath)
+    }
+  }, [hasResponses, isOpen, onClose, router, targetPath])
 
   const handleContinueQuestionnaire = () => {
     onClose()
