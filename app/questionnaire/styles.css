@@ -35,7 +35,7 @@
       animation: optionCascade calc(var(--transition-duration-enter) * 0.7) var(--transition-enter) both;
       will-change: transform, opacity;
     }
-  }
+ 
 
   .option-button-enter:nth-child(1) { animation-delay: 80ms; }
   .option-button-enter:nth-child(2) { animation-delay: 100ms; }
