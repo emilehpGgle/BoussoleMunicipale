@@ -8,7 +8,7 @@ import SiteFooter from "@/components/site-footer"
 import { Toaster } from "sonner"
 import { Analytics } from "@/components/analytics"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin"], display: "swap" })
 
 export const metadata: Metadata = {
   title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",

@@ -131,9 +131,9 @@ export default function HomePage() {
       </GlowSection>
 
       {/* Section d'explication */}
-      <section id="comment-ca-marche" className="section-contained w-full py-16 md:py-24 bg-background">
+      <section id="comment-ca-marche" className="section-contained w-full py-16 md:py-24 bg-background" aria-label="Comment ça marche">
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
-          <h2 className="text-center mb-12 text-foreground animate-slideInUp" style={{ animationDelay: "0.2s" }}>
+          <h2 className="text-center mb-12 text-foreground animate-fadeIn" style={{ animationDelay: "0.2s" }}>
             Comment ça fonctionne ?
           </h2>
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -170,7 +170,7 @@ export default function HomePage() {
             ].map((item, index) => (
               <div
                 key={item.title}
-                className="flex flex-col items-start text-left p-8 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects group"
+                className="flex flex-col items-start text-left p-8 bg-card rounded-2xl shadow-soft animate-fadeIn card-interactive-effects group"
                 style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
               >
                 <div className={`p-3.5 ${item.bgColor} rounded-full mb-5`}>
