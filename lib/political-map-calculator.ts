@@ -425,7 +425,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'FA',               // ✏️ NOUVEAU : Pour réduction bureaucratie
     q9_protection_espaces_verts: 'PA',             // Protection importante mais équilibrée
     q10_transition_carboneutre: 'PD',              // Sceptique des politiques climatiques coûteuses
-    q11_reduction_dechets: 'FD',                   // ✏️ CORRIGÉ : Oppose mesures contraignantes citoyens
+    q11_reduction_dechets: 'FA',                   // Aligné nouvelle formulation : priorise la collecte vs réduire les collectes
     q12_augmentation_taxes: 'FD',                  // Fortement contre (veut réduire taxes)
     q13_pouvoir_conseils_quartier: 'FA',           // ✏️ CORRIGÉ : Retour autonomie aux citoyens
     q14_reduction_dette: 'PA',                     // Réduction dépenses publiques
