@@ -325,7 +325,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'PA',               // 🟧 Favorise souplesse pour accélérer constructions
     q9_protection_espaces_verts: 'PA',             // 🟧 Appui corridor vert Maizerets
     q10_transition_carboneutre: 'PA',              // 🟧 CORRIGÉ : "Il faut adapter nos tuyaux, avoir une ville plus perméable" (adaptation climatique)
-    q11_reduction_dechets: 'PA',                   // 🟧 CORRIGÉ : Exemple pavé alvéolé, perméabilisation urbaine
+    q11_reduction_dechets: 'N',                    // Aligné carte avec source officielle: neutre sur la nouvelle formulation
     q12_augmentation_taxes: 'PD',                  // 🟧 Critique hausses déguisées par tarifs
     q13_pouvoir_conseils_quartier: 'N',            // 🟨 CORRIGÉ : Met l'accent sur écoute citoyenne et proximité mais pas structures formelles
     q14_reduction_dette: 'PA',                     // 🟧 Appel gestion rigoureuse et simplifiée
@@ -375,7 +375,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'PA',               // Pour faciliter construction (mais avec acceptabilité sociale)
     q9_protection_espaces_verts: 'FA',             // ✏️ CORRIGÉ : Combat principal - "Ce sont des écosystèmes vivants" (2025)
     q10_transition_carboneutre: 'FA',              // ✏️ CORRIGÉ : "Questions environnementales une priorité" - virage écoresponsable
-    q11_reduction_dechets: 'FA',                   // ✏️ CORRIGÉ : Cohérent avec virage écologique 2022
+    q11_reduction_dechets: 'N',                    // Aligné carte avec source officielle: neutre sur la nouvelle formulation
     q12_augmentation_taxes: 'N',                   // ✏️ CORRIGÉ : Équilibré fiscal
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ NOUVEAU : Démocratie participative
     q14_reduction_dette: 'N',                      // ✏️ CORRIGÉ : Gestionnaire équilibré
