@@ -1,5 +1,4 @@
 "use client"
-import { useState, lazy, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react" // Added Share2 and HelpCircle
 import Image from "next/image"
@@ -7,55 +6,9 @@ import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
 import StartQuestionnaireButton from "@/components/start-questionnaire-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
-import { useUserResponses } from "@/hooks/useUserResponses"
-import { useSession } from "@/hooks/useSession"
-import { boussoleQuestions } from "@/lib/boussole-data"
-
-// Lazy loading du modal (pas critique pour le first paint)
-const ContinueOrRestartModal = lazy(() => import("@/components/existing-responses-modal"))
+ 
 
 export default function HomePage() {
-  const { sessionToken } = useSession()
-  const { getResponseCounts, isLoading } = useUserResponses()
-  const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
-
-  // Fonction pour gérer le clic sur "Commencer" - vérifie le statut du questionnaire
-  const handleStartQuestionnaire = async () => {
-    try {
-      // Si pas de session, ouvrir le modal du code postal
-      if (!sessionToken) {
-        const event = new CustomEvent('openPostalCodeModal')
-        window.dispatchEvent(event)
-        return
-      }
-
-      // Si on a une session, vérifier le statut du questionnaire
-      if (!isLoading) {
-        const counts = getResponseCounts
-        const totalQuestions = boussoleQuestions.length
-        
-        if (counts.total >= totalQuestions) {
-          // Questionnaire terminé - ouvrir le modal pour choisir entre voir résultats ou recommencer
-          setIsExistingResponsesModalOpen(true)
-        } else if (counts.total > 0) {
-          // Questionnaire en cours - ouvrir le modal pour choisir entre continuer ou recommencer
-          setIsExistingResponsesModalOpen(true)
-        } else {
-          // Questionnaire pas commencé - ouvrir le modal du code postal
-          const event = new CustomEvent('openPostalCodeModal')
-          window.dispatchEvent(event)
-        }
-      }
-    } catch (error) {
-      console.error('Erreur lors de la vérification du questionnaire:', error)
-      // En cas d'erreur, ouvrir le modal par défaut
-      const event = new CustomEvent('openPostalCodeModal')
-      window.dispatchEvent(event)
-    }
-  }
-
-
-
   return (
     <div className="mobile-constrained">
 
