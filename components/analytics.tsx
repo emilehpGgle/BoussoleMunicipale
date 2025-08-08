@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect } from 'react'
+import Script from 'next/script'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 declare global {
@@ -21,9 +22,11 @@ export function useAnalytics() {
 
     // Tracker le changement de page
     const url = pathname + searchParams.toString()
-    window.gtag('config', GA_TRACKING_ID, {
-      page_path: url,
-    })
+    if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
+      window.gtag('config', GA_TRACKING_ID, {
+        page_path: url,
+      })
+    }
   }, [pathname, searchParams])
 
   // Événements personnalisés pour la boussole électorale
@@ -62,26 +65,25 @@ export function Analytics() {
 
   return (
     <>
-      <script
-        async
+      <Script
+        id="ga4-loader"
         src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+        strategy="lazyOnload"
       />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_TRACKING_ID}', {
-              page_path: window.location.pathname,
-              custom_map: {
-                'custom_parameter_1': 'questionnaire_progress',
-                'custom_parameter_2': 'party_affinity_score'
-              }
-            });
-          `,
-        }}
-      />
+      <Script id="ga4-init" strategy="lazyOnload">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);} 
+          gtag('js', new Date());
+          gtag('config', '${GA_TRACKING_ID}', {
+            page_path: window.location.pathname,
+            custom_map: {
+              'custom_parameter_1': 'questionnaire_progress',
+              'custom_parameter_2': 'party_affinity_score'
+            }
+          });
+        `}
+      </Script>
     </>
   )
 }

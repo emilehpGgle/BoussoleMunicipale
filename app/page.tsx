@@ -5,6 +5,7 @@ import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-
 import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
+import StartQuestionnaireButton from "@/components/start-questionnaire-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
@@ -82,13 +83,11 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <div className="flex flex-col gap-2">
-                  <Button
-                    size="lg"
-                    onClick={handleStartQuestionnaire}
+                  <StartQuestionnaireButton
                     className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
                   >
                     Découvrez vos affinités politiques
-                  </Button>
+                  </StartQuestionnaireButton>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
                   <Link href="/faq" className="text-sm text-primary underline hover:text-primary/80 mt-2 text-center sm:text-left">
                     Questions fréquentes
@@ -327,25 +326,16 @@ export default function HomePage() {
             <p className="text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
-            <Button
-              size="lg"
-              onClick={handleStartQuestionnaire}
+            <StartQuestionnaireButton
               className="bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
             >
               Découvrez vos affinités politiques
-            </Button>
+            </StartQuestionnaireButton>
           </div>
         </div>
       </section>
 
-      {/* Modal pour les réponses existantes - avec lazy loading */}
-      <Suspense fallback={<div />}>
-        <ContinueOrRestartModal
-          isOpen={isExistingResponsesModalOpen}
-          onClose={() => setIsExistingResponsesModalOpen(false)}
-          targetPath="/"
-        />
-      </Suspense>
+      {/* Modal déplacé dans StartQuestionnaireButton pour éviter charge du modal sur / */}
     </div>
   )
 }
