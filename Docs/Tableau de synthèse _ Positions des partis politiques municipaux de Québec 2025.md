@@ -12,7 +12,7 @@ Ce tableau présente une synthèse des positions estimées des sept partis polit
 
 ## Tableau des positions
 
-| Question | Alliance citoyenne (Giasson) | Équipe priorité (Melançon) | Leadership Québec (Simard) | Québec d'abord (Villeneuve) | Québec forte et fière (Marchand) | Respect citoyens (Lachance) | Transition Québec (Smith) |
+| Question | Alliance citoyenne (Giasson) | Équipe priorité (Melançon) | Leadership Québec (Hamad) | Québec d'abord (Villeneuve) | Québec forte et fière (Marchand) | Respect citoyens (Lachance) | Transition Québec (Smith) |
 |---------|---------|---------|---------|---------|---------|---------|---------|
 | **1. Investissement dans le tramway** | PD | FD | PD | N | FA | FD | FA |
 | **2. Développement des pistes cyclables** | PA | PA | N | PD | FA | PD | FA |
@@ -47,7 +47,7 @@ Ce tableau présente une synthèse des positions estimées des sept partis polit
 - **Forces** : Développement économique, gestion financière
 - **Réserves** : Projets environnementaux coûteux, interventionnisme municipal
 
-### Leadership Québec - Équipe Sam Hamad (André Simard)
+### Leadership Québec - Équipe Sam Hamad (Sam Hamad)
 - **Orientation générale** : Droite économique, pro-entreprise
 - **Forces** : Développement économique, réduction de la dette
 - **Réserves** : Interventions réglementaires, dépenses sociales

@@ -66,7 +66,7 @@ Pour chaque position attribuée à un parti, je documente :
 - **Site web** : https://equipeprioritequebec.ca/ (à analyser)
 - **Statut général** : ❌ Données manquantes
 
-### Leadership Québec (André Simard)
+### Leadership Québec (Sam Hamad)
 - **Site web** : https://leadershipquebec.ca/ (à analyser) 
 - **Statut général** : ❌ Données manquantes
 

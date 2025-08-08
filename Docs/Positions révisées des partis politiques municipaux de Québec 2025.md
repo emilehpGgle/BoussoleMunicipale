@@ -84,7 +84,7 @@ Lorsque la position n'est pas clairement établie, j'ai indiqué "Position incer
 
 [Suite des positions pour Équipe priorité Québec...]
 
-### Leadership Québec - Équipe Sam Hamad (André Simard)
+### Leadership Québec - Équipe Sam Hamad (Sam Hamad)
 
 **Site consulté** : https://leadershipquebec.ca/
 

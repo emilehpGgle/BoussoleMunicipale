@@ -81,7 +81,7 @@ Suite à une analyse approfondie des positions publiques documentées, certaines
 ---
 
 ## 3. Leadership Québec - Équipe Sam Hamad (LQ)
-**Chef** : André Simard  
+**Chef** : Sam Hamad  
 **Site web** : [leadershipquebec.ca](https://leadershipquebec.ca/)
 
 ### Réponses aux questions :
