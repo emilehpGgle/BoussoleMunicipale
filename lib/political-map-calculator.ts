@@ -275,7 +275,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'PA',               // ✏️ NOUVEAU : Pour faciliter développement durable
     q9_protection_espaces_verts: 'PA',             // Protection environnement
     q10_transition_carboneutre: 'FA',              // Fortement pour la transition
-    q11_reduction_dechets: 'FA',                   // ✏️ CORRIGÉ : Fortement pour (60% participation citoyenne atteinte)
+    q11_reduction_dechets: 'PD',                   // Aligné nouvelle formulation : prioriser la collecte vs réduire les collectes (moins aligné)
     q12_augmentation_taxes: 'PA',                  // Accepte hausses pour services
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ CORRIGÉ : Pour la participation
     q14_reduction_dette: 'PD',                     // Investit massivement (réserve climat 1,17 milliards)
@@ -300,7 +300,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'PA',               // Pour faciliter logement abordable
     q9_protection_espaces_verts: 'FA',             // "L'enjeu numéro 1 des gens de Limoilou, c'est la qualité de l'air" (2022-2025)
     q10_transition_carboneutre: 'FA',              // "faire face aux changements climatiques" (mai 2025)
-    q11_reduction_dechets: 'FA',                   // Fortement pour gestion durable
+    q11_reduction_dechets: 'FD',                   // Aligné nouvelle formulation : contre prioriser collecte vs environnement
     q12_augmentation_taxes: 'N',                   // "Il faut alléger le fardeau des citoyens" vs financer transition
     q13_pouvoir_conseils_quartier: 'FA',           // "démocratie participative", sondages citoyens (mai 2025)
     q14_reduction_dette: 'PD',                     // Contre (investissements verts prioritaires)

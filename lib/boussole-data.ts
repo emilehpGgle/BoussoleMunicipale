@@ -353,7 +353,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[9], position: "PA" },
       {
         questionId: questionIdMap[10],
-        position: "PD",
+        position: "FA",
         source: "Position climato-réaliste de Daniel Brisson remettant en question le rôle humain dans le réchauffement",
         note: "Approche sceptique des politiques climatiques coûteuses",
       },
@@ -710,7 +710,7 @@ export const partiesData: Party[] = [
       { questionId: questionIdMap[7], position: "N" },
       { questionId: questionIdMap[8], position: "FA" },
       { questionId: questionIdMap[9], position: "FA" },
-      { questionId: questionIdMap[10], position: "PA" },
+      { questionId: questionIdMap[10], position: "PD" },
       { questionId: questionIdMap[11], position: "PA" },
       { questionId: questionIdMap[12], position: "PA" },
       { questionId: questionIdMap[13], position: "PD" },
