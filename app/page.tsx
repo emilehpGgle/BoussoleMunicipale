@@ -5,7 +5,8 @@ import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-
 import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
-import { GlowSection } from "@/components/ui/subtle-glow"
+import dynamic from "next/dynamic"
+const GlowSection = dynamic(() => import("@/components/ui/subtle-glow").then(m => m.GlowSection), { ssr: false })
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { boussoleQuestions } from "@/lib/boussole-data"

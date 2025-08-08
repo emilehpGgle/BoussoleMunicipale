@@ -17,6 +17,7 @@ import { useResults } from "@/hooks/useResults"
 import { usePriorities } from "@/hooks/usePriorities"
 import { useSweepTransitions, useReducedMotion, useAnimationPerformance } from "@/hooks/useSweepTransitions"
 import { PageWithGlow } from "@/components/ui/background-glow"
+import './styles.css'
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import { SwipeContainer, useTouchSupport } from "@/components/ui/swipe-container"

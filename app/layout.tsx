@@ -98,6 +98,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseOrigin = (() => {
+    try {
+      return supabaseUrl ? new URL(supabaseUrl).origin : undefined
+    } catch {
+      return undefined
+    }
+  })()
   // Structured Data pour SEO
   const structuredData = {
     "@context": "https://schema.org",
@@ -157,6 +165,15 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <Analytics />
+        {/* Preconnect to analytics origins to shave connection time (non-blocking) */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
+        <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
+        {supabaseOrigin ? (
+          <>
+            <link rel="preconnect" href={supabaseOrigin} crossOrigin="" />
+            <link rel="dns-prefetch" href={supabaseOrigin} />
+          </>
+        ) : null}
         {/* Structured Data pour les Rich Snippets */}
         <script
           type="application/ld+json"

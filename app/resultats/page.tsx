@@ -29,7 +29,8 @@ import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { usePriorities } from "@/hooks/usePriorities"
-import { PageWithGlow } from "@/components/ui/background-glow"
+import dynamic from "next/dynamic"
+const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
 
 // Lazy loading des modals (pas critiques pour le first paint)
 const ShareModal = lazy(() => import("@/components/share-modal"))

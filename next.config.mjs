@@ -1,5 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Reduce render-blocking by inlining small critical CSS where possible
+  inlineCss: true,
+  // Optimize large packages by transforming named imports to direct paths
+  optimizePackageImports: ['lucide-react'],
   // Production-ready configuration
   eslint: {
     // Only ignore ESLint during builds in development
