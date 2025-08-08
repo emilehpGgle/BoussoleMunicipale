@@ -45,7 +45,7 @@ export const axisConfiguration = {
       { id: "q6_densification_quartiers", weight: 1.0 },     // Densification (+ = progressiste)
       { id: "q9_protection_espaces_verts", weight: 1.0 },    // Espaces verts (+ = progressiste)
       { id: "q10_transition_carboneutre", weight: 1.0 },     // Transition carbone (+ = progressiste)
-      { id: "q11_reduction_dechets", weight: 0.9 },          // Réduction déchets (+ = progressiste)
+      { id: "q11_reduction_dechets", weight: 0.9 },          // Collecte ordures prioritaire (+ = conservateur)
       { id: "q20_protection_patrimoine", weight: 0.9 },      // Protection patrimoine (+ = progressiste)
       { id: "q18_augmentation_effectifs_policiers", weight: 0.8 }, // Police (+ = conservateur)
       { id: "q16_limitation_touristes", weight: 0.7 },       // ✏️ AJOUTÉ : Limitation touristes (+ = progressiste)
@@ -78,7 +78,7 @@ function calculateAxisPosition(
       // Logique d'inversion corrigée basée sur l'orientation des questions
       // Axe social/environnemental : + = Progressiste, - = Conservateur
       if (axisConfig === axisConfiguration.social) {
-        if (id === 'q3_troisieme_lien' || id === 'q18_augmentation_effectifs_policiers') {
+        if (id === 'q3_troisieme_lien' || id === 'q18_augmentation_effectifs_policiers' || id === 'q11_reduction_dechets') {
           // Questions "conservatrices" : être d'accord = conservateur (score négatif)
           score = -score
         }
@@ -348,17 +348,17 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q6_densification_quartiers: 'FD',              // 🟥 Opposé à densification imposée
     q7_restrictions_airbnb: 'FD',                  // 🟥 Défend liberté d'usage des propriétés
     q8_assouplissement_zonage: 'FA',               // 🟩 Réduire freins bureaucratiques
-    q9_protection_espaces_verts: 'PA',             // 🟧 Favorise milieux sains sans lourdeur réglementaire
+    q9_protection_espaces_verts: 'N',              // 🟨 Favorise milieux sains sans lourdeur réglementaire
     q10_transition_carboneutre: 'FD',              // 🟥 S'oppose aux plans jugés idéologiques
-    q11_reduction_dechets: 'N',                    // 🟨 Thème secondaire dans plateforme
+    q11_reduction_dechets: 'FA',                   // 🟩 Priorise la collecte vs réduction des collectes pour env.
     q12_augmentation_taxes: 'FD',                  // 🟥 Refus clair de toute hausse
     q13_pouvoir_conseils_quartier: 'PD',           // 🟧 Méfiance envers structures intermédiaires
     q14_reduction_dette: 'FA',                     // 🟩 Objectif majeur : saine gestion
     q15_avantages_fiscaux_entreprises: 'FA',       // 🟩 Stimuler économie locale
-    q16_limitation_touristes: 'N',                 // 🟨 Souhaite retombées économiques équilibrées
+    q16_limitation_touristes: 'FD',                // 🟥 Contre limitations (soutien retombées économiques)
     q17_soutien_organismes_communautaires: 'PA',   // 🟧 Appuie services proximité sans excès
-    q18_augmentation_effectifs_policiers: 'N',     // 🟨 Priorise prévention et services proximité
-    q19_investissement_infrastructures_loisirs_sportives: 'FA', // 🟩 Installations accessibles ancrées quartiers
+    q18_augmentation_effectifs_policiers: 'FA',    // 🟩 Patrouilles accrues et hausse budget police
+    q19_investissement_infrastructures_loisirs_sportives: 'N',  // 🟨 Investissement actuel jugé suffisant
     q20_protection_patrimoine: 'PA',               // 🟧 Valorise patrimoine sans approche contraignante
     q21_enjeux_prioritaires: 'FA',                 // 🟩 3e lien, fiscalité, développement économique, participation
   },

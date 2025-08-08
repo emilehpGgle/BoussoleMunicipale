@@ -155,11 +155,12 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q11_reduction_dechets",
-    text: "La municipalité devrait imposer des mesures plus strictes aux citoyens pour réduire les déchets et augmenter le recyclage.",
+    text: "La municipalité devrait prioriser l'amélioration de la collecte des ordures plutôt que la réduction des collectes pour des raisons environnementales.",
     category: "Environnement et développement durable",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
+    description: "Cette question évalue la priorité accordée aux services municipaux (collecte) par rapport à la réduction des collectes justifiée par l'environnement.",
   },
   {
     id: "q12_augmentation_taxes",
@@ -790,7 +791,7 @@ export const partiesData: Party[] = [
       },
       {
         questionId: questionIdMap[8],
-        position: "PA",
+        position: "N",
         source: "Plateforme électorale Respect citoyens",
         note: "Favorise les milieux de vie sains, mais sans lourdeur réglementaire",
       },
@@ -802,15 +803,15 @@ export const partiesData: Party[] = [
       },
       {
         questionId: questionIdMap[10],
-        position: "N",
+        position: "FD",
         source: "Plateforme électorale Respect citoyens",
         note: "Peu de prise de position concrète ; thème secondaire dans leur plateforme",
       },
       {
         questionId: questionIdMap[11],
-        position: "FD",
+        position: "FA",
         source: "Plateforme électorale Respect citoyens",
-        note: "Refus clair de toute hausse de taxes ; priorité à la réduction des dépenses",
+        note: "Priorise l'amélioration de la collecte des ordures plutôt que la réduction des collectes au nom de l'environnement",
       },
       {
         questionId: questionIdMap[12],
@@ -832,7 +833,7 @@ export const partiesData: Party[] = [
       },
       {
         questionId: questionIdMap[15],
-        position: "N",
+        position: "FD",
         source: "Plateforme électorale Respect citoyens",
         note: "Ne se prononce pas clairement contre le tourisme ; souhaite des retombées économiques équilibrées",
       },
@@ -844,19 +845,19 @@ export const partiesData: Party[] = [
       },
       {
         questionId: questionIdMap[17],
-        position: "N",
+        position: "FA",
         source: "Plateforme électorale Respect citoyens",
         note: "Priorise la prévention et les services de proximité ; peu d'accent sur la répression",
       },
       {
         questionId: questionIdMap[18],
-        position: "FA",
+        position: "N",
         source: "Plateforme électorale Respect citoyens",
         note: "Soutient les installations accessibles, ancrées dans les quartiers",
       },
       {
         questionId: questionIdMap[19],
-        position: "PA",
+        position: "N",
         source: "Plateforme électorale Respect citoyens",
         note: "Valorise le patrimoine, mais refuse une approche trop contraignante",
       },
