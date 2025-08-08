@@ -275,7 +275,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'PA',               // ✏️ NOUVEAU : Pour faciliter développement durable
     q9_protection_espaces_verts: 'PA',             // Protection environnement
     q10_transition_carboneutre: 'FA',              // Fortement pour la transition
-    q11_reduction_dechets: 'PD',                   // Aligné nouvelle formulation : prioriser la collecte vs réduire les collectes (moins aligné)
+    q11_reduction_dechets: 'FD',                   // Aligné nouvelle formulation : QFF avait réduit la collecte pour raisons environnementales
     q12_augmentation_taxes: 'PA',                  // Accepte hausses pour services
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ CORRIGÉ : Pour la participation
     q14_reduction_dette: 'PD',                     // Investit massivement (réserve climat 1,17 milliards)
@@ -375,7 +375,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q8_assouplissement_zonage: 'PA',               // Pour faciliter construction (mais avec acceptabilité sociale)
     q9_protection_espaces_verts: 'FA',             // ✏️ CORRIGÉ : Combat principal - "Ce sont des écosystèmes vivants" (2025)
     q10_transition_carboneutre: 'FA',              // ✏️ CORRIGÉ : "Questions environnementales une priorité" - virage écoresponsable
-    q11_reduction_dechets: 'N',                    // Aligné carte avec source officielle: neutre sur la nouvelle formulation
+    q11_reduction_dechets: 'PD',                   // Priorise environnement, moins favorable à augmenter la collecte
     q12_augmentation_taxes: 'N',                   // ✏️ CORRIGÉ : Équilibré fiscal
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ NOUVEAU : Démocratie participative
     q14_reduction_dette: 'N',                      // ✏️ CORRIGÉ : Gestionnaire équilibré
