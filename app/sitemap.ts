@@ -1,4 +1,17 @@
 import { MetadataRoute } from 'next'
+import { partiesData } from '@/lib/boussole-data'
+
+// Fonction pour générer le slug à partir du nom du leader
+function generateSlug(leaderName: string): string {
+  return leaderName
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
+    .replace(/[^a-z0-9\s-]/g, "") // Supprime les caractères spéciaux
+    .replace(/\s+/g, "-") // Remplace les espaces par des tirets
+    .replace(/-+/g, "-") // Remplace les tirets multiples par un seul
+    .trim()
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://boussole-municipale.vercel.app'
@@ -31,6 +44,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // Page FAQ - Importante pour longue traîne SEO
     {
       url: `${baseUrl}/faq`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+    
+    // Page Leaders - Très importante pour SEO des noms de leaders
+    {
+      url: `${baseUrl}/leaders`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.8,
@@ -123,5 +144,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.6,
     },
+    
+    // Pages individuelles des leaders - Très importantes pour SEO des noms
+    ...partiesData.map((party) => ({
+      url: `${baseUrl}/leaders/${generateSlug(party.leader)}`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    })),
   ]
 } 

@@ -8,13 +8,16 @@ import Head from "next/head"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 export const metadata: Metadata = {
-  title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec",
-  description: "Réponses aux questions sur la boussole électorale municipale pour les élections de Québec. Différence avec les boussoles provinciales ? Comment fonctionne notre boussole électorale locale ? Positions sur le déneigement, transport en commun et services municipaux ?",
+  title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec 2025",
+  description: "Réponses aux questions sur la boussole électorale municipale pour les élections 2025. Date des élections municipales, différence avec les boussoles provinciales, fonctionnement de notre boussole électorale locale et positions sur les enjeux municipaux.",
   keywords: [
     "boussole électorale",
-    "élections municipales québec",
+    "élections municipales 2025",
+    "date élections municipales québec",
+    "élections municipales québec 2025 date",
     "services municipaux",
-    "déneigement québec",
+    "comment voter municipales",
+    "candidats municipaux 2025",
     "transport en commun",
     "pistes cyclables"
   ],
@@ -43,34 +46,71 @@ export default function FAQPage() {
       ]
     },
     {
-      category: "Élections Municipales",
+      category: "Calendrier Électoral 2025",
       questions: [
         {
-          q: "Quels sont les principaux partis politiques municipaux ?",
-          a: "Les principaux partis politiques de Québec incluent : Équipe Priorité Québec, Québec d'Abord, Transition Québec, Leadership Québec, Respect Citoyens, Québec Forte et Fière, et Alliance Citoyenne. Notre test analyse les positions de tous ces partis."
+          q: "Quand ont lieu les élections municipales 2025 au Québec ?",
+          a: "Les élections municipales au Québec auront lieu le dimanche 2 novembre 2025. Cette date s'applique à toutes les municipalités du Québec, incluant Québec, Montréal, Gatineau, Sherbrooke et toutes les autres villes et municipalités de la province."
         },
         {
-          q: "Quels sont les principaux enjeux municipaux ?",
+          q: "Comment s'inscrire pour voter aux élections municipales ?",
+          a: "Pour voter aux élections municipales 2025, vous devez être inscrit sur la liste électorale de votre municipalité. L'inscription se fait automatiquement si vous êtes déjà inscrit au provincial/fédéral. Vous pouvez vérifier votre inscription sur le site d'Élections Québec ou auprès de votre municipalité."
+        },
+        {
+          q: "Où et comment voter le jour des élections ?",
+          a: "Le vote se déroule dans votre bureau de scrutin local de 10h00 à 20h00. Vous pouvez connaître l'emplacement de votre bureau de vote sur votre carte d'information ou sur le site de votre municipalité. Une pièce d'identité avec photo est requise pour voter."
+        }
+      ]
+    },
+    {
+      category: "Partis et Leaders Politiques",
+      questions: [
+        {
+          q: "Quels sont les principaux partis politiques municipaux de Québec ?",
+          a: "Les principaux partis politiques de Québec pour 2025 incluent : Québec forte et fière (Bruno Marchand), Leadership Québec (Sam Hamad), Équipe priorité Québec (Stevens Mélançon), Québec d'Abord (Claude Villeneuve), Transition Québec (Jackie Smith), Respect Citoyens (Stéphane Lachance), et Alliance Citoyenne (Alain Giasson). Notre test analyse les positions de tous ces partis."
+        },
+        {
+          q: "Qui sont les principaux candidats à la mairie de Québec en 2025 ?",
+          a: "Les principaux candidats incluent Bruno Marchand (maire sortant avec Québec forte et fière), Sam Hamad (Leadership Québec), Stevens Mélançon (Équipe priorité Québec), et les autres chefs de parti. Consultez notre section Leaders pour découvrir leur profil détaillé et leurs positions politiques."
+        },
+        {
+          q: "Quels sont les principaux enjeux municipaux pour 2025 ?",
           a: "Les enjeux municipaux clés incluent : le déneigement, l'entretien des rues, les pistes cyclables, le transport en commun (incluant le projet de tramway), la crise du logement, la densification urbaine, la transition écologique, les finances municipales, la démocratie participative, et la sécurité publique."
         }
       ]
     },
     {
-      category: "Méthodologie",
+      category: "Méthodologie et Fonctionnement",
       questions: [
         {
-          q: "Comment interpréter mon positionnement politique ?",
+          q: "Comment interpréter mon positionnement politique sur la boussole ?",
           a: "Votre position sur la carte politique se base sur deux axes : libre marché vs interventionnisme municipal (gestion des services) et progressisme vs conservatisme (vision de la ville). Plus vous êtes du côté interventionnisme, plus vous favorisez une gestion publique des services municipaux."
+        },
+        {
+          q: "Quelle est la différence entre gauche et droite en politique municipale ?",
+          a: "En politique municipale, la gauche tend à favoriser l'interventionnisme public, les services municipaux étendus, la transition écologique et l'inclusion sociale. La droite privilégie la responsabilité fiscale, l'efficacité des services, le développement économique et la liberté de choix des citoyens. Ces orientations se reflètent dans les positions sur le transport, l'urbanisme et les finances municipales."
+        },
+        {
+          q: "Comment fonctionne le calcul de compatibilité avec les partis ?",
+          a: "Notre algorithme compare vos réponses aux positions officielles des partis sur chaque enjeu. Le pourcentage de compatibilité reflète votre alignement sur les questions importantes pour vous. Plus le pourcentage est élevé, plus vos positions concordent avec celles du parti politique."
         }
       ]
     }
   ]
 
-  // Génère le balisage FAQ JSON-LD pour les 3 premières questions
+  // Génère le balisage FAQ JSON-LD pour les questions les plus recherchées
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
     "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Quand ont lieu les élections municipales 2025 au Québec ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Les élections municipales au Québec auront lieu le dimanche 2 novembre 2025. Cette date s'applique à toutes les municipalités du Québec, incluant Québec, Montréal, Gatineau, Sherbrooke et toutes les autres villes et municipalités de la province."
+        }
+      },
       {
         "@type": "Question",
         "name": "Qu'est-ce que la Boussole Électorale Municipale ?",
@@ -81,18 +121,18 @@ export default function FAQPage() {
       },
       {
         "@type": "Question",
-        "name": "En quoi notre boussole est-elle différente ?",
+        "name": "Qui sont les principaux candidats à la mairie de Québec en 2025 ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Notre boussole électorale est la seule à se concentrer exclusivement sur les partis et candidats municipaux de Québec sur des enjeux hyperlocaux comme le déneigement, les pistes cyclables et les services municipaux. Les autres boussoles électorales traitent d'enjeux généraux (santé, éducation) qui ne relèvent pas du municipal."
+          "text": "Les principaux candidats incluent Bruno Marchand (maire sortant avec Québec forte et fière), Sam Hamad (Leadership Québec), Stevens Mélançon (Équipe priorité Québec), et les autres chefs de parti. Consultez notre section Leaders pour découvrir leur profil détaillé et leurs positions politiques."
         }
       },
       {
         "@type": "Question",
-        "name": "Quels sont les principaux partis politiques municipaux ?",
+        "name": "Comment s'inscrire pour voter aux élections municipales ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Les principaux partis politiques de Québec incluent : Équipe Priorité Québec, Québec d'Abord, Transition Québec, Leadership Québec, Respect Citoyens, Québec Forte et Fière, et Alliance Citoyenne. Notre test analyse les positions de tous ces partis."
+          "text": "Pour voter aux élections municipales 2025, vous devez être inscrit sur la liste électorale de votre municipalité. L'inscription se fait automatiquement si vous êtes déjà inscrit au provincial/fédéral. Vous pouvez vérifier votre inscription sur le site d'Élections Québec ou auprès de votre municipalité."
         }
       }
     ]
@@ -183,6 +223,17 @@ export default function FAQPage() {
                 <p className="text-sm text-muted-foreground">
                   Consultez notre page <Link href="/a-propos" className="text-primary hover:underline">À Propos</Link> pour 
                   comprendre la méthodologie complète de la boussole électorale.
+                </p>
+              </div>
+            </div>
+            
+            <div className="flex items-start gap-3">
+              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <h3 className="font-medium mb-1">Profils des Leaders</h3>
+                <p className="text-sm text-muted-foreground">
+                  Découvrez les <Link href="/leaders" className="text-primary hover:underline">profils détaillés des leaders</Link> politiques 
+                  municipaux : biographies, expérience et vision pour 2025.
                 </p>
               </div>
             </div>

@@ -9,7 +9,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, ExternalLink, FileText, Info, CheckCircle, XCircle, MinusCircle } from "lucide-react"
+import { ArrowLeft, ExternalLink, FileText, Info, CheckCircle, XCircle, MinusCircle, User, Calendar } from "lucide-react"
 import {
   Tooltip,
   TooltipContent,
@@ -27,6 +27,18 @@ const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }>
     {children}
   </div>
 )
+
+// Fonction pour générer le slug à partir du nom du leader
+function generateSlug(leaderName: string): string {
+  return leaderName
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
+    .replace(/[^a-z0-9\s-]/g, "") // Supprime les caractères spéciaux
+    .replace(/\s+/g, "-") // Remplace les espaces par des tirets
+    .replace(/-+/g, "-") // Remplace les tirets multiples par un seul
+    .trim()
+}
 
 // Fonction pour obtenir l'icône de comparaison
 
@@ -140,7 +152,7 @@ export default function PartyDetailPage() {
             <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
               <Image
                 src={party.logoUrl || "/placeholder.svg?width=128&height=128&query=Logo+non+disponible"}
-                alt={`Logo de ${party.name}`}
+                alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
                 fill
                 style={{ objectFit: "contain" }}
               />
@@ -148,22 +160,43 @@ export default function PartyDetailPage() {
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{party.name}</h1>
               {party.leader && (
-                <p className="text-lg text-muted-foreground mb-1">
-                  Dirigé par : <span className="font-semibold text-foreground">{party.leader}</span>
-                </p>
+                <div className="mb-3">
+                  <p className="text-lg text-muted-foreground mb-2">
+                    Dirigé par : <span className="font-semibold text-foreground">{party.leader}</span>
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <Link 
+                      href={`/leaders/${generateSlug(party.leader)}`}
+                      className="text-sm text-primary hover:underline font-medium"
+                    >
+                      Voir le profil détaillé du leader
+                    </Link>
+                  </div>
+                </div>
               )}
               {party.orientation && (
                 <Badge variant="secondary" className="text-sm mb-3">
                   {party.orientation}
                 </Badge>
               )}
-              {party.websiteUrl && (
-                <Button asChild variant="outline" size="sm" className="flex items-center gap-1.5">
-                  <a href={party.websiteUrl} target="_blank" rel="noopener noreferrer">
-                    Site officiel <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                </Button>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {party.websiteUrl && (
+                  <Button asChild variant="outline" size="sm" className="flex items-center gap-1.5">
+                    <a href={party.websiteUrl} target="_blank" rel="noopener noreferrer">
+                      Site officiel <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </Button>
+                )}
+                {party.leader && (
+                  <Button asChild variant="ghost" size="sm" className="flex items-center gap-1.5">
+                    <Link href={`/leaders/${generateSlug(party.leader)}`}>
+                      <User className="h-3.5 w-3.5" />
+                      Profil du leader
+                    </Link>
+                  </Button>
+                )}
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -197,14 +230,33 @@ export default function PartyDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Bouton d'appel à l'action pour le questionnaire */}
-      <div className="text-center">
-        <Button asChild size="lg" className="bg-primary hover:bg-primary/90 mt-4">
-          <Link href="/questionnaire">
-            Faire le questionnaire
-          </Link>
-        </Button>
-      </div>
+      {/* Appel à l'action avec contexte élections 2025 */}
+      <Card className="bg-primary/5 border-primary/20">
+        <CardContent className="text-center py-6">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Calendar className="h-5 w-5 text-primary" />
+            <span className="text-sm font-medium text-primary">Élections Municipales 2025</span>
+          </div>
+          <h3 className="text-xl font-bold mb-3">
+            Découvrez vos affinités politiques
+          </h3>
+          <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
+            Comparez vos positions avec celles de {party.name} et {party.leader} sur les enjeux municipaux qui vous concernent.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+              <Link href="/questionnaire">
+                Faire le questionnaire politique
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href="/leaders">
+                Voir tous les leaders
+              </Link>
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
