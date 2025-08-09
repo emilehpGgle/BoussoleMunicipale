@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Users, Calendar, MapPin } from "lucide-react"
 import { partiesData } from "@/lib/boussole-data"
-import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 
 export const metadata: Metadata = {
   title: "Leaders Politiques | Profils des Chefs de Parti - Élections Municipales 2025",
@@ -112,7 +112,7 @@ export default function LeadersIndexPage() {
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
             Découvrez les profils détaillés des chefs de parti pour les <strong>élections municipales 2025</strong> à Québec. 
-            Biographies, expérience politique et vision pour l'avenir de la ville.
+            Biographies, expérience politique et vision pour l&apos;avenir de la ville.
           </p>
           <div className="flex items-center justify-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -196,7 +196,7 @@ export default function LeadersIndexPage() {
             <p className="text-muted-foreground mb-4">
               Ces profils présentent les leaders des principaux partis politiques municipaux de Québec 
               pour les élections 2025. Chaque profil inclut leur biographie, expérience politique, 
-              réalisations principales et vision pour l'avenir de la ville.
+              réalisations principales et vision pour l&apos;avenir de la ville.
             </p>
             <p className="text-muted-foreground text-sm">
               Les informations sont compilées à partir de sources publiques et des communications 

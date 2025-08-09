@@ -360,8 +360,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
   }
 
-  const profile = leadersProfiles[slug]
-  
   return {
     title: `${party.leader} - Chef de ${party.name} | Profil Élections Municipales 2025`,
     description: `Découvrez le profil complet de ${party.leader}, chef de ${party.name} pour les élections municipales de Québec 2025. Biographie, expérience, vision politique et réalisations.`,
