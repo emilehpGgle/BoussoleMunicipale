@@ -1,7 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import SiteHeader from "@/components/site-header"
 import SiteFooter from "@/components/site-footer"
@@ -165,6 +164,89 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <Analytics />
+        {/* Critical CSS - Variables de couleurs pour rendu immédiat */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            :root {
+              --background: 0 0% 100%;
+              --foreground: 222.2 84% 4.9%;
+              --card: 0 0% 100%;
+              --card-foreground: 222.2 84% 4.9%;
+              --popover: 0 0% 100%;
+              --popover-foreground: 222.2 84% 4.9%;
+              --primary: 221.2 83.2% 53.3%;
+              --primary-foreground: 210 40% 98%;
+              --secondary: 210 40% 96%;
+              --secondary-foreground: 222.2 84% 4.9%;
+              --accent: 210 40% 96%;
+              --accent-foreground: 222.2 84% 4.9%;
+              --teal-special: 181 84% 28%;
+              --teal-special-foreground: 0 0% 100%;
+              --muted: 210 40% 96%;
+              --muted-foreground: 215.4 16.3% 46.9%;
+              --destructive: 0 84.2% 60.2%;
+              --destructive-foreground: 210 40% 98%;
+              --border: 214.3 31.8% 91.4%;
+              --input: 214.3 31.8% 91.4%;
+              --ring: 221.2 83.2% 53.3%;
+              --radius: 0.75rem;
+              --chart-1: 12 76% 61%;
+              --chart-2: 173 58% 39%;
+              --chart-3: 197 37% 24%;
+              --chart-4: 43 74% 66%;
+              --chart-5: 27 87% 67%;
+            }
+            .dark {
+              --background: 222.2 84% 4.9%;
+              --foreground: 210 40% 98%;
+              --card: 222.2 84% 4.9%;
+              --card-foreground: 210 40% 98%;
+              --popover: 222.2 84% 4.9%;
+              --popover-foreground: 210 40% 98%;
+              --primary: 217.2 91.2% 59.8%;
+              --primary-foreground: 222.2 84% 4.9%;
+              --secondary: 217.2 32.6% 17.5%;
+              --secondary-foreground: 210 40% 98%;
+              --muted: 217.2 32.6% 17.5%;
+              --muted-foreground: 215 20.2% 65.1%;
+              --accent: 217.2 32.6% 17.5%;
+              --accent-foreground: 210 40% 98%;
+              --destructive: 0 62.8% 30.6%;
+              --destructive-foreground: 210 40% 98%;
+              --border: 217.2 32.6% 17.5%;
+              --input: 217.2 32.6% 17.5%;
+              --ring: 224.3 76.3% 94.1%;
+              --chart-1: 220 70% 50%;
+              --chart-2: 160 60% 45%;
+              --chart-3: 30 80% 55%;
+              --chart-4: 280 65% 60%;
+              --chart-5: 340 75% 55%;
+            }
+          `
+        }} />
+        
+        {/* CSS principal chargé de façon asynchrone */}
+        <link 
+          rel="preload" 
+          href="/globals.css" 
+          as="style" 
+          // @ts-ignore
+          onLoad="this.onload=null;this.rel='stylesheet'"
+        />
+        {/* Fallback pour navigateurs sans JavaScript */}
+        <noscript>
+          <link rel="stylesheet" href="/globals.css" />
+        </noscript>
+        
+        {/* Preload font Inter pour éviter FOUT */}
+        <link 
+          rel="preload" 
+          href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjQ.woff2" 
+          as="font" 
+          type="font/woff2" 
+          crossOrigin=""
+        />
+        
         {/* Preconnect to analytics origins to shave connection time (non-blocking) */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
