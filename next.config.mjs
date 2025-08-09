@@ -9,6 +9,10 @@ const nextConfig = {
     // Only ignore TypeScript errors during builds in development
     ignoreBuildErrors: process.env.NODE_ENV === 'development',
   },
+  experimental: {
+    // CSS Chunking optimisé pour réduire render blocking
+    cssChunking: 'strict', // Charge CSS par route vs chunking global agressif
+  },
   images: {
     // Configuration optimisée pour la qualité d'images
     formats: ['image/webp', 'image/avif'],
