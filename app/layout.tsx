@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import SiteHeader from "@/components/site-header"
 import SiteFooter from "@/components/site-footer"
@@ -225,33 +226,14 @@ export default function RootLayout({
           `
         }} />
         
-        {/* CSS principal chargé de façon asynchrone */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              var link = document.createElement('link');
-              link.rel = 'stylesheet';
-              link.href = '/globals.css';
-              document.head.appendChild(link);
-            })();
-          `
-        }} />
-        {/* Fallback pour navigateurs sans JavaScript */}
-        <noscript>
-          <link rel="stylesheet" href="/globals.css" />
-        </noscript>
-        
-        {/* Preload font Inter pour éviter FOUT */}
+        {/* Preconnect to Google Fonts pour optimiser la performance */}
+        <link 
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
         <link 
           rel="preconnect"
           href="https://fonts.gstatic.com"
-          crossOrigin=""
-        />
-        <link 
-          rel="preload" 
-          href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjQ.woff2" 
-          as="font" 
-          type="font/woff2" 
           crossOrigin=""
         />
         
