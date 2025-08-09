@@ -1,9 +1,6 @@
-"use client"
-
 import type React from "react"
 import type { Metadata } from "next"
-import { useEffect, useState } from "react"
-import { useParams, notFound } from "next/navigation"
+import { notFound } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -160,35 +157,20 @@ const leadersProfiles: Record<string, Omit<LeaderProfile, 'party' | 'slug'>> = {
   }
 }
 
-export default function LeaderPage() {
-  const params = useParams()
-  const [leader, setLeader] = useState<LeaderProfile | null>(null)
+export default function LeaderPage({ params }: { params: { slug: string } }) {
+  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
+  
+  // Trouver le parti correspondant au leader
+  const party = partiesData.find(p => generateSlug(p.leader) === slug)
+  
+  if (!party || !leadersProfiles[slug]) {
+    notFound()
+  }
 
-  useEffect(() => {
-    if (params.slug) {
-      const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
-      
-      // Trouver le parti correspondant au leader
-      const party = partiesData.find(p => generateSlug(p.leader) === slug)
-      
-      if (party && leadersProfiles[slug]) {
-        setLeader({
-          party,
-          slug,
-          ...leadersProfiles[slug]
-        })
-      } else {
-        notFound()
-      }
-    }
-  }, [params.slug])
-
-  if (!leader) {
-    return (
-      <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
-        <p>Chargement du profil du leader...</p>
-      </div>
-    )
+  const leader: LeaderProfile = {
+    party,
+    slug,
+    ...leadersProfiles[slug]
   }
 
   // Structured Data pour SEO
