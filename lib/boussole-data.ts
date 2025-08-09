@@ -105,7 +105,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q5_quotas_logements_abordables",
-    text: "La Ville devrait imposer des quotas de logements abordables dans tous les nouveaux projets immobiliers.",
+    text: "La Ville devrait obliger un nombre minimum de logements abordables dans chaque nouveau projet immobilier.",
     category: "Habitation et aménagement urbain",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -113,7 +113,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q6_densification_quartiers",
-    text: "La Ville devrait faciliter la densification du centre-ville avant d'autoriser le développement en périphérie.",
+    text: "La Ville devrait prioriser la construction de nouveaux bâtiments au centre-ville avant d'autoriser plus de constructions en banlieue.",
     category: "Habitation et aménagement urbain",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -130,7 +130,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q8_assouplissement_zonage",
-    text: "Les règlements de zonage devraient être assouplis pour faciliter la construction de nouveaux logements.",
+    text: "Les règles de zonage (qui dictent où et comment on peut construire) devraient être assouplies pour faciliter la construction de nouveaux logements.",
     category: "Habitation et aménagement urbain",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -138,7 +138,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q9_protection_espaces_verts",
-    text: "La municipalité devrait investir davantage dans la protection et l'agrandissement des espaces verts, même au détriment du développement immobilier.",
+    text: "La Ville devrait mettre plus d'argent pour protéger et agrandir les espaces verts, même si cela nuit au développement de projets immobiliers.",
     category: "Environnement et développement durable",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -147,7 +147,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q10_transition_carboneutre",
-    text: "La Ville devrait accélérer la transition vers des bâtiments et infrastructures municipales carboneutres, même si cela implique des coûts supplémentaires.",
+    text: "La Ville devrait accélérer la transition des bâtiments \"carboneutres\" (qui n'ajoutent pas de pollution au climat), même si ça coûte plus cher.",
     category: "Environnement et développement durable",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -155,7 +155,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q11_reduction_dechets",
-    text: "La municipalité devrait prioriser l'amélioration de la collecte des ordures plutôt que la réduction des collectes pour des raisons environnementales.",
+    text: "La Ville devrait améliorer la collecte des ordures au lieu de la réduire pour des raisons environnementales.",
     category: "Environnement et développement durable",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -164,24 +164,15 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q12_augmentation_taxes",
-    text: "La municipalité devrait augmenter les taxes foncières pour améliorer les infrastructures.",
+    text: "La Ville devrait investir davantage dans des projets écoresponsables (énergie verte, transport durable, bâtiments écologiques), même si cela nécessite d'augmenter les taxes foncières (impôt sur la propriété).",
     category: "Gouvernance et finances municipales",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    responseFormat: "financing",
-    customAgreementLabels: {
-      FA: "Beaucoup plus",
-      PA: "Un peu plus",
-      N: "Ni plus ni moins",
-      PD: "Un peu moins", 
-      FD: "Beaucoup moins",
-      IDK: "Ne sais pas"
-    }
   },
   {
     id: "q13_pouvoir_conseils_quartier",
-    text: "La municipalité devrait donner plus de pouvoir décisionnel aux conseils de quartier sur les projets locaux.",
+    text: "La Ville devrait donner plus de pouvoir aux conseils de quartier pour décider des projets locaux.",
     category: "Gouvernance et finances municipales",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -190,7 +181,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q14_reduction_dette",
-    text: "La Ville devrait prioriser la réduction de sa dette plutôt que de nouveaux investissements.",
+    text: "La Ville devrait prioriser l'amélioration des services essentiels (collecte des ordures, déneigement, etc.) avant d'investir dans des projets d'avenir.",
     category: "Gouvernance et finances municipales",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -198,24 +189,15 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q15_avantages_fiscaux_entreprises",
-    text: "La municipalité devrait accorder plus d'avantages fiscaux pour attirer de grandes entreprises sur son territoire.",
+    text: "La Ville devrait offrir plus de réductions de taxes ou autres avantages fiscaux pour attirer de grandes entreprises.",
     category: "Développement économique et social",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    responseFormat: "priority",
-    customAgreementLabels: {
-      FA: "Très haute priorité",
-      PA: "Haute priorité",
-      N: "Priorité moyenne",
-      PD: "Faible priorité", 
-      FD: "Très faible priorité",
-      IDK: "Incertain"
-    }
   },
   {
     id: "q16_limitation_touristes",
-    text: "La municipalité devrait limiter le nombre de touristes dans certains secteurs pour préserver la qualité de vie des résidents.",
+    text: "La Ville devrait limiter le nombre de touristes dans certains quartiers pour protéger la qualité de vie des résidents.",
     category: "Développement économique et social",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -224,7 +206,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q17_soutien_organismes_communautaires",
-    text: "La Ville devrait augmenter son soutien financier aux organismes communautaires qui fournissent des services sociaux essentiels (itinérance, aide alimentaire, etc.).",
+    text: "La Ville devrait donner plus d'argent aux organismes communautaires qui aident pour des services sociaux essentiels (itinérance, aide alimentaire, etc).",
     category: "Développement économique et social",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -232,24 +214,15 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q18_augmentation_effectifs_policiers",
-    text: "Il faudrait augmenter les effectifs policiers pour améliorer la sécurité dans les quartiers.",
+    text: "Il faudrait augmenter le nombre de policiers pour améliorer la sécurité dans les quartiers.",
     category: "Sécurité publique et services municipaux",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
     importanceOptions: [5, 4, 3, 2, 1],
-    responseFormat: "frequency",
-    customAgreementLabels: {
-      FA: "Beaucoup plus",
-      PA: "Un peu plus",
-      N: "Ni plus ni moins",
-      PD: "Un peu moins", 
-      FD: "Beaucoup moins",
-      IDK: "Ne sais pas"
-    }
   },
   {
     id: "q19_investissement_infrastructures_loisirs_sportives",
-    text: "La municipalité devrait investir davantage dans les infrastructures de loisirs et sportives de quartier.",
+    text: "La Ville devrait investir plus dans les parcs, arénas et terrains de sport de quartier.",
     category: "Sécurité publique et services municipaux",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],
@@ -258,7 +231,7 @@ export const boussoleQuestions: Question[] = [
   },
   {
     id: "q20_protection_patrimoine",
-    text: "Les règlements de protection du patrimoine bâti devraient être renforcés, même si cela limite les possibilités de développement.",
+    text: "La Ville devrait renforcer les règles qui protègent les vieux bâtiments et le patrimoine, même si cela limite certains projets.",
     category: "Patrimoine et identité",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],

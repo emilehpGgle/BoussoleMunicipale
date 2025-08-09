@@ -276,9 +276,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'PA',             // Protection environnement
     q10_transition_carboneutre: 'FA',              // Fortement pour la transition
     q11_reduction_dechets: 'FD',                   // Aligné nouvelle formulation : QFF avait réduit la collecte pour raisons environnementales
-    q12_augmentation_taxes: 'PA',                  // Accepte hausses pour services
+    q12_augmentation_taxes: 'FA',                  // ✏️ AJUSTÉ : Fortement pour projets écoresponsables (transition écologique prioritaire)
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ CORRIGÉ : Pour la participation
-    q14_reduction_dette: 'PD',                     // Investit massivement (réserve climat 1,17 milliards)
+    q14_reduction_dette: 'PD',                     // ✏️ AJUSTÉ : Contre (priorise projets d'avenir comme tramway, transition écologique)
     q15_avantages_fiscaux_entreprises: 'PA',       // Vision économie-environnement intégrée
     q16_limitation_touristes: 'N',                 // ✏️ NOUVEAU : Position équilibrée sur tourisme
     q17_soutien_organismes_communautaires: 'PA',   // Soutien aux organismes
@@ -301,9 +301,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'FA',             // "L'enjeu numéro 1 des gens de Limoilou, c'est la qualité de l'air" (2022-2025)
     q10_transition_carboneutre: 'FA',              // "faire face aux changements climatiques" (mai 2025)
     q11_reduction_dechets: 'FD',                   // Aligné nouvelle formulation : contre prioriser collecte vs environnement
-    q12_augmentation_taxes: 'N',                   // "Il faut alléger le fardeau des citoyens" vs financer transition
+    q12_augmentation_taxes: 'FA',                  // ✏️ AJUSTÉ : Fortement pour projets écoresponsables (parti écologiste priorité climat)
     q13_pouvoir_conseils_quartier: 'FA',           // "démocratie participative", sondages citoyens (mai 2025)
-    q14_reduction_dette: 'PD',                     // Contre (investissements verts prioritaires)
+    q14_reduction_dette: 'FD',                     // ✏️ AJUSTÉ : Fortement contre (projets d'avenir écologiques essentiels vs services essentiels)
     q15_avantages_fiscaux_entreprises: 'FD',       // Contre pression promoteurs immobiliers (juin 2025)
     q16_limitation_touristes: 'N',                 // Non abordé
     q17_soutien_organismes_communautaires: 'FA',   // Soutien Centre des femmes Basse-Ville (juin 2025)
@@ -326,9 +326,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'PA',             // 🟧 Appui corridor vert Maizerets
     q10_transition_carboneutre: 'PA',              // 🟧 CORRIGÉ : "Il faut adapter nos tuyaux, avoir une ville plus perméable" (adaptation climatique)
     q11_reduction_dechets: 'N',                    // Aligné carte avec source officielle: neutre sur la nouvelle formulation
-    q12_augmentation_taxes: 'PD',                  // 🟧 Critique hausses déguisées par tarifs
+    q12_augmentation_taxes: 'N',                   // ✏️ AJUSTÉ : Neutre (supporte adaptation climatique mais critique hausses)
     q13_pouvoir_conseils_quartier: 'N',            // 🟨 CORRIGÉ : Met l'accent sur écoute citoyenne et proximité mais pas structures formelles
-    q14_reduction_dette: 'PA',                     // 🟧 Appel gestion rigoureuse et simplifiée
+    q14_reduction_dette: 'PA',                     // ✏️ AJUSTÉ : Pour (gestion rigoureuse prioritaire, services essentiels d'abord)
     q15_avantages_fiscaux_entreprises: 'PA',       // 🟧 Favorise entrepreneuriat local
     q16_limitation_touristes: 'N',                 // 🟨 Pas de position recensée
     q17_soutien_organismes_communautaires: 'N',    // 🟨 Aucune mention spécifique financement accru
@@ -351,9 +351,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'N',              // 🟨 Favorise milieux sains sans lourdeur réglementaire
     q10_transition_carboneutre: 'FD',              // 🟥 S'oppose aux plans jugés idéologiques
     q11_reduction_dechets: 'FA',                   // 🟩 Priorise la collecte vs réduction des collectes pour env.
-    q12_augmentation_taxes: 'FD',                  // 🟥 Refus clair de toute hausse
+    q12_augmentation_taxes: 'FD',                  // ✏️ MAINTENU : Fortement contre (anti-taxes ET sceptique écologie coûteuse)
     q13_pouvoir_conseils_quartier: 'PD',           // 🟧 Méfiance envers structures intermédiaires
-    q14_reduction_dette: 'FA',                     // 🟩 Objectif majeur : saine gestion
+    q14_reduction_dette: 'FA',                     // ✏️ AJUSTÉ : Fortement pour (services essentiels prioritaires, austérité budgétaire)
     q15_avantages_fiscaux_entreprises: 'FA',       // 🟩 Stimuler économie locale
     q16_limitation_touristes: 'FD',                // 🟥 Contre limitations (soutien retombées économiques)
     q17_soutien_organismes_communautaires: 'PA',   // 🟧 Appuie services proximité sans excès
@@ -376,9 +376,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'FA',             // ✏️ CORRIGÉ : Combat principal - "Ce sont des écosystèmes vivants" (2025)
     q10_transition_carboneutre: 'FA',              // ✏️ CORRIGÉ : "Questions environnementales une priorité" - virage écoresponsable
     q11_reduction_dechets: 'PD',                   // Priorise environnement, moins favorable à augmenter la collecte
-    q12_augmentation_taxes: 'N',                   // ✏️ CORRIGÉ : Équilibré fiscal
+    q12_augmentation_taxes: 'PA',                  // ✏️ AJUSTÉ : Pour (virage environnemental 2022-2025, accepte coûts transition)
     q13_pouvoir_conseils_quartier: 'PA',           // ✏️ NOUVEAU : Démocratie participative
-    q14_reduction_dette: 'N',                      // ✏️ CORRIGÉ : Gestionnaire équilibré
+    q14_reduction_dette: 'N',                      // ✏️ AJUSTÉ : Neutre (équilibre services essentiels et projets d'avenir)
     q15_avantages_fiscaux_entreprises: 'N',        // ✏️ CORRIGÉ : Approche équilibrée
     q16_limitation_touristes: 'N',                 // ✏️ NOUVEAU : Position mesurée
     q17_soutien_organismes_communautaires: 'PA',   // Soutien cohésion sociale
@@ -401,9 +401,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'N',              // 🟨 Non mentionné dans la plateforme
     q10_transition_carboneutre: 'PD',              // 🟧 Pas d'objectifs annoncés, priorité à fiscalité/transports
     q11_reduction_dechets: 'N',                    // 🟨 Aucun programme ou priorité sur ce dossier
-    q12_augmentation_taxes: 'FD',                  // 🟥 Promet abolition de la « taxe Marchand »
+    q12_augmentation_taxes: 'PD',                  // ✏️ AJUSTÉ : Plutôt contre (supporte projets écoresponsables mais contre hausses taxes)
     q13_pouvoir_conseils_quartier: 'N',            // 🟨 Valorise écoute citoyenne sans appuyer structures formelles
-    q14_reduction_dette: 'PA',                     // 🟧 Critique dette RTC (+59% 2021-2024) mais propose dépenses SRB (Journal Québec mai 2025)
+    q14_reduction_dette: 'N',                      // ✏️ AJUSTÉ : Neutre (critique dette mais propose SRB - contradiction)
     q15_avantages_fiscaux_entreprises: 'PD',       // 🟧 Liens CA Trudel Innovation (immobilier) - questions conflits intérêts (Journal Québec mai 2025)
     q16_limitation_touristes: 'N',                 // 🟨 Non abordé dans la plateforme
     q17_soutien_organismes_communautaires: 'PA',   // 🟧 Valorise OBNL efficaces et engagement citoyen
@@ -426,9 +426,9 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q9_protection_espaces_verts: 'PA',             // Protection importante mais équilibrée
     q10_transition_carboneutre: 'PD',              // Sceptique des politiques climatiques coûteuses
     q11_reduction_dechets: 'FA',                   // Aligné nouvelle formulation : priorise la collecte vs réduire les collectes
-    q12_augmentation_taxes: 'FD',                  // Fortement contre (veut réduire taxes)
+    q12_augmentation_taxes: 'FD',                  // ✏️ MAINTENU : Fortement contre (anti-taxes + sceptique écologie coûteuse)
     q13_pouvoir_conseils_quartier: 'FA',           // ✏️ CORRIGÉ : Retour autonomie aux citoyens
-    q14_reduction_dette: 'PA',                     // Réduction dépenses publiques
+    q14_reduction_dette: 'PD',                     // ✏️ AJUSTÉ : Plutôt contre (préfère projets économiques d'avenir vs services essentiels)
     q15_avantages_fiscaux_entreprises: 'PA',       // Développement économique pro-entreprise
     q16_limitation_touristes: 'PD',                // ✏️ NOUVEAU : Contre limitations (liberté économique)
     q17_soutien_organismes_communautaires: 'PD',   // Préfère initiatives privées (réduction intervention)
