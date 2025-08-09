@@ -226,19 +226,27 @@ export default function RootLayout({
         }} />
         
         {/* CSS principal chargé de façon asynchrone */}
-        <link 
-          rel="preload" 
-          href="/globals.css" 
-          as="style" 
-          // @ts-ignore
-          onLoad="this.onload=null;this.rel='stylesheet'"
-        />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              var link = document.createElement('link');
+              link.rel = 'stylesheet';
+              link.href = '/globals.css';
+              document.head.appendChild(link);
+            })();
+          `
+        }} />
         {/* Fallback pour navigateurs sans JavaScript */}
         <noscript>
           <link rel="stylesheet" href="/globals.css" />
         </noscript>
         
         {/* Preload font Inter pour éviter FOUT */}
+        <link 
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin=""
+        />
         <link 
           rel="preload" 
           href="https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjQ.woff2" 
