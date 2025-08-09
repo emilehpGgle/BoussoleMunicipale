@@ -226,35 +226,6 @@ export default function RootLayout({
           `
         }} />
         
-        {/* Script pour optimiser le chargement CSS non-critique */}
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              // Observer pour intercepter les CSS chunks Next.js avant qu'ils bloquent
-              var observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                  if (mutation.type === 'childList') {
-                    mutation.addedNodes.forEach(function(node) {
-                      if (node.tagName === 'LINK' && 
-                          node.rel === 'stylesheet' && 
-                          node.href && 
-                          node.href.includes('/_next/static/css/')) {
-                        // Applique la technique media="print" pour CSS non-critique
-                        node.media = 'print';
-                        node.onload = function() {
-                          this.onload = null;
-                          this.media = 'all';
-                        };
-                      }
-                    });
-                  }
-                });
-              });
-              // Observe les changements dans le head
-              observer.observe(document.head, { childList: true });
-            })();
-          `
-        }} />
         
         {/* Preconnect to Google Fonts pour optimiser la performance */}
         <link 

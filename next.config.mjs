@@ -10,8 +10,8 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'development',
   },
   experimental: {
-    // CSS Chunking optimisé pour réduire render blocking
-    cssChunking: 'strict', // Charge CSS par route vs chunking global agressif
+    // CSS Chunking moins agressif pour maintenir performance
+    cssChunking: false, // Désactive le chunking pour éviter les fragments multiples
   },
   images: {
     // Configuration optimisée pour la qualité d'images
