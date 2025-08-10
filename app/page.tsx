@@ -60,7 +60,7 @@ export default function HomePage() {
               </div>
             </div>
             <div
-              className="relative h-[350px] md:h-[450px] w-full max-w-full rounded-2xl overflow-hidden animate-fadeIn"
+              className="relative h-[450px] md:h-[450px] w-full max-w-full rounded-2xl overflow-hidden animate-fadeIn"
               style={{ 
                 animationDelay: "0.3s",
                 boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
