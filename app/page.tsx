@@ -70,8 +70,7 @@ export default function HomePage() {
                 src="/hero-illustration-v2.webp"
                 alt="Boussole électorale municipale Québec 2025 - Illustration de citoyens autour d'une boussole électorale municipale de Québec"
                 fill
-                style={{ objectFit: "cover" }}
-                className="rounded-2xl"
+                className="rounded-2xl object-contain md:object-cover"
                 priority
                 quality={95}
                 sizes="(max-width: 768px) 100vw, 50vw"
