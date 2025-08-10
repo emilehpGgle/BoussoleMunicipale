@@ -157,8 +157,9 @@ const leadersProfiles: Record<string, Omit<LeaderProfile, 'party' | 'slug'>> = {
   }
 }
 
-export default function LeaderPage({ params }: { params: { slug: string } }) {
-  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
+export default async function LeaderPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params
+  const slug = Array.isArray(resolvedParams.slug) ? resolvedParams.slug[0] : resolvedParams.slug
   
   // Trouver le parti correspondant au leader
   const party = partiesData.find(p => generateSlug(p.leader) === slug)
@@ -349,8 +350,9 @@ export default function LeaderPage({ params }: { params: { slug: string } }) {
 }
 
 // Génération des métadonnées dynamiques pour chaque leader
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const slug = Array.isArray(params.slug) ? params.slug[0] : params.slug
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const resolvedParams = await params
+  const slug = Array.isArray(resolvedParams.slug) ? resolvedParams.slug[0] : resolvedParams.slug
   const party = partiesData.find(p => generateSlug(p.leader) === slug)
   
   if (!party) {
