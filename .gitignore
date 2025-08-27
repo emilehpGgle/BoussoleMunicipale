@@ -121,3 +121,8 @@ Thumbs.db
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Fichiers temporaires Microsoft Office
+~*.xlsx
+~*.docx
+~*.pptx

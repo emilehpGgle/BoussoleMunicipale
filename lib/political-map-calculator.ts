@@ -26,8 +26,8 @@ export const axisConfiguration = {
       { id: "q12_augmentation_taxes", weight: 1.4 },          // Augmentation taxes (+ = interventionnisme)
       { id: "q5_quotas_logements_abordables", weight: 1.3 },   // Quotas logements (+ = interventionnisme)
       { id: "q17_soutien_organismes_communautaires", weight: 1.1 }, // Soutien communautaire (+ = interventionnisme)
-      { id: "q8_assouplissement_zonage", weight: 1.0 },       // Assouplissement zonage (+ = libre marché)
-      { id: "q4_secteur_prive_transport", weight: 1.0 },      // Transport privé (+ = libre marché)
+      { id: "q6_reduction_depenses_taxes", weight: 1.2 },     // Réduction dépenses/taxes (+ = libre marché)
+      { id: "q4_stationnements_centre_ville", weight: 1.0 }, // Stationnements centre-ville (+ = interventionnisme)
       { id: "q15_avantages_fiscaux_entreprises", weight: 0.9 }, // Avantages fiscaux (+ = libre marché)
       { id: "q14_reduction_dette", weight: 0.8 },             // Réduction dette (+ = libre marché)
       { id: "q13_pouvoir_conseils_quartier", weight: 0.7 },   // ✏️ AJOUTÉ : Pouvoir conseils quartier (+ = interventionnisme)
@@ -41,8 +41,8 @@ export const axisConfiguration = {
       { id: "q1_tramway", weight: 1.5 },                     // Tramway (+ = progressiste)
       { id: "q2_pistes_cyclables", weight: 1.3 },            // Pistes cyclables (+ = progressiste)
       { id: "q3_troisieme_lien", weight: 1.2 },              // 3e lien (+ = conservateur, - = progressiste)
-      { id: "q7_restrictions_airbnb", weight: 1.1 },         // Restrictions Airbnb (+ = progressiste)
-      { id: "q6_densification_quartiers", weight: 1.0 },     // Densification (+ = progressiste)
+      { id: "q7_immeubles_grande_hauteur", weight: 1.1 },         // Immeubles grande hauteur (+ = progressiste)
+      { id: "q8_interdire_essence_centre_ville", weight: 1.2 }, // Interdire essence centre-ville (+ = progressiste)
       { id: "q9_protection_espaces_verts", weight: 1.0 },    // Espaces verts (+ = progressiste)
       { id: "q10_transition_carboneutre", weight: 1.0 },     // Transition carbone (+ = progressiste)
       { id: "q11_reduction_dechets", weight: 0.9 },          // Collecte ordures prioritaire (+ = conservateur)
@@ -87,11 +87,11 @@ function calculateAxisPosition(
       
       // Axe économique : + = Libre marché, - = Interventionnisme
       if (axisConfig === axisConfiguration.economic) {
-        if (id === 'q12_augmentation_taxes' || id === 'q5_quotas_logements_abordables' || id === 'q17_soutien_organismes_communautaires' || id === 'q13_pouvoir_conseils_quartier') {
+        if (id === 'q12_augmentation_taxes' || id === 'q5_quotas_logements_abordables' || id === 'q17_soutien_organismes_communautaires' || id === 'q13_pouvoir_conseils_quartier' || id === 'q4_stationnements_centre_ville') {
           // Questions "interventionnistes" : être d'accord = interventionnisme (score négatif)
           score = -score
         }
-        // Questions "libre marché" (q4, q8, q14, q15) : être d'accord = libre marché (score positif)
+        // Questions "libre marché" (q6_reduction_depenses_taxes, q14, q15) : être d'accord = libre marché (score positif)
       }
 
       const questionWeight = weight
@@ -264,178 +264,166 @@ export function normalizePositionForDisplay(
  */
 export const partyAnswers: Record<string, UserAnswers> = {
   'quebec_forte_et_fiere': {
-    // Bruno Marchand - Maire sortant, progressiste modéré
-    q1_tramway: 'FA',                              // Fortement pour le tramway (projet phare)
-    q2_pistes_cyclables: 'PA',                     // Pour les pistes cyclables
-    q3_troisieme_lien: 'FD',                       // Fortement contre le 3e lien
-    q4_secteur_prive_transport: 'PD',              // Préfère le public
-    q5_quotas_logements_abordables: 'PA',          // Pour le logement social
-    q6_densification_quartiers: 'PA',              // Pour la densification
-    q7_restrictions_airbnb: 'PA',                  // ✏️ NOUVEAU : Pour réguler Airbnb
-    q8_assouplissement_zonage: 'PA',               // ✏️ NOUVEAU : Pour faciliter développement durable
-    q9_protection_espaces_verts: 'PA',             // Protection environnement
-    q10_transition_carboneutre: 'FA',              // Fortement pour la transition
-    q11_reduction_dechets: 'FD',                   // Aligné nouvelle formulation : QFF avait réduit la collecte pour raisons environnementales
-    q12_augmentation_taxes: 'FA',                  // ✏️ AJUSTÉ : Fortement pour projets écoresponsables (transition écologique prioritaire)
-    q13_pouvoir_conseils_quartier: 'PA',           // ✏️ CORRIGÉ : Pour la participation
-    q14_reduction_dette: 'PD',                     // ✏️ AJUSTÉ : Contre (priorise projets d'avenir comme tramway, transition écologique)
-    q15_avantages_fiscaux_entreprises: 'PA',       // Vision économie-environnement intégrée
-    q16_limitation_touristes: 'N',                 // ✏️ NOUVEAU : Position équilibrée sur tourisme
-    q17_soutien_organismes_communautaires: 'PA',   // Soutien aux organismes
-    q18_augmentation_effectifs_policiers: 'N',     // Neutre sur la police
-    q19_investissement_infrastructures_loisirs_sportives: 'PA', // ✏️ NOUVEAU : Investissement services citoyens
-    q20_protection_patrimoine: 'PA',               // ✏️ NOUVEAU : Protection patrimoine historique
-    q21_enjeux_prioritaires: 'FA',                 // ✏️ NOUVEAU : Démocratisation, services, environnement
+    q1_tramway: 'FA',
+    q2_pistes_cyclables: 'FA',
+    q3_troisieme_lien: 'PD',
+    q4_stationnements_centre_ville: 'PA',
+    q5_quotas_logements_abordables: 'PA',
+    q6_reduction_depenses_taxes: 'PD',
+    q7_immeubles_grande_hauteur: 'FD',
+    q8_interdire_essence_centre_ville: 'PA',
+    q9_protection_espaces_verts: 'FA',
+    q10_transition_carboneutre: 'FA',
+    q11_reduction_dechets: 'FD',
+    q12_augmentation_taxes: 'PA',
+    q13_pouvoir_conseils_quartier: 'FD',
+    q14_reduction_dette: 'FD',
+    q15_avantages_fiscaux_entreprises: 'PD',
+    q16_limitation_touristes: 'FD',
+    q17_soutien_organismes_communautaires: 'FA',
+    q18_augmentation_effectifs_policiers: 'N',
+    q19_investissement_infrastructures_loisirs_sportives: 'FA',
+    q20_protection_patrimoine: 'FA',
   },
 
   'transition_quebec': {
-    // Jackie Smith - Parti écologiste municipal ambitieux ✏️ MISE À JOUR selon sources 2025
-    q1_tramway: 'FA',                              // Fortement pour (transport durable)
-    q2_pistes_cyclables: 'FA',                     // Fortement pour (mobilité verte)
-    q3_troisieme_lien: 'FD',                       // "C'est tellement insultant... un projet qui n'a aucun sens" (juillet 2025)
-    q4_secteur_prive_transport: 'FD',              // Oppose privatisation, veut gratuité transport en commun
-    q5_quotas_logements_abordables: 'FA',          // "Le coût du logement sera un incontournable" (juin 2025)
-    q6_densification_quartiers: 'FA',              // Fortement pour (contre étalement)
-    q7_restrictions_airbnb: 'FA',                  // "Nous lutterons énergiquement contre... les locations de type Airbnb" (juin 2025)
-    q8_assouplissement_zonage: 'PA',               // Pour faciliter logement abordable
-    q9_protection_espaces_verts: 'FA',             // "L'enjeu numéro 1 des gens de Limoilou, c'est la qualité de l'air" (2022-2025)
-    q10_transition_carboneutre: 'FA',              // "faire face aux changements climatiques" (mai 2025)
-    q11_reduction_dechets: 'FD',                   // Aligné nouvelle formulation : contre prioriser collecte vs environnement
-    q12_augmentation_taxes: 'FA',                  // ✏️ AJUSTÉ : Fortement pour projets écoresponsables (parti écologiste priorité climat)
-    q13_pouvoir_conseils_quartier: 'FA',           // "démocratie participative", sondages citoyens (mai 2025)
-    q14_reduction_dette: 'FD',                     // ✏️ AJUSTÉ : Fortement contre (projets d'avenir écologiques essentiels vs services essentiels)
-    q15_avantages_fiscaux_entreprises: 'FD',       // Contre pression promoteurs immobiliers (juin 2025)
-    q16_limitation_touristes: 'N',                 // Non abordé
-    q17_soutien_organismes_communautaires: 'FA',   // Soutien Centre des femmes Basse-Ville (juin 2025)
-    q18_augmentation_effectifs_policiers: 'PD',    // Contre (préfère prévention sociale)
-    q19_investissement_infrastructures_loisirs_sportives: 'FA', // Pour équipements de proximité
-    q20_protection_patrimoine: 'PA',               // Patrimoine culturel francophone prioritaire (juin 2025)
-    q21_enjeux_prioritaires: 'FA',                 // Logement, mobilité, environnement, francophonie
+    q1_tramway: 'FA',
+    q2_pistes_cyclables: 'FA',
+    q3_troisieme_lien: 'FD',
+    q4_stationnements_centre_ville: 'FA',
+    q5_quotas_logements_abordables: 'FA',
+    q6_reduction_depenses_taxes: 'FD',
+    q7_immeubles_grande_hauteur: 'FD',
+    q8_interdire_essence_centre_ville: 'FA',
+    q9_protection_espaces_verts: 'FA',
+    q10_transition_carboneutre: 'FA',
+    q11_reduction_dechets: 'FD',
+    q12_augmentation_taxes: 'FA',
+    q13_pouvoir_conseils_quartier: 'PD',
+    q14_reduction_dette: 'FD',
+    q15_avantages_fiscaux_entreprises: 'FD',
+    q16_limitation_touristes: 'N',
+    q17_soutien_organismes_communautaires: 'PA',
+    q18_augmentation_effectifs_policiers: 'FD',
+    q19_investissement_infrastructures_loisirs_sportives: 'FD',
+    q20_protection_patrimoine: 'PA',
   },
 
   'quebec_dabord': {
-    // Claude Villeneuve - Centre-progressiste pragmatique ✏️ MISE À JOUR selon déclarations jan-mai 2025
-    q1_tramway: 'PA',                              // 🟧 CORRIGÉ : "Si pour avoir le tramway, ça prend un 3e lien, deale me in" (appui conditionnel)
-    q2_pistes_cyclables: 'N',                      // 🟨 CORRIGÉ : "Je ne déteste pas les pistes cyclables, au contraire" mais contre mauvaise implémentation
-    q3_troisieme_lien: 'PA',                       // 🟧 CONFIRMÉ : "Prêt à appuyer s'il répond aux besoins" (navigation, intégration urbaine)
-    q4_secteur_prive_transport: 'N',               // 🟨 Aucune mention explicite PPP/privatisation
-    q5_quotas_logements_abordables: 'PA',          // 🟧 Soutient accélération logements abordables
-    q6_densification_quartiers: 'PD',              // 🟧 Demande report projet dense Henri-Bourassa
-    q7_restrictions_airbnb: 'N',                   // 🟨 Aucune déclaration retrouvée
-    q8_assouplissement_zonage: 'PA',               // 🟧 Favorise souplesse pour accélérer constructions
-    q9_protection_espaces_verts: 'PA',             // 🟧 Appui corridor vert Maizerets
-    q10_transition_carboneutre: 'PA',              // 🟧 CORRIGÉ : "Il faut adapter nos tuyaux, avoir une ville plus perméable" (adaptation climatique)
-    q11_reduction_dechets: 'N',                    // Aligné carte avec source officielle: neutre sur la nouvelle formulation
-    q12_augmentation_taxes: 'N',                   // ✏️ AJUSTÉ : Neutre (supporte adaptation climatique mais critique hausses)
-    q13_pouvoir_conseils_quartier: 'N',            // 🟨 CORRIGÉ : Met l'accent sur écoute citoyenne et proximité mais pas structures formelles
-    q14_reduction_dette: 'PA',                     // ✏️ AJUSTÉ : Pour (gestion rigoureuse prioritaire, services essentiels d'abord)
-    q15_avantages_fiscaux_entreprises: 'PA',       // 🟧 Favorise entrepreneuriat local
-    q16_limitation_touristes: 'N',                 // 🟨 Pas de position recensée
-    q17_soutien_organismes_communautaires: 'N',    // 🟨 Aucune mention spécifique financement accru
-    q18_augmentation_effectifs_policiers: 'N',     // 🟨 Aucun commentaire public retrouvé
-    q19_investissement_infrastructures_loisirs_sportives: 'PA', // 🟧 Favorable équipements proximité
-    q20_protection_patrimoine: 'PA',               // 🟧 Opposé projets nuisibles quartiers patrimoniaux
-    q21_enjeux_prioritaires: 'FA',                 // 🟩 Logement, transport fluide, services simplifiés
+    q1_tramway: 'PA',
+    q2_pistes_cyclables: 'PA',
+    q3_troisieme_lien: 'PA',
+    q4_stationnements_centre_ville: 'N',
+    q5_quotas_logements_abordables: 'N',
+    q6_reduction_depenses_taxes: 'N',
+    q7_immeubles_grande_hauteur: 'PD',
+    q8_interdire_essence_centre_ville: 'PA',
+    q9_protection_espaces_verts: 'N',
+    q10_transition_carboneutre: 'PA',
+    q11_reduction_dechets: 'N',
+    q12_augmentation_taxes: 'N',
+    q13_pouvoir_conseils_quartier: 'PA',
+    q14_reduction_dette: 'PA',
+    q15_avantages_fiscaux_entreprises: 'N',
+    q16_limitation_touristes: 'PD',
+    q17_soutien_organismes_communautaires: 'N',
+    q18_augmentation_effectifs_policiers: 'PD',
+    q19_investissement_infrastructures_loisirs_sportives: 'N',
+    q20_protection_patrimoine: 'PD',
   },
 
   'respect_citoyens': {
-    // Stéphane Lachance - Conservateur-populiste, localiste ✏️ MISE À JOUR selon plateforme électorale
-    q1_tramway: 'FD',                              // 🟥 S'oppose aux grands projets jugés coûteux
-    q2_pistes_cyclables: 'PD',                     // 🟧 Critique la perte de voies pour automobilistes
-    q3_troisieme_lien: 'FA',                       // 🟩 Projet prioritaire du parti
-    q4_secteur_prive_transport: 'PA',              // 🟧 Ouvert aux modèles mixtes avec supervision
-    q5_quotas_logements_abordables: 'N',           // 🟨 Rejette quotas obligatoires mais reconnaît le besoin
-    q6_densification_quartiers: 'FD',              // 🟥 Opposé à densification imposée
-    q7_restrictions_airbnb: 'FD',                  // 🟥 Défend liberté d'usage des propriétés
-    q8_assouplissement_zonage: 'FA',               // 🟩 Réduire freins bureaucratiques
-    q9_protection_espaces_verts: 'N',              // 🟨 Favorise milieux sains sans lourdeur réglementaire
-    q10_transition_carboneutre: 'FD',              // 🟥 S'oppose aux plans jugés idéologiques
-    q11_reduction_dechets: 'FA',                   // 🟩 Priorise la collecte vs réduction des collectes pour env.
-    q12_augmentation_taxes: 'FD',                  // ✏️ MAINTENU : Fortement contre (anti-taxes ET sceptique écologie coûteuse)
-    q13_pouvoir_conseils_quartier: 'PD',           // 🟧 Méfiance envers structures intermédiaires
-    q14_reduction_dette: 'FA',                     // ✏️ AJUSTÉ : Fortement pour (services essentiels prioritaires, austérité budgétaire)
-    q15_avantages_fiscaux_entreprises: 'FA',       // 🟩 Stimuler économie locale
-    q16_limitation_touristes: 'FD',                // 🟥 Contre limitations (soutien retombées économiques)
-    q17_soutien_organismes_communautaires: 'PA',   // 🟧 Appuie services proximité sans excès
-    q18_augmentation_effectifs_policiers: 'FA',    // 🟩 Patrouilles accrues et hausse budget police
-    q19_investissement_infrastructures_loisirs_sportives: 'N',  // 🟨 Investissement actuel jugé suffisant
-    q20_protection_patrimoine: 'PA',               // 🟧 Valorise patrimoine sans approche contraignante
-    q21_enjeux_prioritaires: 'FA',                 // 🟩 3e lien, fiscalité, développement économique, participation
+    q1_tramway: 'FD',
+    q2_pistes_cyclables: 'FD',
+    q3_troisieme_lien: 'FA',
+    q4_stationnements_centre_ville: 'FD',
+    q5_quotas_logements_abordables: 'FD',
+    q6_reduction_depenses_taxes: 'FA',
+    q7_immeubles_grande_hauteur: 'FA',
+    q8_interdire_essence_centre_ville: 'FD',
+    q9_protection_espaces_verts: 'FD',
+    q10_transition_carboneutre: 'FD',
+    q11_reduction_dechets: 'FA',
+    q12_augmentation_taxes: 'FD',
+    q13_pouvoir_conseils_quartier: 'FA',
+    q14_reduction_dette: 'FA',
+    q15_avantages_fiscaux_entreprises: 'FA',
+    q16_limitation_touristes: 'PA',
+    q17_soutien_organismes_communautaires: 'PD',
+    q18_augmentation_effectifs_policiers: 'FA',
+    q19_investissement_infrastructures_loisirs_sportives: 'FA',
+    q20_protection_patrimoine: 'FD',
   },
 
   'equipe_priorite_quebec': {
-    // Stevens Melançon - Centre-vert pragmatique ✏️ CORRECTION MAJEURE selon virage environnemental 2022-2025
-    q1_tramway: 'FD',                               // ✏️ Opposition catégorique pour raisons environnementales (coupes d'arbres, îlots chaleur)
-    q2_pistes_cyclables: 'PA',                     // Pour le transport actif
-    q3_troisieme_lien: 'PA',                       // ✏️ Stevens favorable historiquement (déçu tracé échoisi) - position parti à clarifier
-    q4_secteur_prive_transport: 'N',               // ✏️ CORRIGÉ : Neutre sur privatisation
-    q5_quotas_logements_abordables: 'PA',          // ✏️ CORRIGÉ : Soutien logement abordable
-    q6_densification_quartiers: 'PA',              // ✏️ CORRIGÉ : Pour développement durable
-    q7_restrictions_airbnb: 'PA',                  // ✏️ NOUVEAU : Protection parc locatif
-    q8_assouplissement_zonage: 'PA',               // Pour faciliter construction (mais avec acceptabilité sociale)
-    q9_protection_espaces_verts: 'FA',             // ✏️ CORRIGÉ : Combat principal - "Ce sont des écosystèmes vivants" (2025)
-    q10_transition_carboneutre: 'FA',              // ✏️ CORRIGÉ : "Questions environnementales une priorité" - virage écoresponsable
-    q11_reduction_dechets: 'PD',                   // Priorise environnement, moins favorable à augmenter la collecte
-    q12_augmentation_taxes: 'PA',                  // ✏️ AJUSTÉ : Pour (virage environnemental 2022-2025, accepte coûts transition)
-    q13_pouvoir_conseils_quartier: 'PA',           // ✏️ NOUVEAU : Démocratie participative
-    q14_reduction_dette: 'N',                      // ✏️ AJUSTÉ : Neutre (équilibre services essentiels et projets d'avenir)
-    q15_avantages_fiscaux_entreprises: 'N',        // ✏️ CORRIGÉ : Approche équilibrée
-    q16_limitation_touristes: 'N',                 // ✏️ NOUVEAU : Position mesurée
-    q17_soutien_organismes_communautaires: 'PA',   // Soutien cohésion sociale
-    q18_augmentation_effectifs_policiers: 'N',     // ✏️ CORRIGÉ : Approche équilibrée sécurité
-    q19_investissement_infrastructures_loisirs_sportives: 'PA', // ✏️ NOUVEAU : Services de proximité
-    q20_protection_patrimoine: 'PA',               // ✏️ NOUVEAU : Préservation identité
-    q21_enjeux_prioritaires: 'FA',                 // ✏️ Environnement + développement durable + acceptabilité sociale
+    // NOTE: Ce parti n'est pas dans positions_partis.md. Les réponses existantes sont conservées mais les IDs de questions obsolètes sont corrigés.
+    q1_tramway: 'FD',
+    q2_pistes_cyclables: 'PA',
+    q3_troisieme_lien: 'PA',
+    q4_stationnements_centre_ville: 'N',
+    q5_quotas_logements_abordables: 'PA',
+    q6_reduction_depenses_taxes: 'PA',
+    q7_immeubles_grande_hauteur: 'PA',
+    q8_interdire_essence_centre_ville: 'PA',
+    q9_protection_espaces_verts: 'FA',
+    q10_transition_carboneutre: 'FA',
+    q11_reduction_dechets: 'PD',
+    q12_augmentation_taxes: 'PA',
+    q13_pouvoir_conseils_quartier: 'PA',
+    q14_reduction_dette: 'N',
+    q15_avantages_fiscaux_entreprises: 'N',
+    q16_limitation_touristes: 'N',
+    q17_soutien_organismes_communautaires: 'PA',
+    q18_augmentation_effectifs_policiers: 'N',
+    q19_investissement_infrastructures_loisirs_sportives: 'PA',
+    q20_protection_patrimoine: 'PA',
   },
 
   'leadership_quebec': {
-    // Sam Hamad - Centre-droit pragmatique et technocratique ✏️ MISE À JOUR selon déclarations publiques 2025
-    q1_tramway: 'FD',                              // 🟥 Veut abandonner le projet malgré pénalités 153-371M$ (Journal Québec mai 2025)
-    q2_pistes_cyclables: 'FD',                     // 🟥 Accuse Marchand d'« une guerre à l'auto »
-    q3_troisieme_lien: 'PA',                       // 🟧 Appui au SRB pour connecter banlieues
-    q4_secteur_prive_transport: 'N',               // 🟨 Aucun soutien explicite aux partenariats privé-public mentionné
-    q5_quotas_logements_abordables: 'PD',          // 🟧 Peu d'intérêt pour les mesures interventionnistes
-    q6_densification_quartiers: 'N',               // 🟨 N'aborde pas clairement la question
-    q7_restrictions_airbnb: 'N',                   // 🟨 Non abordé dans les communiqués
-    q8_assouplissement_zonage: 'PA',               // 🟧 Compatible avec logique de simplification réglementaire
-    q9_protection_espaces_verts: 'N',              // 🟨 Non mentionné dans la plateforme
-    q10_transition_carboneutre: 'PD',              // 🟧 Pas d'objectifs annoncés, priorité à fiscalité/transports
-    q11_reduction_dechets: 'N',                    // 🟨 Aucun programme ou priorité sur ce dossier
-    q12_augmentation_taxes: 'PD',                  // ✏️ AJUSTÉ : Plutôt contre (supporte projets écoresponsables mais contre hausses taxes)
-    q13_pouvoir_conseils_quartier: 'N',            // 🟨 Valorise écoute citoyenne sans appuyer structures formelles
-    q14_reduction_dette: 'N',                      // ✏️ AJUSTÉ : Neutre (critique dette mais propose SRB - contradiction)
-    q15_avantages_fiscaux_entreprises: 'PD',       // 🟧 Liens CA Trudel Innovation (immobilier) - questions conflits intérêts (Journal Québec mai 2025)
-    q16_limitation_touristes: 'N',                 // 🟨 Non abordé dans la plateforme
-    q17_soutien_organismes_communautaires: 'PA',   // 🟧 Valorise OBNL efficaces et engagement citoyen
-    q18_augmentation_effectifs_policiers: 'N',     // 🟨 Aucun engagement clair sur augmentation/réduction
-    q19_investissement_infrastructures_loisirs_sportives: 'PA', // 🟧 Projets pour tous quartiers et jeunes familles
-    q20_protection_patrimoine: 'N',                // 🟨 Non abordé dans plateforme 2025
-    q21_enjeux_prioritaires: 'PA',                 // 🟧 Mobilité (SRB), rigueur fiscale, relance économique, implication
+    q1_tramway: 'PD',
+    q2_pistes_cyclables: 'PD',
+    q3_troisieme_lien: 'N',
+    q4_stationnements_centre_ville: 'PD',
+    q5_quotas_logements_abordables: 'N',
+    q6_reduction_depenses_taxes: 'PA',
+    q7_immeubles_grande_hauteur: 'N',
+    q8_interdire_essence_centre_ville: 'N',
+    q9_protection_espaces_verts: 'PD',
+    q10_transition_carboneutre: 'N',
+    q11_reduction_dechets: 'N',
+    q12_augmentation_taxes: 'PD',
+    q13_pouvoir_conseils_quartier: 'N',
+    q14_reduction_dette: 'N',
+    q15_avantages_fiscaux_entreprises: 'PA',
+    q16_limitation_touristes: 'N',
+    q17_soutien_organismes_communautaires: 'N',
+    q18_augmentation_effectifs_policiers: 'N',
+    q19_investissement_infrastructures_loisirs_sportives: 'PD',
+    q20_protection_patrimoine: 'N',
   },
 
   'alliance_citoyenne': {
-    // Alain Giasson / Daniel Brisson - Centre-droit libertarien
-    q1_tramway: 'PD',                              // Plutôt contre (révision complète nécessaire)
-    q2_pistes_cyclables: 'PA',                     // Pour mais approche équilibrée
-    q3_troisieme_lien: 'FA',                       // Fortement pour (projet spécifique jetée Beauport-Île d'Orléans)
-    q4_secteur_prive_transport: 'PA',              // Favorable aux partenariats public-privé
-    q5_quotas_logements_abordables: 'PA',          // Soutient mesures pour augmenter l'offre
-    q6_densification_quartiers: 'PD',              // Contre densification imposée (liberté choix résidentiel)
-    q7_restrictions_airbnb: 'FD',                  // ✏️ NOUVEAU : Fortement contre restrictions (libertés individuelles)
-    q8_assouplissement_zonage: 'FA',               // ✏️ NOUVEAU : Pour réduction bureaucratie
-    q9_protection_espaces_verts: 'PA',             // Protection importante mais équilibrée
-    q10_transition_carboneutre: 'PD',              // Sceptique des politiques climatiques coûteuses
-    q11_reduction_dechets: 'FA',                   // Aligné nouvelle formulation : priorise la collecte vs réduire les collectes
-    q12_augmentation_taxes: 'FD',                  // ✏️ MAINTENU : Fortement contre (anti-taxes + sceptique écologie coûteuse)
-    q13_pouvoir_conseils_quartier: 'FA',           // ✏️ CORRIGÉ : Retour autonomie aux citoyens
-    q14_reduction_dette: 'PD',                     // ✏️ AJUSTÉ : Plutôt contre (préfère projets économiques d'avenir vs services essentiels)
-    q15_avantages_fiscaux_entreprises: 'PA',       // Développement économique pro-entreprise
-    q16_limitation_touristes: 'PD',                // ✏️ NOUVEAU : Contre limitations (liberté économique)
-    q17_soutien_organismes_communautaires: 'PD',   // Préfère initiatives privées (réduction intervention)
-    q18_augmentation_effectifs_policiers: 'PA',    // Sécurité publique (tendance conservatrice)
-    q19_investissement_infrastructures_loisirs_sportives: 'PA', // ✏️ NOUVEAU : Services de proximité acceptables
-    q20_protection_patrimoine: 'PD',               // ✏️ NOUVEAU : Contre mesures restrictives développement
-    q21_enjeux_prioritaires: 'FA',                 // ✏️ NOUVEAU : Libertés individuelles, développement économique
+    // NOTE: Ce parti n'est pas dans positions_partis.md. Les réponses existantes sont conservées mais les IDs de questions obsolètes sont corrigés.
+    q1_tramway: 'PD',
+    q2_pistes_cyclables: 'PA',
+    q3_troisieme_lien: 'FA',
+    q4_stationnements_centre_ville: 'PA',
+    q5_quotas_logements_abordables: 'PA',
+    q6_reduction_depenses_taxes: 'FD',
+    q7_immeubles_grande_hauteur: 'FD',
+    q8_interdire_essence_centre_ville: 'FA',
+    q9_protection_espaces_verts: 'PA',
+    q10_transition_carboneutre: 'PD',
+    q11_reduction_dechets: 'FA',
+    q12_augmentation_taxes: 'FD',
+    q13_pouvoir_conseils_quartier: 'FA',
+    q14_reduction_dette: 'PD',
+    q15_avantages_fiscaux_entreprises: 'PA',
+    q16_limitation_touristes: 'PD',
+    q17_soutien_organismes_communautaires: 'PD',
+    q18_augmentation_effectifs_policiers: 'PA',
+    q19_investissement_infrastructures_loisirs_sportives: 'PA',
+    q20_protection_patrimoine: 'PD',
   },
 }
 
