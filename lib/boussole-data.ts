@@ -96,8 +96,8 @@ export const boussoleQuestions: Question[] = [
     importanceOptions: [5, 4, 3, 2, 1],
   },
   {
-    id: "q4_stationnements_centre_ville",
-    text: "Les stationnements au centre-ville devraient être réduits pour encourager l'utilisation du transport collectif.",
+    id: "q4_priorite_mobilite_active",
+    text: "Pour améliorer l'attractivité du centre-ville, la priorité devrait être donnée aux piétons, cyclistes et au transport collectif, même si cela implique de réduire l'espace dédié à l'automobile (stationnements, voies de circulation, etc.).",
     category: "Mobilité et transport",
     responseType: "agreement",
     agreementOptions: ["FA", "PA", "N", "PD", "FD", "IDK"],

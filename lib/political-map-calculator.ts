@@ -27,7 +27,6 @@ export const axisConfiguration = {
       { id: "q5_quotas_logements_abordables", weight: 1.3 },   // Quotas logements (+ = interventionnisme)
       { id: "q17_soutien_organismes_communautaires", weight: 1.1 }, // Soutien communautaire (+ = interventionnisme)
       { id: "q6_reduction_depenses_taxes", weight: 1.2 },     // Réduction dépenses/taxes (+ = libre marché)
-      { id: "q4_stationnements_centre_ville", weight: 1.0 }, // Stationnements centre-ville (+ = interventionnisme)
       { id: "q15_avantages_fiscaux_entreprises", weight: 0.9 }, // Avantages fiscaux (+ = libre marché)
       { id: "q14_reduction_dette", weight: 0.8 },             // Réduction dette (+ = libre marché)
       { id: "q13_pouvoir_conseils_quartier", weight: 0.7 },   // ✏️ AJOUTÉ : Pouvoir conseils quartier (+ = interventionnisme)
@@ -41,6 +40,7 @@ export const axisConfiguration = {
       { id: "q1_tramway", weight: 1.5 },                     // Tramway (+ = progressiste)
       { id: "q2_pistes_cyclables", weight: 1.3 },            // Pistes cyclables (+ = progressiste)
       { id: "q3_troisieme_lien", weight: 1.2 },              // 3e lien (+ = conservateur, - = progressiste)
+      { id: "q4_priorite_mobilite_active", weight: 1.1 },    // Priorité mobilité active (+ = progressiste)
       { id: "q7_immeubles_grande_hauteur", weight: 1.1 },         // Immeubles grande hauteur (+ = progressiste)
       { id: "q8_interdire_essence_centre_ville", weight: 1.2 }, // Interdire essence centre-ville (+ = progressiste)
       { id: "q9_protection_espaces_verts", weight: 1.0 },    // Espaces verts (+ = progressiste)
@@ -87,7 +87,7 @@ function calculateAxisPosition(
       
       // Axe économique : + = Libre marché, - = Interventionnisme
       if (axisConfig === axisConfiguration.economic) {
-        if (id === 'q12_augmentation_taxes' || id === 'q5_quotas_logements_abordables' || id === 'q17_soutien_organismes_communautaires' || id === 'q13_pouvoir_conseils_quartier' || id === 'q4_stationnements_centre_ville') {
+        if (id === 'q12_augmentation_taxes' || id === 'q5_quotas_logements_abordables' || id === 'q17_soutien_organismes_communautaires' || id === 'q13_pouvoir_conseils_quartier') {
           // Questions "interventionnistes" : être d'accord = interventionnisme (score négatif)
           score = -score
         }
@@ -267,7 +267,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'FA',
     q2_pistes_cyclables: 'FA',
     q3_troisieme_lien: 'PD',
-    q4_stationnements_centre_ville: 'PA',
+    q4_priorite_mobilite_active: 'PA',
     q5_quotas_logements_abordables: 'PA',
     q6_reduction_depenses_taxes: 'PD',
     q7_immeubles_grande_hauteur: 'FD',
@@ -290,7 +290,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'FA',
     q2_pistes_cyclables: 'FA',
     q3_troisieme_lien: 'FD',
-    q4_stationnements_centre_ville: 'FA',
+    q4_priorite_mobilite_active: 'FA',
     q5_quotas_logements_abordables: 'FA',
     q6_reduction_depenses_taxes: 'FD',
     q7_immeubles_grande_hauteur: 'FD',
@@ -313,7 +313,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'PA',
     q2_pistes_cyclables: 'PA',
     q3_troisieme_lien: 'PA',
-    q4_stationnements_centre_ville: 'N',
+    q4_priorite_mobilite_active: 'N',
     q5_quotas_logements_abordables: 'N',
     q6_reduction_depenses_taxes: 'N',
     q7_immeubles_grande_hauteur: 'PD',
@@ -336,7 +336,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'FD',
     q2_pistes_cyclables: 'FD',
     q3_troisieme_lien: 'FA',
-    q4_stationnements_centre_ville: 'FD',
+    q4_priorite_mobilite_active: 'FD',
     q5_quotas_logements_abordables: 'FD',
     q6_reduction_depenses_taxes: 'FA',
     q7_immeubles_grande_hauteur: 'FA',
@@ -360,7 +360,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'FD',
     q2_pistes_cyclables: 'PA',
     q3_troisieme_lien: 'PA',
-    q4_stationnements_centre_ville: 'N',
+    q4_priorite_mobilite_active: 'N',
     q5_quotas_logements_abordables: 'PA',
     q6_reduction_depenses_taxes: 'PA',
     q7_immeubles_grande_hauteur: 'PA',
@@ -383,7 +383,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'PD',
     q2_pistes_cyclables: 'PD',
     q3_troisieme_lien: 'N',
-    q4_stationnements_centre_ville: 'PD',
+    q4_priorite_mobilite_active: 'PD',
     q5_quotas_logements_abordables: 'N',
     q6_reduction_depenses_taxes: 'PA',
     q7_immeubles_grande_hauteur: 'N',
@@ -407,7 +407,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q1_tramway: 'PD',
     q2_pistes_cyclables: 'PA',
     q3_troisieme_lien: 'FA',
-    q4_stationnements_centre_ville: 'PA',
+    q4_priorite_mobilite_active: 'PA',
     q5_quotas_logements_abordables: 'PA',
     q6_reduction_depenses_taxes: 'FD',
     q7_immeubles_grande_hauteur: 'FD',
