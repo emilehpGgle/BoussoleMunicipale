@@ -29,15 +29,15 @@ export default function HomePage() {
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
                 <Compass className="w-5 h-5 mr-2" /> Votre boussole pour les élections municipales
               </span>
-              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight tracking-tight text-foreground w-full">
+              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight tracking-tight text-foreground w-full max-w-full break-words">
                 Votre{" "}
                 <span className="text-midnight-green relative inline-block">
                   boussole
-                  <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
+                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
                 </span>{" "}
                 électorale municipale
               </h1>
-              <p className="text-lg text-muted-foreground max-w-lg">
+              <p className="text-base sm:text-lg text-muted-foreground max-w-lg w-full break-words">
                 Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
@@ -295,10 +295,10 @@ export default function HomePage() {
             {/* Contenu textuel */}
             <div className="space-y-8">
               <div className="space-y-4">
-                <h2 className="text-4xl lg:text-5xl font-bold text-eerie-black leading-tight mb-6">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-eerie-black leading-tight mb-6 max-w-full break-words">
                   Votre vie privée, notre priorité.
                 </h2>
-                <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+                <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl w-full break-words">
                   Utilisez la Boussole Municipale en toute confiance. Vos réponses sont anonymes et ne sont utilisées que
                   pour calculer vos résultats. Nous ne vendons ni ne partageons vos données personnelles.
                 </p>
@@ -306,9 +306,9 @@ export default function HomePage() {
               <Button
                 asChild
                 variant="outline"
-                className="inline-flex items-center px-8 py-4 text-base font-medium border-2 border-midnight-green text-midnight-green hover:bg-midnight-green hover:text-white transition-all duration-200 rounded-xl"
+                className="inline-flex items-center px-4 md:px-8 py-4 text-sm md:text-base font-medium border-2 border-midnight-green text-midnight-green hover:bg-midnight-green hover:text-white transition-all duration-200 rounded-xl w-full sm:w-auto justify-center"
               >
-                <Link href="/confidentialite">Lire notre politique de confidentialité</Link>
+                <Link href="/confidentialite" className="text-center">Lire notre politique de confidentialité</Link>
               </Button>
             </div>
           </div>
@@ -320,7 +320,7 @@ export default function HomePage() {
         <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
-            <p className="text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <StartQuestionnaireButton

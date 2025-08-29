@@ -8,6 +8,7 @@ import { Toaster } from "sonner"
 import { Analytics } from "@/components/analytics"
 import ConditionalFooter from "@/components/conditional-footer"
 import CSSOptimizer from "@/components/css-optimizer"
+import StickyStartButton from "@/components/sticky-start-button"
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -292,6 +293,7 @@ export default function RootLayout({
             <ConditionalFooter />
           </div>
           <CSSOptimizer />
+          <StickyStartButton />
           <Toaster 
             position="bottom-right"
             toastOptions={{
