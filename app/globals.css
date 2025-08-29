@@ -2,6 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Performance: Isolation des styles non-critiques */
+
 @layer base {
   :root {
     /* Palette palette2.0.scss - Élimination complète du bleu */
@@ -213,17 +215,13 @@
     border-color: hsl(var(--teal-special));
   }
 
-  /* Animations de balayage optimisées pour le questionnaire */
-  
-  /* Easing curves optimisées pour les transitions naturelles */
+  /* Variables de performance - animations questionnaire dans styles.css séparé */
   :root {
-    --transition-enter: cubic-bezier(0.25, 0.46, 0.45, 0.94); /* easeOutQuad naturel */
-    --transition-exit: cubic-bezier(0.55, 0.085, 0.68, 0.53); /* easeInQuad rapide */
-    --transition-duration-enter: 350ms; /* Timing optimal pour fluidité */
-    --transition-duration-exit: 250ms; /* Plus rapide pour sortie */
+    --transition-enter: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-exit: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+    --transition-duration-enter: 350ms;
+    --transition-duration-exit: 250ms;
   }
-
-  /* Déplacé animations questionnaire vers app/questionnaire/styles.css pour réduire le CSS global non utilisé */
 
   /* Support accessibilité - respect des préférences utilisateur */
   @media (prefers-reduced-motion: reduce) {

@@ -7,6 +7,7 @@ import SiteHeader from "@/components/site-header"
 import { Toaster } from "sonner"
 import { Analytics } from "@/components/analytics"
 import ConditionalFooter from "@/components/conditional-footer"
+import CSSOptimizer from "@/components/css-optimizer"
 
 const inter = Inter({ subsets: ["latin"], display: "swap" })
 
@@ -169,82 +170,71 @@ export default function RootLayout({
     <html lang="fr" suppressHydrationWarning>
       <head>
         <Analytics />
-        {/* Critical CSS - Variables de couleurs pour rendu immédiat */}
+        {/* Critical CSS optimisé - Variables essentielles + layout de base pour réduire CLS */}
         <style dangerouslySetInnerHTML={{
           __html: `
             :root {
-              --background: 0 0% 100%;
-              --foreground: 222.2 84% 4.9%;
-              --card: 0 0% 100%;
-              --card-foreground: 222.2 84% 4.9%;
-              --popover: 0 0% 100%;
-              --popover-foreground: 222.2 84% 4.9%;
-              --primary: 221.2 83.2% 53.3%;
-              --primary-foreground: 210 40% 98%;
-              --secondary: 210 40% 96%;
-              --secondary-foreground: 222.2 84% 4.9%;
-              --accent: 210 40% 96%;
-              --accent-foreground: 222.2 84% 4.9%;
-              --teal-special: 181 84% 28%;
-              --teal-special-foreground: 0 0% 100%;
-              --muted: 210 40% 96%;
-              --muted-foreground: 215.4 16.3% 46.9%;
-              --destructive: 0 84.2% 60.2%;
-              --destructive-foreground: 210 40% 98%;
-              --border: 214.3 31.8% 91.4%;
-              --input: 214.3 31.8% 91.4%;
-              --ring: 221.2 83.2% 53.3%;
+              --background: 27 60% 97%;
+              --foreground: 0 0% 13%;
+              --card: 0 100% 100%;
+              --card-foreground: 0 0% 13%;
+              --primary: 184 91% 14%;
+              --primary-foreground: 0 100% 100%;
+              --secondary: 180 75% 95%;
+              --secondary-foreground: 0 0% 13%;
+              --muted: 180 75% 95%;
+              --muted-foreground: 0 0% 45%;
+              --border: 180 75% 90%;
+              --ring: 184 91% 14%;
               --radius: 0.75rem;
-              --chart-1: 12 76% 61%;
-              --chart-2: 173 58% 39%;
-              --chart-3: 197 37% 24%;
-              --chart-4: 43 74% 66%;
-              --chart-5: 27 87% 67%;
+              --midnight-green: 184 91% 14%;
+              --isabelline: 27 60% 97%;
+              --eerie-black: 0 0% 13%;
             }
             .dark {
               --background: 222.2 84% 4.9%;
               --foreground: 210 40% 98%;
               --card: 222.2 84% 4.9%;
               --card-foreground: 210 40% 98%;
-              --popover: 222.2 84% 4.9%;
-              --popover-foreground: 210 40% 98%;
-              --primary: 217.2 91.2% 59.8%;
-              --primary-foreground: 222.2 84% 4.9%;
-              --secondary: 217.2 32.6% 17.5%;
-              --secondary-foreground: 210 40% 98%;
-              --muted: 217.2 32.6% 17.5%;
-              --muted-foreground: 215 20.2% 65.1%;
-              --accent: 217.2 32.6% 17.5%;
-              --accent-foreground: 210 40% 98%;
-              --destructive: 0 62.8% 30.6%;
-              --destructive-foreground: 210 40% 98%;
-              --border: 217.2 32.6% 17.5%;
-              --input: 217.2 32.6% 17.5%;
-              --ring: 224.3 76.3% 94.1%;
-              --chart-1: 220 70% 50%;
-              --chart-2: 160 60% 45%;
-              --chart-3: 30 80% 55%;
-              --chart-4: 280 65% 60%;
-              --chart-5: 340 75% 55%;
+              --primary: 184 91% 14%;
+              --primary-foreground: 0 100% 100%;
+              --ring: 184 91% 14%;
             }
+            /* Layout critique pour éviter CLS */
+            html { font-family: Inter, system-ui, -apple-system, sans-serif; }
+            body { margin: 0; background: hsl(var(--background)); color: hsl(var(--foreground)); }
+            .flex { display: flex; }
+            .flex-col { flex-direction: column; }
+            .min-h-screen { min-height: 100vh; }
+            .flex-1 { flex: 1; }
+            /* Header critique */
+            header { position: sticky; top: 0; z-index: 50; }
+            .container { width: 100%; max-width: 80rem; margin: 0 auto; padding: 0 1rem; }
+            @media (min-width: 640px) { .container { padding: 0 1.5rem; } }
+            @media (min-width: 1024px) { .container { padding: 0 2rem; } }
           `
         }} />
         
         
-        {/* Preconnect to Google Fonts pour optimiser la performance */}
+        {/* Resource hints optimisés pour performance */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
+        {/* Preload du CSS critique pour éviter le FOUC */}
         <link 
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-        />
-        <link 
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin=""
+          rel="preload" 
+          href="/_next/static/css/app/layout.css" 
+          as="style"
+          onLoad="this.onload=null;this.rel='stylesheet'"
         />
         
-        {/* Preconnect to analytics origins to shave connection time (non-blocking) */}
+        {/* Preconnect analytics - non-blocking */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
         {supabaseOrigin ? (
           <>
             <link rel="preconnect" href={supabaseOrigin} crossOrigin="" />
@@ -297,6 +287,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <ConditionalFooter />
           </div>
+          <CSSOptimizer />
           <Toaster 
             position="bottom-right"
             toastOptions={{
