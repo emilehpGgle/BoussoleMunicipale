@@ -232,7 +232,6 @@ export default function RootLayout({
           rel="preload" 
           href="/_next/static/css/app/layout.css" 
           as="style"
-          onLoad={(e) => { e.currentTarget.rel = 'stylesheet' }}
         />
         
         {/* Preconnect analytics - non-blocking */}
