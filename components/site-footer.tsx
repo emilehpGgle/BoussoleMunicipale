@@ -41,7 +41,7 @@ export default function SiteFooter() {
               </li>
               <li>
                 <Link href="#pourquoi-important" className="hover:text-midnight-green transition-colors">
-                  Pourquoi c'est important
+                  Pourquoi c&apos;est important
                 </Link>
               </li>
               <li>
@@ -73,7 +73,7 @@ export default function SiteFooter() {
               </li>
               <li>
                 <Link href="/conditions" className="hover:text-midnight-green transition-colors">
-                  Conditions d'utilisation
+                  Conditions d&apos;utilisation
                 </Link>
               </li>
               <li>
@@ -90,7 +90,7 @@ export default function SiteFooter() {
             <div className="space-y-3 text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <HelpCircle className="w-4 h-4" />
-                <span>Centre d'aide</span>
+                <span>Centre d&apos;aide</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="w-4 h-4" />
