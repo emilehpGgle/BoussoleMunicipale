@@ -222,11 +222,7 @@ export default function RootLayout({
         }} />
         
         
-        {/* Resource hints optimisés pour performance */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* Resource hints optimisés pour performance - Google Fonts gérés par next/font */}
         
         {/* Preload du CSS critique pour éviter le FOUC */}
         <link 

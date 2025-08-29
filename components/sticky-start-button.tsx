@@ -7,7 +7,6 @@ import { usePathname } from "next/navigation"
 import StartQuestionnaireButton from "@/components/start-questionnaire-button"
 
 export default function StickyStartButton() {
-  const [isVisible, setIsVisible] = useState(true)
   const [isMinimized, setIsMinimized] = useState(false)
   const pathname = usePathname()
 
@@ -27,7 +26,7 @@ export default function StickyStartButton() {
     }
   }, [pathname])
 
-  if (shouldHide || !isVisible) return null
+  if (shouldHide) return null
 
   return (
     <div className="fixed bottom-4 right-4 z-50 md:hidden">
