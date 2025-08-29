@@ -13,8 +13,6 @@ const nextConfig = {
     // CSS Chunking optimisé pour réduire le blocking CSS
     cssChunking: true, // Active le chunking pour séparer CSS critique/non-critique
   },
-  // Optimizations CSS pour améliorer les Core Web Vitals
-  optimizeCss: true,
   images: {
     // Configuration optimisée pour la qualité d'images
     formats: ['image/webp', 'image/avif'],

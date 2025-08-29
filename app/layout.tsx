@@ -9,7 +9,12 @@ import { Analytics } from "@/components/analytics"
 import ConditionalFooter from "@/components/conditional-footer"
 import CSSOptimizer from "@/components/css-optimizer"
 
-const inter = Inter({ subsets: ["latin"], display: "swap" })
+const inter = Inter({ 
+  subsets: ["latin"], 
+  display: "swap",
+  preload: true,
+  variable: "--font-inter"
+})
 
 export const metadata: Metadata = {
   title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",
@@ -227,7 +232,7 @@ export default function RootLayout({
           rel="preload" 
           href="/_next/static/css/app/layout.css" 
           as="style"
-          onLoad="this.onload=null;this.rel='stylesheet'"
+          onLoad={(e) => { e.currentTarget.rel = 'stylesheet' }}
         />
         
         {/* Preconnect analytics - non-blocking */}
