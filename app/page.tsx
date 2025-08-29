@@ -1,5 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react" // Added Share2 and HelpCircle
 import Image from "next/image"
 import Link from "next/link"
@@ -17,10 +18,10 @@ export default function HomePage() {
         glowProps={{ 
           mode: 'breathe', 
           intensity: 'subtle',
-          colors: ['#3B82F6', '#06B6D4'],
+          colors: ['#04454A', '#EAFCFC'],
           duration: 8
         }}
-        className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-white via-slate-50 to-blue-50"
+        className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-isabelline to-azure-web/20"
       >
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-center">
@@ -28,8 +29,13 @@ export default function HomePage() {
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
                 <Compass className="w-5 h-5 mr-2" /> Votre boussole pour les élections municipales
               </span>
-              <h1 className="tracking-tight text-foreground">
-                <ColoredText variant="gradient" intensity="medium">Boussole Électorale Municipale</ColoredText>
+              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight tracking-tight text-foreground w-full">
+                Votre{" "}
+                <span className="text-midnight-green relative inline-block">
+                  boussole
+                  <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
+                </span>{" "}
+                électorale municipale
               </h1>
               <p className="text-lg text-muted-foreground max-w-lg">
                 Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
@@ -37,12 +43,12 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <div className="flex flex-col gap-2">
                   <StartQuestionnaireButton
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
                   >
                     Découvrez vos affinités politiques
                   </StartQuestionnaireButton>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
-                  <Link href="/faq" className="text-sm text-primary underline hover:text-primary/80 mt-2 text-center sm:text-left">
+                  <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80 mt-2 text-center sm:text-left">
                     Questions fréquentes
                   </Link>
                 </div>
@@ -50,7 +56,7 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-primary text-primary hover:bg-primary/10 hover:text-primary rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift border-2"
+                  className="border-midnight-green text-midnight-green hover:bg-midnight-green/10 hover:text-midnight-green rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift border-2"
                 >
                   <Link href="#comment-ca-marche" className="flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" />
@@ -67,8 +73,8 @@ export default function HomePage() {
               }}
             >
               <Image
-                src="/hero-illustration-v2.webp"
-                alt="Boussole électorale municipale Québec 2025 - Illustration de citoyens autour d'une boussole électorale municipale de Québec"
+                src="/Image_parc_crisp.webp"
+                alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
                 fill
                 className="rounded-2xl object-cover object-center"
                 priority
@@ -81,83 +87,123 @@ export default function HomePage() {
       </GlowSection>
 
       {/* Section d'explication */}
-      <section id="comment-ca-marche" className="section-contained w-full py-16 md:py-24 bg-background" aria-label="Comment ça marche">
-        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
-          <h2 className="text-center mb-12 text-foreground animate-fadeIn" style={{ animationDelay: "0.2s" }}>
-            Comment ça fonctionne ?
-          </h2>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+      <section id="comment-ca-marche" className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-eerie-black mb-4">Comment ça fonctionne ?</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Un processus simple en 4 étapes pour découvrir vos affinités politiques municipales
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[
               {
                 icon: FileText,
-                title: "1. Répondez aux questions",
+                title: "Répondez aux questions",
                 description: "Partagez vos opinions sur une série d'enjeux municipaux clés.",
-                color: "text-primary",
-                bgColor: "bg-primary/10",
               },
               {
                 icon: BarChart3,
-                title: "2. Obtenez vos résultats",
+                title: "Obtenez vos résultats",
                 description: "Visualisez votre alignement avec chaque candidat de manière claire et détaillée.",
-                color: "text-primary",
-                bgColor: "bg-primary/10",
               },
               {
                 icon: Users,
-                title: "3. Prenez une décision éclairée",
+                title: "Prenez une décision éclairée",
                 description:
                   "Utilisez vos résultats pour mieux comprendre quel candidat correspond à vos priorités avant de voter.",
-                color: "text-primary",
-                bgColor: "bg-primary/10",
               },
               {
                 icon: Share2,
-                title: "4. Partagez (si vous voulez!)",
+                title: "Partagez (si vous voulez!)",
                 description: "Discutez de vos résultats avec vos amis et votre famille pour encourager le débat.",
-                color: "text-primary",
-                bgColor: "bg-primary/10",
               },
-            ].map((item, index) => (
-              <div
-                key={item.title}
-                className="flex flex-col items-start text-left p-8 bg-card rounded-2xl shadow-soft animate-fadeIn card-interactive-effects group"
-                style={{ animationDelay: `${index * 0.15 + 0.3}s` }}
-              >
-                <div className={`p-3.5 ${item.bgColor} rounded-full mb-5`}>
-                  <item.icon className={`h-7 w-7 ${item.color} transition-colors`} />
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">{item.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
-              </div>
+            ].map((step, index) => (
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow h-full">
+                <CardContent className="p-6 space-y-4 h-full flex flex-col">
+                  <div className="w-12 h-12 bg-midnight-green/10 rounded-full flex items-center justify-center mx-auto">
+                    <step.icon className="w-6 h-6 text-midnight-green" />
+                  </div>
+                  <h3 className="text-lg md:text-xl font-semibold text-eerie-black">
+                    {index + 1}. {step.title}
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground flex-grow">{step.description}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Section pourquoi c'est important */}
-      <section className="section-contained w-full py-12 md:py-16 bg-muted/30">
+      <section className="section-contained w-full py-12 md:py-16 bg-azure-web/40">
         <div className="container px-4 md:px-6 max-w-7xl mx-auto">
           <h2 className="text-center mb-8 text-foreground animate-slideInUp">
             Pourquoi vos élections municipales comptent autant ?
           </h2>
           <div className="grid gap-8 md:grid-cols-3">
-            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <h3 className="font-semibold mb-4 text-foreground text-lg">🚌 Transport quotidien</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                Bus, métro, vélo, routes : votre municipalité décide comment vous vous déplacez au quotidien.
-              </p>
+            <div className="p-6 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <div className="flex gap-5 md:gap-7 min-h-[180px] md:min-h-[200px]">
+                <div className="w-1/3 flex-shrink-0 flex items-center">
+                  <div className="w-full h-36 md:h-40 rounded-xl overflow-hidden">
+                    <Image 
+                      src="/Image_cycliste_chien.webp" 
+                      alt="Transport quotidien - cycliste avec chien" 
+                      width={160} 
+                      height={160} 
+                      className="w-full h-full object-top rounded-xl" 
+                    />
+                  </div>
+                </div>
+                <div className="w-2/3 flex-shrink-0 flex flex-col justify-center pr-4">
+                  <h3 className="font-semibold mb-2 text-foreground text-base md:text-lg">Transport quotidien</h3>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    Bus, métro, vélo, routes : votre municipalité décide comment vous vous déplacez au quotidien.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <h3 className="font-semibold mb-4 text-foreground text-lg">🏠 Votre quartier</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                Logement, parcs, bibliothèques, déneigement : les services qui façonnent votre qualité de vie locale.
-              </p>
+            <div className="p-6 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <div className="flex gap-5 md:gap-7 min-h-[180px] md:min-h-[200px]">
+                <div className="w-1/3 flex-shrink-0 flex items-center">
+                  <div className="w-full h-36 md:h-40 rounded-xl overflow-hidden">
+                    <Image 
+                      src="/Image_quartier_ordures.webp" 
+                      alt="Votre quartier - services municipaux" 
+                      width={160} 
+                      height={160} 
+                      className="w-full h-full object-top rounded-xl" 
+                    />
+                  </div>
+                </div>
+                <div className="w-2/3 flex-shrink-0 flex flex-col justify-center pr-4">
+                  <h3 className="font-semibold mb-2 text-foreground text-base md:text-lg">Votre quartier</h3>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    Parcs, collecte des déchets, bibliothèques, déneigement : les services qui façonnent votre qualité de vie locale.
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <h3 className="font-semibold mb-4 text-foreground text-lg">💰 Vos taxes</h3>
-              <p className="text-base text-muted-foreground leading-relaxed">
-                La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez.
-              </p>
+            <div className="p-6 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <div className="flex gap-5 md:gap-7 min-h-[180px] md:min-h-[200px]">
+                <div className="w-1/3 flex-shrink-0 flex items-center">
+                  <div className="w-full h-36 md:h-40 rounded-xl overflow-hidden">
+                    <Image 
+                      src="/Image_parc_jardinage.webp" 
+                      alt="Vos taxes - investissement municipal" 
+                      width={160} 
+                      height={160} 
+                      className="w-full h-full object-center rounded-xl" 
+                    />
+                  </div>
+                </div>
+                <div className="w-2/3 flex-shrink-0 flex flex-col justify-center pr-4">
+                  <h3 className="font-semibold mb-2 text-foreground text-base md:text-lg">Vos taxes</h3>
+                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                    La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div className="text-center mt-8">
@@ -165,7 +211,7 @@ export default function HomePage() {
               <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+            <Button asChild size="lg" className="bg-midnight-green hover:bg-midnight-green/90">
               <Link href="/questionnaire">
                 Découvrez vos affinités politiques
               </Link>
@@ -179,10 +225,10 @@ export default function HomePage() {
         glowProps={{ 
           mode: 'drift', 
           intensity: 'subtle',
-          colors: ['#3B82F6', '#06B6D4'],
+          colors: ['#04454A', '#EAFCFC'],
           duration: 12
         }}
-        className="section-contained w-full py-16 md:py-20 bg-gradient-to-br from-primary/5 to-teal-special/5"
+        className="section-contained w-full py-16 md:py-20 bg-gradient-to-br from-azure-web to-isabelline"
       >
         <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div
@@ -192,7 +238,7 @@ export default function HomePage() {
             <h2 className="mb-6 text-foreground">Votre vote municipal a plus d&apos;impact que vous pensez</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
               Transport, logement, parcs, déneigement, taxes : votre ville décide de tout ce qui façonne votre quotidien. 
-              Pourtant, seulement <ColoredText variant="primary" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales. 
+              Pourtant, seulement <ColoredText variant="accent" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales. 
               Résultat ? Votre voix compte encore plus ! Notre boussole vous aide à faire un choix éclairé en quelques minutes.
             </p>
           </div>
@@ -219,7 +265,7 @@ export default function HomePage() {
                 className="p-8 bg-card rounded-xl shadow-soft animate-slideInUp card-interactive-effects hover:shadow-md transition-shadow duration-200"
                 style={{ animationDelay: `${index * 0.15 + 0.4}s` }}
               >
-                <div className="text-4xl font-bold text-primary mb-3">{item.stat}</div>
+                <div className="text-4xl font-bold text-midnight-green mb-3">{item.stat}</div>
                 <div className="text-lg font-semibold text-foreground mb-3">{item.label}</div>
                 <div className="text-base text-muted-foreground leading-relaxed">{item.description}</div>
               </div>
@@ -228,50 +274,49 @@ export default function HomePage() {
         </div>
       </GlowSection>
 
-      {/* Section de confidentialité avec image - CORRIGÉE */}
-      <section className="section-contained w-full py-16 md:py-24 bg-muted/30 overflow-hidden">
-        <div className="container px-4 md:px-6 max-w-7xl mx-auto overflow-hidden">
-          <div className="grid gap-8 md:gap-12 items-center md:grid-cols-2 w-full">
+      {/* Section de confidentialité avec image - PROFESSIONAL QUALITY */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            {/* Image - PROFESSIONAL SIZE */}
+            <div className="relative">
+              <div className="relative w-full h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-lg">
+                <Image
+                  src="/Image_famille.webp"
+                  alt="Famille dans la municipalité de Québec - Illustration vie de quartier - Boussole électorale municipale 2025"
+                  fill
+                  className="object-cover"
+                  quality={90}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            </div>
             {/* Contenu textuel */}
-            <div
-              className="text-center md:text-left p-6 md:p-10 bg-card rounded-2xl shadow-soft animate-slideInUp card-interactive-effects order-2 md:order-1 w-full min-w-0"
-              style={{ animationDelay: "0.4s" }}
-            >
-              <h2 className="mb-6 text-foreground">Votre vie privée, notre priorité.</h2>
-              <p className="text-muted-foreground mb-8 leading-relaxed">
-                Utilisez la Boussole Municipale en toute confiance. Vos réponses sont anonymes et ne sont utilisées que
-                pour calculer vos résultats. Nous ne vendons ni ne partageons vos données personnelles.
-              </p>
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <h2 className="text-4xl lg:text-5xl font-bold text-eerie-black leading-tight mb-6">
+                  Votre vie privée, notre priorité.
+                </h2>
+                <p className="text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl">
+                  Utilisez la Boussole Municipale en toute confiance. Vos réponses sont anonymes et ne sont utilisées que
+                  pour calculer vos résultats. Nous ne vendons ni ne partageons vos données personnelles.
+                </p>
+              </div>
               <Button
                 asChild
                 variant="outline"
-                className="border-primary text-primary hover:bg-primary/10 hover:text-primary rounded-xl px-7 py-3 btn-base-effects btn-hover-lift"
+                className="inline-flex items-center px-8 py-4 text-base font-medium border-2 border-midnight-green text-midnight-green hover:bg-midnight-green hover:text-white transition-all duration-200 rounded-xl"
               >
                 <Link href="/confidentialite">Lire notre politique de confidentialité</Link>
               </Button>
-            </div>
-            {/* Image - OPTIMISÉE POUR MOBILE */}
-            <div
-              className="relative h-[200px] sm:h-[250px] md:h-[350px] w-full rounded-2xl overflow-hidden animate-fadeIn order-1 md:order-2 min-w-0"
-              style={{ animationDelay: "0.6s" }}
-            >
-              <Image
-                src="/Image_parc_crisp.webp"
-                alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
-                fill
-                style={{ objectFit: "cover" }}
-                className="rounded-2xl"
-                quality={90}
-                loading="lazy"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Section Call-to-Action */}
-      <section className="section-contained w-full py-16 md:py-20 bg-gradient-to-r from-primary to-teal-special">
+      <section className="section-contained w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
         <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
@@ -279,7 +324,7 @@ export default function HomePage() {
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <StartQuestionnaireButton
-              className="bg-white text-primary hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              className="bg-off-white text-midnight-green hover:bg-off-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
             >
               Découvrez vos affinités politiques
             </StartQuestionnaireButton>

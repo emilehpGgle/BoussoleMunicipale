@@ -341,7 +341,7 @@ export default function ProfilePage() {
               className={`
                 p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
                 ${selectedValues.includes(option)
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                  ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
                   : "hover:bg-secondary/50 hover:border-secondary"
                 }
               `}
@@ -365,7 +365,7 @@ export default function ProfilePage() {
               className={`
                 p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
                 ${selectedValue === option 
-                  ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                  ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
                   : "hover:bg-secondary/50 hover:border-secondary"
                 }
               `}
@@ -478,7 +478,7 @@ export default function ProfilePage() {
                 className={`
                   p-3 h-auto text-left justify-between text-sm font-medium transition-all duration-200 relative
                   ${isSelected 
-                    ? "bg-primary text-primary-foreground border-primary shadow-sm" 
+                    ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
                     : "hover:bg-secondary/50 hover:border-secondary"
                   }
                 `}
@@ -561,7 +561,7 @@ export default function ProfilePage() {
     return (
       <div className="container max-w-4xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-midnight-green mx-auto mb-4"></div>
           <p className="text-muted-foreground">
             {isInitializing ? 'Initialisation de votre session...' : 'Chargement de votre profil...'}
           </p>
@@ -633,7 +633,7 @@ export default function ProfilePage() {
         </div>
         <div className="w-full bg-muted rounded-full h-2">
           <div 
-            className="bg-primary h-2 rounded-full transition-all duration-500 ease-out" 
+            className="bg-midnight-green h-2 rounded-full transition-all duration-500 ease-out" 
             style={{ width: `${globalProgress}%` }}
           ></div>
         </div>
@@ -653,7 +653,7 @@ export default function ProfilePage() {
                 ref={(el) => { questionRefs.current[question.id] = el }}
                 className={`shadow-soft rounded-xl transition-all duration-300 ${
                   isActive 
-                    ? "bg-card border-primary/50 shadow-lg" 
+                    ? "bg-card border-midnight-green/50 shadow-lg" 
                     : isCompleted 
                       ? "bg-secondary/10 border-secondary/30" 
                       : "bg-muted/30 border-muted"
@@ -674,7 +674,7 @@ export default function ProfilePage() {
                         ${isCompleted 
                           ? "bg-green-500 text-white" 
                           : isActive 
-                            ? "bg-primary text-primary-foreground" 
+                            ? "bg-midnight-green text-white" 
                             : "bg-muted text-muted-foreground"
                         }
                       `}>
@@ -749,7 +749,7 @@ export default function ProfilePage() {
             <Button
               onClick={handleSubmit}
               disabled={!canSubmit()}
-              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="flex items-center gap-2 bg-midnight-green hover:bg-midnight-green/90 text-white"
             >
               Voir mes résultats
               <ArrowRight className="h-4 w-4" />
@@ -758,7 +758,7 @@ export default function ProfilePage() {
             <Button
               onClick={handleNext}
               disabled={!isCurrentPageComplete()}
-              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="flex items-center gap-2 bg-midnight-green hover:bg-midnight-green/90 text-white"
             >
               Suivant
               <ChevronRight className="h-4 w-4" />

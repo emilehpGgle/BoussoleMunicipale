@@ -186,7 +186,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         <DialogContent className="sm:max-w-[500px] rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
-            <MapPin className="h-6 w-6 text-primary" />
+            <MapPin className="h-6 w-6 text-midnight-green" />
             {step === 'postal' ? 'Entrez votre code postal' : 'Confirmez votre arrondissement'}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
@@ -209,7 +209,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                   value={postalCode}
                   onChange={(e) => setPostalCode(e.target.value.toUpperCase())}
                   placeholder="G1A 1A1"
-                  className="rounded-lg bg-background focus:ring-primary"
+                  className="rounded-lg bg-background focus:ring-2 focus:ring-midnight-green focus:border-midnight-green focus-visible:ring-midnight-green focus-visible:border-midnight-green"
                   aria-describedby="postal-code-error"
                   maxLength={7}
                 />
@@ -238,7 +238,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               <Button
                 type="submit"
                 disabled={isLoading || !postalCode.trim()}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl"
               >
                 {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Continuer
@@ -250,19 +250,19 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         {step === 'confirm' && (
           <div className="space-y-4 py-4">
             {/* Information sur l'estimation */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <div className="bg-azure-web/30 border border-midnight-green/20 rounded-lg p-4">
               <div className="flex items-center gap-2 mb-2">
-                <Check className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-800">
+                <Check className="h-4 w-4 text-midnight-green" />
+                <span className="text-sm font-medium text-eerie-black">
                   Code postal analysé: {formatPostalCode(postalCode)}
                 </span>
               </div>
               {estimatedDistrict ? (
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-midnight-green/80">
                   Arrondissement estimé : <strong>{estimatedDistrict}</strong>
                 </p>
               ) : (
-                <p className="text-sm text-blue-700">
+                <p className="text-sm text-midnight-green/80">
                   Code postal non reconnu. Veuillez sélectionner votre arrondissement.
                 </p>
               )}
@@ -278,7 +278,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                   value={confirmedDistrict} 
                   onValueChange={handleDistrictChange}
                 >
-                  <SelectTrigger className="w-full rounded-lg bg-background border border-border">
+                  <SelectTrigger className="w-full rounded-lg bg-background border border-border focus:ring-midnight-green focus:border-midnight-green">
                     <SelectValue 
                       placeholder="Sélectionnez votre arrondissement"
                       className="text-foreground"
@@ -342,7 +342,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               <Button
                 type="button"
                 onClick={handleDistrictConfirmation}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl"
                 disabled={!confirmedDistrict || isSaving}
               >
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
@@ -356,7 +356,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         <div className="text-center">
           <Button
             variant="link"
-            className="text-sm text-muted-foreground hover:text-primary"
+            className="text-sm text-muted-foreground hover:text-midnight-green"
             onClick={() => {
               onClose()
               

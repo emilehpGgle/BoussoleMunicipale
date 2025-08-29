@@ -66,7 +66,7 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
                 placeholder="A1A 1A1"
-                className="col-span-3 rounded-lg bg-background focus:ring-primary"
+                className="col-span-3 rounded-lg bg-background focus:ring-midnight-green"
                 aria-describedby="postal-code-error"
               />
             </div>
@@ -83,14 +83,14 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
               type="button"
               variant="outline"
               onClick={onClose}
-              className="rounded-xl text-muted-foreground hover:border-primary hover:text-primary"
+              className="rounded-xl text-muted-foreground hover:border-midnight-green hover:text-midnight-green"
             >
               Annuler
             </Button>
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl"
+              className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl"
             >
               {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Continuer
@@ -100,7 +100,7 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
         <div className="mt-4 text-center">
           <Button
             variant="link"
-            className="text-sm text-muted-foreground hover:text-primary"
+            className="text-sm text-muted-foreground hover:text-midnight-green"
             onClick={() => {
               onClose()
               router.push("/questionnaire?skipPostal=true")

@@ -30,13 +30,12 @@ import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { usePriorities } from "@/hooks/usePriorities"
 import dynamic from "next/dynamic"
-import Head from "next/head"
-
 const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
 
 // Lazy loading des modals (pas critiques pour le first paint)
 const ShareModal = lazy(() => import("@/components/share-modal"))
 const TopMatchModal = lazy(() => import("@/components/ui/top-match-modal").then(module => ({ default: module.TopMatchModal })))
+import Head from "next/head"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 
@@ -289,7 +288,7 @@ export default function ResultsPage() {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-midnight-green mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
           <p className="text-muted-foreground">
             {responsesLoading ? 'Chargement de vos réponses...' : 
              isCalculating ? 'Calcul de vos résultats...' : 
@@ -328,7 +327,7 @@ export default function ResultsPage() {
 
   // Composant LogoContainer avec gestion d'erreur améliorée
   const LogoContainer: React.FC<{ children: React.ReactNode; className?: string; party?: Party }> = ({ children, className }) => (
-    <div className={`bg-white rounded-xl p-2 shadow-md border border-gray-300 flex items-center justify-center ${className || ""}`}>
+    <div className={`bg-white rounded-xl p-2 shadow-sm flex items-center justify-center ${className || ""}`}>
       {children}
     </div>
   )
@@ -381,9 +380,9 @@ export default function ResultsPage() {
           />
         )}
         {imageError && (
-          <div className="w-full h-full bg-midnight-green/5 border border-midnight-green/20 rounded-lg flex items-center justify-center">
+          <div className="w-full h-full bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-center">
             <div className="text-center">
-              <div className="text-lg font-bold text-midnight-green mb-1">
+              <div className="text-lg font-bold text-primary mb-1">
                 {party.shortName || party.name.substring(0, 3).toUpperCase()}
               </div>
               <div className="text-xs text-muted-foreground leading-tight">
@@ -493,7 +492,7 @@ export default function ResultsPage() {
             <span className="text-lg font-semibold text-foreground">Partagez vos résultats !</span>
             <Button
               onClick={() => setIsShareModalOpen(true)}
-              className="bg-midnight-green hover:bg-midnight-green/90 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6 py-2 flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-lg px-6 py-2 flex items-center gap-2"
             >
               <Share2 className="h-4 w-4" />
               Partager
@@ -506,7 +505,7 @@ export default function ResultsPage() {
           <div className="fixed bottom-6 right-6 z-50 animate-fadeIn">
             <Button
               onClick={() => setIsShareModalOpen(true)}
-              className="bg-midnight-green hover:bg-midnight-green/90 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full p-4"
+              className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl transition-all duration-200 rounded-full p-4"
               size="lg"
               aria-label="Partager vos résultats"
             >
@@ -515,18 +514,18 @@ export default function ResultsPage() {
           </div>
         )}
 
-        <Card className="shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border border-border/50">
-          <CardHeader>
-            <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
-          </CardHeader>
+                 <Card className="shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border border-border/50">
+           <CardHeader>
+             <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
+           </CardHeader>
           <CardContent className="grid md:grid-cols-3 gap-6">
             {topParties.map(({ party, score }, index) => (
               <Card
                 key={party.id}
-                className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl card-interactive-effects animate-fadeIn bg-white/90 backdrop-blur-sm hover:border-midnight-green/30 transition-all duration-300" // Added card-color-accent for mobile
+                className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl card-interactive-effects animate-fadeIn bg-white/90 backdrop-blur-sm hover:border-primary/30 transition-all duration-300" // Added card-color-accent for mobile
                 style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
               >
-                <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" index={index} />
+                                 <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" index={index} />
                 {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
                 <div className="min-h-[4rem] flex flex-col justify-center mb-3">
                   <h3 className="text-lg font-semibold text-foreground leading-tight">{party.shortName || party.name}</h3>
@@ -534,7 +533,7 @@ export default function ResultsPage() {
                 </div>
                 <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
                   <div
-                    className="bg-teal-600 h-4 rounded-full transition-all duration-500 ease-out"
+                    className="bg-primary h-4 rounded-full transition-all duration-500 ease-out"
                     style={{ width: `${score.toFixed(0)}%` }}
                   ></div>
                 </div>
@@ -542,7 +541,7 @@ export default function ResultsPage() {
                 <Button
                   asChild
                   variant="outline"
-                  className="w-full rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 btn-base-effects btn-hover-lift"
+                  className="w-full rounded-lg border-primary text-primary hover:bg-primary/10 btn-base-effects btn-hover-lift"
                 >
                   <Link href={`/parti/${party.id}`}>Voir la fiche du parti</Link>
                 </Button>
@@ -551,9 +550,9 @@ export default function ResultsPage() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-soft rounded-2xl subtle-glow">
-          <CardHeader>
-            <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
+                 <Card className="shadow-soft rounded-2xl subtle-glow">
+           <CardHeader>
+             <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
             <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -561,21 +560,21 @@ export default function ResultsPage() {
               <Link
                 href={`/parti/${party.id}`}
                 key={party.id}
-                className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-midnight-green/20 hover:shadow-md"
+                className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-primary/20 hover:shadow-md"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" index={index} />
-                  <h3 className="text-lg font-semibold text-foreground group-hover:text-midnight-green transition-colors flex-1">
+                                     <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" index={index} />
+                  <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors flex-1">
                     {party.name}
                   </h3>
-                  <div className="flex items-center gap-2 text-muted-foreground group-hover:text-midnight-green transition-colors">
+                  <div className="flex items-center gap-2 text-muted-foreground group-hover:text-primary transition-colors">
                     <span className="text-sm font-medium">Voir les détails</span>
                     <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
-                <div className="w-full bg-muted rounded-full h-5 overflow-hidden border border-border group-hover:border-midnight-green/30 transition-colors">
+                <div className="w-full bg-muted rounded-full h-5 overflow-hidden border border-border group-hover:border-primary/30 transition-colors">
                   <div
-                    className="bg-teal-600 h-full flex items-center justify-center text-xs text-white font-medium transition-all duration-500 ease-out"
+                    className="bg-primary h-full flex items-center justify-center text-xs text-primary-foreground font-medium transition-all duration-500 ease-out"
                     style={{ width: `${score.toFixed(0)}%` }}
                   >
                     {score >= 15 ? `${score.toFixed(0)}%` : ""}
@@ -591,9 +590,9 @@ export default function ResultsPage() {
           <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
         </Suspense>
 
-        <Card className="shadow-soft rounded-2xl subtle-glow">
-          <CardHeader>
-            <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
+                 <Card className="shadow-soft rounded-2xl subtle-glow">
+           <CardHeader>
+             <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
             <CardDescription>
               Explorez comment vos réponses se comparent à celles des partis pour chaque question.
             </CardDescription>
@@ -639,14 +638,14 @@ export default function ResultsPage() {
                 return (
                   <AccordionItem value={`item-${qIndex}`} key={question.id}>
                     <AccordionTrigger className="text-left hover:no-underline group">
-                      <span className="text-sm font-medium text-foreground group-hover:text-midnight-green">
+                      <span className="text-sm font-medium text-foreground group-hover:text-primary">
                         {qIndex + 1}. {question.text}
                       </span>
                     </AccordionTrigger>
                     <AccordionContent className="pt-2 pb-4 px-2 space-y-3">
-                      <div className="p-3 bg-midnight-green/10 rounded-md border border-midnight-green/20">
-                        <p className="text-sm font-semibold text-midnight-green mb-1">Votre Réponse :</p>
-                        <p className="text-sm text-midnight-green/80">
+                      <div className="p-3 bg-primary/10 rounded-md border border-primary/20">
+                        <p className="text-sm font-semibold text-primary mb-1">Votre Réponse :</p>
+                        <p className="text-sm text-primary-dark">
                           {userResponseText}
                         </p>
                       </div>

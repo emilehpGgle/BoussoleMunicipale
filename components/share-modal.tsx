@@ -271,7 +271,7 @@ export default function ShareModal({
             <h3 className="text-xl font-semibold mb-4">Partager via</h3>
             <div className="flex justify-center gap-4 mt-2">
               <button onClick={handleFacebookShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
-                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-600 text-white transition-transform group-hover:scale-110">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-midnight-green text-white transition-transform group-hover:scale-110">
                   <Facebook className="w-7 h-7" />
                 </div>
                 <span className="text-xs">Facebook</span>
@@ -283,7 +283,7 @@ export default function ShareModal({
                 <span className="text-xs">X</span>
               </button>
               <button onClick={handleMessengerShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
-                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-blue-500 text-white transition-transform group-hover:scale-110">
+                <div className="w-12 h-12 flex items-center justify-center rounded-full bg-midnight-green text-white transition-transform group-hover:scale-110">
                   <MessageCircle className="w-7 h-7" />
                 </div>
                 <span className="text-xs">Messenger</span>
@@ -332,7 +332,7 @@ export default function ShareModal({
                   </div>
                   <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
                     <div
-                      className="bg-primary h-4 rounded-full transition-all duration-500 ease-out"
+                      className="bg-midnight-green h-4 rounded-full transition-all duration-500 ease-out"
                       style={{ width: `${score.toFixed(0)}%` }}
                     ></div>
                   </div>
@@ -355,7 +355,7 @@ export default function ShareModal({
             <p className="text-sm text-gray-600 mb-2">
               Découvrez votre compatibilité politique municipale
             </p>
-            <p className="text-xs text-blue-600 font-medium">
+            <p className="text-xs text-midnight-green font-medium">
               boussolemunicipalequebec.ca
             </p>
           </div>
@@ -403,7 +403,7 @@ export default function ShareModal({
           <Button
             type="submit"
             disabled={isSharing}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
+            className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg"
           >
             <Mail className="mr-2 h-4 w-4" /> 
             {isSharing ? "Envoi en cours..." : "M'envoyer mes résultats par courriel"}

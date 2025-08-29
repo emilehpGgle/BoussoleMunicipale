@@ -47,17 +47,17 @@ export function ButtonWithEffects({
     minimal: {
       glowOpacity: 0.15,
       scale: 0.99,
-      shadowIntensity: '0 2px 8px rgba(var(--primary), 0.15)'
+      shadowIntensity: '0 2px 8px hsl(var(--primary) / 0.15)'
     },
     subtle: {
       glowOpacity: 0.25,
       scale: 0.98,
-      shadowIntensity: '0 4px 12px rgba(var(--primary), 0.2)'
+      shadowIntensity: '0 4px 12px hsl(var(--primary) / 0.2)'
     },
     standard: {
       glowOpacity: 0.35,
       scale: 0.97,
-      shadowIntensity: '0 6px 16px rgba(var(--primary), 0.25)'
+      shadowIntensity: '0 6px 16px hsl(var(--primary) / 0.25)'
     }
   };
 
@@ -66,15 +66,18 @@ export function ButtonWithEffects({
   return (
     <motion.button
       className={cn(
+        // Classes personnalisées EN PREMIER pour priorité CSS
+        className,
+        // Classes de base du composant (non-conflictuelles)
         'relative overflow-hidden transition-all duration-150 ease-out',
-        // Bordures nettes et définies
-        'border-2 border-border/70 hover:border-primary/60',
-        // Ombre subtile
+        // Bordure encore plus foncée par défaut (peut être écrasée)
+        'border border-border/80',
+        // Ombre subtile (compatible)
         'shadow-sm hover:shadow-md',
-        // États de focus et active optimisés
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50',
-        'active:scale-[0.98]',
-        className
+        // Accessibilité essentielle
+        'focus-visible:outline-none',
+        // Scale animation (compatible)
+        'active:scale-[0.98]'
       )}
       onClick={handleClick}
       disabled={disabled}

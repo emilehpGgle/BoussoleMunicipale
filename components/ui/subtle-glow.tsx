@@ -16,7 +16,7 @@ export type SubtleGlowProps = {
 export function SubtleGlow({
   className,
   style,
-  colors = ['#3B82F6', '#06B6D4', '#8B5CF6'], // Bleu, teal, violet subtils
+  colors = ['#04454A', '#EAFCFC', '#76E3E7'], // Teal principal, teal clair, teal moyen
   mode = 'breathe',
   intensity = 'subtle',
   blur = 'medium',

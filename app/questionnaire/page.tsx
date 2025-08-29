@@ -363,7 +363,7 @@ export default function QuestionnairePage() {
     return (
       <div className="container max-w-4xl py-8 px-4 md:px-6 flex flex-col items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-midnight-green mx-auto mb-4"></div>
           <p className="text-muted-foreground">Chargement de vos réponses...</p>
         </div>
       </div>
@@ -384,19 +384,6 @@ export default function QuestionnairePage() {
         </div>
       )}
 
-      {/* Image décorative - jardinage centrée à droite (desktop) */}
-      <div className="hidden lg:block">
-        <div className="absolute right-4 top-1/2 -translate-y-1/2 z-0 pointer-events-none decorative-frame-right">
-          <Image 
-            src="/Image_parc_jardinage.png" 
-            alt="" 
-            width={320}
-            height={240}
-            quality={90}
-            className="object-contain decorative-image-right"
-          />
-        </div>
-      </div>
 
       {/* Contenu principal optimisé pour l&apos;espace vertical */}
       <div className="container max-w-4xl py-4 md:py-6 px-4 md:px-6 mobile-content-overlay section-contained flex flex-col questionnaire-compact">
@@ -418,7 +405,7 @@ export default function QuestionnairePage() {
           <Progress
             value={progress}
             className="h-2 rounded-full bg-muted"
-            indicatorClassName="bg-primary transition-all duration-500 ease-out"
+            indicatorClassName="bg-midnight-green transition-all duration-500 ease-out"
           />
         </div>
 
@@ -466,7 +453,7 @@ export default function QuestionnairePage() {
                   <p className="text-sm text-muted-foreground mb-2">
                     Sélectionnez vos 3 enjeux les plus importants dans l&apos;ordre de priorité
                   </p>
-                  <p className="text-xs text-primary font-medium">
+                  <p className="text-xs text-midnight-green font-medium">
                     {Object.keys(selectedPriorities).length}/3 priorités sélectionnées
                   </p>
                 </div>
@@ -494,9 +481,9 @@ export default function QuestionnairePage() {
                         className={`option-button justify-between py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                           ${
                             isSelected
-                              ? "bg-primary text-primary-foreground shadow-soft border-2 border-primary"
+                              ? "bg-midnight-green text-white shadow-soft border-2 border-midnight-green focus:outline-none focus:ring-2 focus:ring-midnight-green"
                               : canSelect 
-                                ? "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150 border-2 border-transparent hover:border-primary/30"
+                                ? "bg-background hover:bg-midnight-green/20 hover:text-foreground text-foreground transition-all duration-150 border-2 border-transparent hover:border-midnight-green/30 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                                 : "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60"
                           } ${animationClasses.optionClass}`}
                         onClick={() => handlePrioritySelection(priority)}
@@ -527,13 +514,13 @@ export default function QuestionnairePage() {
                     className={`option-button justify-start py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                       ${
                         isSelected
-                          ? "bg-primary text-primary-foreground shadow-soft"
-                          : "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150"
+                          ? "bg-midnight-green text-white border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          : "bg-background hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                       } ${animationClasses.optionClass}`}
                     onClick={() => handleImportanceDirectAnswer(optionKey)}
                   >
                     {isSelected && (
-                      <CheckCircle2 className="mr-2 h-4 w-4 text-primary-foreground/80" />
+                      <CheckCircle2 className="mr-2 h-4 w-4 text-white/80" />
                     )}
                     {labelText}
                   </ButtonWithEffects>
@@ -552,13 +539,13 @@ export default function QuestionnairePage() {
                     className={`option-button justify-start py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                       ${
                         isSelected
-                          ? "bg-primary text-primary-foreground shadow-soft"
-                          : "bg-background hover:bg-primary/20 hover:text-foreground text-foreground transition-all duration-150"
+                          ? "bg-midnight-green text-white border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          : "bg-background hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                       } ${animationClasses.optionClass}`}
                     onClick={() => handleAnswer(optionKey)}
                   >
                     {isSelected && (
-                      <CheckCircle2 className="mr-2 h-4 w-4 text-primary-foreground/80" />
+                      <CheckCircle2 className="mr-2 h-4 w-4 text-white/80" />
                     )}
                     {labelText}
                   </ButtonWithEffects>
@@ -598,7 +585,7 @@ export default function QuestionnairePage() {
                     ? Object.keys(selectedPriorities).length !== 3
                     : !isAnswered
                 }
-                className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-5 py-3 md:px-6 md:py-4 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm md:text-base min-h-[48px] md:min-h-[52px] w-full xs:w-auto transition-transform duration-200 touch-manipulation"
+                className="flex items-center gap-2 bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-5 py-3 md:px-6 md:py-4 shadow-soft btn-base-effects btn-hover-lift btn-primary-hover-effects font-medium text-sm md:text-base min-h-[48px] md:min-h-[52px] w-full xs:w-auto transition-transform duration-200 touch-manipulation focus:outline-none focus:ring-2 focus:ring-midnight-green"
               >
                 Terminer
               </Button>
@@ -608,7 +595,7 @@ export default function QuestionnairePage() {
         </SwipeContainer>
 
         <div className="mt-1 text-center">
-          <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-primary btn-base-effects py-1">
+          <Button variant="link" asChild className="text-xs text-muted-foreground hover:text-midnight-green btn-base-effects py-1">
             <Link href="/">Quitter</Link>
           </Button>
         </div>

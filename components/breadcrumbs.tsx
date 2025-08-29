@@ -1,6 +1,5 @@
 import Link from 'next/link'
 import { ChevronRight, Home } from 'lucide-react'
-import Head from 'next/head'
 
 interface BreadcrumbItem {
   label: string
@@ -29,12 +28,10 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
   return (
     <>
       {/* Structured data pour les breadcrumbs */}
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-        />
-      </Head>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
 
       <nav 
         aria-label="Fil d'Ariane" 
@@ -57,7 +54,7 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
               ) : (
                 <Link 
                   href={item.href}
-                  className="hover:text-primary transition-colors duration-200"
+                  className="hover:text-midnight-green transition-colors duration-200"
                 >
                   {index === 0 && <Home className="h-3 w-3 mr-1 inline" />}
                   {item.label}

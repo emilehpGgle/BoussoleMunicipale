@@ -327,7 +327,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
             {positionDescription && (
               <Badge
                 variant="outline"
-                className="text-xs px-2 py-1 border border-blue-200 bg-blue-50/70 text-blue-800 font-medium rounded-full flex items-center gap-1 shadow-sm"
+                className="text-xs px-2 py-1 border border-midnight-green/20 bg-midnight-green/5 text-midnight-green font-medium rounded-full flex items-center gap-1 shadow-sm"
               >
                 <svg width="14" height="14" fill="none" viewBox="0 0 24 24" className="inline-block mr-1">
                   <circle cx="12" cy="12" r="10" stroke="#60a5fa" strokeWidth="2" fill="#e0f2fe" />
@@ -357,8 +357,8 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
 
           {/* Parti le plus proche */}
           {partyDistances.length > 0 && (
-            <div className="bg-primary/10 rounded-lg p-4 border border-primary/20">
-              <h4 className="font-semibold text-primary mb-2">Parti le plus compatible :</h4>
+            <div className="bg-teal-50 rounded-lg p-4 border border-teal-200">
+              <h4 className="font-semibold text-black mb-2">Parti le plus compatible :</h4>
               <div className="flex items-center gap-3">
                 {partyDistances[0].party?.logoUrl && (
                   <div className="bg-white rounded-lg p-2 shadow-sm">
@@ -372,10 +372,10 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
                   </div>
                 )}
                 <div>
-                  <p className="font-medium text-primary">
+                  <p className="font-medium text-black">
                     {partyDistances[0].party?.name}
                   </p>
-                  <p className="text-sm text-primary/80">
+                  <p className="text-sm text-gray-700">
                     Compatibilité : {partyDistances[0].compatibility}% (70% politique + 30% priorités)
                   </p>
                 </div>
@@ -420,7 +420,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
             <Badge variant="secondary" className="text-xs px-2 py-1">
               Social: {userPosition.y > 0 ? 'Progressiste' : 'Conservateur'} ({Math.abs(userPosition.y).toFixed(1)})
             </Badge>
-            <Badge variant="outline" className="text-xs px-2 py-1 border-primary text-primary">
+            <Badge variant="outline" className="text-xs px-2 py-1 border-midnight-green text-midnight-green">
               {positionDescription}
             </Badge>
 

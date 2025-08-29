@@ -5,7 +5,8 @@
       "WebFetch(domain:monsaintsauveur.com)",
       "WebFetch(domain:monquartier.quebec)",
       "WebFetch(domain:monquartier.quebec)",
-      "WebFetch(domain:monquartier.quebec)"
+      "WebFetch(domain:monquartier.quebec)",
+      "mcp__upstash-context-7-mcp__get-library-docs"
     ],
     "deny": []
   }

@@ -91,9 +91,9 @@ const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number 
         />
       )}
       {imageError && (
-        <div className="w-full h-full bg-primary/5 border border-primary/20 rounded-lg flex items-center justify-center">
+        <div className="w-full h-full bg-midnight-green/5 border border-midnight-green/20 rounded-lg flex items-center justify-center">
           <div className="text-center">
-            <div className="text-lg font-bold text-primary mb-1">
+            <div className="text-lg font-bold text-midnight-green mb-1">
               {party.shortName || party.name.substring(0, 3).toUpperCase()}
             </div>
             <div className="text-xs text-muted-foreground leading-tight">
@@ -159,11 +159,11 @@ export function TopMatchModal({
               className="text-center mb-6"
             >
               <div className="flex items-center justify-center gap-2 mb-3">
-                <Sparkles className="h-4 w-4 text-primary" />
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 text-xs px-2 py-1">
+                <Sparkles className="h-4 w-4 text-midnight-green" />
+                <Badge variant="secondary" className="bg-midnight-green/10 text-midnight-green border-midnight-green/20 text-xs px-2 py-1">
                   Votre meilleur match !
                 </Badge>
-                <Sparkles className="h-4 w-4 text-primary" />
+                <Sparkles className="h-4 w-4 text-midnight-green" />
               </div>
               <DialogTitle className="text-xl font-bold text-foreground">
                 Vos meilleurs alignements (Partis)
@@ -176,7 +176,7 @@ export function TopMatchModal({
               animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.95 }}
               transition={{ duration: 0.4, delay: 0.1 }}
             >
-              <Card className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm hover:border-primary/30 transition-all duration-300">
+              <Card className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm hover:border-midnight-green/30 transition-all duration-300">
                 {/* Logo du parti avec gestion d'erreur */}
                 <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" />
 
@@ -193,7 +193,7 @@ export function TopMatchModal({
                 {/* Barre de progression - Identique à la page résultats */}
                 <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
                   <motion.div
-                    className="bg-primary h-4 rounded-full transition-all duration-500 ease-out"
+                    className="bg-midnight-green h-4 rounded-full transition-all duration-500 ease-out"
                     initial={{ width: "0%" }}
                     animate={{ width: showContent ? `${topMatch.percentage}%` : "0%" }}
                     transition={{ duration: 0.8, delay: 0.3 }}
@@ -220,7 +220,7 @@ export function TopMatchModal({
                   <Button
                     asChild
                     variant="outline"
-                    className="w-full rounded-lg border-primary text-primary hover:bg-primary/10 transition-colors"
+                    className="w-full rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 transition-colors"
                     onClick={onViewPartyProfile}
                   >
                     <Link href={`/parti/${party.id}`}>

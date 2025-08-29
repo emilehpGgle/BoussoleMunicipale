@@ -7,6 +7,7 @@ import SiteHeader from "@/components/site-header"
 import SiteFooter from "@/components/site-footer"
 import { Toaster } from "sonner"
 import { Analytics } from "@/components/analytics"
+import ConditionalFooter from "@/components/conditional-footer"
 
 const inter = Inter({ subsets: ["latin"], display: "swap" })
 
@@ -43,15 +44,19 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/logo-main_sans_ecriture.png",
+        url: "/favicon.svg",
+        type: "image/svg+xml",
+      },
+      {
+        url: "/logo-main.svg",
         sizes: "any",
       },
     ],
     apple: [
       {
-        url: "/logo-main_sans_ecriture.png",
+        url: "/logo-main.svg",
         sizes: "180x180",
-        type: "image/png",
+        type: "image/svg+xml",
       },
     ],
   },
@@ -263,7 +268,7 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "Boussole Électorale Québec",
               "url": "https://boussole-municipale.vercel.app",
-              "logo": "https://boussole-municipale.vercel.app/logo-main_sans_ecriture.png",
+              "logo": "https://boussole-municipale.vercel.app/logo-main.svg",
               "description": "Boussole électorale municipale de Québec 2025 : test politique gratuit pour découvrir vos affinités avec les partis municipaux.",
               "sameAs": [
                 "https://www.facebook.com/boussolemunicipale",
@@ -291,7 +296,7 @@ export default function RootLayout({
           <div className="flex flex-col min-h-screen bg-white">
             <SiteHeader />
             <main className="flex-1">{children}</main>
-            <SiteFooter />
+            <ConditionalFooter />
           </div>
           <Toaster 
             position="bottom-right"

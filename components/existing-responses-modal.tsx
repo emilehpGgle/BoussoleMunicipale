@@ -125,8 +125,8 @@ export default function ContinueOrRestartModal({
       <DialogContent className="sm:max-w-md bg-card border-border shadow-soft">
         <DialogHeader className="text-left">
           <div className="flex items-center gap-3 mb-2">
-            <div className="p-2 bg-primary/10 rounded-full">
-              <FileText className="h-5 w-5 text-primary" />
+            <div className="p-2 bg-midnight-green/10 rounded-full">
+              <FileText className="h-5 w-5 text-midnight-green" />
             </div>
             <DialogTitle className="text-xl font-semibold text-foreground">
               {isCompleted ? "Questionnaire terminé !" : "Questionnaire en cours"}
@@ -144,10 +144,10 @@ export default function ContinueOrRestartModal({
           {isCompleted ? (
              <Button
               onClick={handleViewResults}
-              className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-200 hover:shadow-md"
+              className="w-full justify-start h-auto p-4 bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl transition-all duration-200 hover:shadow-md"
             >
               <div className="flex items-center gap-3 w-full">
-                <div className="p-2 bg-primary-foreground/20 rounded-full">
+                <div className="p-2 bg-white/20 rounded-full">
                   <BarChart3 className="h-4 w-4" />
                 </div>
                 <div className="text-left flex-1">
@@ -159,10 +159,10 @@ export default function ContinueOrRestartModal({
           ) : (
             <Button
               onClick={handleContinueQuestionnaire}
-              className="w-full justify-start h-auto p-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl transition-all duration-200 hover:shadow-md"
+              className="w-full justify-start h-auto p-4 bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl transition-all duration-200 hover:shadow-md"
             >
               <div className="flex items-center gap-3 w-full">
-                <div className="p-2 bg-primary-foreground/20 rounded-full">
+                <div className="p-2 bg-white/20 rounded-full">
                   <Play className="h-4 w-4" />
                 </div>
                 <div className="text-left flex-1">
@@ -180,19 +180,19 @@ export default function ContinueOrRestartModal({
             onClick={handleRestartFromScratch}
             disabled={isClearing}
             variant="outline"
-            className="w-full justify-start h-auto p-4 border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl transition-all duration-200"
+            className="w-full justify-start h-auto p-4 border-midnight-green/20 hover:bg-azure-web/20 hover:border-midnight-green/30 rounded-xl transition-all duration-200"
           >
             <div className="flex items-center gap-3 w-full">
-              <div className="p-2 bg-slate-100 rounded-full">
+              <div className="p-2 bg-azure-web/50 rounded-full">
                 {isClearing ? (
                   <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-slate-600"></div>
                 ) : (
-                  <RotateCcw className="h-4 w-4 text-slate-600" />
+                  <RotateCcw className="h-4 w-4 text-midnight-green" />
                 )}
               </div>
               <div className="text-left flex-1">
-                <div className="font-semibold text-sm text-slate-700">Recommencer à zéro</div>
-                <div className="text-xs text-slate-500">Effacer toutes vos réponses</div>
+                <div className="font-semibold text-sm text-eerie-black">Recommencer à zéro</div>
+                <div className="text-xs text-midnight-green/70">Effacer toutes vos réponses</div>
               </div>
             </div>
           </Button>

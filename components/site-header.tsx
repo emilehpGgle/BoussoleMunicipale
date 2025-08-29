@@ -96,13 +96,13 @@ export default function SiteHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur-md shadow-soft">
+      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg shadow-soft">
         <div className="container flex h-20 max-w-7xl items-center">
           {/* Logo - Parfaitement aligné à gauche */}
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
             <div className="relative h-full w-36 sm:w-40 md:w-44">
                                 <Image
-                    src="/logo-main.webp"
+                    src="/logo-main.svg"
                     alt="Boussole Municipale Logo"
                     fill
                     sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, 190px"
@@ -119,7 +119,7 @@ export default function SiteHeader() {
 
           {/* Desktop Navigation & Conditional Action Button */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link href="/aide" className="text-sm font-medium text-foreground/80 hover:text-primary">
+            <Link href="/aide" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
               Aide
             </Link>
             
@@ -127,7 +127,7 @@ export default function SiteHeader() {
             {!shouldHideStartButton ? (
               <Button
                 onClick={handleStartQuestionnaire}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift btn-primary-hover-effects"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift"
               >
                 Commencer
               </Button>
@@ -136,7 +136,7 @@ export default function SiteHeader() {
               <Button
                 onClick={handleGoHome}
                 variant="outline"
-                className="border-primary/20 text-foreground/80 hover:bg-primary/10 hover:text-primary rounded-xl px-7 py-3 text-sm font-medium shadow-sm btn-base-effects btn-hover-lift"
+                className="border-midnight-green/60 text-foreground/80 hover:bg-midnight-green/10 hover:text-midnight-green hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 rounded-xl px-7 py-3 text-sm font-medium shadow-sm btn-base-effects btn-hover-lift transition-all duration-200"
               >
                 Accueil
               </Button>
@@ -163,7 +163,7 @@ export default function SiteHeader() {
                       <Link href="/" className="block h-[50px]">
                         <div className="relative h-full w-36 sm:w-40">
                           <Image
-                            src="/logo-main.webp"
+                            src="/logo-main.svg"
                             alt="Boussole Municipale Logo"
                             fill
                             style={{ objectFit: "contain" }}
@@ -191,7 +191,7 @@ export default function SiteHeader() {
                         // Puis gérer le commencement
                         setTimeout(() => handleStartQuestionnaire(), 100)
                       }}
-                      className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift btn-primary-hover-effects"
+                      className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift"
                     >
                       Commencer
                     </Button>

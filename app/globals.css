@@ -4,37 +4,37 @@
 
 @layer base {
   :root {
-    /* Nouvelle palette optimisée - Bleu primary, Teal accent spécial */
-    --background: 0 0% 100%; /* Blanc pur */
-    --foreground: 222.2 84% 4.9%; /* Bleu nuit profond pour texte */
+    /* Palette palette2.0.scss - Élimination complète du bleu */
+    --background: 27 60% 97%; /* Isabelline off-white (#FCF7F3) */
+    --foreground: 0 0% 13%; /* Eerie Black pour texte (#222222) */
 
-    --card: 0 0% 100%; /* Cartes blanches */
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 0 100% 100%; /* White pur (#FFFEFE) */
+    --card-foreground: 0 0% 13%; /* Eerie Black */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 0 100% 100%; /* White pur */
+    --popover-foreground: 0 0% 13%; /* Eerie Black */
 
-    --primary: 221.2 83.2% 53.3%; /* Bleu confiance principal (#1E40AF) */
-    --primary-foreground: 210 40% 98%; /* Blanc */
+    --primary: 184 91% 14%; /* Midnight Green - Teal principal (#04454A) */
+    --primary-foreground: 0 100% 100%; /* White pur */
 
-    --secondary: 210 40% 96%; /* Gris bleu très subtil pour secondary (#E2E8F0) */
-    --secondary-foreground: 222.2 84% 4.9%; /* Texte sombre sur secondary */
+    --secondary: 180 75% 95%; /* Azure Web - Teal ultra-clair (#EAFCFC) */
+    --secondary-foreground: 0 0% 13%; /* Eerie Black */
 
-    --accent: 210 40% 96%; /* Blanc bleuté très subtil (#F8FAFC) */
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 180 75% 95%; /* Azure Web - Teal clair */
+    --accent-foreground: 0 0% 13%; /* Eerie Black */
 
-    --teal-special: 181 84% 28%; /* Teal du logo pour effets spéciaux (#0D7377) */
-    --teal-special-foreground: 0 0% 100%;
+    --teal-special: 184 91% 14%; /* Midnight Green (#04454A) */
+    --teal-special-foreground: 0 100% 100%; /* White pur */
 
-    --muted: 210 40% 96%; /* Blanc bleuté très léger */
-    --muted-foreground: 215.4 16.3% 46.9%; /* Gris bleu équilibré */
+    --muted: 180 75% 95%; /* Azure Web - Teal ultra-clair */
+    --muted-foreground: 0 0% 45%; /* Gris neutre */
 
     --destructive: 0 84.2% 60.2%; /* Rouge doux pour erreurs */
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 100% 100%; /* White pur */
 
-    --border: 214.3 31.8% 91.4%; /* Bordures ultra-subtiles (#E2E8F0) */
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%; /* Bleu pour focus rings */
+    --border: 180 75% 90%; /* Bordure teal très subtile */
+    --input: 180 75% 90%; /* Input teal subtil */
+    --ring: 184 91% 14%; /* Focus ring teal foncé */
 
     --radius: 0.75rem; /* Coins arrondis (12px) */
 
@@ -52,20 +52,20 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --primary: 184 91% 14%; /* Midnight Green - même couleur qu'en light mode */
+    --primary-foreground: 0 100% 100%; /* White pur */
+    --secondary: 180 75% 95%; /* Azure Web */
+    --secondary-foreground: 0 0% 13%; /* Eerie Black */
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 180 75% 95%; /* Azure Web */
+    --accent-foreground: 0 0% 13%; /* Eerie Black */
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
-    --chart-1: 220 70% 50%;
+    --ring: 184 91% 14%; /* Focus ring teal foncé - même que primary */
+    --chart-1: 184 91% 14%; /* Teal principal */
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
@@ -108,6 +108,30 @@
   /* Smooth transitions for links */
   a {
     @apply transition-colors duration-200 ease-in-out;
+  }
+
+  /* Couleur de sélection de texte globale */
+  ::selection {
+    background-color: hsl(var(--primary) / 0.3);
+    color: hsl(var(--primary-foreground));
+  }
+  
+  ::-moz-selection {
+    background-color: hsl(var(--primary) / 0.3);
+    color: hsl(var(--primary-foreground));
+  }
+  
+  /* Couleur de sélection spécifique aux inputs */
+  input::selection,
+  textarea::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
+  }
+  
+  input::-moz-selection,
+  textarea::-moz-selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--foreground));
   }
 
   /* General button enhancements - optimisés */
@@ -291,16 +315,16 @@
   /* Conteneurs avec bordure dessin d'enfant */
   .decorative-frame-left {
     border-radius: 60% 40% 65% 35% / 45% 70% 30% 55%;
-    border: 3px solid #1e3a8a;
-    box-shadow: 0 0 0 1px rgba(30, 58, 138, 0.3);
+    border: 3px solid #04454A;
+    box-shadow: 0 0 0 1px rgba(4, 69, 74, 0.3);
     padding: 0;
     overflow: hidden;
   }
 
   .decorative-frame-right {
     border-radius: 55% 65% 40% 60% / 70% 30% 75% 25%;
-    border: 3px solid #1e40af;
-    box-shadow: 0 0 0 1px rgba(30, 64, 175, 0.3);
+    border: 3px solid #04454A;
+    box-shadow: 0 0 0 1px rgba(4, 69, 74, 0.3);
     padding: 0;
     overflow: hidden;
   }
@@ -380,32 +404,32 @@
   /* SYSTÈME DE GLOW SUBTIL POUR LES MODULES */
   .subtle-glow {
     box-shadow: 
-      0 0 0 1px rgba(59, 130, 246, 0.1),
+      0 0 0 1px hsl(var(--primary) / 0.1),
       0 1px 3px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.2s ease-in-out;
   }
 
   .subtle-glow:hover {
     box-shadow: 
-      0 0 0 1px rgba(59, 130, 246, 0.2),
-      0 4px 12px rgba(59, 130, 246, 0.08),
+      0 0 0 1px hsl(var(--primary) / 0.2),
+      0 4px 12px hsl(var(--primary) / 0.08),
       0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   /* Variante pour les questions/cartes principales */
   .question-glow {
     box-shadow: 
-      0 0 0 1px rgba(59, 130, 246, 0.05),
+      0 0 0 1px hsl(var(--primary) / 0.05),
       0 2px 8px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(59, 130, 246, 0.1);
+    border: 1px solid hsl(var(--primary) / 0.1);
   }
 
   .question-glow:hover {
     box-shadow: 
-      0 0 0 1px rgba(59, 130, 246, 0.15),
-      0 4px 16px rgba(59, 130, 246, 0.06),
+      0 0 0 1px hsl(var(--primary) / 0.15),
+      0 4px 16px hsl(var(--primary) / 0.06),
       0 2px 4px rgba(0, 0, 0, 0.1);
-    border-color: rgba(59, 130, 246, 0.2);
+    border-color: hsl(var(--primary) / 0.2);
   }
 
   /* Contraintes pour éviter les débordements */
@@ -466,9 +490,9 @@
 
     /* États des boutons avec contraste amélioré */
     .btn-selected-mobile {
-      background: hsl(221.2, 83.2%, 53.3%);
+      background: hsl(var(--primary));
       color: white;
-      border: 2px solid hsl(221.2, 83.2%, 45%);
+      border: 2px solid hsl(var(--primary));
       font-weight: 600;
     }
 
