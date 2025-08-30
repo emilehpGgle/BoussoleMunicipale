@@ -38,7 +38,7 @@ interface TopMatchModalProps {
 
 // Composant LogoContainer identique à celui des résultats (carré avec coins arrondis)
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <div className={`bg-white rounded-xl p-2 shadow-sm flex items-center justify-center ${className || ""}`}>
+  <div className={`bg-white rounded-xl p-2 flex items-center justify-center ${className || ""}`}>
     {children}
   </div>
 )
@@ -138,6 +138,12 @@ export function TopMatchModal({
 
   return (
     <>
+      <style jsx>{`
+        @keyframes border-pulse {
+          0%, 100% { border-color: #04454A; }
+          50% { border-color: #049AA8; }
+        }
+      `}</style>
       <Dialog open={isOpen} onOpenChange={() => {}}>
         <DialogContent className="max-w-sm sm:max-w-md p-0 bg-white border border-border/50 overflow-hidden">
           {/* Bouton fermer */}
@@ -150,20 +156,20 @@ export function TopMatchModal({
             <X className="h-4 w-4" />
           </Button>
 
-          <div className="p-6">
+          <div className="p-4">
             {/* En-tête avec badge */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : -10 }}
               transition={{ duration: 0.3 }}
-              className="text-center mb-6"
+              className="text-center mb-3"
             >
               <div className="flex items-center justify-center gap-2 mb-3">
-                <Sparkles className="h-4 w-4 text-midnight-green" />
-                <Badge variant="secondary" className="bg-midnight-green/10 text-midnight-green border-midnight-green/20 text-xs px-2 py-1">
+                <Sparkles className="h-4 w-4 text-yellow-400 animate-pulse" />
+                <Badge variant="secondary" className="bg-white text-midnight-green border-2 border-midnight-green text-xs px-2 py-1">
                   Votre meilleur match !
                 </Badge>
-                <Sparkles className="h-4 w-4 text-midnight-green" />
+                <Sparkles className="h-4 w-4 text-yellow-400 animate-pulse" />
               </div>
               <DialogTitle className="text-xl font-bold text-foreground">
                 Vos meilleurs alignements (Partis)
@@ -176,9 +182,9 @@ export function TopMatchModal({
               animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.95 }}
               transition={{ duration: 0.4, delay: 0.1 }}
             >
-              <Card className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm hover:border-midnight-green/30 transition-all duration-300">
+              <Card className="p-3 flex flex-col items-center text-center border-2 border-midnight-green shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm transition-all duration-300" style={{animation: 'border-pulse 2s ease-in-out infinite'}}>
                 {/* Logo du parti avec gestion d'erreur */}
-                <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" />
+                <PartyLogo party={party} size={{ width: 192, height: 192 }} className="w-32 h-32 sm:w-44 sm:h-44 md:w-48 md:h-48 mb-2" />
 
                 {/* Nom du parti - Container avec hauteur fixe pour assurer l'alignement */}
                 <div className="min-h-[4rem] flex flex-col justify-center mb-3">

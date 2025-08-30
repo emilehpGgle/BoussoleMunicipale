@@ -417,7 +417,7 @@ export default function QuestionnairePage() {
         >
           <Card 
             key={transitionKey} 
-            className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border-2 border-border/60 flex-1 flex flex-col ${animationClasses.containerClass} will-change-transform`}
+            className={`card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white w-full max-w-2xl mx-auto flex flex-col ${animationClasses.containerClass} will-change-transform`}
           >
           <div className="flex items-start gap-3 mb-3 question-header">
             <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${animationClasses.contentClass}`}>
@@ -477,17 +477,17 @@ export default function QuestionnairePage() {
                         key={priority}
                         variant={isSelected ? "standard" : "subtle"}
                         disabled={!canSelect && !isSelected}
-                        className={`option-button justify-between py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
+                        className={`option-button justify-between py-4 md:py-5 px-4 md:px-5 text-center rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                           ${
                             isSelected
-                              ? "bg-midnight-green text-white shadow-soft border-2 border-midnight-green focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                              ? "bg-midnight-green text-white shadow-soft !border !border-midnight-green focus:outline-none focus:ring-2 focus:ring-midnight-green"
                               : canSelect 
-                                ? "bg-white hover:bg-midnight-green/20 hover:text-foreground text-foreground transition-all duration-150 border-2 border-transparent hover:border-midnight-green/30 focus:outline-none focus:ring-2 focus:ring-midnight-green"
-                                : "bg-white/50 text-muted-foreground cursor-not-allowed opacity-60"
+                                ? "bg-white hover:bg-midnight-green/20 hover:text-foreground text-foreground transition-all duration-150 !border !border-midnight-green focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                                : "bg-white/50 text-muted-foreground cursor-not-allowed opacity-60 !border !border-midnight-green/30"
                           } ${animationClasses.optionClass}`}
                         onClick={() => handlePrioritySelection(priority)}
                       >
-                        <span className="flex-1 leading-tight">{priority}</span>
+                        <span className="flex-1 leading-tight text-center">{priority}</span>
                         {isSelected && (
                           <span className="ml-2 flex items-center gap-1 md:gap-2 flex-shrink-0">
                             <span className="text-base md:text-lg">{getRankEmoji(rank)}</span>
@@ -510,11 +510,11 @@ export default function QuestionnairePage() {
                   <ButtonWithEffects
                     key={optionKey}
                     variant={isSelected ? "standard" : "subtle"}
-                    className={`option-button justify-start py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
+                    className={`option-button justify-center py-4 md:py-5 px-4 md:px-5 text-center rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                       ${
                         isSelected
-                          ? "bg-midnight-green text-white border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
-                          : "bg-white hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          ? "bg-midnight-green text-white !border !border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          : "bg-white hover:bg-midnight-green/20 hover:text-foreground !border !border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                       } ${animationClasses.optionClass}`}
                     onClick={() => handleImportanceDirectAnswer(optionKey)}
                   >
@@ -535,11 +535,11 @@ export default function QuestionnairePage() {
                   <ButtonWithEffects
                     key={optionKey}
                     variant={isSelected ? "standard" : "subtle"}
-                    className={`option-button justify-start py-4 md:py-5 px-4 md:px-5 text-left rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
+                    className={`option-button justify-center py-4 md:py-5 px-4 md:px-5 text-center rounded-xl text-sm md:text-base font-medium min-h-[48px] md:min-h-[52px] w-full touch-manipulation
                       ${
                         isSelected
-                          ? "bg-midnight-green text-white border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
-                          : "bg-white hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          ? "bg-midnight-green text-white !border !border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          : "bg-white hover:bg-midnight-green/20 hover:text-foreground !border !border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                       } ${animationClasses.optionClass}`}
                     onClick={() => handleAnswer(optionKey)}
                   >
