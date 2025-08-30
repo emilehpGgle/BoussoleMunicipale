@@ -202,7 +202,7 @@ export default function ContinueOrRestartModal({
             <Button
               onClick={handleGoToDestination}
               variant="ghost"
-              className="w-full justify-start h-auto p-4 hover:bg-muted/50 rounded-xl transition-all duration-200"
+              className="w-full justify-start h-auto p-4 hover:bg-white/50 rounded-xl transition-all duration-200"
             >
               <div className="flex items-center gap-3 w-full">
                 <div className="text-left flex-1">

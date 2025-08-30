@@ -23,7 +23,7 @@ export default function HomePage() {
         }}
         className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-isabelline to-azure-web/20"
       >
-        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="container px-4 md:px-6 max-w-[1400px] mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
@@ -33,7 +33,7 @@ export default function HomePage() {
                 Votre{" "}
                 <span className="text-midnight-green relative inline-block">
                   boussole
-                  <div className="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
+                  <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
                 </span>{" "}
                 électorale municipale
               </h1>
@@ -88,7 +88,7 @@ export default function HomePage() {
 
       {/* Section d'explication */}
       <section id="comment-ca-marche" className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-eerie-black mb-4">Comment ça fonctionne ?</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -137,7 +137,7 @@ export default function HomePage() {
 
       {/* Section pourquoi c'est important */}
       <section className="section-contained w-full py-12 md:py-16 bg-azure-web/40">
-        <div className="container px-4 md:px-6 max-w-7xl mx-auto">
+        <div className="container px-4 md:px-6 max-w-[1400px] mx-auto">
           <h2 className="text-center mb-8 text-foreground animate-slideInUp">
             Pourquoi vos élections municipales comptent autant ?
           </h2>
@@ -230,7 +230,7 @@ export default function HomePage() {
         }}
         className="section-contained w-full py-16 md:py-20 bg-gradient-to-br from-azure-web to-isabelline"
       >
-        <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
+        <div className="container px-4 md:px-6 max-w-[1200px] mx-auto text-center">
           <div
             className="animate-slideInUp"
             style={{ animationDelay: "0.2s" }}
@@ -276,7 +276,7 @@ export default function HomePage() {
 
       {/* Section de confidentialité avec image - PROFESSIONAL QUALITY */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Image - PROFESSIONAL SIZE */}
             <div className="relative">
@@ -317,14 +317,14 @@ export default function HomePage() {
 
       {/* Section Call-to-Action */}
       <section className="section-contained w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
-        <div className="container px-4 md:px-6 max-w-6xl mx-auto text-center">
+        <div className="container px-4 md:px-6 max-w-[1200px] mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
             <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <StartQuestionnaireButton
-              className="bg-off-white text-midnight-green hover:bg-off-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              className="bg-white text-midnight-green hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
             >
               Découvrez vos affinités politiques
             </StartQuestionnaireButton>

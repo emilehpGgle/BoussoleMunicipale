@@ -293,7 +293,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                       <SelectItem 
                         key={district} 
                         value={district}
-                        className="cursor-pointer hover:bg-muted focus:bg-muted px-3 py-2"
+                        className="cursor-pointer hover:bg-white focus:bg-white px-3 py-2"
                       >
                         {district}
                       </SelectItem>

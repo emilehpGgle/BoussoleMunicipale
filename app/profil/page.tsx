@@ -342,7 +342,7 @@ export default function ProfilePage() {
                 p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
                 ${selectedValues.includes(option)
                   ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
-                  : "hover:bg-secondary/50 hover:border-secondary"
+                  : "hover:bg-white/50 hover:border-secondary"
                 }
               `}
             >
@@ -366,7 +366,7 @@ export default function ProfilePage() {
                 p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
                 ${selectedValue === option 
                   ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
-                  : "hover:bg-secondary/50 hover:border-secondary"
+                  : "hover:bg-white/50 hover:border-secondary"
                 }
               `}
             >
@@ -479,7 +479,7 @@ export default function ProfilePage() {
                   p-3 h-auto text-left justify-between text-sm font-medium transition-all duration-200 relative
                   ${isSelected 
                     ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
-                    : "hover:bg-secondary/50 hover:border-secondary"
+                    : "hover:bg-white/50 hover:border-secondary"
                   }
                 `}
               >
@@ -653,16 +653,16 @@ export default function ProfilePage() {
                 ref={(el) => { questionRefs.current[question.id] = el }}
                 className={`shadow-soft rounded-xl transition-all duration-300 ${
                   isActive 
-                    ? "bg-card border-midnight-green/50 shadow-lg" 
+                    ? "bg-white border-midnight-green/50 shadow-lg" 
                     : isCompleted 
                       ? "bg-secondary/10 border-secondary/30" 
-                      : "bg-muted/30 border-muted"
+                      : "bg-white/30 border-muted"
                 }`}
               >
                 {/* En-tête de question (toujours visible) */}
                 <CardHeader 
                   className={`pb-3 pt-4 cursor-pointer transition-all duration-200 ${
-                    !isFuture ? "hover:bg-secondary/10" : ""
+                    !isFuture ? "hover:bg-white/10" : ""
                   }`}
                   onClick={() => !isFuture && setActiveQuestionIndex(index)}
                 >
@@ -675,7 +675,7 @@ export default function ProfilePage() {
                           ? "bg-green-500 text-white" 
                           : isActive 
                             ? "bg-midnight-green text-white" 
-                            : "bg-muted text-muted-foreground"
+                            : "bg-white text-muted-foreground"
                         }
                       `}>
                         {isCompleted ? (

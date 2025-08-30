@@ -96,7 +96,7 @@ export default function SiteHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-lg shadow-soft">
+      <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-lg shadow-soft">
         <div className="container flex h-20 max-w-7xl items-center">
           {/* Logo - Parfaitement aligné à gauche */}
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
@@ -156,7 +156,7 @@ export default function SiteHeader() {
                   <Menu className="h-6 w-6" />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[300px] sm:w-[350px] bg-background p-6">
+              <SheetContent side="right" className="w-[300px] sm:w-[350px] bg-white p-6">
                 <SheetHeader className="mb-6">
                   <SheetTitle>
                     <SheetClose asChild>

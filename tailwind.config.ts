@@ -26,6 +26,7 @@ const config = {
       },
       screens: {
         "2xl": "1600px",
+        "3xl": "1800px",
       },
     },
     extend: {

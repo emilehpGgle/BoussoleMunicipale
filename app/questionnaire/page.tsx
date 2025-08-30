@@ -482,8 +482,8 @@ export default function QuestionnairePage() {
                             isSelected
                               ? "bg-midnight-green text-white shadow-soft border-2 border-midnight-green focus:outline-none focus:ring-2 focus:ring-midnight-green"
                               : canSelect 
-                                ? "bg-background hover:bg-midnight-green/20 hover:text-foreground text-foreground transition-all duration-150 border-2 border-transparent hover:border-midnight-green/30 focus:outline-none focus:ring-2 focus:ring-midnight-green"
-                                : "bg-muted/50 text-muted-foreground cursor-not-allowed opacity-60"
+                                ? "bg-white hover:bg-midnight-green/20 hover:text-foreground text-foreground transition-all duration-150 border-2 border-transparent hover:border-midnight-green/30 focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                                : "bg-white/50 text-muted-foreground cursor-not-allowed opacity-60"
                           } ${animationClasses.optionClass}`}
                         onClick={() => handlePrioritySelection(priority)}
                       >
@@ -514,7 +514,7 @@ export default function QuestionnairePage() {
                       ${
                         isSelected
                           ? "bg-midnight-green text-white border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
-                          : "bg-background hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          : "bg-white hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                       } ${animationClasses.optionClass}`}
                     onClick={() => handleImportanceDirectAnswer(optionKey)}
                   >
@@ -539,7 +539,7 @@ export default function QuestionnairePage() {
                       ${
                         isSelected
                           ? "bg-midnight-green text-white border-midnight-green shadow-soft focus:outline-none focus:ring-2 focus:ring-midnight-green"
-                          : "bg-background hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
+                          : "bg-white hover:bg-midnight-green/20 hover:text-foreground hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 text-foreground transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-midnight-green"
                       } ${animationClasses.optionClass}`}
                     onClick={() => handleAnswer(optionKey)}
                   >

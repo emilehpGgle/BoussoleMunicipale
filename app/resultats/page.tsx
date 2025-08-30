@@ -353,7 +353,7 @@ export default function ResultsPage() {
     return (
       <LogoContainer className={className} party={party}>
         {imageLoading && !imageError && (
-          <div className="w-full h-full bg-muted/30 animate-pulse rounded-lg flex items-center justify-center">
+          <div className="w-full h-full bg-white/30 animate-pulse rounded-lg flex items-center justify-center">
             <div className="text-xs text-muted-foreground font-medium">
               {party.shortName || party.name.substring(0, 3).toUpperCase()}
             </div>
@@ -450,32 +450,6 @@ export default function ResultsPage() {
         </div>
       )}
 
-      {/* Images décoratives positionnées selon la hauteur (desktop) */}
-      <div className="hidden lg:block">
-        {/* Chat qui dort - premier tiers de la page */}
-        <div className="absolute left-0 top-[25%] -translate-y-1/2 z-0 pointer-events-none decorative-frame-left">
-          <Image 
-            src="/Image_parc_chat_dort.webp" 
-            alt="Chat qui dort dans un parc municipal de Québec - Illustration boussole électorale municipale 2025" 
-            width={256}
-            height={192}
-            className="object-contain decorative-image-left"
-            loading="lazy"
-          />
-        </div>
-        
-        {/* Famille - troisième tiers de la page */}
-        <div className="absolute right-0 top-[75%] -translate-y-1/2 z-0 pointer-events-none decorative-frame-right">
-          <Image 
-            src="/Image_famille.webp" 
-            alt="Famille dans un parc municipal de Québec - Illustration résultats boussole électorale municipale 2025" 
-            width={288}
-            height={216}
-            className="object-contain decorative-image-right"
-            loading="lazy"
-          />
-        </div>
-      </div>
 
       {/* Contenu principal avec overlay mobile */}
       <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-12 animate-fadeIn relative z-10 mobile-content-overlay mobile-gradient-bg lg:bg-none section-contained">
@@ -561,7 +535,7 @@ export default function ResultsPage() {
               <Link
                 href={`/parti/${party.id}`}
                 key={party.id}
-                className="block p-4 rounded-lg hover:bg-muted/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-midnight-green/20 hover:shadow-md"
+                className="block p-4 rounded-lg hover:bg-white/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-midnight-green/20 hover:shadow-md"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" index={index} />
@@ -665,7 +639,7 @@ export default function ResultsPage() {
                             return (
                               <div
                                 key={party.id}
-                                className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
+                                className="text-xs p-2 border rounded-md bg-white hover:bg-white/50 transition-colors"
                               >
                                 <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
                                 <span className="text-muted-foreground">{prioritiesText}</span>
@@ -686,7 +660,7 @@ export default function ResultsPage() {
                             return (
                               <div
                                 key={party.id}
-                                className="text-xs p-2 border rounded-md bg-card hover:bg-muted/30 transition-colors"
+                                className="text-xs p-2 border rounded-md bg-white hover:bg-white/50 transition-colors"
                               >
                                 <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
                                 <span className="text-muted-foreground">{positionText}</span>
