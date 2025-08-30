@@ -41,17 +41,6 @@ export default function HomePage() {
                 Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                <div className="flex flex-col gap-2">
-                  <StartQuestionnaireButton
-                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
-                  >
-                    Découvrez vos affinités politiques
-                  </StartQuestionnaireButton>
-                  <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
-                  <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80 mt-2 text-center sm:text-left">
-                    Questions fréquentes
-                  </Link>
-                </div>
                 <Button
                   size="lg"
                   variant="outline"
@@ -63,6 +52,17 @@ export default function HomePage() {
                     Comment ça marche ?
                   </Link>
                 </Button>
+                <div className="flex flex-col gap-2">
+                  <StartQuestionnaireButton
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
+                  >
+                    Découvrez vos affinités politiques
+                  </StartQuestionnaireButton>
+                  <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
+                  <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80 mt-2 text-center sm:text-left">
+                    Questions fréquentes
+                  </Link>
+                </div>
               </div>
             </div>
             <div
