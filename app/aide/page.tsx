@@ -15,7 +15,7 @@ export default function AideRedirect() {
   return (
     <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
       <p className="text-lg text-muted-foreground">
-        Redirection vers le centre d'aide...
+        Redirection vers le centre d&apos;aide...
       </p>
     </div>
   )
