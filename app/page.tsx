@@ -299,8 +299,8 @@ export default function HomePage() {
                   Votre vie privée, notre priorité.
                 </h2>
                 <p className="text-base sm:text-lg lg:text-xl text-muted-foreground leading-relaxed max-w-2xl w-full break-words">
-                  Utilisez la Boussole Municipale en toute confiance. Vos réponses sont anonymes et ne sont utilisées que
-                  pour calculer vos résultats. Nous ne vendons ni ne partageons vos données personnelles.
+                  Utilisez la Boussole Municipale en toute confiance. Vos réponses sont anonymes par défaut.
+                  Vous pouvez choisir de recevoir vos résultats par email et accepter des communications ciblées.
                 </p>
               </div>
               <Button

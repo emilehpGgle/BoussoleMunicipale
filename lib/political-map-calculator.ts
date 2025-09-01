@@ -295,7 +295,7 @@ export const partyAnswers: Record<string, UserAnswers> = {
     q6_reduction_depenses_taxes: 'FD',
     q7_immeubles_grande_hauteur: 'FD',
     q8_interdire_essence_centre_ville: 'FA',
-    q9_protection_espaces_verts: 'FA',
+    q9_protection_espaces_verts: 'PA',
     q10_transition_carboneutre: 'FA',
     q11_reduction_dechets: 'FD',
     q12_augmentation_taxes: 'FA',

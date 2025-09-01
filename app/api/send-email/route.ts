@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { generateEmailTemplate } from '@/lib/email-service'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Interface pour les données de la requête
 interface EmailRequest {
@@ -53,61 +56,57 @@ export async function POST(request: NextRequest) {
     // Générer le contenu HTML
     const htmlContent = generateEmailTemplate(emailData)
 
-    /* 
-    TODO: Intégrer avec un service d'email réel
-    
-    Exemples d'intégration :
-    
-    // SENDGRID
-    const sgMail = require('@sendgrid/mail')
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-    
-    const msg = {
-      to,
-      from: 'noreply@boussole-municipale.com',
-      subject,
-      html: htmlContent,
+    // Vérifier que la clé API Resend est configurée
+    if (!process.env.RESEND_API_KEY) {
+      console.error('❌ RESEND_API_KEY non configurée')
+      // En mode développement, on simule quand même
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔧 Mode développement : simulation de l\'envoi d\'email')
+        console.log('📧 Email simulé envoyé à:', to)
+        console.log('📧 Sujet:', subject)
+        return NextResponse.json({ 
+          success: true, 
+          message: `Email simulé envoyé à ${to} (mode développement)`,
+          preview: htmlContent.substring(0, 200) + '...',
+        })
+      }
+      return NextResponse.json(
+        { error: 'Service d\'email non configuré' },
+        { status: 500 }
+      )
     }
-    
-    await sgMail.send(msg)
-    
-    // MAILGUN
-    const mailgun = require('mailgun-js')({
-      apiKey: process.env.MAILGUN_API_KEY,
-      domain: process.env.MAILGUN_DOMAIN
-    })
-    
-    const data = {
-      from: 'Boussole Municipale <noreply@boussole-municipale.com>',
-      to,
-      subject,
-      html: htmlContent
+
+    try {
+      // Envoi réel avec Resend
+      await resend.emails.send({
+        from: 'Boussole Municipale <noreply@boussole-municipale.com>',
+        to,
+        subject,
+        html: htmlContent,
+      })
+
+      console.log('✅ Email envoyé avec succès à:', to)
+
+      return NextResponse.json({ 
+        success: true, 
+        message: `Email envoyé avec succès à ${to}`
+      })
+
+    } catch (emailError) {
+      console.error('❌ Erreur Resend:', emailError)
+      
+      // En cas d'erreur, fallback vers la simulation en développement
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔄 Fallback vers la simulation en mode développement')
+        return NextResponse.json({ 
+          success: true, 
+          message: `Email simulé envoyé à ${to} (fallback après erreur)`,
+          warning: 'Service d\'email en erreur, simulation utilisée'
+        })
+      }
+      
+      throw emailError
     }
-    
-    await mailgun.messages().send(data)
-    
-    // RESEND
-    const { Resend } = require('resend')
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    
-    await resend.emails.send({
-      from: 'Boussole Municipale <noreply@boussole-municipale.com>',
-      to,
-      subject,
-      html: htmlContent,
-    })
-    */
-
-    // Pour l'instant, on simule l'envoi et retourne le HTML généré
-    console.log('📧 Email simulé envoyé à:', to)
-    console.log('📧 Sujet:', subject)
-    console.log('📧 Contenu HTML généré (longueur):', htmlContent.length, 'caractères')
-
-    return NextResponse.json({ 
-      success: true, 
-      message: `Email simulé envoyé à ${to}`,
-      preview: htmlContent.substring(0, 200) + '...',
-    })
 
   } catch (error) {
     console.error('Erreur lors de l\'envoi de l\'email:', error)

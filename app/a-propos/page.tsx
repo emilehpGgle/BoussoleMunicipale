@@ -31,7 +31,7 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Boussole Électorale Québec",
-    "description": "Boussole électorale spécialisée pour les élections municipales de Québec 2025. Outil gratuit et anonyme pour découvrir vos affinités avec les partis politiques municipaux.",
+    "description": "Boussole électorale spécialisée pour les élections municipales de Québec 2025. Outil gratuit et anonyme par défaut pour découvrir vos affinités avec les partis politiques municipaux.",
     "url": "https://boussole-municipale.vercel.app",
     "logo": "https://boussole-municipale.vercel.app/logo-main.webp",
     "foundingDate": "2025-01-01",
@@ -189,9 +189,9 @@ export default function AboutPage() {
             <div className="flex items-start gap-3">
               <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="font-medium">Données Anonymes</h4>
+                <h4 className="font-medium">Respect de la Vie Privée</h4>
                 <p className="text-sm text-muted-foreground">
-                  Aucune donnée personnelle collectée, test entièrement anonyme
+                  Test anonyme par défaut, utilisation avec consentement uniquement
                 </p>
               </div>
             </div>

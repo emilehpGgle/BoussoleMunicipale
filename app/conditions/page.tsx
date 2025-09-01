@@ -19,7 +19,7 @@ export default function ConditionsPage() {
   return (
     <div className="container max-w-4xl py-8 px-4 md:px-6">
       <div className="mb-6">
-        <Button variant="ghost" asChild className="mb-4">
+        <Button variant="ghost" asChild className="mb-4 w-fit">
           <Link href="/" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Retour à l&apos;accueil

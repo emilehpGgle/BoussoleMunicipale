@@ -114,16 +114,24 @@ export default function SiteHeader() {
             </div>
           </Link>
 
-          {/* Spacer flexible pour pousser les éléments à droite */}
-          <div className="flex-1" />
-
-          {/* Desktop Navigation & Conditional Action Button */}
-          <div className="hidden md:flex items-center space-x-6">
-            <Link href="/aide" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
+          {/* Navigation centrée - Design moderne */}
+          <nav className="hidden md:flex items-center justify-center flex-1 space-x-8">
+            <Link href="/comment-ca-marche" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
+              Comment ça marche
+            </Link>
+            <Link href="/pourquoi-important" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
+              Pourquoi c&apos;est important
+            </Link>
+            <Link href="/faq" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
+              FAQ
+            </Link>
+            <Link href="/centre-aide" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
               Aide
             </Link>
-            
-            {/* Affichage conditionnel du bouton selon le contexte */}
+          </nav>
+
+          {/* Action Button à droite */}
+          <div className="hidden md:flex items-center">
             {!shouldHideStartButton ? (
               <Button
                 onClick={handleStartQuestionnaire}
@@ -176,7 +184,22 @@ export default function SiteHeader() {
                 </SheetHeader>
                 <nav className="flex flex-col space-y-4">
                   <SheetClose asChild>
-                    <Link href="/aide" className="text-lg text-foreground/80 hover:text-primary py-2">
+                    <Link href="/comment-ca-marche" className="text-lg text-foreground/80 hover:text-primary py-2">
+                      Comment ça marche
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link href="/pourquoi-important" className="text-lg text-foreground/80 hover:text-primary py-2">
+                      Pourquoi c&apos;est important
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link href="/faq" className="text-lg text-foreground/80 hover:text-primary py-2">
+                      FAQ
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link href="/centre-aide" className="text-lg text-foreground/80 hover:text-primary py-2">
                       Aide
                     </Link>
                   </SheetClose>

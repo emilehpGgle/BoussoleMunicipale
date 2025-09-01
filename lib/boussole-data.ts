@@ -1000,9 +1000,9 @@ export const partiesData: Party[] = [
       },
       {
         questionId: questionIdMap[10],
-        position: "FD",
-        source: "Plateforme électorale Respect citoyens",
-        note: "Peu de prise de position concrète ; thème secondaire dans leur plateforme",
+        position: "FA",
+        source: "Données actualisées 2025 - Réponse officielle du parti",
+        note: "Fortement en faveur d'améliorer la collecte des ordures plutôt que de la réduire",
       },
       {
         questionId: questionIdMap[11],

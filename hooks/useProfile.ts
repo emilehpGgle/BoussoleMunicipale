@@ -19,7 +19,22 @@ export interface UserProfile {
     district: string
     coordinates?: { lat: number; lng: number }
   }
+  // Nouveaux champs pour email et consentements
+  email?: string
+  emailConsent?: boolean // Consentement pour recevoir les résultats par email
+  marketingConsent?: boolean // Consentement pour marketing ciblé/vente de données
+  consentTimestamp?: string // ISO timestamp du consentement
+  emailVerified?: boolean // Statut de vérification de l'email
+  unsubscribeToken?: string // Token pour se désabonner facilement
   [key: string]: any // Pour permettre d'autres champs dynamiques
+}
+
+// Types pour les consentements spécifiquement
+export interface ConsentData {
+  emailConsent: boolean
+  marketingConsent: boolean
+  timestamp: string
+  ipAddress?: string // Pour traçabilité légale
 }
 
 interface ProfileState {
@@ -265,6 +280,67 @@ export function useProfile() {
     return summary
   }, [state.profile])
 
+  // Méthodes spécifiques pour les consentements et email
+  const updateConsent = useCallback(async (consentData: Partial<ConsentData>) => {
+    const updatedProfile = {
+      ...consentData,
+      consentTimestamp: new Date().toISOString(),
+    }
+    return saveProfile(updatedProfile)
+  }, [saveProfile])
+
+  const setEmailConsent = useCallback(async (consent: boolean) => {
+    return updateConsent({ emailConsent: consent })
+  }, [updateConsent])
+
+  const setMarketingConsent = useCallback(async (consent: boolean) => {
+    return updateConsent({ marketingConsent: consent })
+  }, [updateConsent])
+
+  const updateEmailAndConsent = useCallback(async (email: string, emailConsent: boolean = true, marketingConsent: boolean = false) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      throw new Error('Adresse email invalide')
+    }
+
+    const updatedProfile = {
+      email: email.toLowerCase().trim(),
+      emailConsent,
+      marketingConsent,
+      consentTimestamp: new Date().toISOString(),
+      emailVerified: false, // À vérifier ultérieurement
+    }
+    
+    return saveProfile(updatedProfile)
+  }, [saveProfile])
+
+  const hasValidConsent = useCallback((consentType: 'email' | 'marketing') => {
+    if (consentType === 'email') {
+      return state.profile.emailConsent === true && !!state.profile.email
+    }
+    return state.profile.marketingConsent === true
+  }, [state.profile])
+
+  const getConsentStatus = useCallback(() => {
+    return {
+      hasEmail: !!state.profile.email,
+      emailConsent: state.profile.emailConsent === true,
+      marketingConsent: state.profile.marketingConsent === true,
+      consentDate: state.profile.consentTimestamp ? new Date(state.profile.consentTimestamp) : null,
+      emailVerified: state.profile.emailVerified === true,
+    }
+  }, [state.profile])
+
+  const revokeAllConsents = useCallback(async () => {
+    const updatedProfile = {
+      emailConsent: false,
+      marketingConsent: false,
+      consentTimestamp: new Date().toISOString(),
+      // Garde l'email mais retire les consentements
+    }
+    return saveProfile(updatedProfile)
+  }, [saveProfile])
+
   // Charger le profil au montage du composant avec patience pour l'initialisation
   useEffect(() => {
     // Attendre que la session soit complètement initialisée avant de charger
@@ -305,6 +381,15 @@ export function useProfile() {
     getCompletionPercentage,
     isProfileComplete,
     getProfileSummary,
+
+    // Méthodes pour consentements et email
+    updateConsent,
+    setEmailConsent,
+    setMarketingConsent,
+    updateEmailAndConsent,
+    hasValidConsent,
+    getConsentStatus,
+    revokeAllConsents,
 
     // Alias pour compatibilité avec le code existant
     userProfile: state.profile

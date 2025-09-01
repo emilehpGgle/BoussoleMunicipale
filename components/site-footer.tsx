@@ -35,23 +35,18 @@ export default function SiteFooter() {
             <h3 className="font-semibold text-foreground">Navigation</h3>
             <ul className="space-y-2 text-muted-foreground">
               <li>
-                <Link href="#comment-ca-marche" className="hover:text-midnight-green transition-colors">
+                <Link href="/comment-ca-marche" className="hover:text-midnight-green transition-colors">
                   Comment ça marche
                 </Link>
               </li>
               <li>
-                <Link href="#pourquoi-important" className="hover:text-midnight-green transition-colors">
+                <Link href="/pourquoi-important" className="hover:text-midnight-green transition-colors">
                   Pourquoi c&apos;est important
                 </Link>
               </li>
               <li>
                 <Link href="/faq" className="hover:text-midnight-green transition-colors">
                   Questions fréquentes
-                </Link>
-              </li>
-              <li>
-                <Link href="/aide" className="hover:text-midnight-green transition-colors">
-                  Aide
                 </Link>
               </li>
             </ul>
@@ -87,20 +82,29 @@ export default function SiteFooter() {
           {/* Contact */}
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">Support</h3>
-            <div className="space-y-3 text-muted-foreground">
-              <div className="flex items-center space-x-2">
-                <HelpCircle className="w-4 h-4" />
-                <span>Centre d&apos;aide</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Mail className="w-4 h-4" />
-                <span>contact@boussolemunicipale.com</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Shield className="w-4 h-4" />
-                <span>Données protégées</span>
-              </div>
-            </div>
+            <ul className="space-y-2 text-muted-foreground">
+              <li>
+                <Link href="/centre-aide" className="flex items-center space-x-2 hover:text-midnight-green transition-colors">
+                  <HelpCircle className="w-4 h-4" />
+                  <span>Centre d&apos;aide</span>
+                </Link>
+              </li>
+              <li>
+                <a 
+                  href="mailto:contact@boussolemunicipale.com" 
+                  className="flex items-center space-x-2 hover:text-midnight-green transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>contact@boussolemunicipale.com</span>
+                </a>
+              </li>
+              <li>
+                <Link href="/donnees-protegees" className="flex items-center space-x-2 hover:text-midnight-green transition-colors">
+                  <Shield className="w-4 h-4" />
+                  <span>Données protégées</span>
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
