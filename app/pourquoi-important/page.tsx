@@ -191,7 +191,7 @@ export default function PourquoiImportantPage() {
               </li>
               <li className="flex items-start space-x-2">
                 <span className="w-2 h-2 bg-midnight-green rounded-full mt-2 flex-shrink-0"></span>
-                <span><strong>Impression</strong> que "ça ne change rien"</span>
+                <span><strong>Impression</strong> que &quot;ça ne change rien&quot;</span>
               </li>
               <li className="flex items-start space-x-2">
                 <span className="w-2 h-2 bg-midnight-green rounded-full mt-2 flex-shrink-0"></span>

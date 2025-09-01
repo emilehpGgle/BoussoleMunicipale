@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card } from '@/components/ui/card'
-import { AlertTriangle, Shield, Mail, Marketing, Info } from 'lucide-react'
+import { AlertTriangle, Shield, Mail, Target } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -167,7 +167,7 @@ export function ConsentForm({
                 htmlFor="marketingConsent" 
                 className="text-sm font-medium cursor-pointer flex items-center gap-2"
               >
-                <Marketing className="w-4 h-4 text-orange-600" />
+                <Target className="w-4 h-4 text-orange-600" />
                 Communications et recherche marketing
                 <span className="text-xs bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded font-normal">
                   Optionnel

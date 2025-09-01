@@ -130,7 +130,6 @@ export default function ResultsPage() {
   const { 
     updateEmailAndConsent, 
     getConsentStatus, 
-    hasValidConsent,
     isSaving: profileSaving 
   } = useProfile()
 

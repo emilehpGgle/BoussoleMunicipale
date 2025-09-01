@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowLeft, CheckCircle, Users, BarChart3, Share2, ArrowRight } from "lucide-react"
+import { ArrowLeft, CheckCircle, Users, BarChart3, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
