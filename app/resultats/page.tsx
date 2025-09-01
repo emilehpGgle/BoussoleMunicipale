@@ -157,6 +157,9 @@ export default function ResultsPage() {
     }
   }
   
+  // ✅ État consolidé de chargement - inclure le chargement de session
+  const isLoading = sessionLoading || responsesLoading || resultsLoading
+
   // Afficher le formulaire de consentement automatiquement si pas d'email
   useEffect(() => {
     if (!isLoading && hasResults && !consentStatus.hasEmail && !emailSubmitted && !showConsentForm) {
@@ -168,9 +171,6 @@ export default function ResultsPage() {
       return () => clearTimeout(timer)
     }
   }, [isLoading, hasResults, consentStatus.hasEmail, emailSubmitted, showConsentForm])
-
-  // ✅ État consolidé de chargement - inclure le chargement de session
-  const isLoading = sessionLoading || responsesLoading || resultsLoading
 
   // ✅ Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
   const calculatedScores = useMemo(() => {
