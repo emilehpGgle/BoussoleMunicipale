@@ -215,9 +215,36 @@ export default function RootLayout({
             .flex-1 { flex: 1; }
             /* Header critique */
             header { position: sticky; top: 0; z-index: 50; }
-            .container { width: 100%; max-width: 80rem; margin: 0 auto; padding: 0 1rem; }
-            @media (min-width: 640px) { .container { padding: 0 1.5rem; } }
-            @media (min-width: 1024px) { .container { padding: 0 2rem; } }
+            /* Container responsive système unifié */
+            .container { 
+              width: 100%; 
+              margin: 0 auto; 
+              padding: 0 1rem; 
+            }
+            /* Mobile : 320px - 639px */
+            @media (min-width: 320px) { 
+              .container { padding: 0 1rem; max-width: 100%; } 
+            }
+            /* Tablet : 640px - 1023px */
+            @media (min-width: 640px) { 
+              .container { padding: 0 1.5rem; max-width: 100%; } 
+            }
+            /* Laptop : 1024px - 1279px */
+            @media (min-width: 1024px) { 
+              .container { padding: 0 2rem; max-width: 1200px; } 
+            }
+            /* Desktop 16" : 1280px - 1535px */
+            @media (min-width: 1280px) { 
+              .container { padding: 0 2rem; max-width: 1400px; } 
+            }
+            /* Large Desktop : 1536px - 1919px */
+            @media (min-width: 1536px) { 
+              .container { padding: 0 3rem; max-width: 1600px; } 
+            }
+            /* Ultra-wide : 1920px+ */
+            @media (min-width: 1920px) { 
+              .container { padding: 0 4rem; max-width: 1800px; } 
+            }
           `
         }} />
         

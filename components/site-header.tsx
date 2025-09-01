@@ -97,7 +97,7 @@ export default function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-lg shadow-soft">
-        <div className="container flex h-20 max-w-7xl items-center">
+        <div className="container flex h-20 items-center">
           {/* Logo - Parfaitement aligné à gauche */}
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
             <div className="relative h-full w-36 sm:w-40 md:w-44">

@@ -17,16 +17,13 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: {
-        DEFAULT: "1rem",
-        sm: "1.5rem",
-        lg: "2rem",
-        xl: "1.5rem",
-        "2xl": "2rem",
-      },
       screens: {
-        "2xl": "1400px",
-        "3xl": "1800px",
+        'sm': '640px',   // Tablet
+        'md': '768px',   // Tablet large  
+        'lg': '1024px',  // Laptop
+        'xl': '1280px',  // Desktop 16"
+        '2xl': '1536px', // Large Desktop
+        '3xl': '1920px'  // Ultra-wide
       },
     },
     extend: {

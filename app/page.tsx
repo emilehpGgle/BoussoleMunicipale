@@ -23,7 +23,7 @@ export default function HomePage() {
         }}
         className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-isabelline to-azure-web/20"
       >
-        <div className="container px-4 md:px-6 max-w-[1400px] mx-auto">
+        <div className="container">
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
@@ -88,7 +88,7 @@ export default function HomePage() {
 
       {/* Section d'explication */}
       <section id="comment-ca-marche" className="py-20 bg-gray-50">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-eerie-black mb-4">Comment ça fonctionne ?</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -137,7 +137,7 @@ export default function HomePage() {
 
       {/* Section pourquoi c'est important */}
       <section className="section-contained w-full py-12 md:py-16 bg-azure-web/40">
-        <div className="container px-4 md:px-6 max-w-[1400px] mx-auto">
+        <div className="container">
           <h2 className="text-center mb-8 text-foreground animate-slideInUp">
             Pourquoi vos élections municipales comptent autant ?
           </h2>
@@ -276,7 +276,7 @@ export default function HomePage() {
 
       {/* Section de confidentialité avec image - PROFESSIONAL QUALITY */}
       <section className="py-20 bg-white">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Image - PROFESSIONAL SIZE */}
             <div className="relative">
