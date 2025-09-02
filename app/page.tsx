@@ -21,15 +21,15 @@ export default function HomePage() {
           colors: ['#04454A', '#EAFCFC'],
           duration: 8
         }}
-        className="section-contained w-full py-16 md:py-24 bg-gradient-to-br from-isabelline to-azure-web/20"
+        className="section-contained w-full py-fluid-lg bg-gradient-to-br from-isabelline to-azure-web/20"
       >
         <div className="container">
-          <div className="grid md:grid-cols-2 gap-10 items-center">
-            <div className="flex flex-col space-y-6 animate-slideInUp" style={{ animationDelay: "0.1s" }}>
+          <div className="grid md:grid-cols-2 gap-fluid-md items-center">
+            <div className="flex flex-col space-y-fluid-sm animate-slideInUp" style={{ animationDelay: "0.1s" }}>
               <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
                 <Compass className="w-5 h-5 mr-2" /> Votre boussole pour les élections municipales
               </span>
-              <h1 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-black leading-tight tracking-tight text-foreground w-full max-w-full break-words">
+              <h1 className="text-fluid-hero font-black leading-tight tracking-tight text-foreground w-full max-w-full break-words">
                 Votre{" "}
                 <span className="text-midnight-green relative inline-block">
                   boussole
@@ -37,7 +37,7 @@ export default function HomePage() {
                 </span>{" "}
                 électorale municipale
               </h1>
-              <p className="text-base sm:text-lg text-muted-foreground max-w-lg w-full break-words">
+              <p className="text-fluid-base text-muted-foreground max-w-lg w-full break-words">
                 Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
@@ -45,7 +45,7 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-midnight-green text-midnight-green hover:bg-midnight-green/10 hover:text-midnight-green rounded-xl px-8 py-3 text-base font-semibold btn-base-effects btn-hover-lift border-2"
+                  className="border-midnight-green text-midnight-green hover:bg-midnight-green/10 hover:text-midnight-green rounded-xl px-6 py-4 text-base font-semibold btn-base-effects btn-hover-lift border-2 w-fit"
                 >
                   <Link href="#comment-ca-marche" className="flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" />
@@ -54,7 +54,7 @@ export default function HomePage() {
                 </Button>
                 <div className="flex flex-col gap-2">
                   <StartQuestionnaireButton
-                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-8 py-3 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl"
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-6 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl w-fit"
                   >
                     Découvrez vos affinités politiques
                   </StartQuestionnaireButton>
@@ -66,7 +66,7 @@ export default function HomePage() {
               </div>
             </div>
             <div
-              className="relative h-[350px] md:h-[450px] w-full max-w-full rounded-2xl overflow-hidden animate-fadeIn"
+              className="relative w-full aspect-[4/3] md:aspect-[16/10] max-w-full rounded-2xl overflow-hidden animate-fadeIn"
               style={{ 
                 animationDelay: "0.3s",
                 boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)"
@@ -87,15 +87,15 @@ export default function HomePage() {
       </GlowSection>
 
       {/* Section d'explication */}
-      <section id="comment-ca-marche" className="py-20 bg-gray-50">
+      <section id="comment-ca-marche" className="py-fluid-xl bg-gray-50">
         <div className="container">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-eerie-black mb-4">Comment ça fonctionne ?</h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <div className="text-center mb-fluid-lg">
+            <h2 className="text-fluid-3xl font-bold text-eerie-black mb-fluid-xs">Comment ça fonctionne ?</h2>
+            <p className="text-fluid-lg text-muted-foreground max-w-3xl mx-auto">
               Un processus simple en 4 étapes pour découvrir vos affinités politiques municipales
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-fluid-sm">
             {[
               {
                 icon: FileText,
@@ -119,15 +119,15 @@ export default function HomePage() {
                 description: "Discutez de vos résultats avec vos amis et votre famille pour encourager le débat.",
               },
             ].map((step, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow h-full">
-                <CardContent className="p-6 space-y-4 h-full flex flex-col">
+              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                <CardContent className="p-8 space-y-6 flex flex-col justify-center items-center min-h-[320px]">
                   <div className="w-12 h-12 bg-midnight-green/10 rounded-full flex items-center justify-center mx-auto">
                     <step.icon className="w-6 h-6 text-midnight-green" />
                   </div>
-                  <h3 className="text-lg md:text-xl font-semibold text-eerie-black">
+                  <h3 className="text-lg font-semibold text-eerie-black">
                     {index + 1}. {step.title}
                   </h3>
-                  <p className="text-sm md:text-base text-muted-foreground flex-grow">{step.description}</p>
+                  <p className="text-sm text-muted-foreground text-center leading-relaxed">{step.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -136,58 +136,58 @@ export default function HomePage() {
       </section>
 
       {/* Section pourquoi c'est important */}
-      <section className="section-contained w-full py-12 md:py-16 bg-azure-web/40">
+      <section className="section-contained w-full py-fluid-lg bg-azure-web/40">
         <div className="container">
-          <h2 className="text-center mb-8 text-foreground animate-slideInUp">
+          <h2 className="text-fluid-3xl text-center mb-fluid-md text-foreground animate-slideInUp">
             Pourquoi vos élections municipales comptent autant ?
           </h2>
-          <div className="grid gap-8 md:grid-cols-3">
-            <div className="p-6 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <div className="flex gap-5 md:gap-7 min-h-[180px] md:min-h-[200px]">
+          <div className="grid gap-fluid-md md:grid-cols-3">
+            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <div className="flex gap-6 md:gap-8 min-h-[200px]">
                 <div className="w-1/3 flex-shrink-0 flex items-center">
-                  <div className="w-full h-36 md:h-40 rounded-xl overflow-hidden">
+                  <div className="w-full aspect-square rounded-xl overflow-hidden">
                     <Image 
                       src="/Image_cycliste_chien.webp" 
                       alt="Transport quotidien - cycliste avec chien" 
                       width={160} 
                       height={160} 
-                      className="w-full h-full object-top rounded-xl" 
+                      className="w-full h-full object-cover rounded-xl" 
                     />
                   </div>
                 </div>
                 <div className="w-2/3 flex-shrink-0 flex flex-col justify-center pr-4">
-                  <h3 className="font-semibold mb-2 text-foreground text-base md:text-lg">Transport quotidien</h3>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  <h3 className="font-semibold mb-3 text-foreground text-lg">Transport quotidien</h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     Bus, métro, vélo, routes : votre municipalité décide comment vous vous déplacez au quotidien.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="p-6 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <div className="flex gap-5 md:gap-7 min-h-[180px] md:min-h-[200px]">
+            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <div className="flex gap-6 md:gap-8 min-h-[200px]">
                 <div className="w-1/3 flex-shrink-0 flex items-center">
-                  <div className="w-full h-36 md:h-40 rounded-xl overflow-hidden">
+                  <div className="w-full aspect-square rounded-xl overflow-hidden">
                     <Image 
                       src="/Image_quartier_ordures.webp" 
                       alt="Votre quartier - services municipaux" 
                       width={160} 
                       height={160} 
-                      className="w-full h-full object-top rounded-xl" 
+                      className="w-full h-full object-cover rounded-xl" 
                     />
                   </div>
                 </div>
                 <div className="w-2/3 flex-shrink-0 flex flex-col justify-center pr-4">
-                  <h3 className="font-semibold mb-2 text-foreground text-base md:text-lg">Votre quartier</h3>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  <h3 className="font-semibold mb-3 text-foreground text-lg">Votre quartier</h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     Parcs, collecte des déchets, bibliothèques, déneigement : les services qui façonnent votre qualité de vie locale.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="p-6 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <div className="flex gap-5 md:gap-7 min-h-[180px] md:min-h-[200px]">
+            <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
+              <div className="flex gap-6 md:gap-8 min-h-[200px]">
                 <div className="w-1/3 flex-shrink-0 flex items-center">
-                  <div className="w-full h-36 md:h-40 rounded-xl overflow-hidden">
+                  <div className="w-full aspect-square rounded-xl overflow-hidden">
                     <Image 
                       src="/Image_parc_jardinage.webp" 
                       alt="Vos taxes - investissement municipal" 
@@ -198,8 +198,8 @@ export default function HomePage() {
                   </div>
                 </div>
                 <div className="w-2/3 flex-shrink-0 flex flex-col justify-center pr-4">
-                  <h3 className="font-semibold mb-2 text-foreground text-base md:text-lg">Vos taxes</h3>
-                  <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  <h3 className="font-semibold mb-3 text-foreground text-lg">Vos taxes</h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez.
                   </p>
                 </div>

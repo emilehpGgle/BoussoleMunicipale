@@ -29,6 +29,25 @@ const config = {
     extend: {
       fontSize: {
         "h1-lg": "2.75rem",
+        // Typographie fluide responsive automatique (valeurs plus modérées)
+        'fluid-xs': 'clamp(0.75rem, 1.5vw, 0.875rem)',
+        'fluid-sm': 'clamp(0.875rem, 2vw, 1rem)', 
+        'fluid-base': 'clamp(1rem, 2.5vw, 1.25rem)',
+        'fluid-lg': 'clamp(1.125rem, 3vw, 1.5rem)',
+        'fluid-xl': 'clamp(1.25rem, 3.5vw, 1.875rem)',
+        'fluid-2xl': 'clamp(1.5rem, 4vw, 2.25rem)',
+        'fluid-3xl': 'clamp(1.875rem, 4.5vw, 2.75rem)',
+        'fluid-hero': 'clamp(2.25rem, 5vw, 3.5rem)',
+        'fluid-subtitle': 'clamp(1rem, 2.5vw, 1.375rem)',
+      },
+      spacing: {
+        // Spacing fluide responsive automatique (valeurs plus modérées)
+        'fluid-xs': 'clamp(0.5rem, 1.5vw, 0.75rem)',
+        'fluid-sm': 'clamp(1rem, 2.5vw, 1.5rem)',
+        'fluid-md': 'clamp(1.5rem, 4vw, 2.5rem)', 
+        'fluid-lg': 'clamp(2.5rem, 6vw, 4rem)',
+        'fluid-xl': 'clamp(3rem, 7vw, 5rem)',
+        'fluid-2xl': 'clamp(4rem, 8vw, 6rem)',
       },
       colors: {
         border: "hsl(var(--border))",
