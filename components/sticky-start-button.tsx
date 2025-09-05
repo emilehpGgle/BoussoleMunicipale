@@ -32,13 +32,15 @@ export default function StickyStartButton() {
     <div className="fixed bottom-4 right-4 z-50 md:hidden">
       {!isMinimized ? (
         <div className="flex flex-col items-end gap-2">
-          {/* Bouton principal */}
-          <StartQuestionnaireButton
-            className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized"
-          >
-            <Play className="w-4 h-4" />
-            Commencer
-          </StartQuestionnaireButton>
+          {/* Bouton principal avec effet shine */}
+          <div className="relative overflow-hidden rounded-full">
+            <StartQuestionnaireButton
+              className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized relative before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-teal-200/30 before:to-transparent before:animate-shine-slow"
+            >
+              <Play className="w-4 h-4" />
+              Commencer
+            </StartQuestionnaireButton>
+          </div>
           
           {/* Bouton pour minimiser */}
           <Button
@@ -51,13 +53,16 @@ export default function StickyStartButton() {
           </Button>
         </div>
       ) : (
-        /* Version minimisée - juste l'icône */
-        <Button
-          onClick={() => setIsMinimized(false)}
-          className="w-12 h-12 bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full shadow-lg transition-all duration-300 hover:shadow-xl flex items-center justify-center btn-touch-optimized"
-        >
-          <Play className="w-5 h-5" />
-        </Button>
+        /* Version minimisée - avec texte "Commencer" au lieu de juste l'icône */
+        <div className="relative overflow-hidden rounded-full">
+          <StartQuestionnaireButton
+            onClick={() => setIsMinimized(false)}
+            className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized relative before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-teal-200/30 before:to-transparent before:animate-shine-slow"
+          >
+            <Play className="w-4 h-4" />
+            Commencer
+          </StartQuestionnaireButton>
+        </div>
       )}
     </div>
   )

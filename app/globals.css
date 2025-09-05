@@ -691,3 +691,18 @@
     @apply gap-1 pt-1;
   }
 }
+
+/* Animation shine pour bouton Commencer */
+@keyframes shine-slow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shine-slow {
+  animation: shine-slow 2.5s ease-in-out infinite;
+  animation-delay: 1s;
+}

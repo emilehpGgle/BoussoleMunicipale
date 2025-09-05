@@ -151,8 +151,8 @@ export default function SiteHeader() {
             )}
           </div>
 
-          {/* Mobile Navigation Trigger */}
-          <div className="md:hidden">
+          {/* Mobile Navigation Trigger - Aligné à droite */}
+          <div className="md:hidden flex-1 flex justify-end">
             <Sheet>
               <SheetTrigger asChild>
                 <Button
