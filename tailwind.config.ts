@@ -151,7 +151,7 @@ const config = {
             borderColor: "#04454A" // midnight-green
           },
           "50%": { 
-            borderColor: "#49D9DE" // teal-400
+            borderColor: "#056B72" // midnight-green légèrement éclairci pour effet dimming subtil
           },
         },
       },
@@ -162,7 +162,7 @@ const config = {
           slideInUp: "slideInUp 0.6s ease-out forwards",
           pulseScale: "pulseScale 3s ease-in-out infinite", // Increased duration from 2.5s to 3s
           aurora: "aurora 60s linear infinite",
-          "border-pulse": "border-pulse 2s ease-in-out infinite",
+          "border-pulse": "border-pulse 6s ease-in-out infinite",
         },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

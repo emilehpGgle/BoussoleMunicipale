@@ -35,7 +35,7 @@ export default function StickyStartButton() {
           {/* Bouton principal avec effet shine */}
           <div className="relative overflow-hidden rounded-full">
             <StartQuestionnaireButton
-              className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized relative before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-teal-200/30 before:to-transparent before:animate-shine-slow"
+              className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized border-2 border-midnight-green animate-border-pulse"
             >
               <Play className="w-4 h-4" />
               Commencer
@@ -57,7 +57,7 @@ export default function StickyStartButton() {
         <div className="relative overflow-hidden rounded-full">
           <Button
             onClick={() => setIsMinimized(false)}
-            className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized relative before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-teal-200/30 before:to-transparent before:animate-shine-slow"
+            className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized border-2 border-midnight-green animate-border-pulse"
           >
             <Play className="w-4 h-4" />
             Commencer
