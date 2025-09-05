@@ -55,13 +55,13 @@ export default function StickyStartButton() {
       ) : (
         /* Version minimisée - avec texte "Commencer" au lieu de juste l'icône */
         <div className="relative overflow-hidden rounded-full">
-          <StartQuestionnaireButton
+          <Button
             onClick={() => setIsMinimized(false)}
             className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized relative before:absolute before:inset-0 before:-translate-x-full before:bg-gradient-to-r before:from-transparent before:via-teal-200/30 before:to-transparent before:animate-shine-slow"
           >
             <Play className="w-4 h-4" />
             Commencer
-          </StartQuestionnaireButton>
+          </Button>
         </div>
       )}
     </div>
