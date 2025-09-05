@@ -138,12 +138,6 @@ export function TopMatchModal({
 
   return (
     <>
-      <style jsx>{`
-        @keyframes border-pulse {
-          0%, 100% { border-color: #04454A; }
-          50% { border-color: #049AA8; }
-        }
-      `}</style>
       <Dialog open={isOpen} onOpenChange={() => {}}>
         <DialogContent className="max-w-sm sm:max-w-md p-0 bg-white border border-border/50 overflow-hidden">
           {/* Bouton fermer */}
@@ -182,7 +176,7 @@ export function TopMatchModal({
               animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.95 }}
               transition={{ duration: 0.4, delay: 0.1 }}
             >
-              <Card className="p-3 flex flex-col items-center text-center border-2 border-midnight-green shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm transition-all duration-300" style={{animation: 'border-pulse 2s ease-in-out infinite'}}>
+              <Card className="p-3 flex flex-col items-center text-center border-2 border-midnight-green shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm transition-all duration-300 animate-border-pulse">
                 {/* Logo du parti avec gestion d'erreur */}
                 <PartyLogo party={party} size={{ width: 192, height: 192 }} className="w-32 h-32 sm:w-44 sm:h-44 md:w-48 md:h-48 mb-2" />
 
