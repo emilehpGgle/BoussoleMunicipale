@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Play, X } from "lucide-react"
 import { usePathname } from "next/navigation"
 import StartQuestionnaireButton from "@/components/start-questionnaire-button"
+import { RainbowButton } from "@/components/ui/rainbow-button"
 
 export default function StickyStartButton() {
   const [isMinimized, setIsMinimized] = useState(false)
@@ -32,13 +33,13 @@ export default function StickyStartButton() {
     <div className="fixed bottom-4 right-4 z-50 md:hidden">
       {!isMinimized ? (
         <div className="flex flex-col items-end gap-2">
-          {/* Bouton principal avec effet shine */}
+          {/* Bouton principal avec effet rainbow */}
           <div className="relative overflow-hidden rounded-full">
-            <StartQuestionnaireButton
-              className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized border-2 border-midnight-green animate-border-pulse"
-            >
-              <Play className="w-4 h-4" />
-              Commencer
+            <StartQuestionnaireButton asChild>
+              <RainbowButton className="text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized">
+                <Play className="w-4 h-4" />
+                Commencer
+              </RainbowButton>
             </StartQuestionnaireButton>
           </div>
           
@@ -53,15 +54,15 @@ export default function StickyStartButton() {
           </Button>
         </div>
       ) : (
-        /* Version minimisée - avec texte "Commencer" au lieu de juste l'icône */
+        /* Version minimisée - avec effet rainbow */
         <div className="relative overflow-hidden rounded-full">
-          <Button
+          <RainbowButton
             onClick={() => setIsMinimized(false)}
-            className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized border-2 border-midnight-green animate-border-pulse"
+            className="text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized"
           >
             <Play className="w-4 h-4" />
             Commencer
-          </Button>
+          </RainbowButton>
         </div>
       )}
     </div>
