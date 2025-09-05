@@ -706,3 +706,13 @@
   animation: shine-slow 2.5s ease-in-out infinite;
   animation-delay: 1s;
 }
+
+/* Animation border-pulse pour boutons Commencer */
+@keyframes border-pulse {
+  0%, 100% { 
+    border-color: #04454A; /* midnight-green */
+  }
+  50% { 
+    border-color: #49D9DE; /* teal-400 plus visible */
+  }
+}

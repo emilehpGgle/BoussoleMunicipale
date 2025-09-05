@@ -54,7 +54,7 @@ export default function HomePage() {
                 </Button>
                 <div className="flex flex-col gap-2">
                   <StartQuestionnaireButton
-                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-6 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl w-fit"
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-6 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl w-fit border-2 border-midnight-green animate-border-pulse"
                   >
                     Découvrez vos affinités politiques
                   </StartQuestionnaireButton>
@@ -324,7 +324,7 @@ export default function HomePage() {
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <StartQuestionnaireButton
-              className="bg-white text-midnight-green hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              className="bg-white text-midnight-green hover:bg-white/90 rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105 border-2 border-midnight-green animate-border-pulse"
             >
               Découvrez vos affinités politiques
             </StartQuestionnaireButton>

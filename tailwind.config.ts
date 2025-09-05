@@ -146,6 +146,14 @@ const config = {
             backgroundPosition: "350% 50%, 350% 50%",
           },
         },
+        "border-pulse": {
+          "0%, 100%": { 
+            borderColor: "#04454A" // midnight-green
+          },
+          "50%": { 
+            borderColor: "#49D9DE" // teal-400
+          },
+        },
       },
               animation: {
           "accordion-down": "accordion-down 0.2s ease-out",
@@ -154,6 +162,7 @@ const config = {
           slideInUp: "slideInUp 0.6s ease-out forwards",
           pulseScale: "pulseScale 3s ease-in-out infinite", // Increased duration from 2.5s to 3s
           aurora: "aurora 60s linear infinite",
+          "border-pulse": "border-pulse 2s ease-in-out infinite",
         },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
