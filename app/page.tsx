@@ -215,11 +215,15 @@ export default function HomePage() {
               <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 animate-border-pulse border-2">
-              <Link href="/questionnaire">
-                Découvrez vos affinités politiques
-              </Link>
-            </Button>
+            <RainbowButton 
+              className="text-white rounded-xl px-8 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              onClick={() => {
+                const event = new CustomEvent('openPostalCodeModal')
+                window.dispatchEvent(event)
+              }}
+            >
+              Découvrez vos affinités politiques
+            </RainbowButton>
           </div>
         </div>
       </section>
@@ -328,7 +332,7 @@ export default function HomePage() {
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <RainbowButton 
-              className="text-midnight-green rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              className="text-white rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
               onClick={() => {
                 const event = new CustomEvent('openPostalCodeModal')
                 window.dispatchEvent(event)

@@ -3,6 +3,7 @@ import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { RainbowButton } from "@/components/ui/rainbow-button"
 import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
 import ContinueOrRestartModal from "@/components/existing-responses-modal"
 import { useState, useEffect } from "react"
@@ -133,12 +134,12 @@ export default function SiteHeader() {
           {/* Action Button à droite (Desktop seulement) */}
           <div className="hidden md:block">
             {!shouldHideStartButton ? (
-              <Button
+              <RainbowButton
                 onClick={handleStartQuestionnaire}
-                className="bg-primary hover:bg-primary/90 text-white rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift animate-border-pulse border-2"
+                className="text-white rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift"
               >
                 Commencer
-              </Button>
+              </RainbowButton>
             ) : (
               <Button
                 onClick={handleGoHome}
