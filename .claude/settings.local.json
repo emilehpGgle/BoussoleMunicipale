@@ -9,5 +9,9 @@
       "mcp__upstash-context-7-mcp__get-library-docs"
     ],
     "deny": []
-  }
+  },
+  "enabledMcpjsonServers": [
+    "shadcn"
+  ],
+  "enableAllProjectMcpServers": true
 }

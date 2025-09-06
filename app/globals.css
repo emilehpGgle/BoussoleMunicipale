@@ -45,11 +45,11 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --color-1: 184 95% 12%; /* Midnight Green foncé #03393D */
+    --color-1: 184 95% 8%; /* Midnight Green très foncé pour plus de contraste */
     --color-2: 184 91% 14%; /* Midnight Green principal #04454A */
-    --color-3: 184 87% 22%; /* Teal intermédiaire #056B72 */
-    --color-4: 180 65% 60%; /* Teal clair #4DD9DE */
-    --color-5: 180 75% 95%; /* Azure Web #EAFCFC */
+    --color-3: 184 70% 35%; /* Teal intermédiaire plus vibrant */
+    --color-4: 180 80% 70%; /* Teal clair plus lumineux */
+    --color-5: 180 90% 88%; /* Azure Web plus contrasté */
   }
 
   .dark {
@@ -79,7 +79,7 @@
     --chart-5: 340 75% 55%;
   }
   .theme {
-    --animate-rainbow: rainbow var(--speed, 2s) infinite linear;
+    --animate-rainbow: rainbow var(--speed, 6s) infinite linear;
   }
 }
 
