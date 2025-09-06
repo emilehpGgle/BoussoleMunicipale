@@ -936,7 +936,7 @@ export const partiesData: Party[] = [
       ["Gestion budgétaire stricte", "Proximité citoyenne", "Opposition aux grands projets coûteux"],
       ["Méfiance envers la centralisation", "Réglementations excessives"],
     ),
-    priorities: ["Gestion des finances municipales", "Services municipaux", "Troisième lien routier"],
+    priorities: ["Gestion des finances municipales", "Services municipaux", "Sécurité publique"],
     positions: [
       {
         questionId: questionIdMap[0],
