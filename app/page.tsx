@@ -5,7 +5,6 @@ import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-
 import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
-import StartQuestionnaireButton from "@/components/start-questionnaire-button"
 import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
  
@@ -54,11 +53,15 @@ export default function HomePage() {
                   </Link>
                 </Button>
                 <div className="flex flex-col gap-2">
-                  <StartQuestionnaireButton asChild>
-                    <RainbowButton className="text-white rounded-xl px-6 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl w-fit">
-                      Découvrez vos affinités politiques
-                    </RainbowButton>
-                  </StartQuestionnaireButton>
+                  <RainbowButton 
+                    className="text-white rounded-xl px-6 py-4 text-base font-semibold shadow-lg transition-all duration-200 hover:shadow-xl w-fit"
+                    onClick={() => {
+                      const event = new CustomEvent('openPostalCodeModal')
+                      window.dispatchEvent(event)
+                    }}
+                  >
+                    Découvrez vos affinités politiques
+                  </RainbowButton>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
                   <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80 mt-2 text-center sm:text-left">
                     Questions fréquentes
@@ -324,11 +327,15 @@ export default function HomePage() {
             <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
-            <StartQuestionnaireButton asChild>
-              <RainbowButton className="text-midnight-green rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105">
-                Découvrez vos affinités politiques
-              </RainbowButton>
-            </StartQuestionnaireButton>
+            <RainbowButton 
+              className="text-midnight-green rounded-xl px-10 py-4 text-lg font-semibold shadow-lg transition-all duration-200 hover:shadow-xl hover:scale-105"
+              onClick={() => {
+                const event = new CustomEvent('openPostalCodeModal')
+                window.dispatchEvent(event)
+              }}
+            >
+              Découvrez vos affinités politiques
+            </RainbowButton>
           </div>
         </div>
       </section>

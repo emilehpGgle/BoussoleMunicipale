@@ -1,15 +1,22 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, lazy, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Play, X } from "lucide-react"
 import { usePathname } from "next/navigation"
-import StartQuestionnaireButton from "@/components/start-questionnaire-button"
 import { RainbowButton } from "@/components/ui/rainbow-button"
+import { useUserResponses } from '@/hooks/useUserResponses'
+import { useSession } from '@/hooks/useSession'
+import { boussoleQuestions } from '@/lib/boussole-data'
+
+const ContinueOrRestartModal = lazy(() => import('@/components/existing-responses-modal'))
 
 export default function StickyStartButton() {
   const [isMinimized, setIsMinimized] = useState(false)
+  const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
   const pathname = usePathname()
+  const { sessionToken } = useSession()
+  const { getResponseCounts, isLoading } = useUserResponses()
 
   // Masquer le bouton sur certaines pages où il n'est pas pertinent
   const shouldHide = pathname === '/questionnaire' || 
@@ -27,6 +34,33 @@ export default function StickyStartButton() {
     }
   }, [pathname])
 
+  const handleStartQuestionnaire = async () => {
+    try {
+      if (!sessionToken) {
+        const event = new CustomEvent('openPostalCodeModal')
+        window.dispatchEvent(event)
+        return
+      }
+
+      if (!isLoading) {
+        const counts = getResponseCounts
+        const totalQuestions = boussoleQuestions.length
+
+        if (counts.total >= totalQuestions) {
+          setIsExistingResponsesModalOpen(true)
+        } else if (counts.total > 0) {
+          setIsExistingResponsesModalOpen(true)
+        } else {
+          const event = new CustomEvent('openPostalCodeModal')
+          window.dispatchEvent(event)
+        }
+      }
+    } catch {
+      const event = new CustomEvent('openPostalCodeModal')
+      window.dispatchEvent(event)
+    }
+  }
+
   if (shouldHide) return null
 
   return (
@@ -35,12 +69,13 @@ export default function StickyStartButton() {
         <div className="flex flex-col items-end gap-2">
           {/* Bouton principal avec effet rainbow */}
           <div className="relative overflow-hidden rounded-full">
-            <StartQuestionnaireButton asChild>
-              <RainbowButton className="text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized">
-                <Play className="w-4 h-4" />
-                Commencer
-              </RainbowButton>
-            </StartQuestionnaireButton>
+            <RainbowButton 
+              className="text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized"
+              onClick={handleStartQuestionnaire}
+            >
+              <Play className="w-4 h-4" />
+              Commencer
+            </RainbowButton>
           </div>
           
           {/* Bouton pour minimiser */}
@@ -57,7 +92,7 @@ export default function StickyStartButton() {
         /* Version minimisée - avec effet rainbow */
         <div className="relative overflow-hidden rounded-full">
           <RainbowButton
-            onClick={() => setIsMinimized(false)}
+            onClick={handleStartQuestionnaire}
             className="text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized"
           >
             <Play className="w-4 h-4" />
@@ -65,6 +100,13 @@ export default function StickyStartButton() {
           </RainbowButton>
         </div>
       )}
+      <Suspense fallback={<div />}> 
+        <ContinueOrRestartModal
+          isOpen={isExistingResponsesModalOpen}
+          onClose={() => setIsExistingResponsesModalOpen(false)}
+          targetPath="/"
+        />
+      </Suspense>
     </div>
   )
 }
