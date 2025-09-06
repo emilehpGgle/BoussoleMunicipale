@@ -196,7 +196,7 @@ const config = {
   			pulseScale: 'pulseScale 3s ease-in-out infinite',
   			aurora: 'aurora 60s linear infinite',
   			'border-pulse': 'border-pulse 6s ease-in-out infinite',
-  			rainbow: 'rainbow var(--speed, 2s) infinite linear'
+  			rainbow: 'rainbow var(--speed, 8s) infinite linear'
   		},
   		fontFamily: {
   			sans: [

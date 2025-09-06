@@ -97,7 +97,7 @@ export default function SiteHeader() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-lg shadow-soft">
-        <div className="container flex h-20 items-center">
+        <div className="container flex h-20 items-center justify-between">
           {/* Logo - Parfaitement aligné à gauche */}
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
             <div className="relative h-full w-36 sm:w-40 md:w-44">
@@ -114,8 +114,8 @@ export default function SiteHeader() {
             </div>
           </Link>
 
-          {/* Navigation centrée - Design moderne */}
-          <nav className="hidden md:flex items-center justify-center flex-1 space-x-8">
+          {/* Navigation centrée - Design moderne (Desktop seulement) */}
+          <nav className="absolute left-1/2 transform -translate-x-1/2 hidden md:flex items-center space-x-8">
             <Link href="/comment-ca-marche" className="text-sm font-medium text-foreground/80 hover:text-midnight-green transition-colors duration-200">
               Comment ça marche
             </Link>
@@ -130,8 +130,8 @@ export default function SiteHeader() {
             </Link>
           </nav>
 
-          {/* Action Button à droite */}
-          <div className="hidden md:flex items-center">
+          {/* Action Button à droite (Desktop seulement) */}
+          <div className="hidden md:block">
             {!shouldHideStartButton ? (
               <Button
                 onClick={handleStartQuestionnaire}
@@ -140,7 +140,6 @@ export default function SiteHeader() {
                 Commencer
               </Button>
             ) : (
-              // Bouton &quot;Accueil&quot; simple - pas de modal
               <Button
                 onClick={handleGoHome}
                 variant="outline"
@@ -151,8 +150,8 @@ export default function SiteHeader() {
             )}
           </div>
 
-          {/* Mobile Navigation Trigger - Aligné à droite */}
-          <div className="md:hidden flex-1 flex justify-end">
+          {/* Mobile Navigation Trigger - Aligné à droite (Mobile seulement) */}
+          <div className="block md:hidden">
             <Sheet>
               <SheetTrigger asChild>
                 <Button
