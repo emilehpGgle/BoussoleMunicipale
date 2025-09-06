@@ -215,7 +215,7 @@ export default function HomePage() {
               <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
-            <Button asChild size="lg" className="bg-midnight-green hover:bg-midnight-green/90">
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90 animate-border-pulse border-2">
               <Link href="/questionnaire">
                 Découvrez vos affinités politiques
               </Link>

@@ -135,7 +135,7 @@ export default function SiteHeader() {
             {!shouldHideStartButton ? (
               <Button
                 onClick={handleStartQuestionnaire}
-                className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift"
+                className="bg-primary hover:bg-primary/90 text-white rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift animate-border-pulse border-2"
               >
                 Commencer
               </Button>
@@ -213,7 +213,7 @@ export default function SiteHeader() {
                         // Puis gérer le commencement
                         setTimeout(() => handleStartQuestionnaire(), 100)
                       }}
-                      className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift"
+                      className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift animate-border-pulse border-2"
                     >
                       Commencer
                     </Button>
