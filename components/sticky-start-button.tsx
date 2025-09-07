@@ -68,15 +68,13 @@ export default function StickyStartButton() {
       {!isMinimized ? (
         <div className="flex flex-col items-end gap-2">
           {/* Bouton principal avec effet rainbow */}
-          <div className="relative overflow-hidden rounded-full">
-            <RainbowButton 
-              className="text-white rounded-full px-6 py-3 text-sm font-semibold flex items-center gap-2"
-              onClick={handleStartQuestionnaire}
-            >
-              <Play className="w-4 h-4" />
-              Commencer
-            </RainbowButton>
-          </div>
+          <RainbowButton 
+            className="text-white rounded-full px-6 py-3 text-sm font-semibold flex items-center gap-2"
+            onClick={handleStartQuestionnaire}
+          >
+            <Play className="w-4 h-4" />
+            Commencer
+          </RainbowButton>
           
           {/* Bouton pour minimiser */}
           <Button
@@ -90,15 +88,13 @@ export default function StickyStartButton() {
         </div>
       ) : (
         /* Version minimisée - avec effet rainbow */
-        <div className="relative overflow-hidden rounded-full">
-          <RainbowButton
-            onClick={handleStartQuestionnaire}
-            className="text-white rounded-full px-4 py-3 text-sm font-semibold flex items-center gap-2"
-          >
-            <Play className="w-4 h-4" />
-            Commencer
-          </RainbowButton>
-        </div>
+        <RainbowButton
+          onClick={handleStartQuestionnaire}
+          className="text-white rounded-full px-4 py-3 text-sm font-semibold flex items-center gap-2"
+        >
+          <Play className="w-4 h-4" />
+          Commencer
+        </RainbowButton>
       )}
       <Suspense fallback={<div />}> 
         <ContinueOrRestartModal
