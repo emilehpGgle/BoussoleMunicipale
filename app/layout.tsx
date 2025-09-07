@@ -20,13 +20,6 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",
   description: "🗳️ Découvrez quel parti municipal vous correspond vraiment ! Notre boussole électorale gratuite vous guide en 5 minutes à travers les enjeux locaux qui comptent. Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques sur ce qui vous touche au quotidien.",
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: 'cover'
-  },
   keywords: [
     "boussole électorale",
     "élections municipales québec",
@@ -175,10 +168,48 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
+        {/* Viewport meta tag statique plus robuste pour résoudre le problème de layout domaine-spécifique */}
+        <meta 
+          name="viewport" 
+          content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
+        />
         <Analytics />
-        {/* Critical CSS optimisé - Variables essentielles + layout de base pour réduire CLS */}
+        {/* Domain detection script for debugging layout differences */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              const hostname = window.location.hostname;
+              const isDomainCustom = hostname.includes('boussolemunicipale.com');
+              const isVercelDomain = hostname.includes('vercel.app');
+              
+              console.log('[DOMAIN DEBUG] Current domain:', hostname);
+              console.log('[DOMAIN DEBUG] Is custom domain:', isDomainCustom);
+              console.log('[DOMAIN DEBUG] Is Vercel domain:', isVercelDomain);
+              console.log('[DOMAIN DEBUG] Viewport size:', window.innerWidth, 'x', window.innerHeight);
+              console.log('[DOMAIN DEBUG] Device pixel ratio:', window.devicePixelRatio);
+              
+              // Force layout recalculation on custom domain if needed
+              if (isDomainCustom) {
+                document.documentElement.style.setProperty('--debug-domain', '"custom"');
+                setTimeout(() => {
+                  document.body.style.minWidth = '100vw';
+                  document.body.style.maxWidth = '100vw';
+                  console.log('[DOMAIN FIX] Applied custom domain layout fix');
+                }, 100);
+              } else {
+                document.documentElement.style.setProperty('--debug-domain', '"vercel"');
+              }
+            })();
+          `
+        }} />
+        {/* Critical CSS optimisé v2.1 - Variables essentielles + layout de base pour réduire CLS */}
         <style dangerouslySetInnerHTML={{
           __html: `
+            /* Force domain-specific layout consistency */
+            @media screen {
+              html { font-size: 16px !important; }
+              body { width: 100% !important; max-width: 100vw !important; }
+            }
             :root {
               --background: 27 60% 97%;
               --foreground: 0 0% 13%;
@@ -215,35 +246,36 @@ export default function RootLayout({
             .flex-1 { flex: 1; }
             /* Header critique */
             header { position: sticky; top: 0; z-index: 50; }
-            /* Container responsive système unifié */
+            /* Container responsive système unifié - FORCE CONSISTENCY */
             .container { 
-              width: 100%; 
-              margin: 0 auto; 
-              padding: 0 1rem; 
+              width: 100% !important; 
+              margin: 0 auto !important; 
+              padding: 0 1rem !important; 
+              box-sizing: border-box !important;
             }
             /* Mobile : 320px - 639px */
             @media (min-width: 320px) { 
-              .container { padding: 0 1rem; max-width: 100%; } 
+              .container { padding: 0 1rem !important; max-width: 100% !important; } 
             }
             /* Tablet : 640px - 1023px */
             @media (min-width: 640px) { 
-              .container { padding: 0 1.5rem; max-width: 100%; } 
+              .container { padding: 0 1.5rem !important; max-width: 100% !important; } 
             }
             /* Laptop : 1024px - 1279px */
             @media (min-width: 1024px) { 
-              .container { padding: 0 2rem; max-width: 1200px; } 
+              .container { padding: 0 2rem !important; max-width: 1200px !important; } 
             }
             /* Desktop 16" : 1280px - 1535px */
             @media (min-width: 1280px) { 
-              .container { padding: 0 2rem; max-width: 1400px; } 
+              .container { padding: 0 2rem !important; max-width: 1400px !important; } 
             }
             /* Large Desktop : 1536px - 1919px */
             @media (min-width: 1536px) { 
-              .container { padding: 0 3rem; max-width: 1600px; } 
+              .container { padding: 0 3rem !important; max-width: 1600px !important; } 
             }
             /* Ultra-wide : 1920px+ */
             @media (min-width: 1920px) { 
-              .container { padding: 0 4rem; max-width: 1800px; } 
+              .container { padding: 0 4rem !important; max-width: 1800px !important; } 
             }
           `
         }} />
