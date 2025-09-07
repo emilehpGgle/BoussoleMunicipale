@@ -216,7 +216,7 @@ export default function HomePage() {
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
             <RainbowButton 
-              className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit relative z-20"
+              className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit isolate"
               onClick={() => {
                 const event = new CustomEvent('openPostalCodeModal')
                 window.dispatchEvent(event)
