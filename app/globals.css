@@ -458,6 +458,14 @@
     max-width: 100% !important;
   }
 
+  /* Version spéciale pour sections avec RainbowButtons */
+  .section-contained-rainbow {
+    position: relative;
+    overflow: visible; /* Permet aux RainbowButtons de déborder légèrement */
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
   /* Amélioration des couleurs et contraste sur mobile */
   @media (max-width: 768px) {
     /* Texte avec contraste amélioré */

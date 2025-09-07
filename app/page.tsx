@@ -326,7 +326,7 @@ export default function HomePage() {
       </section>
 
       {/* Section Call-to-Action */}
-      <section className="section-contained w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
+      <section className="section-contained-rainbow w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
         <div className="container px-4 md:px-6 max-w-[1200px] mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
