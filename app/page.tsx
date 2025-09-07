@@ -141,7 +141,7 @@ export default function HomePage() {
 
       {/* Section pourquoi c'est important */}
       <section className="section-contained-rainbow w-full py-fluid-lg bg-azure-web/40">
-        <div className="container">
+        <div className="container-rainbow">
           <h2 className="text-fluid-3xl text-center mb-fluid-md text-foreground animate-slideInUp">
             Pourquoi vos élections municipales comptent autant ?
           </h2>
@@ -327,7 +327,7 @@ export default function HomePage() {
 
       {/* Section Call-to-Action */}
       <section className="section-contained-rainbow w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
-        <div className="container px-4 md:px-6 max-w-[1200px] mx-auto text-center">
+        <div className="container-rainbow px-4 md:px-6 max-w-[1200px] mx-auto text-center">
           <div className="animate-slideInUp" style={{ animationDelay: "0.2s" }}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
             <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">

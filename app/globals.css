@@ -565,6 +565,18 @@
       box-sizing: border-box !important;
     }
 
+    /* Version spéciale pour conteneurs avec RainbowButtons */
+    .container-rainbow {
+      padding-left: 1rem !important;
+      padding-right: 1rem !important;
+      margin-left: auto !important;
+      margin-right: auto !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      overflow: visible !important; /* Permet aux RainbowButtons de déborder */
+      box-sizing: border-box !important;
+    }
+
     .grid {
       grid-template-columns: 1fr;
       gap: 1.5rem;
