@@ -11,7 +11,7 @@ import { GlowSection } from "@/components/ui/subtle-glow"
 
 export default function HomePage() {
   return (
-    <div className="mobile-constrained">
+    <div>
 
       {/* Section Hero avec glow subtil */}
       <GlowSection 
