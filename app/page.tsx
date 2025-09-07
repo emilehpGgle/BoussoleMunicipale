@@ -210,20 +210,22 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="text-center mt-8">
-            <p className="text-muted-foreground mb-4">
+          <div className="mt-8">
+            <p className="text-muted-foreground mb-4 text-center">
               <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
-            <RainbowButton 
-              className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit isolate"
-              onClick={() => {
-                const event = new CustomEvent('openPostalCodeModal')
-                window.dispatchEvent(event)
-              }}
-            >
-              Découvrez vos affinités politiques
-            </RainbowButton>
+            <div className="flex justify-center">
+              <RainbowButton 
+                className="text-white rounded-xl px-6 py-4 text-base font-semibold"
+                onClick={() => {
+                  const event = new CustomEvent('openPostalCodeModal')
+                  window.dispatchEvent(event)
+                }}
+              >
+                Découvrez vos affinités politiques
+              </RainbowButton>
+            </div>
           </div>
         </div>
       </section>
