@@ -168,10 +168,10 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
-        {/* Viewport meta tag statique plus robuste pour résoudre le problème de layout domaine-spécifique */}
+        {/* Viewport meta tag AGGRESSIVE pour neutraliser scaling automatique */}
         <meta 
           name="viewport" 
-          content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no"
         />
         <Analytics />
         {/* Domain detection script for debugging layout differences */}
@@ -188,6 +188,32 @@ export default function RootLayout({
               console.log('[DOMAIN DEBUG] Viewport size:', window.innerWidth, 'x', window.innerHeight);
               console.log('[DOMAIN DEBUG] Device pixel ratio:', window.devicePixelRatio);
               
+              // ADVANCED SCALING DEBUGGING
+              const htmlEl = document.documentElement;
+              const bodyEl = document.body;
+              const computedHtml = window.getComputedStyle(htmlEl);
+              const computedBody = window.getComputedStyle(bodyEl);
+              
+              console.log('[SCALE DEBUG] HTML font-size:', computedHtml.fontSize);
+              console.log('[SCALE DEBUG] Body font-size:', computedBody.fontSize);
+              console.log('[SCALE DEBUG] HTML zoom:', computedHtml.zoom || 'undefined');
+              console.log('[SCALE DEBUG] Body zoom:', computedBody.zoom || 'undefined');
+              console.log('[SCALE DEBUG] Window.devicePixelRatio:', window.devicePixelRatio);
+              console.log('[SCALE DEBUG] Screen dimensions:', screen.width, 'x', screen.height);
+              console.log('[SCALE DEBUG] Visual viewport:', window.visualViewport?.width || 'undefined', 'x', window.visualViewport?.height || 'undefined');
+              
+              // Browser zoom detection et compensation
+              const zoomLevel = Math.round(((window.outerWidth / window.innerWidth) * 100) * 100) / 100;
+              console.log('[SCALE DEBUG] Browser zoom level:', zoomLevel + '%');
+              
+              // Force zoom compensation sur domaine custom
+              if (isDomainCustom && zoomLevel !== 100) {
+                const compensationFactor = 100 / zoomLevel;
+                console.log('[SCALE FIX] Applying zoom compensation factor:', compensationFactor);
+                document.body.style.transform = \`scale(\${compensationFactor})\`;
+                document.body.style.transformOrigin = 'top left';
+              }
+              
               // Debug headers présents
               fetch('/api/debug-headers', { method: 'HEAD' }).then(response => {
                 console.log('[DOMAIN DEBUG] Response headers:');
@@ -196,27 +222,54 @@ export default function RootLayout({
                 }
               }).catch(() => console.log('[DOMAIN DEBUG] Could not fetch debug headers'));
               
-              // Force layout recalculation on custom domain if needed
+              // DOMAIN-SPECIFIC FIXES
               if (isDomainCustom) {
                 document.documentElement.style.setProperty('--debug-domain', '"custom"');
+                document.documentElement.setAttribute('data-domain', 'custom');
+                
+                // Force scaling correction for custom domain
                 setTimeout(() => {
+                  // Agressive scaling fix
+                  document.documentElement.style.fontSize = '16px';
+                  document.documentElement.style.zoom = '1';
+                  document.body.style.fontSize = '1rem';
+                  document.body.style.zoom = '1';
                   document.body.style.minWidth = '100vw';
                   document.body.style.maxWidth = '100vw';
-                  console.log('[DOMAIN FIX] Applied custom domain layout fix');
+                  document.body.style.transform = 'scale(1)';
+                  
+                  console.log('[DOMAIN FIX] Applied aggressive custom domain scaling fix');
                 }, 100);
               } else {
                 document.documentElement.style.setProperty('--debug-domain', '"vercel"');
+                document.documentElement.setAttribute('data-domain', 'vercel');
               }
             })();
           `
         }} />
-        {/* Critical CSS optimisé v2.1 - Variables essentielles + layout de base pour réduire CLS */}
+        {/* Critical CSS optimisé v2.2 - Normalisation globale pour consistance domaines */}
         <style dangerouslySetInnerHTML={{
           __html: `
-            /* Force domain-specific layout consistency */
-            @media screen {
-              html { font-size: 16px !important; }
-              body { width: 100% !important; max-width: 100vw !important; }
+            /* AGGRESSIVE GLOBAL RESET - Force domain consistency */
+            * { 
+              box-sizing: border-box !important; 
+            }
+            html { 
+              font-size: 16px !important; 
+              zoom: 1 !important; 
+              -webkit-text-size-adjust: 100% !important;
+              -ms-text-size-adjust: 100% !important;
+              text-size-adjust: 100% !important;
+            }
+            body { 
+              width: 100% !important; 
+              max-width: 100vw !important; 
+              min-width: 100vw !important;
+              font-size: 1rem !important;
+              line-height: 1.5 !important;
+              margin: 0 !important;
+              padding: 0 !important;
+              zoom: 1 !important;
             }
             :root {
               --background: 27 60% 97%;
@@ -284,6 +337,25 @@ export default function RootLayout({
             /* Ultra-wide : 1920px+ */
             @media (min-width: 1920px) { 
               .container { padding: 0 4rem !important; max-width: 1800px !important; } 
+            }
+            
+            /* DOMAIN-SPECIFIC OVERRIDES */
+            [data-domain="custom"] {
+              font-size: 16px !important;
+              zoom: 1 !important;
+            }
+            [data-domain="custom"] body {
+              font-size: 1rem !important;
+              transform: scale(1) !important;
+              zoom: 1 !important;
+            }
+            [data-domain="custom"] .container {
+              transform: scale(1) !important;
+              zoom: 1 !important;
+            }
+            [data-domain="custom"] * {
+              zoom: 1 !important;
+              transform-origin: top left !important;
             }
           `
         }} />
