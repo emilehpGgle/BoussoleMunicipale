@@ -136,7 +136,7 @@ export default function SiteHeader() {
             {!shouldHideStartButton ? (
               <RainbowButton
                 onClick={handleStartQuestionnaire}
-                className="text-white rounded-xl px-7 py-3 text-sm font-semibold shadow-sm btn-base-effects btn-hover-lift"
+                className="text-white rounded-xl px-7 py-3 text-sm font-semibold"
               >
                 Commencer
               </RainbowButton>
@@ -144,7 +144,7 @@ export default function SiteHeader() {
               <Button
                 onClick={handleGoHome}
                 variant="outline"
-                className="border-midnight-green/60 text-foreground/80 hover:bg-midnight-green/10 hover:text-midnight-green hover:border-midnight-green hover:shadow-md hover:shadow-midnight-green/20 rounded-xl px-7 py-3 text-sm font-medium shadow-sm btn-base-effects btn-hover-lift transition-all duration-200"
+                className="border-midnight-green/60 text-foreground/80 hover:bg-midnight-green/10 hover:text-midnight-green hover:border-midnight-green rounded-xl px-7 py-3 text-sm font-medium"
               >
                 Accueil
               </Button>
@@ -206,7 +206,7 @@ export default function SiteHeader() {
                   
                   {/* Navigation conditionnelle pour mobile aussi */}
                   {!shouldHideStartButton ? (
-                    <Button
+                    <RainbowButton
                       onClick={() => {
                         // Fermer le sheet d'abord
                         const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
@@ -214,10 +214,10 @@ export default function SiteHeader() {
                         // Puis gérer le commencement
                         setTimeout(() => handleStartQuestionnaire(), 100)
                       }}
-                      className="w-full bg-primary hover:bg-primary/90 text-white rounded-xl py-3 text-base font-semibold mt-4 btn-base-effects btn-hover-lift animate-border-pulse border-2"
+                      className="w-full text-white rounded-xl py-3 text-base font-semibold mt-4"
                     >
                       Commencer
-                    </Button>
+                    </RainbowButton>
                   ) : (
                     <Button
                       onClick={() => {
@@ -228,7 +228,7 @@ export default function SiteHeader() {
                         setTimeout(() => handleGoHome(), 100)
                       }}
                       variant="outline"
-                      className="w-full border-primary/20 text-foreground hover:bg-primary/10 hover:text-primary rounded-xl py-3 text-base font-medium mt-4 btn-base-effects btn-hover-lift"
+                      className="w-full border-primary/20 text-foreground hover:bg-primary/10 hover:text-primary rounded-xl py-3 text-base font-medium mt-4"
                     >
                       Retour à l&apos;accueil
                     </Button>
