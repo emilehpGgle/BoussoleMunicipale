@@ -216,7 +216,7 @@ export default function HomePage() {
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
             <RainbowButton 
-              className="text-white rounded-xl px-8 py-4 text-lg font-semibold"
+              className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit"
               onClick={() => {
                 const event = new CustomEvent('openPostalCodeModal')
                 window.dispatchEvent(event)
@@ -332,7 +332,7 @@ export default function HomePage() {
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <RainbowButton 
-              className="text-white rounded-xl px-10 py-4 text-lg font-semibold"
+              className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit"
               onClick={() => {
                 const event = new CustomEvent('openPostalCodeModal')
                 window.dispatchEvent(event)
