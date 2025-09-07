@@ -70,7 +70,7 @@ export default function StickyStartButton() {
           {/* Bouton principal avec effet rainbow */}
           <div className="relative overflow-hidden rounded-full">
             <RainbowButton 
-              className="text-white rounded-full px-6 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized"
+              className="text-white rounded-full px-6 py-3 text-sm font-semibold flex items-center gap-2"
               onClick={handleStartQuestionnaire}
             >
               <Play className="w-4 h-4" />
@@ -93,7 +93,7 @@ export default function StickyStartButton() {
         <div className="relative overflow-hidden rounded-full">
           <RainbowButton
             onClick={handleStartQuestionnaire}
-            className="text-white rounded-full px-4 py-3 text-sm font-semibold shadow-lg transition-all duration-300 hover:shadow-xl flex items-center gap-2 btn-touch-optimized"
+            className="text-white rounded-full px-4 py-3 text-sm font-semibold flex items-center gap-2"
           >
             <Play className="w-4 h-4" />
             Commencer

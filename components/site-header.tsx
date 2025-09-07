@@ -159,7 +159,7 @@ export default function SiteHeader() {
                   variant="ghost"
                   size="icon"
                   aria-label="Ouvrir le menu"
-                  className="text-foreground btn-base-effects"
+                  className="text-foreground"
                 >
                   <Menu className="h-6 w-6" />
                 </Button>

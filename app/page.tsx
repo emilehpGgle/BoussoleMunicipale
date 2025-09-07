@@ -45,7 +45,7 @@ export default function HomePage() {
                   size="lg"
                   variant="outline"
                   asChild
-                  className="border-midnight-green text-midnight-green hover:bg-midnight-green/10 hover:text-midnight-green rounded-xl px-6 py-4 text-base font-semibold btn-base-effects btn-hover-lift border-2 w-fit"
+                  className="border-midnight-green text-midnight-green hover:bg-midnight-green/10 hover:text-midnight-green rounded-xl px-6 py-4 text-base font-semibold border-2 w-fit"
                 >
                   <Link href="#comment-ca-marche" className="flex items-center gap-2">
                     <HelpCircle className="w-5 h-5" />
