@@ -140,7 +140,7 @@ export default function HomePage() {
       </section>
 
       {/* Section pourquoi c'est important */}
-      <section className="section-contained w-full py-fluid-lg bg-azure-web/40">
+      <section className="section-contained-rainbow w-full py-fluid-lg bg-azure-web/40">
         <div className="container">
           <h2 className="text-fluid-3xl text-center mb-fluid-md text-foreground animate-slideInUp">
             Pourquoi vos élections municipales comptent autant ?
