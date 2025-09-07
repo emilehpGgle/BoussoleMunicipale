@@ -124,7 +124,7 @@ export default function HomePage() {
               },
             ].map((step, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                <CardContent className="p-8 space-y-6 flex flex-col justify-center items-center min-h-[320px]">
+                <CardContent className="p-8 space-y-6 flex flex-col justify-center items-center">
                   <div className="w-12 h-12 bg-midnight-green/10 rounded-full flex items-center justify-center mx-auto">
                     <step.icon className="w-6 h-6 text-midnight-green" />
                   </div>
@@ -147,8 +147,8 @@ export default function HomePage() {
           </h2>
           <div className="grid gap-fluid-md md:grid-cols-3">
             <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <div className="flex flex-col h-full min-h-[400px]">
-                <div className="h-1/2 flex items-center justify-center mb-4">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-center mb-4">
                   <div className="w-full max-w-[200px] aspect-square rounded-xl overflow-hidden">
                     <Image 
                       src="/Image_cycliste_chien.webp" 
@@ -159,7 +159,7 @@ export default function HomePage() {
                     />
                   </div>
                 </div>
-                <div className="h-1/2 flex flex-col justify-center text-center">
+                <div className="flex flex-col justify-center text-center">
                   <h3 className="font-semibold mb-3 text-foreground text-lg">Transport quotidien</h3>
                   <p className="text-base text-muted-foreground leading-relaxed">
                     Bus, métro, vélo, routes : votre municipalité décide comment vous vous déplacez au quotidien.
@@ -168,8 +168,8 @@ export default function HomePage() {
               </div>
             </div>
             <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <div className="flex flex-col h-full min-h-[400px]">
-                <div className="h-1/2 flex items-center justify-center mb-4">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-center mb-4">
                   <div className="w-full max-w-[200px] aspect-square rounded-xl overflow-hidden">
                     <Image 
                       src="/Image_quartier_ordures.webp" 
@@ -180,7 +180,7 @@ export default function HomePage() {
                     />
                   </div>
                 </div>
-                <div className="h-1/2 flex flex-col justify-center text-center">
+                <div className="flex flex-col justify-center text-center">
                   <h3 className="font-semibold mb-3 text-foreground text-lg">Votre quartier</h3>
                   <p className="text-base text-muted-foreground leading-relaxed">
                     Parcs, collecte des déchets, bibliothèques, déneigement : les services qui façonnent votre qualité de vie locale.
@@ -189,8 +189,8 @@ export default function HomePage() {
               </div>
             </div>
             <div className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200">
-              <div className="flex flex-col h-full min-h-[400px]">
-                <div className="h-1/2 flex items-center justify-center mb-4">
+              <div className="flex flex-col h-full">
+                <div className="flex items-center justify-center mb-4">
                   <div className="w-full max-w-[200px] aspect-square rounded-xl overflow-hidden">
                     <Image 
                       src="/Image_parc_jardinage.webp" 
@@ -201,7 +201,7 @@ export default function HomePage() {
                     />
                   </div>
                 </div>
-                <div className="h-1/2 flex flex-col justify-center text-center">
+                <div className="flex flex-col justify-center text-center">
                   <h3 className="font-semibold mb-3 text-foreground text-lg">Vos taxes</h3>
                   <p className="text-base text-muted-foreground leading-relaxed">
                     La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez.
