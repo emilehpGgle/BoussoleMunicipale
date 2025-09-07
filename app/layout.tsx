@@ -188,6 +188,14 @@ export default function RootLayout({
               console.log('[DOMAIN DEBUG] Viewport size:', window.innerWidth, 'x', window.innerHeight);
               console.log('[DOMAIN DEBUG] Device pixel ratio:', window.devicePixelRatio);
               
+              // Debug headers présents
+              fetch('/api/debug-headers', { method: 'HEAD' }).then(response => {
+                console.log('[DOMAIN DEBUG] Response headers:');
+                for (let [key, value] of response.headers.entries()) {
+                  console.log('[DOMAIN DEBUG] -', key + ':', value);
+                }
+              }).catch(() => console.log('[DOMAIN DEBUG] Could not fetch debug headers'));
+              
               // Force layout recalculation on custom domain if needed
               if (isDomainCustom) {
                 document.documentElement.style.setProperty('--debug-domain', '"custom"');
