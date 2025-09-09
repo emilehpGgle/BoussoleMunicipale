@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from "motion/react";
 
 import { cn } from "@/lib/utils";
 
@@ -10,7 +11,7 @@ export function RainbowButton({
   ...props
 }: RainbowButtonProps) {
   return (
-    <button
+    <motion.button
       className={cn(
         "group relative inline-flex h-11 animate-rainbow cursor-pointer items-center justify-center rounded-xl border-0 bg-[length:200%] px-8 py-2 font-medium text-primary-foreground transition-colors [background-clip:padding-box,border-box,border-box] [background-origin:border-box] [border:calc(0.08*1rem)_solid_transparent] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
 
@@ -25,9 +26,12 @@ export function RainbowButton({
 
         className,
       )}
+      whileHover={{ scale: 1.02, y: -1 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
       {...props}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }
