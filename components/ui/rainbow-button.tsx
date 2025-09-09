@@ -10,6 +10,9 @@ export function RainbowButton({
   className,
   ...props
 }: RainbowButtonProps) {
+  // Filtrer les props qui pourraient causer des conflits avec motion
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...motionSafeProps } = props;
   return (
     <motion.button
       className={cn(
@@ -29,7 +32,7 @@ export function RainbowButton({
       whileHover={{ scale: 1.02, y: -1 }}
       whileTap={{ scale: 0.98 }}
       transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-      {...props}
+      {...motionSafeProps}
     >
       {children}
     </motion.button>

@@ -1,23 +1,24 @@
+"use client"
+
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
-import { motion } from "motion/react"
 
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "bg-midnight-green text-white hover:bg-midnight-green/90",
+        default: "bg-midnight-green text-white hover:bg-midnight-green/90 hover:scale-[1.02] hover:-translate-y-[1px] active:scale-[0.98]",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:scale-[1.02] hover:-translate-y-[1px] active:scale-[0.98]",
         outline:
-          "border border-input bg-white hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-white hover:bg-accent hover:text-accent-foreground hover:scale-[1.02] hover:-translate-y-[1px] active:scale-[0.98]",
         secondary:
-          "bg-white text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+          "bg-white text-secondary-foreground hover:bg-secondary/80 hover:scale-[1.02] hover:-translate-y-[1px] active:scale-[0.98]",
+        ghost: "hover:bg-accent hover:text-accent-foreground hover:scale-[1.02] active:scale-[0.98]",
         link: "text-midnight-green underline-offset-4 hover:underline",
       },
       size: {
@@ -43,23 +44,11 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    if (asChild) {
-      return (
-        <Slot
-          className={cn(buttonVariants({ variant, size, className }))}
-          ref={ref}
-          {...props}
-        />
-      )
-    }
-
+    const Comp = asChild ? Slot : "button"
     return (
-      <motion.button
+      <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        whileHover={{ scale: 1.02, y: -1 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
         {...props}
       />
     )

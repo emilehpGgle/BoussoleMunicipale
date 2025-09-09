@@ -203,13 +203,13 @@ export default function DonneesProtegeesPage() {
                 Vous pouvez exercer ces droits à tout moment, gratuitement et sans justification.
               </p>
               <div className="space-y-3">
-                <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto" asChild>
                   <Link href="/profil" className="flex items-center gap-2">
                     <Database className="w-4 h-4" />
                     Gérer mes données
                   </Link>
                 </Button>
-                <Button variant="outline" size="sm" className="w-full sm:w-auto">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto" asChild>
                   <Link href="/contact" className="flex items-center gap-2">
                     <Shield className="w-4 h-4" />
                     Contacter le délégué
