@@ -1,6 +1,6 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react" // Added Share2 and HelpCircle
 import Image from "next/image"
 import Link from "next/link"
