@@ -179,25 +179,65 @@ const config = {
   					borderColor: '#056B72'
   				}
   			},
-  			rainbow: {
-  				'0%': {
-  					'background-position': '0%'
-  				},
-  				'100%': {
-  					'background-position': '200%'
-  				}
-  			}
-  		},
-  		animation: {
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out',
-  			fadeIn: 'fadeIn 0.6s ease-out',
-  			slideInUp: 'slideInUp 0.6s ease-out forwards',
-  			pulseScale: 'pulseScale 3s ease-in-out infinite',
-  			aurora: 'aurora 60s linear infinite',
-  			'border-pulse': 'border-pulse 6s ease-in-out infinite',
-  			rainbow: 'rainbow var(--speed, 8s) infinite linear'
-  		},
+			rainbow: {
+				'0%': {
+					'background-position': '0%'
+				},
+				'100%': {
+					'background-position': '200%'
+				}
+			},
+			shimmer: {
+				'0%': {
+					transform: 'translateX(-100%)'
+				},
+				'100%': {
+					transform: 'translateX(100%)'
+				}
+			},
+			'pulse-soft': {
+				'0%, 100%': {
+					opacity: '1'
+				},
+				'50%': {
+					opacity: '0.8'
+				}
+			},
+			'slide-in-right': {
+				'0%': {
+					transform: 'translateX(100%)',
+					opacity: '0'
+				},
+				'100%': {
+					transform: 'translateX(0)',
+					opacity: '1'
+				}
+			},
+			'slide-in-left': {
+				'0%': {
+					transform: 'translateX(-100%)',
+					opacity: '0'
+				},
+				'100%': {
+					transform: 'translateX(0)',
+					opacity: '1'
+				}
+			}
+		},
+		animation: {
+			'accordion-down': 'accordion-down 0.2s ease-out',
+			'accordion-up': 'accordion-up 0.2s ease-out',
+			fadeIn: 'fadeIn 0.6s ease-out',
+			slideInUp: 'slideInUp 0.6s ease-out forwards',
+			pulseScale: 'pulseScale 3s ease-in-out infinite',
+			aurora: 'aurora 60s linear infinite',
+			'border-pulse': 'border-pulse 6s ease-in-out infinite',
+			rainbow: 'rainbow var(--speed, 8s) infinite linear',
+			shimmer: 'shimmer 1.5s infinite',
+			'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
+			'slide-in-right': 'slide-in-right 0.3s ease-out',
+			'slide-in-left': 'slide-in-left 0.3s ease-out'
+		},
   		fontFamily: {
   			sans: [
   				'Inter',
