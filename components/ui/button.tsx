@@ -53,6 +53,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       )
     }
 
+    // Separate Motion props from HTML props to avoid type conflicts
+    const { onDrag, onDragStart, onDragEnd, ...htmlProps } = props
+
     return (
       <motion.button
         className={cn(buttonVariants({ variant, size, className }))}
@@ -60,7 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         whileHover={{ scale: 1.02, y: -1 }}
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-        {...props}
+        {...htmlProps}
       />
     )
   }
