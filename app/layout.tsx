@@ -9,6 +9,7 @@ import { Analytics } from "@/components/analytics"
 import ConditionalFooter from "@/components/conditional-footer"
 import CSSOptimizer from "@/components/css-optimizer"
 import StickyStartButton from "@/components/sticky-start-button"
+import { RouteTransition } from "@/components/ui/page-transitions"
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -424,7 +425,11 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <div className="flex flex-col min-h-screen bg-white">
             <SiteHeader />
-            <main className="flex-1">{children}</main>
+            <main className="flex-1" id="main">
+              <RouteTransition>
+                {children}
+              </RouteTransition>
+            </main>
             <ConditionalFooter />
           </div>
           <CSSOptimizer />
