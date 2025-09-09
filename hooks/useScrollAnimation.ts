@@ -1,6 +1,6 @@
 "use client"
 
-import { useInView, cubicBezier } from "motion/react"
+import { useInView, cubicBezier, easeOut } from "motion/react"
 import { useRef } from "react"
 
 export function useScrollAnimation() {
@@ -21,7 +21,7 @@ export function useScrollAnimation() {
     ref,
     initial: { opacity: 0 },
     animate: isInView ? { opacity: 1 } : { opacity: 0 },
-    transition: { duration: 0.8, delay, ease: "easeOut" }
+    transition: { duration: 0.8, delay, ease: easeOut }
   })
 
   const getSlideConfig = (direction: "left" | "right" | "up" | "down" = "up", delay = 0) => {
