@@ -54,7 +54,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     // Separate Motion props from HTML props to avoid type conflicts
-    const { onDrag, onDragStart, onDragEnd, ...htmlProps } = props
+    const { onDrag: _onDrag, onDragStart: _onDragStart, onDragEnd: _onDragEnd, ...htmlProps } = props
 
     return (
       <motion.button
