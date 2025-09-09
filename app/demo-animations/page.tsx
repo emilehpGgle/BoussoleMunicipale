@@ -13,18 +13,68 @@ import {
   SkeletonText,
   ContentLoader,
 } from "@/components/ui/skeleton"
-import { ArrowRight, Sparkles, Zap, Star } from "lucide-react"
+import { StickyNavbar } from "@/components/ui/sticky-navbar"
+import { FloatingInput, FloatingTextarea } from "@/components/ui/floating-input"
+import { Modal, useModal } from "@/components/ui/modal"
+import { ToastProvider, useToast } from "@/components/ui/toast-modern"
+import { ArrowRight, Sparkles, Zap, Star, Mail, Lock, User, Send, CheckCircle, XCircle, AlertCircle, Info } from "lucide-react"
 
-export default function DemoAnimationsPage() {
+function DemoContent() {
   const [isLoading, setIsLoading] = useState(false)
+  const modal = useModal()
+  const { addToast } = useToast()
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   
   const handleLoadDemo = () => {
     setIsLoading(true)
     setTimeout(() => setIsLoading(false), 2000)
   }
 
+  const validateEmail = async (value: string) => {
+    // Simulation d'une validation asynchrone
+    await new Promise(resolve => setTimeout(resolve, 500))
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(value)) {
+      return "Email invalide"
+    }
+    return true
+  }
+
+  const handleSubmitForm = (e: React.FormEvent) => {
+    e.preventDefault()
+    addToast({
+      type: "success",
+      title: "Formulaire envoyé !",
+      description: "Vos informations ont été reçues avec succès.",
+    })
+  }
+
+  const showToast = (type: "success" | "error" | "warning" | "info") => {
+    const messages = {
+      success: { title: "Succès !", description: "L'opération a réussi." },
+      error: { title: "Erreur", description: "Une erreur est survenue." },
+      warning: { title: "Attention", description: "Vérifiez vos informations." },
+      info: { title: "Information", description: "Voici une information utile." },
+    }
+    addToast({ type, ...messages[type] })
+  }
+
   return (
-    <div className="min-h-screen">
+    <>
+      {/* Navbar Sticky (MUST #4) */}
+      <StickyNavbar
+        links={[
+          { href: "#buttons", label: "Boutons" },
+          { href: "#forms", label: "Formulaires" },
+          { href: "#modals", label: "Modales" },
+          { href: "#toasts", label: "Toasts" },
+          { href: "#animations", label: "Animations" },
+        ]}
+        cta={<MotionButton size="sm">Tester</MotionButton>}
+      />
+
+      <div className="min-h-screen">
       {/* Hero avec parallaxe légère */}
       <ParallaxSection className="relative h-[50vh] bg-gradient-to-br from-midnight-green to-midnight-green/80 flex items-center justify-center text-white">
         <div className="text-center">
@@ -220,6 +270,150 @@ export default function DemoAnimationsPage() {
           </StaggeredList>
         </div>
 
+        {/* Section Formulaires avec Labels Flottants */}
+        <div className="space-y-8" id="forms">
+          <h2 className="text-3xl font-bold">6. Formulaires Modernes (MUST #5)</h2>
+          
+          <FadeInSection>
+            <MotionCard className="p-8 max-w-2xl mx-auto">
+              <h3 className="text-xl font-semibold mb-6">Inscription avec validation</h3>
+              
+              <form onSubmit={handleSubmitForm} className="space-y-6">
+                <FloatingInput
+                  label="Nom complet"
+                  icon={<User className="w-4 h-4" />}
+                  helperText="Entrez votre nom et prénom"
+                />
+                
+                <FloatingInput
+                  label="Email"
+                  type="email"
+                  icon={<Mail className="w-4 h-4" />}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  onValidate={validateEmail}
+                />
+                
+                <FloatingInput
+                  label="Mot de passe"
+                  type="password"
+                  icon={<Lock className="w-4 h-4" />}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  helperText="Minimum 8 caractères"
+                />
+                
+                <FloatingTextarea
+                  label="Message"
+                  rows={4}
+                  helperText="Partagez vos commentaires"
+                />
+                
+                <MotionButton type="submit" className="w-full">
+                  <Send className="w-4 h-4" />
+                  Envoyer
+                </MotionButton>
+              </form>
+            </MotionCard>
+          </FadeInSection>
+        </div>
+
+        {/* Section Modales */}
+        <div className="space-y-8" id="modals">
+          <h2 className="text-3xl font-bold">7. Modales avec Overlay (MUST #7)</h2>
+          
+          <div className="grid gap-4 md:grid-cols-3">
+            <MotionCard className="p-6">
+              <h3 className="font-semibold mb-3">Modal Simple</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Modal basique avec overlay et blur
+              </p>
+              <MotionButton onClick={modal.open} variant="outline">
+                Ouvrir Modal
+              </MotionButton>
+            </MotionCard>
+
+            <MotionCard className="p-6">
+              <h3 className="font-semibold mb-3">Modal Large</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Modal avec plus de contenu
+              </p>
+              <MotionButton variant="outline">
+                Voir Exemple
+              </MotionButton>
+            </MotionCard>
+
+            <MotionCard className="p-6">
+              <h3 className="font-semibold mb-3">Modal Custom</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                Position et taille personnalisées
+              </p>
+              <MotionButton variant="outline">
+                Personnaliser
+              </MotionButton>
+            </MotionCard>
+          </div>
+        </div>
+
+        {/* Section Toasts */}
+        <div className="space-y-8" id="toasts">
+          <h2 className="text-3xl font-bold">8. Système de Toasts (SHOULD #15)</h2>
+          
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <MotionCard className="p-6 text-center">
+              <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Succès</h3>
+              <MotionButton
+                onClick={() => showToast("success")}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                Afficher
+              </MotionButton>
+            </MotionCard>
+
+            <MotionCard className="p-6 text-center">
+              <XCircle className="w-8 h-8 text-red-600 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Erreur</h3>
+              <MotionButton
+                onClick={() => showToast("error")}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                Afficher
+              </MotionButton>
+            </MotionCard>
+
+            <MotionCard className="p-6 text-center">
+              <AlertCircle className="w-8 h-8 text-yellow-600 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Avertissement</h3>
+              <MotionButton
+                onClick={() => showToast("warning")}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                Afficher
+              </MotionButton>
+            </MotionCard>
+
+            <MotionCard className="p-6 text-center">
+              <Info className="w-8 h-8 text-blue-600 mx-auto mb-3" />
+              <h3 className="font-semibold mb-2">Information</h3>
+              <MotionButton
+                onClick={() => showToast("info")}
+                variant="outline"
+                size="sm"
+                className="w-full"
+              >
+                Afficher
+              </MotionButton>
+            </MotionCard>
+          </div>
+        </div>
+
         {/* Récapitulatif */}
         <FadeInSection variant="fade">
           <div className="bg-gradient-to-br from-midnight-green to-midnight-green/90 text-white rounded-2xl p-12 text-center">
@@ -231,11 +425,13 @@ export default function DemoAnimationsPage() {
                 <p>✅ États hover cohérents (MUST #1)</p>
                 <p>✅ Feedback au clic (MUST #2)</p>
                 <p>✅ Skeletons + shimmer (MUST #3)</p>
+                <p>✅ Navbar sticky (MUST #4)</p>
               </div>
               <div className="space-y-2">
+                <p>✅ Labels flottants (MUST #5)</p>
                 <p>✅ Transitions d&apos;entrée au scroll (MUST #6)</p>
-                <p>✅ Animations fluides avec Framer Motion</p>
-                <p>✅ Respect de prefers-reduced-motion</p>
+                <p>✅ Modales avec overlay (MUST #7)</p>
+                <p>✅ Système de toasts (SHOULD #15)</p>
               </div>
             </div>
             <div className="mt-8">
@@ -249,5 +445,39 @@ export default function DemoAnimationsPage() {
 
       </div>
     </div>
+    
+    {/* Modal Example */}
+    <Modal
+      open={modal.isOpen}
+      onClose={modal.close}
+      title="Exemple de Modal"
+      description="Voici une modal avec overlay et blur en arrière-plan"
+      size="md"
+    >
+      <div className="space-y-4">
+        <p className="text-muted-foreground">
+          Cette modal utilise Framer Motion pour des animations fluides d&apos;entrée et de sortie. 
+          Elle inclut aussi un focus trap et peut être fermée avec Escape.
+        </p>
+        <div className="flex gap-3">
+          <MotionButton onClick={modal.close}>
+            Confirmer
+          </MotionButton>
+          <Button variant="outline" onClick={modal.close}>
+            Annuler
+          </Button>
+        </div>
+      </div>
+    </Modal>
+    </>
+  )
+}
+
+// Export avec ToastProvider
+export default function DemoAnimationsPage() {
+  return (
+    <ToastProvider>
+      <DemoContent />
+    </ToastProvider>
   )
 }

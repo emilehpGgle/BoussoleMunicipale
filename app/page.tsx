@@ -1,33 +1,29 @@
 "use client"
 import { Button } from "@/components/ui/button"
 import { CardContent } from "@/components/ui/card"
-import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react" // Added Share2 and HelpCircle
+import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
 import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
-import { MotionCard, MotionImageWrapper, MotionSection } from "@/components/ui/motion-wrapper"
+import { MotionCard } from "@/components/ui/motion-button"
+import { FadeInSection, StaggeredList, ParallaxSection } from "@/components/ui/scroll-animations"
  
 
 export default function HomePage() {
   return (
     <div>
 
-      {/* Section Hero avec glow subtil */}
-      <GlowSection 
-        glowProps={{ 
-          mode: 'breathe', 
-          intensity: 'subtle',
-          colors: ['#04454A', '#EAFCFC'],
-          duration: 8
-        }}
-        className="section-contained w-full py-fluid-lg bg-gradient-to-br from-isabelline to-azure-web/20"
-      >
-        <div className="container">
+      {/* Section Hero avec parallaxe et animations modernes */}
+      <ParallaxSection className="section-contained w-full py-fluid-lg bg-gradient-to-br from-isabelline to-azure-web/20 relative overflow-hidden">
+        {/* Glow effect en arrière-plan */}
+        <div className="absolute inset-0 bg-gradient-to-br from-midnight-green/5 to-transparent pointer-events-none" />
+        
+        <div className="container relative">
           <div className="grid md:grid-cols-2 gap-fluid-md items-center">
-            <MotionSection 
-              variant="slideUp" 
+            <FadeInSection 
+              variant="slide-up" 
               delay={0.1}
               className="flex flex-col space-y-fluid-sm"
             >
@@ -73,36 +69,39 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
-            </MotionSection>
-            <MotionImageWrapper
-              src="/Image_parc_crisp.webp"
-              alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
-              enableHover={true}
+            </FadeInSection>
+            <FadeInSection
+              variant="slide-right"
               delay={0.3}
-              className="relative w-full aspect-[4/3] md:aspect-[16/10] max-w-full rounded-2xl"
-              imageProps={{
-                fill: true,
-                className: "rounded-2xl object-cover object-center",
-                priority: true,
-                quality: 95,
-                sizes: "(max-width: 768px) 100vw, 50vw",
-                style: { boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }
-              }}
-            />
+              className="relative"
+            >
+              <div className="relative w-full aspect-[4/3] md:aspect-[16/10] max-w-full rounded-2xl overflow-hidden">
+                <Image
+                  src="/Image_parc_crisp.webp"
+                  alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
+                  fill
+                  className="rounded-2xl object-cover object-center transition-transform duration-300 hover:scale-105"
+                  priority={true}
+                  quality={95}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  style={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
+                />
+              </div>
+            </FadeInSection>
           </div>
         </div>
-      </GlowSection>
+      </ParallaxSection>
 
       {/* Section d'explication */}
       <section id="comment-ca-marche" className="py-fluid-xl bg-gray-50">
         <div className="container">
-          <div className="text-center mb-fluid-lg">
+          <FadeInSection className="text-center mb-fluid-lg">
             <h2 className="text-fluid-3xl font-bold text-eerie-black mb-fluid-xs">Comment ça fonctionne ?</h2>
             <p className="text-fluid-lg text-muted-foreground max-w-3xl mx-auto">
               Un processus simple en 4 étapes pour découvrir vos affinités politiques municipales
             </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-fluid-sm">
+          </FadeInSection>
+          <StaggeredList className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-fluid-sm">
             {[
               {
                 icon: FileText,
@@ -130,7 +129,6 @@ export default function HomePage() {
                 key={index} 
                 className="text-center hover:shadow-lg transition-shadow"
                 interactive={true}
-                delay={index * 0.1}
               >
                 <CardContent className="p-8 space-y-6 flex flex-col justify-center items-center">
                   <div className="w-12 h-12 bg-midnight-green/10 rounded-full flex items-center justify-center mx-auto">
@@ -143,23 +141,23 @@ export default function HomePage() {
                 </CardContent>
               </MotionCard>
             ))}
-          </div>
+          </StaggeredList>
         </div>
       </section>
 
       {/* Section pourquoi c'est important */}
       <section className="section-contained-rainbow w-full py-fluid-lg bg-azure-web/40">
         <div className="container-rainbow">
-          <MotionSection 
-            variant="slideUp" 
+          <FadeInSection 
+            variant="slide-up" 
             delay={0.1}
             className="text-center mb-fluid-md"
           >
             <h2 className="text-fluid-3xl text-foreground">
               Pourquoi vos élections municipales comptent autant ?
             </h2>
-          </MotionSection>
-          <div className="grid gap-fluid-md md:grid-cols-3">
+          </FadeInSection>
+          <StaggeredList className="grid gap-fluid-md md:grid-cols-3">
             {[
               {
                 image: "/Image_cycliste_chien.webp",
@@ -179,12 +177,11 @@ export default function HomePage() {
                 title: "Vos taxes",
                 description: "La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez."
               }
-            ].map((item, index) => (
+            ].map((item) => (
               <MotionCard 
                 key={item.title}
                 className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200"
                 interactive={true}
-                delay={index * 0.15}
               >
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-center mb-4">
@@ -207,8 +204,8 @@ export default function HomePage() {
                 </div>
               </MotionCard>
             ))}
-          </div>
-          <div className="mt-8">
+          </StaggeredList>
+          <FadeInSection delay={0.6} className="mt-8">
             <p className="text-muted-foreground mb-4 text-center">
               <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
               C&apos;est pourquoi nous avons créé cette boussole.
@@ -224,7 +221,7 @@ export default function HomePage() {
                 Découvrez vos affinités politiques
               </RainbowButton>
             </div>
-          </div>
+          </FadeInSection>
         </div>
       </section>
 
@@ -239,8 +236,8 @@ export default function HomePage() {
         className="section-contained w-full py-16 md:py-20 bg-gradient-to-br from-azure-web to-isabelline"
       >
         <div className="container px-4 md:px-6 max-w-[1200px] mx-auto text-center">
-          <MotionSection 
-            variant="slideUp" 
+          <FadeInSection 
+            variant="slide-up" 
             delay={0.2}
           >
             <h2 className="mb-6 text-foreground">Votre vote municipal a plus d&apos;impact que vous pensez</h2>
@@ -249,7 +246,7 @@ export default function HomePage() {
               Pourtant, seulement <ColoredText variant="accent" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales. 
               Résultat ? Votre voix compte encore plus ! Notre boussole vous aide à faire un choix éclairé en quelques minutes.
             </p>
-          </MotionSection>
+          </FadeInSection>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
@@ -267,12 +264,11 @@ export default function HomePage() {
                 label: "peut faire la différence",
                 description: "dans votre quartier ou arrondissement"
               }
-            ].map((item, index) => (
+            ].map((item) => (
               <MotionCard
                 key={item.label}
                 className="p-8 bg-card rounded-xl shadow-soft card-interactive-effects hover:shadow-md transition-shadow duration-200"
                 interactive={true}
-                delay={index * 0.15 + 0.4}
               >
                 <div className="text-4xl font-bold text-midnight-green mb-3">{item.stat}</div>
                 <div className="text-lg font-semibold text-foreground mb-3">{item.label}</div>
@@ -288,22 +284,23 @@ export default function HomePage() {
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Image - PROFESSIONAL SIZE */}
-            <div className="relative">
-              <MotionImageWrapper
-                src="/Image_famille.webp"
-                alt="Famille dans la municipalité de Québec - Illustration vie de quartier - Boussole électorale municipale 2025"
-                enableHover={true}
-                delay={0.2}
-                className="relative w-full h-96 lg:h-[500px] rounded-2xl shadow-lg"
-                imageProps={{
-                  fill: true,
-                  className: "object-cover",
-                  quality: 90,
-                  loading: "lazy",
-                  sizes: "(max-width: 768px) 100vw, 50vw"
-                }}
-              />
-            </div>
+            <FadeInSection
+              variant="slide-right"
+              delay={0.2}
+              className="relative"
+            >
+              <div className="relative w-full h-96 lg:h-[500px] rounded-2xl shadow-lg overflow-hidden">
+                <Image
+                  src="/Image_famille.webp"
+                  alt="Famille dans la municipalité de Québec - Illustration vie de quartier - Boussole électorale municipale 2025"
+                  fill
+                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  quality={90}
+                  loading="lazy"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              </div>
+            </FadeInSection>
             {/* Contenu textuel */}
             <div className="space-y-8">
               <div className="space-y-4">
@@ -330,8 +327,8 @@ export default function HomePage() {
       {/* Section Call-to-Action */}
       <section className="section-contained-rainbow w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
         <div className="container-rainbow px-4 md:px-6 max-w-[1200px] mx-auto text-center">
-          <MotionSection 
-            variant="slideUp" 
+          <FadeInSection 
+            variant="slide-up" 
             delay={0.2}
           >
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
@@ -347,7 +344,7 @@ export default function HomePage() {
             >
               Découvrez vos affinités politiques
             </RainbowButton>
-          </MotionSection>
+          </FadeInSection>
         </div>
       </section>
 

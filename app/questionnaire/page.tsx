@@ -20,6 +20,9 @@ import './styles.css'
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import { SwipeContainer, useTouchSupport } from "@/components/ui/swipe-container"
+// Imports pour futures améliorations
+// import { MotionButton, MotionCard } from "@/components/ui/motion-button"
+// import { FadeInSection } from "@/components/ui/scroll-animations"
 
 
 // questions constant is already defined from boussoleQuestions

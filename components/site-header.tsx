@@ -11,6 +11,9 @@ import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { usePathname } from "next/navigation"
 import { useUserResponses } from "@/hooks/useUserResponses"
+// Imports pour futures améliorations
+// import { StickyNavbar } from "@/components/ui/sticky-navbar"
+// import { MotionButton } from "@/components/ui/motion-button"
 
 export default function SiteHeader() {
   const [isPostalModalOpen, setIsPostalModalOpen] = useState(false)
