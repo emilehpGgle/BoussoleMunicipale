@@ -1,12 +1,12 @@
 "use client"
 
-import React from "react"
+import React, { forwardRef } from "react"
 import { motion, HTMLMotionProps } from "motion/react"
 import { cn } from "@/lib/utils"
 import { useScrollAnimation } from "@/hooks/useScrollAnimation"
 import Image, { ImageProps } from "next/image"
 
-interface MotionSectionProps extends Omit<HTMLMotionProps<"div">, "ref"> {
+interface MotionSectionProps {
   variant?: "default" | "fade" | "slideLeft" | "slideRight" | "slideUp" | "slideDown"
   delay?: number
   className?: string
@@ -16,13 +16,13 @@ interface MotionSectionProps extends Omit<HTMLMotionProps<"div">, "ref"> {
 /**
  * Section avec animation d'entrée au scroll - wrapper simple autour de motion.div
  */
-export function MotionSection({
+export const MotionSection = forwardRef<HTMLDivElement, MotionSectionProps & Omit<HTMLMotionProps<"div">, keyof MotionSectionProps>>(({
   children,
   className,
   variant = "default",
   delay = 0,
   ...props
-}: MotionSectionProps) {
+}, ref) => {
   const { getScrollConfig, getFadeConfig, getSlideConfig } = useScrollAnimation()
 
   const getAnimationConfig = () => {
@@ -42,10 +42,11 @@ export function MotionSection({
     }
   }
 
-  const animationProps = getAnimationConfig()
+  const { ref: animationRef, ...animationProps } = getAnimationConfig()
 
   return (
     <motion.div
+      ref={ref || animationRef}
       className={cn(className)}
       {...animationProps}
       {...props}
@@ -53,9 +54,11 @@ export function MotionSection({
       {children}
     </motion.div>
   )
-}
+})
 
-interface MotionCardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
+MotionSection.displayName = "MotionSection"
+
+interface MotionCardProps {
   interactive?: boolean
   delay?: number
   className?: string
@@ -65,13 +68,13 @@ interface MotionCardProps extends Omit<HTMLMotionProps<"div">, "ref"> {
 /**
  * Card avec animation d'entrée et interactions hover - wrapper motion.div
  */
-export function MotionCard({
+export const MotionCard = forwardRef<HTMLDivElement, MotionCardProps & Omit<HTMLMotionProps<"div">, keyof MotionCardProps>>(({
   children,
   className,
   interactive = false,
   delay = 0,
   ...props
-}: MotionCardProps) {
+}, ref) => {
   const { getScrollConfig } = useScrollAnimation()
 
   const interactiveProps = interactive ? {
@@ -80,17 +83,22 @@ export function MotionCard({
     transition: { duration: 0.2 }
   } : {}
 
+  const { ref: animationRef, ...animationProps } = getScrollConfig(delay)
+
   return (
     <motion.div
+      ref={ref || animationRef}
       className={cn(className)}
-      {...getScrollConfig(delay)}
+      {...animationProps}
       {...interactiveProps}
       {...props}
     >
       {children}
     </motion.div>
   )
-}
+})
+
+MotionCard.displayName = "MotionCard"
 
 interface MotionImageWrapperProps {
   src: string
@@ -104,7 +112,7 @@ interface MotionImageWrapperProps {
 /**
  * Wrapper Motion autour de Next.js Image - évite les conflits de types
  */
-export function MotionImageWrapper({
+export const MotionImageWrapper = forwardRef<HTMLDivElement, MotionImageWrapperProps & Omit<HTMLMotionProps<"div">, keyof MotionImageWrapperProps>>(({
   src,
   alt,
   delay = 0,
@@ -112,7 +120,7 @@ export function MotionImageWrapper({
   className,
   imageProps = {},
   ...props
-}: MotionImageWrapperProps) {
+}, ref) => {
   const { getScrollConfig } = useScrollAnimation()
 
   const hoverProps = enableHover ? {
@@ -120,10 +128,13 @@ export function MotionImageWrapper({
     transition: { duration: 0.3 }
   } : {}
 
+  const { ref: animationRef, ...animationProps } = getScrollConfig(delay)
+
   return (
     <motion.div
+      ref={ref || animationRef}
       className={cn("overflow-hidden", className)}
-      {...getScrollConfig(delay)}
+      {...animationProps}
       {...hoverProps}
       {...props}
     >
@@ -134,4 +145,6 @@ export function MotionImageWrapper({
       />
     </motion.div>
   )
-}
+})
+
+MotionImageWrapper.displayName = "MotionImageWrapper"

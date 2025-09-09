@@ -1,6 +1,6 @@
 "use client"
 
-import { useInView } from "motion/react"
+import { useInView, cubicBezier } from "motion/react"
 import { useRef } from "react"
 
 export function useScrollAnimation() {
@@ -14,7 +14,7 @@ export function useScrollAnimation() {
     ref,
     initial: { opacity: 0, y: 20 },
     animate: isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 },
-    transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }
+    transition: { duration: 0.6, delay, ease: cubicBezier(0.25, 0.1, 0.25, 1) }
   })
 
   const getFadeConfig = (delay = 0) => ({
@@ -38,7 +38,7 @@ export function useScrollAnimation() {
       ref,
       initial: { opacity: 0, ...offset },
       animate: isInView ? { opacity: 1, x: 0, y: 0 } : { opacity: 0, ...offset },
-      transition: { duration: 0.6, delay, ease: [0.25, 0.1, 0.25, 1] }
+      transition: { duration: 0.6, delay, ease: cubicBezier(0.25, 0.1, 0.25, 1) }
     }
   }
 
