@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Palette palette2.0.scss - Élimination complète du bleu */
-    --background: 27 60% 97%; /* Isabelline off-white (#FCF7F3) */
+    --background: 50 50% 84%; /* Off-white (#DAD1AA) */
     --foreground: 0 0% 13%; /* Eerie Black pour texte (#222222) */
 
     --card: 0 100% 100%; /* White pur (#FFFEFE) */
