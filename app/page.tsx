@@ -336,6 +336,7 @@ export default function HomePage() {
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
             <RainbowButton
+              variant="white"
               className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
               onClick={() => {
                 const event = new CustomEvent('openPostalCodeModal')
