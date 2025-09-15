@@ -54,8 +54,8 @@ export default function HomePage() {
                   </Link>
                 </Button>
                 <div className="flex flex-col gap-2">
-                  <RainbowButton 
-                    className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit"
+                  <RainbowButton
+                    className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
                     onClick={() => {
                       const event = new CustomEvent('openPostalCodeModal')
                       window.dispatchEvent(event)
@@ -211,8 +211,8 @@ export default function HomePage() {
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
             <div className="flex justify-center">
-              <RainbowButton 
-                className="text-white rounded-xl px-6 py-4 text-base font-semibold"
+              <RainbowButton
+                className="rounded-xl px-6 py-4 text-base font-semibold"
                 onClick={() => {
                   const event = new CustomEvent('openPostalCodeModal')
                   window.dispatchEvent(event)
@@ -335,8 +335,8 @@ export default function HomePage() {
             <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
-            <RainbowButton 
-              className="text-white rounded-xl px-6 py-4 text-base font-semibold w-fit"
+            <RainbowButton
+              className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
               onClick={() => {
                 const event = new CustomEvent('openPostalCodeModal')
                 window.dispatchEvent(event)
