@@ -1,7 +1,8 @@
 "use client"
 
-import { motion, AnimatePresence, Variants } from "framer-motion"
+import { motion, Variants } from "framer-motion"
 import { ReactNode } from "react"
+import React from "react"
 
 // Variants d'animation pour différents effets
 export const fadeInUp: Variants = {
@@ -264,18 +265,57 @@ export const AnimatedCounter = ({
 export const AnimatedButton = ({
   children,
   className = "",
-  ...props
+  onClick,
+  disabled,
+  type = "button",
+  id,
+  name,
+  value,
+  form,
+  title,
+  tabIndex,
+  role,
+  "aria-label": ariaLabel,
+  "aria-pressed": ariaPressed,
+  "aria-expanded": ariaExpanded,
+  "aria-describedby": ariaDescribedBy
 }: {
   children: ReactNode
   className?: string
-  [key: string]: any
+  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  disabled?: boolean
+  type?: "button" | "submit" | "reset"
+  id?: string
+  name?: string
+  value?: string | ReadonlyArray<string> | number
+  form?: string
+  title?: string
+  tabIndex?: number
+  role?: string
+  "aria-label"?: string
+  "aria-pressed"?: boolean
+  "aria-expanded"?: boolean
+  "aria-describedby"?: string
 }) => {
   return (
     <motion.button
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={className}
-      {...props}
+      onClick={onClick}
+      disabled={disabled}
+      type={type}
+      id={id}
+      name={name}
+      value={value}
+      form={form}
+      title={title}
+      tabIndex={tabIndex}
+      role={role}
+      aria-label={ariaLabel}
+      aria-pressed={ariaPressed}
+      aria-expanded={ariaExpanded}
+      aria-describedby={ariaDescribedBy}
     >
       {children}
     </motion.button>

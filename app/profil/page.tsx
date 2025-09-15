@@ -13,7 +13,7 @@ import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, C
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
 import { motion, AnimatePresence } from "framer-motion"
-import { fadeInUp, slideInFromLeft, slideInFromRight, buttonTap } from "@/components/ui/animation-utils"
+import { fadeInUp } from "@/components/ui/animation-utils"
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {

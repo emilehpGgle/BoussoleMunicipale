@@ -33,8 +33,8 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 import { ConsentForm, type ConsentFormData } from "@/components/consent-form"
 import { useProfile } from "@/hooks/useProfile"
-import { motion, AnimatePresence } from "framer-motion"
-import { ScrollReveal, AnimatedCard, AnimatedProgress, AnimatedCounter } from "@/components/ui/animation-utils"
+import { motion } from "framer-motion"
+import { ScrollReveal, AnimatedCard, AnimatedCounter } from "@/components/ui/animation-utils"
 
 const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
 

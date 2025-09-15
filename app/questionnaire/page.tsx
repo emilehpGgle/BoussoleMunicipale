@@ -21,7 +21,7 @@ import { ButtonWithEffects } from "@/components/ui/button-effects"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import { SwipeContainer, useTouchSupport } from "@/components/ui/swipe-container"
 import { motion, AnimatePresence } from "framer-motion"
-import { fadeInUp, slideInFromLeft, slideInFromRight } from "@/components/ui/animation-utils"
+import { fadeInUp } from "@/components/ui/animation-utils"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -36,12 +36,11 @@ export default function QuestionnairePage() {
   const isTouchDevice = useTouchSupport()
   
   // Hook pour les transitions de balayage
-  const { 
-    transitionKey, 
-    startSweepTransition, 
+  const {
+    startSweepTransition,
     animationClasses,
     canInteract,
-    cleanup 
+    cleanup
   } = useSweepTransitions({
     duration: prefersReducedMotion ? 150 : optimizedDuration,
     exitDuration: prefersReducedMotion ? 100 : Math.max(optimizedDuration - 100, 200),
