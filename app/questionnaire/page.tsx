@@ -429,9 +429,7 @@ export default function QuestionnairePage() {
               }}
             >
               <Card className="card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white w-full max-w-2xl mx-auto flex flex-col will-change-transform">
-          </motion.div>
-          </AnimatePresence>
-          <div className="flex items-start gap-3 mb-3 question-header">
+                <div className="flex items-start gap-3 mb-3 question-header">
             <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${animationClasses.contentClass}`}>
               {currentQuestion.text}
             </h2>
@@ -644,7 +642,7 @@ export default function QuestionnairePage() {
                 Terminer
               </Button>
             )}
-          </div>
+                </div>
               </Card>
             </motion.div>
           </AnimatePresence>
