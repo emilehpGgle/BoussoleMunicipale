@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
+import { motion, AnimatePresence } from "framer-motion"
+import { fadeInUp, slideInFromLeft, slideInFromRight, buttonTap } from "@/components/ui/animation-utils"
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {
@@ -332,48 +334,66 @@ export default function ProfilePage() {
       }
 
       return (
-        <div className="flex flex-wrap gap-2">
-          {question.options?.map((option) => (
-            <Button
+        <motion.div className="flex flex-wrap gap-2" initial="initial" animate="animate" variants={{
+          animate: { transition: { staggerChildren: 0.05 } }
+        }}>
+          {question.options?.map((option, index) => (
+            <motion.div
               key={option}
-              variant={selectedValues.includes(option) ? "default" : "outline"}
-              onClick={() => handleMultipleSelection(option)}
-              className={`
-                p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
-                ${selectedValues.includes(option)
-                  ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
-                  : "hover:bg-white/50 hover:border-secondary"
-                }
-              `}
+              variants={fadeInUp}
+              custom={index}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {option}
-            </Button>
+              <Button
+                variant={selectedValues.includes(option) ? "default" : "outline"}
+                onClick={() => handleMultipleSelection(option)}
+                className={`
+                  p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+                  ${selectedValues.includes(option)
+                    ? "bg-midnight-green text-white border-midnight-green shadow-sm"
+                    : "hover:bg-white/50 hover:border-secondary"
+                  }
+                `}
+              >
+                {option}
+              </Button>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )
     } else {
       // Sélection simple pour les autres questions
       const selectedValue = profile[question.id] as string
 
       return (
-        <div className="flex flex-wrap gap-2">
-          {question.options?.map((option) => (
-            <Button
+        <motion.div className="flex flex-wrap gap-2" initial="initial" animate="animate" variants={{
+          animate: { transition: { staggerChildren: 0.05 } }
+        }}>
+          {question.options?.map((option, index) => (
+            <motion.div
               key={option}
-              variant={selectedValue === option ? "default" : "outline"}
-              onClick={() => handleAnswerChange(question.id, option)}
-              className={`
-                p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
-                ${selectedValue === option 
-                  ? "bg-midnight-green text-white border-midnight-green shadow-sm" 
-                  : "hover:bg-white/50 hover:border-secondary"
-                }
-              `}
+              variants={fadeInUp}
+              custom={index}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              {option}
-            </Button>
+              <Button
+                variant={selectedValue === option ? "default" : "outline"}
+                onClick={() => handleAnswerChange(question.id, option)}
+                className={`
+                  p-3 h-auto text-left justify-start text-sm font-medium transition-all duration-200
+                  ${selectedValue === option
+                    ? "bg-midnight-green text-white border-midnight-green shadow-sm"
+                    : "hover:bg-white/50 hover:border-secondary"
+                  }
+                `}
+              >
+                {option}
+              </Button>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )
     }
   }
@@ -631,31 +651,38 @@ export default function ProfilePage() {
             {Math.round(globalProgress)}%
           </span>
         </div>
-        <div className="w-full bg-muted rounded-full h-2">
-          <div 
-            className="bg-midnight-green h-2 rounded-full transition-all duration-500 ease-out" 
-            style={{ width: `${globalProgress}%` }}
-          ></div>
+        <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+          <motion.div
+            className="bg-gradient-to-r from-midnight-green to-teal-main-400 h-2 rounded-full"
+            initial={{ width: 0 }}
+            animate={{ width: `${globalProgress}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
         </div>
       </div>
 
       {/* Questions - Accordéon intelligent pour toutes les questions */}
       <div className="space-y-3 mb-6">
         {allQuestions.map((question, index) => {
-          
+
           const isCompleted = isQuestionComplete(question)
           const isActive = index === activeQuestionIndex
           const isFuture = index > activeQuestionIndex && !isCompleted
-            
+
             return (
-              <Card 
-                key={question.id} 
+              <motion.div
+                key={question.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05, duration: 0.4 }}
+              >
+              <Card
                 ref={(el) => { questionRefs.current[question.id] = el }}
                 className={`shadow-soft rounded-xl transition-all duration-300 ${
-                  isActive 
-                    ? "bg-white border-midnight-green/50 shadow-lg" 
-                    : isCompleted 
-                      ? "bg-secondary/10 border-secondary/30" 
+                  isActive
+                    ? "bg-white border-midnight-green/50 shadow-lg"
+                    : isCompleted
+                      ? "bg-secondary/10 border-secondary/30"
                       : "bg-white/30 border-muted"
                 }`}
               >
@@ -717,14 +744,24 @@ export default function ProfilePage() {
                 </CardHeader>
 
                 {/* Contenu de la question (accordéon) */}
-                {isActive && (
-                  <CardContent className="p-6 pt-0 animate-fadeIn">
-                    <div className="space-y-3">
-                      {renderQuestionInput(question)}
-                    </div>
-                  </CardContent>
-                )}
+                <AnimatePresence>
+                  {isActive && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <CardContent className="p-6 pt-0">
+                        <div className="space-y-3">
+                          {renderQuestionInput(question)}
+                        </div>
+                      </CardContent>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Card>
+              </motion.div>
             )
           })}
         </div>

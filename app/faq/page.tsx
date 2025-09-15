@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
 import Head from "next/head"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
+import { ScrollReveal, AnimatedCard, PageTransition } from "@/components/ui/animation-utils"
 
 export const metadata: Metadata = {
   title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec 2025",
@@ -139,72 +140,80 @@ export default function FAQPage() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto py-8 px-4">
-      {/* Breadcrumbs avec structured data */}
-      <Breadcrumbs items={breadcrumbConfigs.faq} />
-      
-      {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
-      <Head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      </Head>
-      {/* En-tête SEO optimisé */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">
-          Questions Fréquentes sur la Boussole Électorale 2025
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-          Tout ce que vous devez savoir sur notre boussole électorale pour les élections municipales de Québec 2025.
-        </p>
-      </div>
+    <PageTransition>
+      <div className="container max-w-4xl mx-auto py-8 px-4">
+        {/* Breadcrumbs avec structured data */}
+        <Breadcrumbs items={breadcrumbConfigs.faq} />
 
-      {/* Introduction */}
-      <Card className="mb-8">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <HelpCircle className="h-6 w-6 text-primary" />
-            Aide et Support
-          </CardTitle>
-          <CardDescription>
-            Trouvez rapidement les réponses à vos questions sur la boussole électorale
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">
-            Cette page répond aux questions les plus fréquentes sur notre <strong>boussole électorale</strong> pour les 
-            <strong> élections municipales 2025</strong>. Si vous ne trouvez pas votre réponse, 
-            n&apos;hésitez pas à nous contacter.
-          </p>
-        </CardContent>
-      </Card>
+        {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
+        <Head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+          />
+        </Head>
+        {/* En-tête SEO optimisé */}
+        <ScrollReveal>
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold mb-4">
+              Questions Fréquentes sur la Boussole Électorale 2025
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Tout ce que vous devez savoir sur notre boussole électorale pour les élections municipales de Québec 2025.
+            </p>
+          </div>
+        </ScrollReveal>
 
-      {/* FAQ par catégorie */}
-      {faqs.map((category, categoryIndex) => (
-        <Card key={categoryIndex} className="mb-6">
-          <CardHeader>
-            <CardTitle className="text-xl">{category.category}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Accordion type="single" collapsible className="w-full">
-              {category.questions.map((item, index) => (
-                <AccordionItem key={index} value={`item-${categoryIndex}-${index}`}>
-                  <AccordionTrigger className="text-left">
-                    {item.q}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground">
-                    {item.a}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </CardContent>
-        </Card>
-      ))}
+        {/* Introduction */}
+        <ScrollReveal delay={0.1}>
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <HelpCircle className="h-6 w-6 text-primary" />
+                Aide et Support
+              </CardTitle>
+              <CardDescription>
+                Trouvez rapidement les réponses à vos questions sur la boussole électorale
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Cette page répond aux questions les plus fréquentes sur notre <strong>boussole électorale</strong> pour les
+                <strong> élections municipales 2025</strong>. Si vous ne trouvez pas votre réponse,
+                n&apos;hésitez pas à nous contacter.
+              </p>
+            </CardContent>
+          </Card>
+        </ScrollReveal>
 
-      {/* Section d'aide */}
-      <Card>
+        {/* FAQ par catégorie */}
+        {faqs.map((category, categoryIndex) => (
+          <ScrollReveal key={categoryIndex} delay={0.2 + categoryIndex * 0.1}>
+            <AnimatedCard className="mb-6" delay={categoryIndex * 0.1}>
+              <CardHeader>
+                <CardTitle className="text-xl">{category.category}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  {category.questions.map((item, index) => (
+                    <AccordionItem key={index} value={`item-${categoryIndex}-${index}`}>
+                      <AccordionTrigger className="text-left">
+                        {item.q}
+                      </AccordionTrigger>
+                      <AccordionContent className="text-muted-foreground">
+                        {item.a}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </CardContent>
+            </AnimatedCard>
+          </ScrollReveal>
+        ))}
+
+        {/* Section d'aide */}
+        <ScrollReveal delay={0.4}>
+          <AnimatedCard>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-6 w-6 text-primary" />
@@ -249,45 +258,51 @@ export default function FAQPage() {
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </AnimatedCard>
+        </ScrollReveal>
 
-      {/* Call to Action final */}
-      <Card className="text-center">
-        <CardContent className="pt-6">
-          <h2 className="text-2xl font-bold mb-4">
-            Prêt à découvrir vos affinités politiques ?
-          </h2>
-          <p className="text-muted-foreground mb-6">
-            Utilisez notre <strong>boussole électorale</strong> pour identifier quel parti municipal de Québec 
-            partage le mieux vos idées pour les <strong>élections 2025</strong>.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-              <Link href="/questionnaire">
-                Commencer le Questionnaire
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/a-propos">
-                En Savoir Plus
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" size="lg">
-              <Link href="/resultats">
-                Voir les résultats boussole électorale municipale
-              </Link>
-            </Button>
+        {/* Call to Action final */}
+        <ScrollReveal delay={0.5}>
+          <AnimatedCard className="text-center">
+            <CardContent className="pt-6">
+              <h2 className="text-2xl font-bold mb-4">
+                Prêt à découvrir vos affinités politiques ?
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Utilisez notre <strong>boussole électorale</strong> pour identifier quel parti municipal de Québec
+                partage le mieux vos idées pour les <strong>élections 2025</strong>.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                  <Link href="/questionnaire">
+                    Commencer le Questionnaire
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg">
+                  <Link href="/a-propos">
+                    En Savoir Plus
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" size="lg">
+                  <Link href="/resultats">
+                    Voir les résultats boussole électorale municipale
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </AnimatedCard>
+        </ScrollReveal>
+
+        {/* Lien retour vers l'accueil */}
+        <ScrollReveal delay={0.6}>
+          <div className="text-center mt-8">
+            <Link href="/" className="text-primary underline hover:text-primary/80 text-base">
+              Retour à la boussole électorale municipale
+            </Link>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Lien retour vers l'accueil */}
-      <div className="text-center mt-8">
-        <Link href="/" className="text-primary underline hover:text-primary/80 text-base">
-          Retour à la boussole électorale municipale
-        </Link>
+        </ScrollReveal>
       </div>
-    </div>
+    </PageTransition>
   )
 } 

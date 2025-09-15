@@ -33,6 +33,8 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 import { ConsentForm, type ConsentFormData } from "@/components/consent-form"
 import { useProfile } from "@/hooks/useProfile"
+import { motion, AnimatePresence } from "framer-motion"
+import { ScrollReveal, AnimatedCard, AnimatedProgress, AnimatedCounter } from "@/components/ui/animation-utils"
 
 const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
 
@@ -532,17 +534,24 @@ export default function ResultsPage() {
           </div>
         )}
 
-        <Card className="shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border border-border/50">
-          <CardHeader>
-            <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
-          </CardHeader>
-          <CardContent className="grid md:grid-cols-3 gap-6">
-            {topParties.map(({ party, score }, index) => (
-              <Card
-                key={party.id}
-                className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl card-interactive-effects animate-fadeIn bg-white/90 backdrop-blur-sm hover:border-midnight-green/30 transition-all duration-300" // Added card-color-accent for mobile
-                style={{ animationDelay: `${index * 0.15}s` }} // Staggered delay
+        <ScrollReveal>
+          <Card className="shadow-lg rounded-2xl bg-white/95 backdrop-blur-sm border border-border/50">
+            <CardHeader>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
               >
+                <CardTitle className="text-2xl">Vos meilleurs alignements (Partis)</CardTitle>
+              </motion.div>
+            </CardHeader>
+            <CardContent className="grid md:grid-cols-3 gap-6">
+              {topParties.map(({ party, score }, index) => (
+                <AnimatedCard
+                  key={party.id}
+                  delay={index * 0.15}
+                  className="p-6 flex flex-col items-center text-center border-2 border-border shadow-md hover:shadow-lg rounded-xl bg-white/90 backdrop-blur-sm hover:border-midnight-green/30 transition-all duration-300"
+                >
                 <PartyLogo party={party} size={{ width: 60, height: 60 }} className="w-20 h-20 mb-4" index={index} />
                 {/* Container avec hauteur fixe pour assurer l'alignement des cartes */}
                 <div className="min-h-[4rem] flex flex-col justify-center mb-3">
@@ -550,12 +559,20 @@ export default function ResultsPage() {
                   <p className="text-sm text-muted-foreground leading-tight">{party.name}</p>
                 </div>
                 <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden">
-                  <div
-                    className="bg-teal-600 h-4 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${score.toFixed(0)}%` }}
-                  ></div>
+                  <motion.div
+                    className="bg-gradient-to-r from-teal-600 to-teal-500 h-4 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${score.toFixed(0)}%` }}
+                    transition={{
+                      duration: 1.2,
+                      ease: "easeOut",
+                      delay: index * 0.15 + 0.5
+                    }}
+                  />
                 </div>
-                <p className="text-lg font-bold text-foreground mb-4">{score.toFixed(0)}% d&apos;affinité</p>
+                <p className="text-lg font-bold text-foreground mb-4">
+                  <AnimatedCounter value={Math.round(score)} duration={1.5} suffix="% d'affinité" />
+                </p>
                 <Button
                   asChild
                   variant="outline"
@@ -563,23 +580,33 @@ export default function ResultsPage() {
                 >
                   <Link href={`/parti/${party.id}`}>Voir la fiche du parti</Link>
                 </Button>
-              </Card>
-            ))}
-          </CardContent>
-        </Card>
+                </AnimatedCard>
+              ))}
+            </CardContent>
+          </Card>
+        </ScrollReveal>
 
-        <Card className="shadow-soft rounded-2xl subtle-glow">
-          <CardHeader>
-            <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
-            <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {calculatedScores.map(({ party, score }, index) => (
-              <Link
-                href={`/parti/${party.id}`}
-                key={party.id}
-                className="block p-4 rounded-lg hover:bg-white/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-midnight-green/20 hover:shadow-md"
-              >
+        <ScrollReveal delay={0.2}>
+          <Card className="shadow-soft rounded-2xl subtle-glow">
+            <CardHeader>
+              <CardTitle className="text-2xl">Votre position par rapport aux plateformes</CardTitle>
+              <CardDescription>Comparaison de votre affinité globale avec chaque parti. Cliquez pour voir les détails.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {calculatedScores.map(({ party, score }, index) => (
+                <motion.div
+                  key={party.id}
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.1
+                  }}
+                >
+                  <Link
+                    href={`/parti/${party.id}`}
+                    className="block p-4 rounded-lg hover:bg-white/50 transition-all duration-300 group cursor-pointer border border-transparent hover:border-midnight-green/20 hover:shadow-md"
+                  >
                 <div className="flex items-center gap-3 mb-3">
                   <PartyLogo party={party} size={{ width: 28, height: 28 }} className="w-9 h-9 group-hover:shadow-md transition-shadow" index={index} />
                   <h3 className="text-lg font-semibold text-foreground group-hover:text-midnight-green transition-colors flex-1">
@@ -598,10 +625,12 @@ export default function ResultsPage() {
                     {score >= 15 ? `${score.toFixed(0)}%` : ""}
                   </div>
                 </div>
-              </Link>
-            ))}
-          </CardContent>
-        </Card>
+                  </Link>
+                </motion.div>
+              ))}
+            </CardContent>
+          </Card>
+        </ScrollReveal>
 
         {/* Carte de positionnement politique 2D */}
         <Suspense fallback={<div className="h-full w-full bg-muted/30 rounded-lg flex items-center justify-center">Chargement de la carte politique...</div>}>
