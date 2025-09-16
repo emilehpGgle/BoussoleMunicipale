@@ -19,19 +19,24 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",
-  description: "🗳️ Découvrez quel parti municipal vous correspond vraiment ! Notre boussole électorale gratuite vous guide en 5 minutes à travers les enjeux locaux qui comptent. Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques sur ce qui vous touche au quotidien.",
+  title: "Boussole Électorale | Test Politique Municipal Québec 2025",
+  description: "La boussole electorale (boussole électorale) officielle pour les élections municipales 2025 à Québec. Test politique gratuit en 5 minutes pour découvrir vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux. Political compass québécois.",
   keywords: [
     "boussole électorale",
-    "élections municipales québec",
+    "boussole electorale",
+    "boussole electorale 2025",
+    "boussole électorale québec",
     "test politique",
+    "test political compass",
+    "political compass québec",
+    "élections municipales 2025",
+    "élections municipales québec",
+    "bruno marchand",
+    "sam hamad",
     "partis politiques québec",
-    "troisième lien",
-    "services municipaux",
-    "déneigement québec",
-    "pistes cyclables",
-    "fiscalité locale",
-    "aménagement urbain"
+    "maire québec 2025",
+    "denis coderre",
+    "test politique municipal"
   ],
   authors: [{ name: "Boussole Électorale Québec" }],
   creator: "Boussole Électorale Québec",
@@ -61,10 +66,10 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Boussole Électorale Municipale - Votre guide pour les élections municipales 2025",
-    description: "Découvrez quel parti municipal vous correspond vraiment ! Services municipaux, troisième lien, aménagement urbain, fiscalité locale : trouvez vos affinités politiques.",
+    title: "Boussole Électorale 2025 | Test Politique Municipal Québec",
+    description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Bruno Marchand, Sam Hamad et tous les partis.",
     url: "https://boussole-municipale.vercel.app",
-    siteName: "Boussole Électorale Municipale Québec",
+    siteName: "Boussole Électorale Québec",
     locale: "fr_CA",
     type: "website",
     images: [
@@ -78,8 +83,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Boussole Électorale Municipale - Votre guide 2025 🗳️",
-    description: "Découvrez quel parti municipal vous correspond vraiment ! Services municipaux, troisième lien, aménagement urbain, fiscalité locale.",
+    title: "Boussole Électorale 2025 | Test Politique Québec",
+    description: "Boussole electorale gratuite pour les élections municipales 2025. Découvrez vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux.",
     images: ["/hero-illustration-v2.webp"]
   },
   robots: {
@@ -115,8 +120,8 @@ export default function RootLayout({
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "Boussole Électorale 2025 - Élections Municipales Québec",
-    "description": "Test politique gratuit pour découvrir vos affinités avec les partis municipaux de Québec lors des élections 2025. Questionnaire de 21 questions en 5 minutes.",
+    "name": "Boussole Électorale | Test Politique Municipal Québec 2025",
+    "description": "Boussole electorale (boussole électorale) officielle pour les élections municipales 2025 à Québec. Test politique gratuit type political compass pour découvrir vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux.",
     "url": "https://boussole-municipale.vercel.app",
     "applicationCategory": "Political Tool",
     "operatingSystem": "Web Browser",
@@ -163,7 +168,7 @@ export default function RootLayout({
         "name": "Affinités politiques"
       }
     ],
-    "keywords": "boussole électorale, élections municipales québec 2025, test politique, partis politiques québec, tramway quebec, bruno marchand, politique gauche droite"
+    "keywords": "boussole électorale, boussole electorale, boussole electorale 2025, test politique, test political compass, political compass québec, élections municipales québec 2025, bruno marchand, sam hamad, denis coderre, partis politiques québec, maire québec 2025"
   }
 
   return (

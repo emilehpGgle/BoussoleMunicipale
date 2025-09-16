@@ -13,14 +13,21 @@ export const metadata: Metadata = {
   description: "Réponses aux questions sur la boussole électorale municipale pour les élections 2025. Date des élections municipales, différence avec les boussoles provinciales, fonctionnement de notre boussole électorale locale et positions sur les enjeux municipaux.",
   keywords: [
     "boussole électorale",
+    "boussole electorale",
+    "test politique",
+    "test politique municipal",
+    "political compass",
+    "test political compass",
+    "political compass québec",
     "élections municipales 2025",
     "date élections municipales québec",
     "élections municipales québec 2025 date",
+    "bruno marchand 2025",
+    "sam hamad élections",
+    "denis coderre montreal",
     "services municipaux",
     "comment voter municipales",
-    "candidats municipaux 2025",
-    "transport en commun",
-    "pistes cyclables"
+    "candidats municipaux 2025"
   ],
   openGraph: {
     title: "FAQ - Questions sur la Boussole Électorale Municipale Québec 2025",
@@ -96,6 +103,31 @@ export default function FAQPage() {
           a: "Notre algorithme compare vos réponses aux positions officielles des partis sur chaque enjeu. Le pourcentage de compatibilité reflète votre alignement sur les questions importantes pour vous. Plus le pourcentage est élevé, plus vos positions concordent avec celles du parti politique."
         }
       ]
+    },
+    {
+      category: "Test Politique et Political Compass",
+      questions: [
+        {
+          q: "Qu'est-ce qu'un test politique municipal ?",
+          a: "Un test politique municipal est un questionnaire qui évalue vos positions sur les enjeux locaux (transport, logement, services municipaux) pour déterminer vos affinités avec les partis municipaux. Notre test politique type 'political compass' analyse 21 questions spécifiques aux élections municipales 2025 de Québec."
+        },
+        {
+          q: "Comment fonctionne votre political compass québécois ?",
+          a: "Notre political compass (boussole politique) utilise un système à deux axes pour positionner vos convictions politiques : interventionnisme vs libre marché municipal, et progressisme vs conservatisme urbain. Ce test political compass est spécialement adapté aux enjeux municipaux québécois et aux positions des partis locaux."
+        },
+        {
+          q: "Quelle est la différence entre boussole electorale et test politique ?",
+          a: "Les termes 'boussole electorale', 'boussole électorale' et 'test politique' désignent le même outil : un questionnaire qui mesure vos affinités politiques. Notre plateforme utilise ces trois approches pour créer un political compass complet adapté aux élections municipales 2025 de Québec."
+        },
+        {
+          q: "Pourquoi n'y a-t-il pas Denis Coderre dans les candidats ?",
+          a: "Denis Coderre était maire de Montréal (2013-2017), pas de Québec. Il a récemment annoncé qu'il 'tourne la page' de sa carrière politique en 2025. Notre boussole se concentre actuellement sur les candidats aux élections municipales de Québec 2025, mais nous prévoyons d'ajouter Montréal (incluant l'histoire de Denis Coderre) dans une future version."
+        },
+        {
+          q: "Le test fonctionne-t-il comme les autres political compass en ligne ?",
+          a: "Notre test politique municipal se distingue des political compass génériques car il se concentre exclusivement sur les enjeux municipaux québécois. Contrairement aux tests politiques provinciaux ou fédéraux, nous analysons vos positions sur le déneigement, les pistes cyclables, la densification urbaine et autres sujets qui relèvent directement de la municipalité."
+        }
+      ]
     }
   ]
 
@@ -134,6 +166,30 @@ export default function FAQPage() {
         "acceptedAnswer": {
           "@type": "Answer",
           "text": "Pour voter aux élections municipales 2025, vous devez être inscrit sur la liste électorale de votre municipalité. L'inscription se fait automatiquement si vous êtes déjà inscrit au provincial/fédéral. Vous pouvez vérifier votre inscription sur le site d'Élections Québec ou auprès de votre municipalité."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Qu'est-ce qu'un test politique municipal ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Un test politique municipal est un questionnaire qui évalue vos positions sur les enjeux locaux (transport, logement, services municipaux) pour déterminer vos affinités avec les partis municipaux. Notre test politique type 'political compass' analyse 21 questions spécifiques aux élections municipales 2025 de Québec."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment fonctionne votre political compass québécois ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Notre political compass (boussole politique) utilise un système à deux axes pour positionner vos convictions politiques : interventionnisme vs libre marché municipal, et progressisme vs conservatisme urbain. Ce test political compass est spécialement adapté aux enjeux municipaux québécois et aux positions des partis locaux."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quelle est la différence entre boussole electorale et test politique ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Les termes 'boussole electorale', 'boussole électorale' et 'test politique' désignent le même outil : un questionnaire qui mesure vos affinités politiques. Notre plateforme utilise ces trois approches pour créer un political compass complet adapté aux élections municipales 2025 de Québec."
         }
       }
     ]

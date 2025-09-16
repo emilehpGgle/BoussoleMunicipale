@@ -18,7 +18,7 @@ import { boussoleQuestions } from "@/lib/boussole-data"
 interface ContinueOrRestartModalProps {
   isOpen: boolean
   onClose: () => void
-  targetPath?: string // "/" par défaut pour l'accueil, mais peut être "/questionnaire" etc.
+  targetPath?: string // "/" par défaut pour l'accueil, mais peut être "/test-politique-municipal" etc.
 }
 
 export default function ContinueOrRestartModal({ 
@@ -68,8 +68,8 @@ export default function ContinueOrRestartModal({
 
   const handleContinueQuestionnaire = () => {
     onClose()
-    // Aller au questionnaire pour continuer
-    router.push("/questionnaire")
+    // Aller au test politique pour continuer
+    router.push("/test-politique-municipal")
   }
 
   const handleViewResults = () => {

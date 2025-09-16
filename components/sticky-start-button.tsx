@@ -19,8 +19,8 @@ export default function StickyStartButton() {
   const { getResponseCounts, isLoading } = useUserResponses()
 
   // Masquer le bouton sur certaines pages où il n'est pas pertinent
-  const shouldHide = pathname === '/questionnaire' || 
-                     pathname === '/resultats' || 
+  const shouldHide = pathname === '/test-politique-municipal' ||
+                     pathname === '/resultats' ||
                      pathname === '/profil' ||
                      pathname.startsWith('/partage/')
 

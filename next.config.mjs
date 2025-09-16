@@ -21,6 +21,16 @@ const nextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+  // SEO Redirects
+  async redirects() {
+    return [
+      {
+        source: '/questionnaire',
+        destination: '/test-politique-municipal',
+        permanent: true, // 301 redirect pour SEO
+      },
+    ]
+  },
   // Security headers for production
   async headers() {
     return [

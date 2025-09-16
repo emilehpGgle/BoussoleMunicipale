@@ -21,8 +21,8 @@ export default function SiteHeader() {
   const pathname = usePathname()
   const { getResponseCounts } = useUserResponses()
 
-  // Déterminer si on est dans le questionnaire ou les résultats
-  const isInQuestionnaire = pathname === '/questionnaire'
+  // Déterminer si on est dans le test politique ou les résultats
+  const isInQuestionnaire = pathname === '/test-politique-municipal'
   const isInResults = pathname === '/resultats'
   const isInProfile = pathname === '/profil'
   

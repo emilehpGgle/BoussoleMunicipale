@@ -25,11 +25,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1.0,
     },
     
-    // Questionnaire - Très important pour SEO
+    // Test Politique Municipal - Très important pour SEO
     {
-      url: `${baseUrl}/questionnaire`,
+      url: `${baseUrl}/test-politique-municipal`,
       lastModified: new Date(),
-      changeFrequency: 'monthly', 
+      changeFrequency: 'monthly',
       priority: 0.9,
     },
     
@@ -49,11 +49,27 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
     
-    // Page Leaders - Très importante pour SEO des noms de leaders
+    // Page Leaders - Hub principal
     {
       url: `${baseUrl}/leaders`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+
+    // Page Leaders Québec - Très importante pour SEO des noms de leaders
+    {
+      url: `${baseUrl}/leaders/quebec`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    },
+
+    // Page Élections Municipales 2025 - Importante pour mot-clé cible
+    {
+      url: `${baseUrl}/elections-municipales-2025-quebec`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
       priority: 0.8,
     },
     

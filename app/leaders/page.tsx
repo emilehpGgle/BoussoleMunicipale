@@ -9,29 +9,29 @@ import { partiesData } from "@/lib/boussole-data"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 
 export const metadata: Metadata = {
-  title: "Leaders Politiques | Profils des Chefs de Parti - Élections Municipales 2025",
-  description: "Découvrez les profils complets des leaders politiques municipaux pour les élections 2025 à Québec : Bruno Marchand, Sam Hamad, Stevens Mélançon et tous les chefs de parti. Biographies, expérience et vision politique.",
+  title: "Leaders Politiques Municipaux | Hub Provincial - Élections 2025",
+  description: "Hub central des leaders politiques municipaux du Québec. Découvrez les profils des candidats et figures marquantes de Québec, Montréal et autres grandes villes pour les élections municipales 2025.",
   keywords: [
-    "leaders politiques québec",
-    "chefs de parti municipaux",
-    "bruno marchand",
-    "sam hamad", 
-    "stevens melancon",
+    "leaders politiques municipaux",
+    "chefs de parti municipaux québec",
     "élections municipales 2025",
     "candidats maire québec",
-    "profils politiques",
-    "boussole électorale"
+    "leaders politiques québec",
+    "bruno marchand",
+    "sam hamad",
+    "denis coderre montréal",
+    "profils politiques municipaux"
   ],
   openGraph: {
-    title: "Leaders Politiques - Profils des Candidats | Élections Municipales Québec 2025",
-    description: "Profils détaillés des leaders des partis municipaux de Québec pour les élections 2025. Découvrez leur expérience, vision et positions politiques.",
+    title: "Leaders Politiques Municipaux | Hub Provincial - Élections 2025",
+    description: "Hub central des leaders politiques municipaux du Québec pour les élections 2025. Découvrez les candidats de Québec, Montréal et autres villes.",
     type: "website",
     images: [
       {
         url: "/hero-illustration-v2.webp",
         width: 1200,
         height: 630,
-        alt: "Leaders politiques municipaux - Élections Québec 2025"
+        alt: "Hub des leaders politiques municipaux du Québec 2025"
       }
     ]
   },
@@ -108,11 +108,11 @@ export default function LeadersIndexPage() {
         {/* En-tête de la page */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Leaders Politiques Municipaux
+            Leaders Politiques Municipaux du Québec
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
-            Découvrez les profils détaillés des chefs de parti pour les <strong>élections municipales 2025</strong> à Québec. 
-            Biographies, expérience politique et vision pour l&apos;avenir de la ville.
+          <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-6">
+            Hub central des <strong>leaders politiques municipaux</strong> pour les élections 2025.
+            Découvrez les candidats actuels et les figures marquantes qui ont façonné les grandes villes du Québec.
           </p>
           <div className="flex items-center justify-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -121,71 +121,130 @@ export default function LeadersIndexPage() {
             </div>
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5 text-primary" />
-              <span>Ville de Québec</span>
+              <span>Grandes villes du Québec</span>
             </div>
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-primary" />
-              <span>{partiesData.length} Leaders</span>
+              <span>Leaders Actuels & Historiques</span>
             </div>
           </div>
         </div>
 
-        {/* Grille des leaders */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-          {partiesData.map((party) => {
-            const slug = generateSlug(party.leader)
-            const description = leaderDescriptions[slug] || "Candidat aux élections municipales 2025 de Québec."
-            
-            return (
-              <Card key={party.id} className="hover:shadow-lg transition-all duration-200 group">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="w-16 h-16 relative bg-white rounded-lg p-2 shadow-sm flex-shrink-0">
-                      <Image
-                        src={party.logoUrl || "/placeholder.svg?width=64&height=64"}
-                        alt={`Logo ${party.name} - ${party.leader}`}
-                        fill
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg font-bold group-hover:text-primary transition-colors">
-                        {party.leader}
-                      </CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        Chef de {party.shortName || party.name}
-                      </p>
-                    </div>
-                  </div>
-                  {party.orientation && (
-                    <Badge variant="secondary" className="text-xs w-fit">
-                      {party.orientation}
-                    </Badge>
-                  )}
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <CardDescription className="text-sm leading-relaxed mb-4">
-                    {description}
-                  </CardDescription>
-                  
-                  <div className="flex gap-2">
-                    <Button asChild size="sm" className="flex-1">
-                      <Link href={`/leaders/${slug}`} className="flex items-center gap-2">
-                        Voir le profil
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" size="sm">
-                      <Link href={`/parti/${party.id}`}>
-                        Parti
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
+        {/* Sélection par ville */}
+        <div className="grid lg:grid-cols-2 gap-8 mb-16">
+          {/* Ville de Québec - Disponible maintenant */}
+          <Card className="hover:shadow-lg transition-all duration-200 group cursor-pointer">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl font-bold group-hover:text-primary transition-colors">
+                    Ville de Québec
+                  </CardTitle>
+                  <p className="text-muted-foreground">
+                    Capitale du Québec • Population: ~540,000
+                  </p>
+                </div>
+                <Badge className="bg-green-100 text-green-800 border-green-200">
+                  Disponible
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Découvrez les <strong>{partiesData.length} candidats aux élections municipales 2025</strong> et les figures marquantes
+                de l'histoire politique de la capitale : Régis Labeaume, Jean-Paul L'Allier, Andrée Boucher.
+              </p>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                <span>• {partiesData.length} candidats 2025</span>
+                <span>• 4 figures historiques</span>
+                <span>• Biographies complètes</span>
+              </div>
+              <Button asChild className="w-full">
+                <Link href="/leaders/quebec" className="flex items-center gap-2">
+                  Voir les leaders de Québec
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Montréal - Bientôt disponible */}
+          <Card className="hover:shadow-lg transition-all duration-200 group opacity-75">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-2xl font-bold">
+                    Ville de Montréal
+                  </CardTitle>
+                  <p className="text-muted-foreground">
+                    Métropole du Québec • Population: ~1,780,000
+                  </p>
+                </div>
+                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                  Bientôt
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground mb-4">
+                Prochainement : candidats aux élections municipales de Montréal et figures marquantes
+                comme <strong>Denis Coderre</strong>, Valérie Plante, Gérald Tremblay, Jean Drapeau.
+              </p>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                <span>• Candidats 2025</span>
+                <span>• Denis Coderre et autres</span>
+                <span>• Histoire politique</span>
+              </div>
+              <Button disabled className="w-full">
+                Prochainement disponible
+              </Button>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Aperçu des leaders actuels de Québec */}
+        <section className="mb-12">
+          <h2 className="text-3xl font-bold mb-6 text-center">
+            Aperçu des candidats 2025 - Ville de Québec
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {partiesData.slice(0, 6).map((party) => {
+              const slug = generateSlug(party.leader)
+
+              return (
+                <Card key={party.id} className="hover:shadow-md transition-all duration-200 group">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 relative bg-white rounded-lg p-1 shadow-sm flex-shrink-0">
+                        <Image
+                          src={party.logoUrl || "/placeholder.svg?width=48&height=48"}
+                          alt={`Logo ${party.name}`}
+                          fill
+                          style={{ objectFit: "contain" }}
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-semibold group-hover:text-primary transition-colors text-sm">
+                          {party.leader}
+                        </h3>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {party.shortName || party.name}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
+          </div>
+          <div className="text-center mt-6">
+            <Button asChild variant="outline">
+              <Link href="/leaders/quebec">
+                Voir tous les leaders de Québec
+              </Link>
+            </Button>
+          </div>
+        </section>
 
         {/* Section d'information */}
         <Card className="bg-muted/30">
@@ -216,8 +275,8 @@ export default function LeadersIndexPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg">
-              <Link href="/questionnaire">
-                Faire le questionnaire politique
+              <Link href="/test-politique-municipal">
+                Faire le test politique municipal
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">

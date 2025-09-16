@@ -138,7 +138,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
             }
             
             console.log('🆕 Aucune réponse existante, redirection vers le questionnaire')
-            router.push("/questionnaire")
+            router.push("/test-politique-municipal")
           } else {
             // Réessayer après 100ms si encore en chargement
             console.log('⏳ Chargement des réponses en cours, nouvelle tentative...')
@@ -150,7 +150,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         setTimeout(checkExistingResponses, 50)
       } else {
         // Pas de session, aller directement au questionnaire
-        router.push("/questionnaire")
+        router.push("/test-politique-municipal")
       }
       
     } catch (error) {
@@ -160,7 +160,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       console.warn('⚠️ Impossible de sauvegarder le code postal sans session valide')
       
       onClose()
-      router.push("/questionnaire")
+      router.push("/test-politique-municipal")
     }
   }
 
@@ -370,7 +370,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 }
               }
               
-              router.push("/questionnaire?skipLocation=true")
+              router.push("/test-politique-municipal?skipLocation=true")
             }}
           >
             Continuer sans localisation
@@ -384,7 +384,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     <ContinueOrRestartModal
       isOpen={isExistingResponsesModalOpen}
       onClose={() => setIsExistingResponsesModalOpen(false)}
-      targetPath="/questionnaire"
+      targetPath="/test-politique-municipal"
     />
     </>
   )

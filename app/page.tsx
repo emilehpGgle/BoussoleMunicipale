@@ -31,15 +31,14 @@ export default function HomePage() {
                 <Compass className="w-5 h-5 mr-2" /> Votre boussole pour les élections municipales
               </span>
               <h1 className="text-fluid-hero font-black leading-tight tracking-tight text-foreground w-full max-w-full break-words">
-                Votre{" "}
                 <span className="text-midnight-green relative inline-block">
-                  boussole
+                  Boussole Électorale
                   <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
                 </span>{" "}
-                électorale municipale
+                - Élections Municipales Québec 2025
               </h1>
               <p className="text-fluid-base text-muted-foreground max-w-lg w-full break-words">
-                Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
+                La <strong>boussole electorale</strong> (ou boussole électorale) de référence pour les élections municipales 2025 à Québec. Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <Button
@@ -63,10 +62,15 @@ export default function HomePage() {
                   >
                     Découvrez vos affinités politiques
                   </RainbowButton>
-                  <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ 5 minutes • 21 questions</span>
-                  <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80 mt-2 text-center sm:text-left">
-                    Questions fréquentes
-                  </Link>
+                  <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ Test politique rapide • 5 minutes • 21 questions</span>
+                  <div className="flex flex-col sm:flex-row gap-2 mt-2 text-center sm:text-left">
+                    <Link href="/elections-municipales-2025-quebec" className="text-sm text-midnight-green underline hover:text-midnight-green/80">
+                      📅 Guide Élections 2025
+                    </Link>
+                    <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80">
+                      Questions fréquentes
+                    </Link>
+                  </div>
                 </div>
               </div>
             </FadeInSection>
@@ -96,9 +100,9 @@ export default function HomePage() {
       <section id="comment-ca-marche" className="py-fluid-xl bg-gray-50">
         <div className="container">
           <FadeInSection className="text-center mb-fluid-lg">
-            <h2 className="text-fluid-3xl font-bold text-eerie-black mb-fluid-xs">Comment ça fonctionne ?</h2>
+            <h2 className="text-fluid-3xl font-bold text-eerie-black mb-fluid-xs">Comment fonctionne notre boussole électorale ?</h2>
             <p className="text-fluid-lg text-muted-foreground max-w-3xl mx-auto">
-              Un processus simple en 4 étapes pour découvrir vos affinités politiques municipales
+              Notre <strong>boussole electorale municipale</strong> utilise un processus simple en 4 étapes pour découvrir vos affinités politiques pour les élections 2025
             </p>
           </FadeInSection>
           <StaggeredList className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-fluid-sm">

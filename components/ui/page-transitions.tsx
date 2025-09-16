@@ -85,7 +85,7 @@ export function RouteTransition({
   // Différents types de transitions selon les routes
   const getTransitionVariant = (path: string) => {
     if (path === "/") return "fade"
-    if (path.startsWith("/questionnaire")) return "slide"
+    if (path.startsWith("/test-politique-municipal")) return "slide"
     if (path.startsWith("/resultats")) return "scale"
     return "fade"
   }
