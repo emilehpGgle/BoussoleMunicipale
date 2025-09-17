@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import Image, { ImageProps } from "next/image"
 import { cn } from "@/lib/utils"
 import { ANIMATION_PRESETS } from "@/lib/animation-config"

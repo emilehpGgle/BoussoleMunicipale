@@ -181,7 +181,7 @@ export default function LeadersQuebecPage() {
           </h1>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-6">
             Découvrez les <strong>leaders politiques de Québec</strong> : candidats actuels pour les élections municipales 2025
-            et figures marquantes qui ont façonné l'histoire politique de la capitale.
+            et figures marquantes qui ont façonné l&apos;histoire politique de la capitale.
           </p>
           <div className="flex items-center justify-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-2">
@@ -267,10 +267,10 @@ export default function LeadersQuebecPage() {
         <section className="mb-16">
           <div className="flex items-center gap-3 mb-8">
             <Award className="h-6 w-6 text-primary" />
-            <h2 className="text-3xl font-bold">Leaders Marquants de l'Histoire</h2>
+            <h2 className="text-3xl font-bold">Leaders Marquants de l&apos;Histoire</h2>
           </div>
           <p className="text-muted-foreground mb-8 text-lg">
-            Découvrez les <strong>maires qui ont marqué l'histoire de Québec</strong> et façonné la ville d'aujourd'hui
+            Découvrez les <strong>maires qui ont marqué l&apos;histoire de Québec</strong> et façonné la ville d&apos;aujourd&apos;hui
             par leurs réalisations et leur vision politique.
           </p>
 

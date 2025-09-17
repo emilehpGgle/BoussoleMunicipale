@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { ANIMATION_DURATIONS, ANIMATION_EASINGS } from "@/lib/animation-config"

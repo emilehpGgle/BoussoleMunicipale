@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { fadeInUp } from "@/components/ui/animation-utils"
 
 // Interface pour la structure d'une question de profil

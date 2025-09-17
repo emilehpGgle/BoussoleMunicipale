@@ -245,7 +245,7 @@ export default function PartyDetailPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-              <Link href="/questionnaire">
+              <Link href="/test-politique-municipal">
                 Faire le questionnaire politique
               </Link>
             </Button>

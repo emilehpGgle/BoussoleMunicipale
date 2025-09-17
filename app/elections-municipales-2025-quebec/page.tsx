@@ -2,12 +2,12 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, Users, Vote, FileText, Clock, ExternalLink, Info } from "lucide-react"
+import { Calendar, Users, Vote, Clock, ExternalLink, Info } from "lucide-react"
 import { partiesData } from "@/lib/boussole-data"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import { RainbowButton } from "@/components/ui/rainbow-button"
+import { RainbowButtonClient as RainbowButton } from "@/components/ui/rainbow-button-client"
 
 export const metadata: Metadata = {
   title: "Élections Municipales 2025 Québec | Guide Complet des Candidats et Enjeux",
@@ -180,7 +180,7 @@ export default function ElectionsMunicipales2025Page() {
             <Card className="text-center">
               <CardContent className="p-6">
                 <Calendar className="h-8 w-8 text-primary mx-auto mb-3" />
-                <h3 className="font-semibold mb-2">Date de l'élection</h3>
+                <h3 className="font-semibold mb-2">Date de l&apos;élection</h3>
                 <p className="text-2xl font-bold text-primary">{electionInfo.dateElection}</p>
                 <p className="text-sm text-muted-foreground mt-1">{electionInfo.heuresVote}</p>
               </CardContent>
@@ -200,7 +200,7 @@ export default function ElectionsMunicipales2025Page() {
                 <Users className="h-8 w-8 text-primary mx-auto mb-3" />
                 <h3 className="font-semibold mb-2">Postes à pourvoir</h3>
                 <p className="text-2xl font-bold text-primary">{electionInfo.nombrePostes}</p>
-                <p className="text-sm text-muted-foreground mt-1">Sur l'ensemble de la ville</p>
+                <p className="text-sm text-muted-foreground mt-1">Sur l&apos;ensemble de la ville</p>
               </CardContent>
             </Card>
           </div>
@@ -215,11 +215,11 @@ export default function ElectionsMunicipales2025Page() {
                   </h3>
                   <p className="text-blue-800 mb-3">
                     Pour voter aux élections municipales 2025 de Québec, vous devez être inscrit sur la liste électorale.
-                    La date limite d'inscription est le {electionInfo.dateInscription}.
+                    La date limite d&apos;inscription est le {electionInfo.dateInscription}.
                   </p>
                   <Button asChild variant="outline" size="sm" className="border-blue-300 text-blue-700 hover:bg-blue-100">
                     <Link href="https://www.electionsquebec.qc.ca/" target="_blank" rel="noopener noreferrer">
-                      S'inscrire sur la liste électorale
+                      S&apos;inscrire sur la liste électorale
                       <ExternalLink className="h-4 w-4 ml-2" />
                     </Link>
                   </Button>

@@ -308,7 +308,7 @@ export default function FAQPage() {
               <div>
                 <h3 className="font-medium mb-1">Questionnaire Politique</h3>
                 <p className="text-sm text-muted-foreground">
-                  Commencez dès maintenant votre <Link href="/questionnaire" className="text-primary hover:underline">questionnaire gratuit</Link> pour 
+                  Commencez dès maintenant votre <Link href="/test-politique-municipal" className="text-primary hover:underline">questionnaire gratuit</Link> pour 
                   découvrir vos affinités avec les partis municipaux.
                 </p>
               </div>
@@ -331,7 +331,7 @@ export default function FAQPage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                  <Link href="/questionnaire">
+                  <Link href="/test-politique-municipal">
                     Commencer le Questionnaire
                   </Link>
                 </Button>

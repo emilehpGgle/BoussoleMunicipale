@@ -289,7 +289,7 @@ export default function AboutPage() {
             de Québec partage le mieux vos idées pour les élections 2025.
           </p>
           <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-            <Link href="/questionnaire">
+            <Link href="/test-politique-municipal">
               Commencer le Test Politique
             </Link>
           </Button>

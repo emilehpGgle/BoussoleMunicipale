@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Users, Calendar, MapPin } from "lucide-react"
 import { partiesData } from "@/lib/boussole-data"
@@ -52,16 +52,6 @@ function generateSlug(leaderName: string): string {
     .trim()
 }
 
-// Descriptions courtes pour la page d'index
-const leaderDescriptions: Record<string, string> = {
-  "bruno-marchand": "Maire sortant de Québec depuis 2021, ancien journaliste et animateur radio reconnu, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux.",
-  "sam-hamad": "Homme d'affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique.",
-  "stevens-melancon": "Leader d'Équipe priorité Québec, Stevens Mélançon prône une approche collaborative axée sur les priorités environnementales et citoyennes.",
-  "claude-villeneuve": "Chef de Québec d'abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
-  "stephane-lachance": "Dirigeant de Respect citoyens, Stéphane Lachance met l'accent sur le respect des droits et une approche inclusive de la gouvernance municipale.",
-  "alain-giasson": "Chef de l'Alliance citoyenne, Alain Giasson promeut l'engagement communautaire et la démocratie participative dans les décisions municipales.",
-  "jackie-smith": "Cheffe de Transition Québec, Jackie Smith propose une vision ambitieuse de transition écologique et de développement durable pour la ville."
-}
 
 export default function LeadersIndexPage() {
   // Structured Data pour la page d'index
@@ -152,7 +142,7 @@ export default function LeadersIndexPage() {
             <CardContent>
               <p className="text-muted-foreground mb-4">
                 Découvrez les <strong>{partiesData.length} candidats aux élections municipales 2025</strong> et les figures marquantes
-                de l'histoire politique de la capitale : Régis Labeaume, Jean-Paul L'Allier, Andrée Boucher.
+                de l&apos;histoire politique de la capitale : Régis Labeaume, Jean-Paul L&apos;Allier, Andrée Boucher.
               </p>
               <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                 <span>• {partiesData.length} candidats 2025</span>
@@ -209,8 +199,6 @@ export default function LeadersIndexPage() {
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {partiesData.slice(0, 6).map((party) => {
-              const slug = generateSlug(party.leader)
-
               return (
                 <Card key={party.id} className="hover:shadow-md transition-all duration-200 group">
                   <CardContent className="p-4">

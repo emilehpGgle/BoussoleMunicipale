@@ -60,7 +60,7 @@ This is a **Boussole Municipale** (Municipal Compass) Next.js 15 application tha
 
 **Key Pages:**
 - `/profil` - User demographic information
-- `/questionnaire` - Interactive 21-question survey
+- `/test-politique-municipal` - Interactive 21-question survey
 - `/resultats` - Political compass results and party matches
 - `/parti/[id]` - Detailed party information pages
 

@@ -339,7 +339,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ slug: s
           )}
 
           <Button asChild variant="ghost" size="lg">
-            <Link href="/questionnaire">
+            <Link href="/test-politique-municipal">
               Faire le questionnaire politique
             </Link>
           </Button>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useInView, cubicBezier, easeOut } from "framer-motion"
+import { useInView, cubicBezier, easeOut } from "motion/react"
 import { useRef } from "react"
 
 export function useScrollAnimation() {

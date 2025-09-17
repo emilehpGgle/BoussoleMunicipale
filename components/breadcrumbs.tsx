@@ -72,11 +72,11 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
 export const breadcrumbConfigs = {
   questionnaire: [
     { label: "Accueil", href: "/" },
-    { label: "Questionnaire", href: "/questionnaire", isActive: true }
+    { label: "Test politique", href: "/test-politique-municipal", isActive: true }
   ],
   results: [
     { label: "Accueil", href: "/" },
-    { label: "Questionnaire", href: "/questionnaire" },
+    { label: "Test politique", href: "/test-politique-municipal" },
     { label: "Résultats", href: "/resultats", isActive: true }
   ],
   party: (partyName: string, partyId: string) => [

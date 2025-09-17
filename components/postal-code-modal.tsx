@@ -43,7 +43,7 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
     // localStorage.setItem("userPostalCode", postalCode.toUpperCase().replace(/\s+/g, ""))
     setIsLoading(false)
     onClose()
-    router.push("/questionnaire")
+    router.push("/test-politique-municipal")
   }
 
   return (
@@ -103,7 +103,7 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
             className="text-sm text-muted-foreground hover:text-midnight-green"
             onClick={() => {
               onClose()
-              router.push("/questionnaire?skipPostal=true")
+              router.push("/test-politique-municipal?skipPostal=true")
             }}
           >
             Continuer sans code postal

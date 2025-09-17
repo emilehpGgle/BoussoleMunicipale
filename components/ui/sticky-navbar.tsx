@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
-import { motion, useScroll, useMotionValueEvent } from "framer-motion"
+import { motion, useScroll, useMotionValueEvent } from "motion/react"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"

@@ -33,7 +33,7 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 import { ConsentForm, type ConsentFormData } from "@/components/consent-form"
 import { useProfile } from "@/hooks/useProfile"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { ScrollReveal, AnimatedCard, AnimatedCounter } from "@/components/ui/animation-utils"
 
 const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
@@ -352,7 +352,7 @@ export default function ResultsPage() {
           Aucune réponse disponible pour calculer les résultats. Veuillez d&apos;abord répondre au questionnaire.
         </p>
         <Button asChild>
-          <Link href="/questionnaire">Répondre au questionnaire</Link>
+          <Link href="/test-politique-municipal">Répondre au questionnaire</Link>
         </Button>
       </div>
     )
@@ -843,7 +843,7 @@ export default function ResultsPage() {
             variant="outline"
             className="flex items-center gap-2 rounded-lg px-6 py-3 btn-base-effects btn-hover-lift"
           >
-            <Link href="/questionnaire">
+            <Link href="/test-politique-municipal">
               <ArrowLeft className="h-4 w-4" /> Refaire le questionnaire
             </Link>
           </Button>

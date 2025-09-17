@@ -33,7 +33,7 @@ export default function CSSOptimizer() {
     const preloadNextPageResources = () => {
       const questionnaireCSSLink = document.createElement('link')
       questionnaireCSSLink.rel = 'prefetch'
-      questionnaireCSSLink.href = '/_next/static/css/app/questionnaire/page.css'
+      questionnaireCSSLink.href = '/_next/static/css/app/test-politique-municipal/page.css'
       questionnaireCSSLink.as = 'style'
       document.head.appendChild(questionnaireCSSLink)
     }
