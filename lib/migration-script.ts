@@ -4,14 +4,15 @@
 import { boussoleQuestions, partiesData, Question, Party } from './boussole-data'
 import { createClient } from './supabase/client'
 
-const supabase = createClient()
-
 /**
  * Migre toutes les questions vers la base de données
  */
 export async function migrateQuestions() {
   console.log('🔄 Migration des questions en cours...')
-  
+
+  // Créer le client Supabase uniquement quand nécessaire
+  const supabase = createClient()
+
   const questionsToInsert = boussoleQuestions.map((question: Question, index: number) => ({
     id: question.id,
     text: question.text,
@@ -49,7 +50,10 @@ export async function migrateQuestions() {
  */
 export async function migrateParties() {
   console.log('🔄 Migration des partis en cours...')
-  
+
+  // Créer le client Supabase uniquement quand nécessaire
+  const supabase = createClient()
+
   const partiesToInsert = partiesData.map((party: Party) => ({
     id: party.id,
     name: party.name,
@@ -84,7 +88,10 @@ export async function migrateParties() {
  */
 export async function migratePartyPositions() {
   console.log('🔄 Migration des positions des partis en cours...')
-  
+
+  // Créer le client Supabase uniquement quand nécessaire
+  const supabase = createClient()
+
   const positionsToInsert: Array<{
     party_id: string;
     question_id: string;
@@ -129,7 +136,10 @@ export async function migratePartyPositions() {
  */
 export async function verifyMigration() {
   console.log('🔍 Vérification de la migration...')
-  
+
+  // Créer le client Supabase uniquement quand nécessaire
+  const supabase = createClient()
+
   // Vérifier les questions
   const { data: questions, error: questionsError } = await supabase
     .from('questions')
@@ -210,7 +220,10 @@ export async function runFullMigration() {
  */
 export async function cleanAllData() {
   console.log('🗑️ Nettoyage de toutes les données...')
-  
+
+  // Créer le client Supabase uniquement quand nécessaire
+  const supabase = createClient()
+
   try {
     // Supprimer dans l'ordre inverse des dépendances
     await supabase.from('party_positions').delete().neq('id', '00000000-0000-0000-0000-000000000000')
