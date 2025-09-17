@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, Users, Vote, Clock, ExternalLink, Info } from "lucide-react"
 import { partiesData } from "@/lib/boussole-data"
 import { Breadcrumbs } from "@/components/breadcrumbs"
-import { RainbowButtonClient as RainbowButton } from "@/components/ui/rainbow-button-client"
+import { StartTestButton } from "@/components/ui/start-test-button"
 
 export const metadata: Metadata = {
   title: "Élections Municipales 2025 Québec | Guide Complet des Candidats et Enjeux",
@@ -153,15 +153,9 @@ export default function ElectionsMunicipales2025Page() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-            <RainbowButton
-              className="rounded-xl px-6 py-4 text-base font-semibold"
-              onClick={() => {
-                const event = new CustomEvent('openPostalCodeModal')
-                window.dispatchEvent(event)
-              }}
-            >
+            <StartTestButton className="rounded-xl px-6 py-4 text-base font-semibold">
               🗳️ Découvrez vos affinités politiques
-            </RainbowButton>
+            </StartTestButton>
             <Button asChild variant="outline" size="lg">
               <Link href="/leaders/quebec">
                 Voir tous les candidats
@@ -318,15 +312,9 @@ export default function ElectionsMunicipales2025Page() {
             le mieux à vos convictions sur les enjeux municipaux de Québec.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <RainbowButton
-              className="rounded-xl px-8 py-4 text-lg font-semibold"
-              onClick={() => {
-                const event = new CustomEvent('openPostalCodeModal')
-                window.dispatchEvent(event)
-              }}
-            >
+            <StartTestButton className="rounded-xl px-8 py-4 text-lg font-semibold">
               Faire le test politique municipal
-            </RainbowButton>
+            </StartTestButton>
             <Button asChild variant="outline" size="lg">
               <Link href="/a-propos">
                 En savoir plus sur notre méthode
