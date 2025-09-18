@@ -19,8 +19,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "Boussole Électorale | Test Politique Municipal Québec 2025",
-  description: "La boussole electorale (boussole électorale) officielle pour les élections municipales 2025 à Québec. Test politique gratuit en 5 minutes pour découvrir vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux. Political compass québécois.",
+  title: "Boussole Électorale Municipale | Test Politique Québec 2025",
+  description: "La boussole électorale de référence pour les élections municipales 2025 à Québec. Découvrez en 5 minutes quel parti municipal correspond à vos valeurs. Test politique gratuit sur 21 questions touchant transport, logement, fiscalité.",
   keywords: [
     "boussole électorale",
     "boussole electorale",

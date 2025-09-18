@@ -92,9 +92,11 @@ export default function ElectionsMunicipales2025Page() {
     "@context": "https://schema.org",
     "@type": "Event",
     "name": "Élections Municipales 2025 - Ville de Québec",
-    "description": "Élections municipales de la Ville de Québec pour élire le maire et les conseillers municipaux pour le mandat 2025-2029",
+    "description": "Élections municipales de la Ville de Québec pour élire le maire et les conseillers municipaux pour le mandat 2025-2029. Utilisez notre boussole électorale pour découvrir vos affinités politiques.",
     "startDate": "2025-11-02T10:00:00-05:00",
     "endDate": "2025-11-02T20:00:00-05:00",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "location": {
       "@type": "Place",
       "name": "Ville de Québec",
@@ -114,7 +116,25 @@ export default function ElectionsMunicipales2025Page() {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "CAD",
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/InStock",
+      "description": "Le vote est gratuit et ouvert à tous les citoyens inscrits"
+    },
+    "performer": [
+      {
+        "@type": "Person",
+        "name": "Bruno Marchand",
+        "jobTitle": "Candidat à la mairie - Québec forte et fière"
+      },
+      {
+        "@type": "Person",
+        "name": "Sam Hamad",
+        "jobTitle": "Candidat à la mairie - Québec renouveau municipal"
+      }
+    ],
+    "about": {
+      "@type": "Thing",
+      "name": "Enjeux électoraux municipaux",
+      "description": "Transport, logement, environnement, fiscalité municipale, services de proximité"
     }
   }
 
@@ -144,12 +164,12 @@ export default function ElectionsMunicipales2025Page() {
             </Badge>
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
-            Élections Municipales 2025 - Québec
+            Guide Complet des Élections Municipales 2025
           </h1>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-8">
-            Guide complet des <strong>élections municipales 2025 à Québec</strong> : découvrez les candidats,
-            les enjeux clés, les dates importantes et utilisez notre boussole électorale pour identifier
-            vos affinités politiques avec les partis municipaux.
+            Tout ce qu'il faut savoir sur les <strong>élections municipales à Québec</strong> : candidats à la mairie,
+            enjeux prioritaires, dates importantes et comment voter. Utilisez notre <strong>boussole électorale</strong>
+            pour découvrir quel parti correspond à vos valeurs.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">

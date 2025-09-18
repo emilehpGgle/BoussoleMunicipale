@@ -116,6 +116,47 @@ const historicalLeaders = [
   }
 ]
 
+// Autres figures politiques municipales marquantes du Québec
+const otherNotableLeaders = [
+  {
+    name: "Denis Coderre",
+    city: "Montréal",
+    period: "2013-2017",
+    description: "Ancien maire de Montréal, Denis Coderre reste une figure politique influente au Québec. Connu pour son style flamboyant et sa présence médiatique, il a marqué la scène politique municipale québécoise.",
+    achievements: [
+      "Maire de Montréal pendant 4 ans",
+      "Candidat aux élections municipales 2017 et 2021",
+      "Carrière fédérale comme député et ministre",
+      "Figure médiatique influente"
+    ],
+    imageUrl: "/leaders/denis-coderre.webp"
+  },
+  {
+    name: "Gérald Tremblay",
+    city: "Montréal",
+    period: "2002-2012",
+    description: "Maire de Montréal pendant 10 ans, Gérald Tremblay a dirigé la métropole durant une période importante de son développement, malgré les controverses qui ont marqué la fin de son mandat.",
+    achievements: [
+      "Développement du transport collectif",
+      "Modernisation des infrastructures",
+      "Promotion de Montréal à l'international"
+    ],
+    imageUrl: "/leaders/gerald-tremblay.webp"
+  },
+  {
+    name: "Pierre Bourque",
+    city: "Montréal",
+    period: "1994-2001",
+    description: "Ancien directeur du Jardin botanique devenu maire de Montréal, Pierre Bourque a apporté une vision environnementale unique à la gestion municipale.",
+    achievements: [
+      "Maire de Montréal pendant 7 ans",
+      "Fusion municipale de l'île de Montréal",
+      "Vision environnementale avant-gardiste"
+    ],
+    imageUrl: "/leaders/pierre-bourque.webp"
+  }
+]
+
 export default function LeadersQuebecPage() {
   // Structured Data pour SEO
   const structuredData = {
@@ -323,6 +364,56 @@ export default function LeadersQuebecPage() {
             ))}
           </div>
         </section>
+
+        {/* Autres figures marquantes du Québec */}
+        {otherNotableLeaders.length > 0 && (
+          <section className="mb-16">
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              Autres Figures Municipales Marquantes du Québec
+            </h2>
+            <p className="text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
+              Au-delà de Québec, d'autres leaders ont marqué la politique municipale québécoise,
+              notamment à Montréal, deuxième ville en importance de la province.
+            </p>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {otherNotableLeaders.map((leader) => (
+                <Card key={leader.name} className="overflow-hidden">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-xl mb-1">{leader.name}</CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          {leader.city} • {leader.period}
+                        </p>
+                      </div>
+                      <Badge variant="outline" className="shrink-0">
+                        {leader.city}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                      {leader.description}
+                    </p>
+
+                    <div>
+                      <h4 className="font-medium text-foreground mb-2">Faits marquants :</h4>
+                      <ul className="text-sm text-muted-foreground space-y-1">
+                        {leader.achievements.map((achievement, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></span>
+                            {achievement}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Call to Action */}
         <div className="text-center mt-12">

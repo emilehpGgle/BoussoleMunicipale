@@ -7,6 +7,7 @@ import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
 import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
+import { CountdownBadge } from "@/components/ui/countdown-badge"
 import { MotionCard } from "@/components/ui/motion-button"
 import { FadeInSection, StaggeredList, ParallaxSection } from "@/components/ui/scroll-animations"
  
@@ -27,18 +28,24 @@ export default function HomePage() {
               delay={0.1}
               className="flex flex-col space-y-fluid-sm"
             >
-              <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
-                <Compass className="w-5 h-5 mr-2" /> Votre boussole pour les élections municipales
-              </span>
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
+                  <Compass className="w-5 h-5 mr-2" /> Élections municipales
+                </span>
+                <CountdownBadge />
+              </div>
               <h1 className="text-fluid-hero font-black leading-tight tracking-tight text-foreground w-full max-w-full break-words">
-                <span className="text-midnight-green relative inline-block">
-                  Boussole Électorale
+                Votre <span className="text-midnight-green relative inline-block">
+                  boussole électorale
                   <div className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-midnight-green via-teal-main-400 to-orange-400 rounded-full opacity-60" />
                 </span>{" "}
-                - Élections Municipales Québec 2025
+                municipale
               </h1>
+              <p className="text-lg font-medium text-midnight-green/80 -mt-2 mb-2">
+                Élections municipales Québec 2025
+              </p>
               <p className="text-fluid-base text-muted-foreground max-w-lg w-full break-words">
-                La <strong>boussole electorale</strong> (ou boussole électorale) de référence pour les élections municipales 2025 à Québec. Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
+                Découvrez quel parti municipal vous correspond vraiment ! En 5 minutes, identifiez vos affinités politiques sur les enjeux qui touchent votre quotidien : transport, logement, services de proximité, fiscalité locale.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <Button

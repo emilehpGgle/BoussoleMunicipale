@@ -196,18 +196,17 @@ export default function FAQPage() {
   }
 
   return (
-    <PageTransition>
-      <div className="container max-w-4xl mx-auto py-8 px-4">
-        {/* Breadcrumbs avec structured data */}
-        <Breadcrumbs items={breadcrumbConfigs.faq} />
+    <>
+      {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
 
-        {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
-        <Head>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-          />
-        </Head>
+      <PageTransition>
+        <div className="container max-w-4xl mx-auto py-8 px-4">
+          {/* Breadcrumbs avec structured data */}
+          <Breadcrumbs items={breadcrumbConfigs.faq} />
         {/* En-tête SEO optimisé */}
         <ScrollReveal>
           <div className="text-center mb-12">
@@ -360,5 +359,6 @@ export default function FAQPage() {
         </ScrollReveal>
       </div>
     </PageTransition>
+    </>
   )
 } 
