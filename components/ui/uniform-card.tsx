@@ -1,6 +1,7 @@
 import * as React from "react"
+import Image from "next/image"
 import { cn } from "@/lib/utils"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 
 interface UniformCardProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: "small" | "medium" | "large" | "auto"
@@ -121,7 +122,13 @@ const FeatureCard = React.forwardRef<HTMLDivElement, {
         {image && (
           <div className="flex items-center justify-center mb-4">
             <div className="w-full max-w-[200px] aspect-square rounded-xl overflow-hidden">
-              <img src={image} alt={title} className="w-full h-full object-cover" />
+              <Image
+                src={image}
+                alt={title}
+                width={200}
+                height={200}
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         )}

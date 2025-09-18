@@ -1,6 +1,5 @@
 "use client"
 import { Button } from "@/components/ui/button"
-import { CardContent } from "@/components/ui/card"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -8,7 +7,6 @@ import { ColoredText } from "@/components/ui/colored-text"
 import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
 import { CountdownBadge } from "@/components/ui/countdown-badge"
-import { MotionCard } from "@/components/ui/motion-button"
 import { StepCard, FeatureCard, StatCard } from "@/components/ui/uniform-card"
 import { FadeInSection, StaggeredList, ParallaxSection } from "@/components/ui/scroll-animations"
  
@@ -144,7 +142,7 @@ export default function HomePage() {
                 description={step.description}
                 icon={step.icon}
               />
-            ))}")
+            ))}
           </StaggeredList>
         </div>
       </section>

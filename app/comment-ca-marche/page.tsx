@@ -3,7 +3,7 @@ import { ArrowLeft, CheckCircle, Users, BarChart3, ArrowRight } from "lucide-rea
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { StepCard, UniformCard, EngagementCard } from "@/components/ui/uniform-card"
+import { StepCard, EngagementCard } from "@/components/ui/uniform-card"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
