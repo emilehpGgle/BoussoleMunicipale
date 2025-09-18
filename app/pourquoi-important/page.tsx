@@ -3,6 +3,7 @@ import { ArrowLeft, Home, Car, Leaf, DollarSign, Shield, Building2, Users, Arrow
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
+import { ServiceCard } from "@/components/ui/uniform-card"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -40,90 +41,67 @@ export default function PourquoiImportantPage() {
       <section className="mb-12">
         <h2 className="text-2xl font-bold mb-6">La municipalité : votre gouvernement le plus proche</h2>
         
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {/* Transport */}
-          <Card className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <Car className="w-8 h-8 text-midnight-green" />
-              <h3 className="text-lg font-semibold">Transport</h3>
-            </div>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Réseau de transport en commun</li>
-              <li>• Pistes cyclables et trottoirs</li>
-              <li>• Stationnement et circulation</li>
-              <li>• Réfection des routes</li>
-            </ul>
-          </Card>
-
-          {/* Logement */}
-          <Card className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <Home className="w-8 h-8 text-midnight-green" />
-              <h3 className="text-lg font-semibold">Logement</h3>
-            </div>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Logement social et abordable</li>
-              <li>• Réglementation urbaine</li>
-              <li>• Développement de quartiers</li>
-              <li>• Protection locataires</li>
-            </ul>
-          </Card>
-
-          {/* Environnement */}
-          <Card className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <Leaf className="w-8 h-8 text-midnight-green" />
-              <h3 className="text-lg font-semibold">Environnement</h3>
-            </div>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Gestion des déchets</li>
-              <li>• Parcs et espaces verts</li>
-              <li>• Qualité de l&apos;air et de l&apos;eau</li>
-              <li>• Lutte aux îlots de chaleur</li>
-            </ul>
-          </Card>
-
-          {/* Économie */}
-          <Card className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <DollarSign className="w-8 h-8 text-midnight-green" />
-              <h3 className="text-lg font-semibold">Économie</h3>
-            </div>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Taxes municipales</li>
-              <li>• Soutien aux commerces</li>
-              <li>• Développement économique</li>
-              <li>• Tarifs services municipaux</li>
-            </ul>
-          </Card>
-
-          {/* Sécurité */}
-          <Card className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <Shield className="w-8 h-8 text-midnight-green" />
-              <h3 className="text-lg font-semibold">Sécurité</h3>
-            </div>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Services policiers</li>
-              <li>• Prévention incendies</li>
-              <li>• Sécurité des quartiers</li>
-              <li>• Services d&apos;urgence</li>
-            </ul>
-          </Card>
-
-          {/* Services */}
-          <Card className="p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <Building2 className="w-8 h-8 text-midnight-green" />
-              <h3 className="text-lg font-semibold">Services</h3>
-            </div>
-            <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Bibliothèques et loisirs</li>
-              <li>• Centres communautaires</li>
-              <li>• Services aux aînés</li>
-              <li>• Programmes jeunesse</li>
-            </ul>
-          </Card>
+        <div className="card-grid-services mb-8">
+          <ServiceCard
+            icon={<Car className="icon-large" />}
+            title="Transport"
+            items={[
+              "• Réseau de transport en commun",
+              "• Pistes cyclables et trottoirs",
+              "• Stationnement et circulation",
+              "• Réfection des routes"
+            ]}
+          />
+          <ServiceCard
+            icon={<Home className="icon-large" />}
+            title="Logement"
+            items={[
+              "• Logement social et abordable",
+              "• Réglementation urbaine",
+              "• Développement de quartiers",
+              "• Protection locataires"
+            ]}
+          />
+          <ServiceCard
+            icon={<Leaf className="icon-large" />}
+            title="Environnement"
+            items={[
+              "• Gestion des déchets",
+              "• Parcs et espaces verts",
+              "• Qualité de l'air et de l'eau",
+              "• Lutte aux îlots de chaleur"
+            ]}
+          />
+          <ServiceCard
+            icon={<DollarSign className="icon-large" />}
+            title="Économie"
+            items={[
+              "• Taxes municipales",
+              "• Soutien aux commerces",
+              "• Développement économique",
+              "• Tarifs services municipaux"
+            ]}
+          />
+          <ServiceCard
+            icon={<Shield className="icon-large" />}
+            title="Sécurité"
+            items={[
+              "• Services policiers",
+              "• Prévention incendies",
+              "• Sécurité des quartiers",
+              "• Services d'urgence"
+            ]}
+          />
+          <ServiceCard
+            icon={<Building2 className="icon-large" />}
+            title="Services"
+            items={[
+              "• Bibliothèques et loisirs",
+              "• Centres communautaires",
+              "• Services aux aînés",
+              "• Programmes jeunesse"
+            ]}
+          />
         </div>
 
         <Card className="p-6 bg-midnight-green/5">

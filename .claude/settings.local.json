@@ -8,7 +8,11 @@
       "WebFetch(domain:monquartier.quebec)",
       "mcp__upstash-context-7-mcp__get-library-docs",
       "mcp__upstash-context-7-mcp__resolve-library-id",
-      "WebSearch"
+      "WebSearch",
+      "mcp__exa__crawling_exa",
+      "mcp__cloudflare-playwright-mcp__browser_navigate",
+      "mcp__cloudflare-playwright-mcp__browser_take_screenshot",
+      "mcp__cloudflare-playwright-mcp__browser_press_key"
     ],
     "deny": []
   },

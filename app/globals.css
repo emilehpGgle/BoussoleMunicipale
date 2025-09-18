@@ -786,3 +786,75 @@
     }
   }
 }
+
+/* ========================================
+   Classes utilitaires pour uniformisation
+   ======================================== */
+
+@layer utilities {
+  /* Grilles standardisées pour cartes */
+  .card-grid-standard {
+    @apply grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+  }
+
+  .card-grid-services {
+    @apply grid md:grid-cols-2 lg:grid-cols-3 gap-6;
+  }
+
+  .card-grid-two-cols {
+    @apply grid md:grid-cols-2 gap-6;
+  }
+
+  .card-grid-three-cols {
+    @apply grid md:grid-cols-3 gap-6;
+  }
+
+  /* Espacements standardisés */
+  .card-padding-standard {
+    @apply p-6;
+  }
+
+  .card-padding-large {
+    @apply p-8;
+  }
+
+  /* Classes pour hauteurs de cartes uniformes */
+  .card-height-small {
+    @apply min-h-[200px];
+  }
+
+  .card-height-medium {
+    @apply min-h-[280px];
+  }
+
+  .card-height-large {
+    @apply min-h-[350px];
+  }
+
+  /* Flexbox pour distribution uniforme du contenu */
+  .card-content-distributed {
+    @apply flex flex-col h-full;
+  }
+
+  .card-content-centered {
+    @apply flex flex-col justify-center items-center h-full;
+  }
+
+  /* Classes pour icônes standardisées */
+  .icon-standard {
+    @apply w-6 h-6;
+  }
+
+  .icon-large {
+    @apply w-8 h-8;
+  }
+
+  /* Espacement vertical standardisé */
+  .section-spacing {
+    @apply space-y-6;
+  }
+
+  .content-spacing {
+    @apply space-y-4;
+  }
+}

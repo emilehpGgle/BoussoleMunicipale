@@ -3,6 +3,7 @@ import { ArrowLeft, CheckCircle, Users, BarChart3, ArrowRight } from "lucide-rea
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { StepCard, UniformCard, EngagementCard } from "@/components/ui/uniform-card"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -38,50 +39,27 @@ export default function CommentCaMarchePage() {
 
       {/* Processus en étapes */}
       <div className="space-y-8 mb-12">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Étape 1 */}
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-midnight-green text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-              1
-            </div>
-            <h3 className="font-semibold mb-2">Profil</h3>
-            <p className="text-sm text-muted-foreground">
-              Créez votre profil anonyme avec quelques informations démographiques
-            </p>
-          </Card>
-
-          {/* Étape 2 */}
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-midnight-green text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-              2
-            </div>
-            <h3 className="font-semibold mb-2">Questionnaire</h3>
-            <p className="text-sm text-muted-foreground">
-              Répondez à 21 questions sur les enjeux municipaux importants
-            </p>
-          </Card>
-
-          {/* Étape 3 */}
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-midnight-green text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-              3
-            </div>
-            <h3 className="font-semibold mb-2">Analyse</h3>
-            <p className="text-sm text-muted-foreground">
-              Nos algorithmes calculent vos affinités avec chaque parti politique
-            </p>
-          </Card>
-
-          {/* Étape 4 */}
-          <Card className="p-6 text-center">
-            <div className="w-12 h-12 bg-midnight-green text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-              4
-            </div>
-            <h3 className="font-semibold mb-2">Résultats</h3>
-            <p className="text-sm text-muted-foreground">
-              Obtenez votre boussole politique et vos matches avec les partis
-            </p>
-          </Card>
+        <div className="card-grid-standard">
+          <StepCard
+            step={1}
+            title="Profil"
+            description="Créez votre profil anonyme avec quelques informations démographiques"
+          />
+          <StepCard
+            step={2}
+            title="Questionnaire"
+            description="Répondez à 21 questions sur les enjeux municipaux importants"
+          />
+          <StepCard
+            step={3}
+            title="Analyse"
+            description="Nos algorithmes calculent vos affinités avec chaque parti politique"
+          />
+          <StepCard
+            step={4}
+            title="Résultats"
+            description="Obtenez votre boussole politique et vos matches avec les partis"
+          />
         </div>
       </div>
 
@@ -176,49 +154,24 @@ export default function CommentCaMarchePage() {
         <section>
           <h2 className="text-2xl font-bold mb-6">Notre engagement</h2>
           
-          <Card className="p-6 bg-midnight-green/5">
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="text-lg font-semibold mb-3 text-midnight-green">
-                  🔒 Confidentialité totale
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  Vos réponses sont anonymes. Aucune donnée personnelle identifiable 
-                  n&apos;est collectée sans votre consentement explicite.
-                </p>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold mb-3 text-midnight-green">
-                  ⚖️ Neutralité politique
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  Notre outil est strictement neutre. Nous ne favorisons aucun parti 
-                  et présentons toutes les positions de manière équitable.
-                </p>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold mb-3 text-midnight-green">
-                  📊 Données à jour
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  Les positions des partis sont extraites de leurs programmes officiels 
-                  et mises à jour régulièrement.
-                </p>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold mb-3 text-midnight-green">
-                  🎯 Outil d&apos;aide à la décision
-                </h3>
-                <p className="text-muted-foreground text-sm">
-                  Nos résultats sont une aide à la réflexion, pas une recommandation. 
-                  La décision finale vous appartient toujours.
-                </p>
-              </div>
-            </div>
-          </Card>
+          <div className="card-grid-two-cols">
+            <EngagementCard
+              title="🔒 Confidentialité totale"
+              description="Vos réponses sont anonymes. Aucune donnée personnelle identifiable n'est collectée sans votre consentement explicite."
+            />
+            <EngagementCard
+              title="⚖️ Neutralité politique"
+              description="Notre outil est strictement neutre. Nous ne favorisons aucun parti et présentons toutes les positions de manière équitable."
+            />
+            <EngagementCard
+              title="📊 Données à jour"
+              description="Les positions des partis sont extraites de leurs programmes officiels et mises à jour régulièrement."
+            />
+            <EngagementCard
+              title="🎯 Outil d'aide à la décision"
+              description="Nos résultats sont une aide à la réflexion, pas une recommandation. La décision finale vous appartient toujours."
+            />
+          </div>
         </section>
 
         {/* Call to action */}

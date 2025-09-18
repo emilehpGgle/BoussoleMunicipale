@@ -9,6 +9,7 @@ import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
 import { CountdownBadge } from "@/components/ui/countdown-badge"
 import { MotionCard } from "@/components/ui/motion-button"
+import { StepCard, FeatureCard, StatCard } from "@/components/ui/uniform-card"
 import { FadeInSection, StaggeredList, ParallaxSection } from "@/components/ui/scroll-animations"
  
 
@@ -112,46 +113,38 @@ export default function HomePage() {
               Notre <strong>boussole electorale municipale</strong> utilise un processus simple en 4 étapes pour découvrir vos affinités politiques pour les élections 2025
             </p>
           </FadeInSection>
-          <StaggeredList className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-fluid-sm">
+          <StaggeredList className="card-grid-standard">
             {[
               {
-                icon: FileText,
+                icon: <FileText className="w-6 h-6 text-midnight-green" />,
                 title: "Répondez aux questions",
                 description: "Partagez vos opinions sur une série d'enjeux municipaux clés.",
               },
               {
-                icon: BarChart3,
+                icon: <BarChart3 className="w-6 h-6 text-midnight-green" />,
                 title: "Obtenez vos résultats",
                 description: "Visualisez votre alignement avec chaque candidat de manière claire et détaillée.",
               },
               {
-                icon: Users,
+                icon: <Users className="w-6 h-6 text-midnight-green" />,
                 title: "Prenez une décision éclairée",
                 description:
                   "Utilisez vos résultats pour mieux comprendre quel candidat correspond à vos priorités avant de voter.",
               },
               {
-                icon: Share2,
+                icon: <Share2 className="w-6 h-6 text-midnight-green" />,
                 title: "Partagez (si vous voulez!)",
                 description: "Discutez de vos résultats avec vos amis et votre famille pour encourager le débat.",
               },
             ].map((step, index) => (
-              <MotionCard 
-                key={index} 
-                className="text-center hover:shadow-lg transition-shadow"
-                interactive={true}
-              >
-                <CardContent className="p-8 space-y-6 flex flex-col justify-center items-center">
-                  <div className="w-12 h-12 bg-midnight-green/10 rounded-full flex items-center justify-center mx-auto">
-                    <step.icon className="w-6 h-6 text-midnight-green" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-eerie-black">
-                    {index + 1}. {step.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground text-center leading-relaxed">{step.description}</p>
-                </CardContent>
-              </MotionCard>
-            ))}
+              <StepCard
+                key={index}
+                step={index + 1}
+                title={step.title}
+                description={step.description}
+                icon={step.icon}
+              />
+            ))}")
           </StaggeredList>
         </div>
       </section>
@@ -168,7 +161,7 @@ export default function HomePage() {
               Pourquoi vos élections municipales comptent autant ?
             </h2>
           </FadeInSection>
-          <StaggeredList className="grid gap-fluid-md md:grid-cols-3">
+          <StaggeredList className="card-grid-three-cols">
             {[
               {
                 image: "/Image_cycliste_chien.webp",
@@ -189,31 +182,13 @@ export default function HomePage() {
                 description: "La plus grande part de vos impôts locaux. Comment ils sont utilisés dépend de qui vous élisez."
               }
             ].map((item) => (
-              <MotionCard 
+              <FeatureCard
                 key={item.title}
-                className="p-8 bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200"
-                interactive={true}
-              >
-                <div className="flex flex-col h-full">
-                  <div className="flex items-center justify-center mb-4">
-                    <div className="w-full max-w-[200px] aspect-square rounded-xl overflow-hidden">
-                      <Image 
-                        src={item.image}
-                        alt={item.alt}
-                        width={200} 
-                        height={200} 
-                        className="w-full h-full object-cover rounded-xl" 
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col justify-center text-center">
-                    <h3 className="font-semibold mb-3 text-foreground text-lg">{item.title}</h3>
-                    <p className="text-base text-muted-foreground leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              </MotionCard>
+                title={item.title}
+                description={item.description}
+                image={item.image}
+                className="bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200"
+              />
             ))}
           </StaggeredList>
           <FadeInSection delay={0.6} className="mt-8">
@@ -276,15 +251,12 @@ export default function HomePage() {
                 description: "dans votre quartier ou arrondissement"
               }
             ].map((item) => (
-              <MotionCard
+              <StatCard
                 key={item.label}
-                className="p-8 bg-card rounded-xl shadow-soft card-interactive-effects hover:shadow-md transition-shadow duration-200"
-                interactive={true}
-              >
-                <div className="text-4xl font-bold text-midnight-green mb-3">{item.stat}</div>
-                <div className="text-lg font-semibold text-foreground mb-3">{item.label}</div>
-                <div className="text-base text-muted-foreground leading-relaxed">{item.description}</div>
-              </MotionCard>
+                stat={item.stat}
+                label={item.label}
+                description={item.description}
+              />
             ))}
           </div>
         </div>
