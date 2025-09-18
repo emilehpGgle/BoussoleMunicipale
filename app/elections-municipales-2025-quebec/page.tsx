@@ -167,7 +167,7 @@ export default function ElectionsMunicipales2025Page() {
             Guide Complet des Élections Municipales 2025
           </h1>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-8">
-            Tout ce qu'il faut savoir sur les <strong>élections municipales à Québec</strong> : candidats à la mairie,
+            Tout ce qu&apos;il faut savoir sur les <strong>élections municipales à Québec</strong> : candidats à la mairie,
             enjeux prioritaires, dates importantes et comment voter. Utilisez notre <strong>boussole électorale</strong>
             pour découvrir quel parti correspond à vos valeurs.
           </p>

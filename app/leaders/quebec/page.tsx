@@ -372,7 +372,7 @@ export default function LeadersQuebecPage() {
               Autres Figures Municipales Marquantes du Québec
             </h2>
             <p className="text-muted-foreground text-center mb-8 max-w-3xl mx-auto">
-              Au-delà de Québec, d'autres leaders ont marqué la politique municipale québécoise,
+              Au-delà de Québec, d&apos;autres leaders ont marqué la politique municipale québécoise,
               notamment à Montréal, deuxième ville en importance de la province.
             </p>
 

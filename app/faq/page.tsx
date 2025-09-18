@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
-import Head from "next/head"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import { ScrollReveal, AnimatedCard, PageTransition } from "@/components/ui/animation-utils"
 
