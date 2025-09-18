@@ -152,3 +152,46 @@ export const metadata = { ... } // This works
 - Prefer selective Client Component marking over page-level `'use client'`
 
 This pattern ensures optimal SEO, proper architecture, and build reliability.
+
+## SEO Configuration - Vercel Domain Management (Critical)
+
+### Problem: Google Indexing Multiple Domains
+Even with a custom domain configured, Google may index both `boussolemunicipale.com` AND `*.vercel.app` domains, creating duplicate content that dilutes SEO.
+
+### Solution: Official Vercel 2025 4-Step Process
+
+#### ✅ Steps 1-2: Implemented in Code
+- **X-Robots-Tag headers**: Added to `next.config.mjs` to prevent Vercel domains from being indexed
+- **Dynamic canonical tags**: Added to `app/layout.tsx` to always point to `boussolemunicipale.com`
+
+#### 🔧 Step 3: WAF Custom Rule (MANUAL - Required in Vercel Dashboard)
+**CRITICAL**: This must be configured manually in Vercel Dashboard:
+
+1. Go to **Project Dashboard** → **Firewall** → **WAF**
+2. Click **Add Rule** → Name: "Redirect to canonical domain"
+3. Configure the rule:
+   - **If**: Hostname **is any of** → Enter: `boussole-municipale-emile-pelletiers-projects.vercel.app`
+   - **And**: Hostname **is any of** → Enter: `boussole-municipale-j5wgqoprp-emile-pelletiers-projects.vercel.app`
+   - **Then**: **Redirect** → Enter: `https://boussolemunicipale.com`
+4. Click **Save Rule**
+
+**Result**: All traffic from Vercel domains automatically redirects to the canonical domain.
+
+#### 🧪 Step 4: Verification Commands
+After deploying and configuring WAF:
+
+```bash
+# Test X-Robots-Tag header (should show "X-Robots-Tag: noindex")
+curl -I https://[project].vercel.app
+
+# Test WAF redirect (should redirect to boussolemunicipale.com)
+curl -I https://[project].vercel.app
+
+# Google Search Console URL Inspection
+# Check indexing status at: https://search.google.com/search-console
+```
+
+### Expected Results
+- ❌ Vercel domains: Not indexed by Google
+- ✅ boussolemunicipale.com: Primary domain for all SEO
+- 🚀 Consolidated ranking signals and improved SEO performance

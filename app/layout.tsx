@@ -68,7 +68,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Boussole Électorale 2025 | Test Politique Municipal Québec",
     description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Bruno Marchand, Sam Hamad et tous les partis.",
-    url: "https://boussole-municipale.vercel.app",
+    url: "https://boussolemunicipale.com",
     siteName: "Boussole Électorale Québec",
     locale: "fr_CA",
     type: "website",
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app"
+    canonical: "https://boussolemunicipale.com"
   }
 }
 
@@ -122,7 +122,7 @@ export default function RootLayout({
     "@type": "WebApplication",
     "name": "Boussole Électorale | Test Politique Municipal Québec 2025",
     "description": "Boussole electorale (boussole électorale) officielle pour les élections municipales 2025 à Québec. Test politique gratuit type political compass pour découvrir vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux.",
-    "url": "https://boussole-municipale.vercel.app",
+    "url": "https://boussolemunicipale.com",
     "applicationCategory": "Political Tool",
     "operatingSystem": "Web Browser",
     "browserRequirements": "Requires JavaScript",
@@ -135,7 +135,7 @@ export default function RootLayout({
     "creator": {
       "@type": "Organization", 
       "name": "Boussole Électorale Québec",
-      "url": "https://boussole-municipale.vercel.app"
+      "url": "https://boussolemunicipale.com"
     },
     "datePublished": "2025-01-14",
     "dateModified": new Date().toISOString(),
@@ -387,6 +387,31 @@ export default function RootLayout({
             <link rel="dns-prefetch" href={supabaseOrigin} />
           </>
         ) : null}
+        {/* Dynamic canonical tag - Official Vercel 2025 SEO solution */}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              // Always point canonical to official domain
+              const currentPath = window.location.pathname + window.location.search;
+              const canonicalUrl = 'https://boussolemunicipale.com' + currentPath;
+
+              // Remove existing canonical if any
+              const existingCanonical = document.querySelector('link[rel="canonical"]');
+              if (existingCanonical) {
+                existingCanonical.remove();
+              }
+
+              // Add dynamic canonical
+              const canonical = document.createElement('link');
+              canonical.rel = 'canonical';
+              canonical.href = canonicalUrl;
+              document.head.appendChild(canonical);
+
+              console.log('[SEO] Dynamic canonical set to:', canonicalUrl);
+            })();
+          `
+        }} />
+
         {/* Structured Data pour les Rich Snippets */}
         <script
           type="application/ld+json"
@@ -402,8 +427,8 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "Boussole Électorale Québec",
-              "url": "https://boussole-municipale.vercel.app",
-              "logo": "https://boussole-municipale.vercel.app/logo-main.svg",
+              "url": "https://boussolemunicipale.com",
+              "logo": "https://boussolemunicipale.com/logo-main.svg",
               "description": "Boussole électorale municipale de Québec 2025 : test politique gratuit pour découvrir vos affinités avec les partis municipaux.",
               "sameAs": [
                 "https://www.facebook.com/boussolemunicipale",
@@ -414,7 +439,7 @@ export default function RootLayout({
                 "@type": "ContactPoint",
                 "contactType": "customer support",
                 "email": "info@boussolemunicipale.ca",
-                "url": "https://boussole-municipale.vercel.app/a-propos"
+                "url": "https://boussolemunicipale.com/a-propos"
               }],
               "address": {
                 "@type": "PostalAddress",
