@@ -45,10 +45,10 @@ export function CountdownBadge() {
     <Link href="/elections-municipales-2025-quebec" className="inline-flex items-center group">
       <Badge
         variant="secondary"
-        className="bg-red-100 text-red-800 border-red-200 hover:bg-red-200 transition-colors cursor-pointer px-3 py-1"
+        className="bg-[#EAFCFC] text-[#04454A] border-[#04454A]/20 hover:bg-[#04454A]/5 transition-colors cursor-pointer px-3 py-1"
       >
         <Calendar className="w-4 h-4 mr-1.5" />
-        <span className="font-semibold">J-{daysLeft}</span>
+        <span className="font-semibold">plus que {daysLeft} jours</span>
         <span className="ml-1.5 hidden sm:inline">avant les élections municipales 2025</span>
         <span className="ml-1.5 sm:hidden">élections 2025</span>
       </Badge>

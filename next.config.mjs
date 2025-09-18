@@ -29,6 +29,18 @@ const nextConfig = {
         destination: '/test-politique-municipal',
         permanent: true, // 301 redirect pour SEO
       },
+      // Redirection automatique des domaines Vercel vers le domaine principal
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: '(.*\\.vercel\\.app|.*\\.vercel\\.dev)$',
+          },
+        ],
+        destination: 'https://boussolemunicipale.com/:path*',
+        permanent: true, // 301 redirect pour SEO
+      },
     ]
   },
   // Security headers for production
