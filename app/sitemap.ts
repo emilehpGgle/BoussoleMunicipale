@@ -14,7 +14,7 @@ function generateSlug(leaderName: string): string {
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://boussole-municipale.vercel.app'
+  const baseUrl = 'https://boussolemunicipale.com'
   
   return [
     // Page principale - Priorité maximale
