@@ -29,30 +29,8 @@ export default function CSSOptimizer() {
       })
     }
 
-    // Preload des ressources critiques pour les pages suivantes
-    const preloadNextPageResources = () => {
-      // Next.js 15 gère automatiquement le CSS chunking et prefetching
-      // On peut prefetch les routes importantes au lieu du CSS direct
-      const routePrefetchLink = document.createElement('link')
-      routePrefetchLink.rel = 'prefetch'
-      routePrefetchLink.href = '/test-politique-municipal'
-      document.head.appendChild(routePrefetchLink)
-    }
-
-    // Preload intelligent basé sur l'interaction utilisateur
-    const handleUserInteraction = () => {
-      preloadNextPageResources()
-      document.removeEventListener('mouseenter', handleUserInteraction)
-      document.removeEventListener('touchstart', handleUserInteraction)
-    }
-
-    document.addEventListener('mouseenter', handleUserInteraction, { once: true, passive: true })
-    document.addEventListener('touchstart', handleUserInteraction, { once: true, passive: true })
-
-    return () => {
-      document.removeEventListener('mouseenter', handleUserInteraction)
-      document.removeEventListener('touchstart', handleUserInteraction)
-    }
+    // Next.js 15 gère automatiquement le CSS chunking et prefetching
+    // Suppression du prefetch manuel pour éviter les conflits
   }, [])
 
   return null // Ce composant ne rend rien visuellement

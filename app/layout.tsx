@@ -9,7 +9,7 @@ import { Analytics } from "@/components/analytics"
 import ConditionalFooter from "@/components/conditional-footer"
 import CSSOptimizer from "@/components/css-optimizer"
 import StickyStartButton from "@/components/sticky-start-button"
-import { RouteTransition } from "@/components/ui/page-transitions"
+// import { RouteTransition } from "@/components/ui/page-transitions" // Temporairement désactivé
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -404,6 +404,26 @@ export default function RootLayout({
               document.head.appendChild(canonical);
 
               console.log('[SEO] Dynamic canonical set to:', canonicalUrl);
+
+              // Logs de debug pour hydratation
+              if (typeof window !== 'undefined') {
+                console.log('[HYDRATION] Client-side render detected');
+                console.log('[HYDRATION] Current path:', window.location.pathname);
+                console.log('[HYDRATION] Ready state:', document.readyState);
+
+                // Détecter les erreurs d'hydratation React
+                const originalError = console.error;
+                console.error = function(...args) {
+                  if (args[0] && (
+                    args[0].includes('Hydration') ||
+                    args[0].includes('hydration') ||
+                    args[0].includes('did not match')
+                  )) {
+                    console.warn('[HYDRATION WARNING] Détecté:', args[0]);
+                  }
+                  originalError.apply(console, args);
+                };
+              }
             })();
           `
         }} />
@@ -452,9 +472,11 @@ export default function RootLayout({
           <div className="flex flex-col min-h-screen bg-white">
             <SiteHeader />
             <main className="flex-1" id="main">
-              <RouteTransition>
+              {/* Temporairement désactivé pour diagnostic hydratation */}
+              {/* <RouteTransition>
                 {children}
-              </RouteTransition>
+              </RouteTransition> */}
+              {children}
             </main>
             <ConditionalFooter />
           </div>
