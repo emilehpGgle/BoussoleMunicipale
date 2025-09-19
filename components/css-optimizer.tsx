@@ -31,11 +31,12 @@ export default function CSSOptimizer() {
 
     // Preload des ressources critiques pour les pages suivantes
     const preloadNextPageResources = () => {
-      const questionnaireCSSLink = document.createElement('link')
-      questionnaireCSSLink.rel = 'prefetch'
-      questionnaireCSSLink.href = '/_next/static/css/app/test-politique-municipal/page.css'
-      questionnaireCSSLink.as = 'style'
-      document.head.appendChild(questionnaireCSSLink)
+      // Next.js 15 gère automatiquement le CSS chunking et prefetching
+      // On peut prefetch les routes importantes au lieu du CSS direct
+      const routePrefetchLink = document.createElement('link')
+      routePrefetchLink.rel = 'prefetch'
+      routePrefetchLink.href = '/test-politique-municipal'
+      document.head.appendChild(routePrefetchLink)
     }
 
     // Preload intelligent basé sur l'interaction utilisateur

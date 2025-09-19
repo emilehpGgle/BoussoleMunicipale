@@ -19,6 +19,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://boussolemunicipale.com'),
   title: "Boussole Électorale Municipale | Test Politique Québec 2025",
   description: "La boussole électorale de référence pour les élections municipales 2025 à Québec. Découvrez en 5 minutes quel parti municipal correspond à vos valeurs. Test politique gratuit sur 21 questions touchant transport, logement, fiscalité.",
   keywords: [
@@ -369,12 +370,7 @@ export default function RootLayout({
         
         {/* Resource hints optimisés pour performance - Google Fonts gérés par next/font */}
         
-        {/* Preload du CSS critique pour éviter le FOUC */}
-        <link 
-          rel="preload" 
-          href="/_next/static/css/app/layout.css" 
-          as="style"
-        />
+        {/* Preload du CSS critique pour éviter le FOUC - Next.js gère automatiquement */}
         
         {/* Preconnect analytics - non-blocking */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />

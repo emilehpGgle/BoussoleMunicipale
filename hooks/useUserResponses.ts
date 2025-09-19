@@ -41,13 +41,15 @@ export function useUserResponses() {
     lastSaved: null
   })
 
-  // Logs nettoyés - seulement si nécessaire
-  if (process.env.NODE_ENV === 'development' && sessionToken && isSessionValid && !isInitializing) {
-    console.log('🔄 [useUserResponses] Session prête:', {
-      hasToken: !!sessionToken,
-      responseCount: Object.keys(state.responses.agreement).length
-    })
-  }
+  // Logs de développement optimisés - seulement lors des changements pertinents
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' && sessionToken && isSessionValid && !isInitializing) {
+      console.log('🔄 [useUserResponses] Session prête:', {
+        hasToken: !!sessionToken,
+        responseCount: Object.keys(state.responses.agreement).length
+      })
+    }
+  }, [sessionToken, isSessionValid, isInitializing, Object.keys(state.responses.agreement).length])
 
   // Charger les réponses depuis Supabase uniquement
   const loadResponses = useCallback(async () => {

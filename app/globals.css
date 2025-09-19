@@ -565,24 +565,6 @@
       box-sizing: border-box !important;
     }
 
-    /* Layout moderne sur desktop large */
-    @media (min-width: 1400px) {
-      .container, .container-rainbow {
-        max-width: 1400px !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
-      }
-    }
-
-    /* Layout ultra-wide */
-    @media (min-width: 1920px) {
-      .container, .container-rainbow {
-        max-width: 1600px !important;
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
-      }
-    }
-
     /* Version spéciale pour conteneurs avec RainbowButtons */
     .container-rainbow {
       padding-left: 1rem !important;
@@ -696,6 +678,45 @@
       margin: 0.5rem;
       max-height: calc(100vh - 1rem);
     }
+  }
+}
+
+/* Layout moderne pour desktop standard (769px-1399px) */
+@media (min-width: 769px) and (max-width: 1399px) {
+  .container, .container-rainbow {
+    max-width: 1200px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Layout moderne sur desktop large (1400px-1919px) */
+@media (min-width: 1400px) and (max-width: 1919px) {
+  .container, .container-rainbow {
+    max-width: 1400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* Layout ultra-wide (1920px+) */
+@media (min-width: 1920px) {
+  .container, .container-rainbow {
+    max-width: 1600px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 3rem !important;
+    padding-right: 3rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 }
 
