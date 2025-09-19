@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AccordionClient as Accordion, AccordionContentClient as AccordionContent, AccordionItemClient as AccordionItem, AccordionTriggerClient as AccordionTrigger } from "@/components/ui/accordion-client"
 import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
+import { PageTransition, ScrollReveal, AnimatedCard } from "@/components/ui/server-safe-animations"
 
 export const metadata: Metadata = {
   title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec 2025",
