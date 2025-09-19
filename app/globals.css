@@ -455,7 +455,7 @@
     position: relative;
     overflow: hidden;
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: none !important;
   }
 
   /* Version spéciale pour sections avec RainbowButtons */
@@ -463,7 +463,7 @@
     position: relative;
     overflow: visible; /* Permet aux RainbowButtons de déborder légèrement */
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: none !important;
   }
 
   /* Amélioration des couleurs et contraste sur mobile */
@@ -559,10 +559,28 @@
       padding-right: 1rem !important;
       margin-left: auto !important;
       margin-right: auto !important;
-      max-width: 100% !important;
+      max-width: 1200px !important;
       width: 100% !important;
       overflow-x: hidden !important;
       box-sizing: border-box !important;
+    }
+
+    /* Layout moderne sur desktop large */
+    @media (min-width: 1400px) {
+      .container, .container-rainbow {
+        max-width: 1400px !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+      }
+    }
+
+    /* Layout ultra-wide */
+    @media (min-width: 1920px) {
+      .container, .container-rainbow {
+        max-width: 1600px !important;
+        padding-left: 3rem !important;
+        padding-right: 3rem !important;
+      }
     }
 
     /* Version spéciale pour conteneurs avec RainbowButtons */
@@ -571,7 +589,7 @@
       padding-right: 1rem !important;
       margin-left: auto !important;
       margin-right: auto !important;
-      max-width: 100% !important;
+      max-width: 1200px !important;
       width: 100% !important;
       overflow: visible !important; /* Permet aux RainbowButtons de déborder */
       box-sizing: border-box !important;

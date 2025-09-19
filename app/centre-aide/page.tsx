@@ -3,7 +3,7 @@ import { ArrowLeft, Search, MessageSquare, Shield, BarChart3, Users, Mail } from
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { AccordionClient as Accordion, AccordionContentClient as AccordionContent, AccordionItemClient as AccordionItem, AccordionTriggerClient as AccordionTrigger } from "@/components/ui/accordion-client"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
