@@ -250,23 +250,19 @@ export default function QuestionnairePage() {
       après: newPriorities,
       différence: Object.keys(newPriorities).length - Object.keys(selectedPriorities).length
     })
-    
-    // Sauvegarder dans Supabase en arrière-plan sans bloquer l'UI
-    // IMPORTANT: savePriorities met déjà à jour l'état local dans usePriorities
-    savePriorities(newPriorities).then(() => {
+
+    try {
+      // ✅ Attendre la sauvegarde pour s'assurer que l'état est synchronisé
+      await savePriorities(newPriorities)
       console.log('✅ Priorités sauvegardées avec succès')
-    }).catch(error => {
-      console.error('❌ Erreur lors de la sauvegarde des priorités:', error)
-      // Même en cas d'erreur, l'état local devrait rester mis à jour
-    })
-      
+
       // Si on vient de sélectionner la 3ème priorité, scroller vers le bouton "Terminer"
       if (Object.keys(newPriorities).length === 3) {
         setTimeout(() => {
           if (terminateButtonRef.current) {
-            terminateButtonRef.current.scrollIntoView({ 
-              behavior: 'smooth', 
-              block: 'center' 
+            terminateButtonRef.current.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
             })
             // Petit effet de mise en évidence du bouton
             terminateButtonRef.current.style.transform = 'scale(1.05)'
@@ -277,6 +273,10 @@ export default function QuestionnairePage() {
             }, 200)
           }
         }, 300) // Délai pour laisser l'animation de sélection se terminer
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de la sauvegarde des priorités:', error)
+      // En cas d'erreur, ne pas bloquer l'UI mais afficher l'erreur
     }
   }
 
