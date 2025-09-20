@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Mail, Shield, Sparkles, TrendingUp, Bell, X, Check } from 'lucide-react'
+import { Mail, Shield, Sparkles, TrendingUp, Bell, X, Check, Info, ExternalLink, AlertTriangle } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useProfile } from '@/hooks/useProfile'
 import { useToast } from '@/hooks/use-toast'
@@ -17,11 +17,36 @@ interface EmailCollectionModalProps {
   onSuccess: () => void
 }
 
+// Composant Tooltip simple
+const Tooltip = ({ children, content }: { children: React.ReactNode; content: string }) => {
+  const [show, setShow] = useState(false)
+
+  return (
+    <div className="relative inline-block">
+      <div
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        className="cursor-help"
+      >
+        {children}
+      </div>
+      {show && (
+        <div className="absolute z-50 w-64 p-2 mt-1 text-xs bg-gray-900 text-white rounded-lg shadow-lg -translate-x-1/2 left-1/2">
+          {content}
+          <div className="absolute w-2 h-2 bg-gray-900 rotate-45 -top-1 left-1/2 transform -translate-x-1/2"></div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollectionModalProps) {
   const [emailConsent, setEmailConsent] = useState(false)
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [emailConfirmationSent, setEmailConfirmationSent] = useState(false)
   const { updateContactAndConsents } = useProfile()
   const { toast } = useToast()
 
@@ -64,25 +89,34 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
     setIsProcessing(true)
 
     try {
+      // Étape 1: Sauvegarder temporairement avec état "en attente de confirmation"
       await updateContactAndConsents({
         email: email.toLowerCase().trim(),
         analyticsConsent: true,
-        emailConsent: true,
-        marketingConsent: true, // Bundled avec email consent
+        emailConsent: false, // Sera activé après confirmation
+        marketingConsent: false, // Sera activé après confirmation
+        emailConfirmationPending: true, // Nouvel état
       })
+
+      // Étape 2: Envoyer email de confirmation
+      // TODO: Implémenter l'envoi d'email de confirmation
+      // await sendConfirmationEmail(email.toLowerCase().trim())
+
+      setEmailConfirmationSent(true)
 
       toast({
-        title: 'Parfait !',
-        description: 'Vos résultats ont été enregistrés. Redirection en cours...',
+        title: 'Email de confirmation envoyé !',
+        description: 'Vérifiez votre boîte de réception pour confirmer votre inscription.',
       })
 
+      // Rediriger vers les résultats après 2 secondes
       setTimeout(() => {
         onSuccess()
-      }, 800)
+      }, 2000)
     } catch (_error) {
       toast({
         title: 'Erreur',
-        description: 'Impossible d\'enregistrer. Veuillez réessayer.',
+        description: 'Impossible d\'envoyer la confirmation. Veuillez réessayer.',
         variant: 'destructive',
       })
     } finally {
@@ -297,7 +331,7 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
                       )}
                     </AnimatePresence>
 
-                    {/* Bonus inclus */}
+                    {/* Bonus inclus - Version transparente */}
                     {emailConsent && (
                       <motion.div
                         initial={{ opacity: 0 }}
@@ -312,38 +346,102 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
                         <div className="space-y-1 text-xs text-amber-600">
                           <div className="flex items-center gap-2">
                             <Check className="w-3 h-3" />
-                            <span>Actualités exclusives sur la politique municipale de Québec</span>
+                            <span>Actualités exclusives de la politique municipale</span>
                           </div>
                           <div className="flex items-center gap-2">
                             <Check className="w-3 h-3" />
-                            <span>Analyses adaptées à vos affinités politiques</span>
+                            <div className="flex items-center gap-1">
+                              <span>Communications de partis politiques municipaux</span>
+                              <Tooltip content="Les partis municipaux de Québec alignés sur vos résultats pourront vous contacter avec leurs propositions et événements">
+                                <Info className="w-3 h-3 text-amber-500" />
+                              </Tooltip>
+                            </div>
                           </div>
                           <div className="flex items-center gap-2">
                             <Check className="w-3 h-3" />
-                            <span>Recommandations de partenaires locaux engagés</span>
+                            <div className="flex items-center gap-1">
+                              <span>Offres de partenaires locaux engagés</span>
+                              <Tooltip content="Organisations civiques, médias locaux et services municipaux sélectionnés selon vos intérêts">
+                                <Info className="w-3 h-3 text-amber-500" />
+                              </Tooltip>
+                            </div>
                           </div>
                         </div>
-                        <p className="text-xs text-amber-600 mt-2 italic">
-                          (3-4 communications par an maximum - désinscription facile)
-                        </p>
+
+                        {/* Mention période électorale */}
+                        <div className="mt-2 p-2 bg-orange-100 rounded border border-orange-200">
+                          <div className="flex items-center gap-1 text-xs text-orange-700">
+                            <AlertTriangle className="w-3 h-3" />
+                            <span className="font-medium">Fréquence plus élevée pendant les périodes électorales</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between mt-3 text-xs">
+                          <span className="text-amber-600 italic">
+                            (3-4 envois par an en temps normal - désinscription facile)
+                          </span>
+                        </div>
+
+                        {/* Liens informatifs */}
+                        <div className="flex items-center gap-4 mt-2 pt-2 border-t border-amber-200">
+                          <button
+                            onClick={() => setShowDetailsModal(true)}
+                            className="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-800 underline"
+                          >
+                            <Info className="w-3 h-3" />
+                            Qu&apos;est-ce que cela implique ?
+                          </button>
+                          <a
+                            href="/politique-confidentialite"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-800 underline"
+                          >
+                            <Shield className="w-3 h-3" />
+                            Politique de confidentialité
+                            <ExternalLink className="w-2 h-2" />
+                          </a>
+                        </div>
                       </motion.div>
                     )}
                   </div>
+
+                  {/* Status de confirmation email */}
+                  {emailConfirmationSent && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 bg-blue-50 rounded-lg border border-blue-200"
+                    >
+                      <div className="flex items-center gap-2 text-blue-700">
+                        <Mail className="w-4 h-4" />
+                        <span className="text-sm font-medium">Email de confirmation envoyé !</span>
+                      </div>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Vérifiez votre boîte de réception ({email}) pour confirmer votre inscription.
+                      </p>
+                    </motion.div>
+                  )}
 
                   {/* Boutons d'action */}
                   <div className="space-y-3 pt-4">
                     <Button
                       onClick={handleSaveResults}
-                      disabled={!canSubmit || isProcessing}
+                      disabled={!canSubmit || isProcessing || emailConfirmationSent}
                       className={`w-full py-3 text-white transition-all duration-200 ${
-                        canSubmit
+                        canSubmit && !emailConfirmationSent
                           ? 'bg-midnight-green hover:bg-midnight-green/90 shadow-lg'
                           : 'bg-gray-300 cursor-not-allowed'
                       }`}
                       size="lg"
                     >
                       <Mail className="w-4 h-4 mr-2" />
-                      {isProcessing ? 'Enregistrement...' : 'Enregistrer mes résultats'}
+                      {emailConfirmationSent
+                        ? 'Confirmation envoyée ✓'
+                        : isProcessing
+                          ? 'Envoi de la confirmation...'
+                          : 'Enregistrer mes résultats'
+                      }
                     </Button>
 
                     <div className="text-center">
@@ -364,6 +462,101 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
                       <span>100% confidentiel - Aucun spam, conformité RGPD complète</span>
                     </div>
                   </div>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </motion.div>
+      )}
+
+      {/* Modal secondaire - Détails des implications */}
+      {showDetailsModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowDetailsModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl"
+          >
+            <Card className="p-6 shadow-2xl bg-white">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Info className="w-5 h-5 text-midnight-green" />
+                  <h3 className="text-xl font-semibold">Qu&apos;est-ce que cela implique ?</h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDetailsModal(false)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-2">✓ En cochant cette option :</h4>
+                  <ul className="space-y-1 text-sm text-green-700">
+                    <li>• Vous recevez votre rapport politique personnalisé par courriel</li>
+                    <li>• Les partis politiques municipaux de Québec peuvent vous contacter</li>
+                    <li>• Nos partenaires locaux engagés peuvent vous proposer des services</li>
+                    <li>• Vous recevez nos analyses politiques exclusives</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-2">📅 Fréquence des communications :</h4>
+                  <ul className="space-y-1 text-sm text-blue-700">
+                    <li>• <strong>Temps normal :</strong> 3-4 envois par an maximum</li>
+                    <li>• <strong>Périodes électorales :</strong> fréquence plus élevée (campagnes actives)</li>
+                    <li>• <strong>Désinscription :</strong> possible à tout moment en un clic</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <h4 className="font-semibold text-amber-800 mb-2">👥 Qui peut vous contacter :</h4>
+                  <ul className="space-y-1 text-sm text-amber-700">
+                    <li>• <strong>Partis politiques municipaux :</strong> seulement ceux alignés sur vos résultats</li>
+                    <li>• <strong>Partenaires locaux :</strong> organisations civiques, médias locaux, services municipaux</li>
+                    <li>• <strong>Notre équipe :</strong> analyses et conseils politiques personnalisés</li>
+                  </ul>
+                </div>
+
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-4 h-4 text-slate-600" />
+                    <h4 className="font-semibold text-slate-800">🔒 Protection de vos données :</h4>
+                  </div>
+                  <p className="text-sm text-slate-700">
+                    Vos données sont protégées selon les standards RGPD et Loi 25 du Québec.
+                    Elles ne sont partagées qu&apos;avec des partenaires approuvés et seulement
+                    selon vos consentements explicites.
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <a
+                    href="/politique-confidentialite"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-midnight-green hover:text-midnight-green/80 underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Lire notre politique complète
+                  </a>
+                  <Button
+                    onClick={() => setShowDetailsModal(false)}
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white"
+                  >
+                    J&apos;ai compris
+                  </Button>
                 </div>
               </div>
             </Card>

@@ -391,6 +391,7 @@ export function useProfile() {
     emailConsent?: boolean
     phoneConsent?: boolean
     marketingConsent?: boolean
+    emailConfirmationPending?: boolean
   }) => {
     // Validations
     if (data.email && !validateEmail(data.email)) {
@@ -408,6 +409,7 @@ export function useProfile() {
       emailConsent: data.emailConsent,
       phoneConsent: data.phoneConsent,
       marketingConsent: data.marketingConsent,
+      emailConfirmationPending: data.emailConfirmationPending,
       consentTimestamp: timestamp,
       consentVersion: '1.0.0',
       // Timestamps spécifiques
