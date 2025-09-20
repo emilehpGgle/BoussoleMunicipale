@@ -23,6 +23,7 @@ import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import { SwipeContainer, useTouchSupport } from "@/components/ui/swipe-container"
 import { motion, AnimatePresence } from 'framer-motion'
 import { fadeInUp } from "@/components/ui/animation-utils"
+import { AdaptiveQuestionTitle, useContextualFontSizes } from "@/components/ui/adaptive-question-title"
 
 
 // questions constant is already defined from boussoleQuestions
@@ -35,6 +36,9 @@ export default function QuestionnairePage() {
   const prefersReducedMotion = useReducedMotion()
   const { isLowPerformance, optimizedDuration } = useAnimationPerformance()
   const isTouchDevice = useTouchSupport()
+
+  // Hook pour les tailles de police contextuelles
+  const fontSizes = useContextualFontSizes()
   
   // Hook pour les transitions de balayage
   const {
@@ -430,9 +434,13 @@ export default function QuestionnairePage() {
             >
               <Card className="card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white w-full max-w-2xl mx-auto will-change-transform">
                 <div className="flex items-start gap-3 mb-3 question-header">
-            <h2 className={`question-title text-foreground font-semibold ${animationClasses.contentClass}`}>
+            <AdaptiveQuestionTitle
+              className={`question-title ${animationClasses.contentClass}`}
+              minFontSize={fontSizes.min}
+              maxFontSize={fontSizes.max}
+            >
               {currentQuestion.text}
-            </h2>
+            </AdaptiveQuestionTitle>
             {currentQuestion.description && (
               <TooltipProvider>
                 <Tooltip delayDuration={100}>

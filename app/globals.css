@@ -735,9 +735,7 @@
     @apply p-3;
   }
 
-  .questionnaire-compact .question-title {
-    @apply text-base leading-snug;
-  }
+  /* Styles pour .question-title sont maintenant gérés par AdaptiveQuestionTitle */
 
   .questionnaire-compact .option-button {
     @apply py-2 text-sm;
