@@ -428,9 +428,9 @@ export default function QuestionnairePage() {
                 ease: "easeInOut"
               }}
             >
-              <Card className="card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white w-full max-w-2xl mx-auto flex flex-col will-change-transform">
+              <Card className="card-question p-4 md:p-5 shadow-lg rounded-2xl bg-white w-full max-w-2xl mx-auto will-change-transform">
                 <div className="flex items-start gap-3 mb-3 question-header">
-            <h2 className={`question-title text-lg md:text-xl text-foreground leading-snug font-semibold ${animationClasses.contentClass}`}>
+            <h2 className={`question-title text-foreground font-semibold ${animationClasses.contentClass}`}>
               {currentQuestion.text}
             </h2>
             {currentQuestion.description && (
@@ -455,7 +455,7 @@ export default function QuestionnairePage() {
           </div>
 
           <motion.div
-            className="question-grid grid gap-1.5 mb-3 flex-1"
+            className="question-grid"
             initial="initial"
             animate="animate"
             variants={{
