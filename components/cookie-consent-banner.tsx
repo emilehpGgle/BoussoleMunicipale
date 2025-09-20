@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Cookie, Shield, Settings } from 'lucide-react'
 import Link from 'next/link'
-import { motion, AnimatePresence } from 'motion/react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useProfile } from '@/hooks/useProfile'
 import { ConsentModal, type ConsentFormData } from '@/components/consent-form'
 
@@ -154,7 +154,7 @@ export function CookieConsentBanner() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6"
           >
-            <Card className="mx-auto max-w-6xl p-6 shadow-2xl border-2 border-midnight-green/20 bg-white/98 backdrop-blur">
+            <Card className="mx-auto max-w-6xl p-6 shadow-2xl border-2 border-midnight-green/20 bg-white backdrop-blur-sm">
               <div className="flex flex-col lg:flex-row gap-6">
                 {/* Contenu principal */}
                 <div className="flex-1 space-y-4">

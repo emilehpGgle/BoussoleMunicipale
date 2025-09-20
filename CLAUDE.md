@@ -195,3 +195,131 @@ curl -I https://[project].vercel.app
 - ❌ Vercel domains: Not indexed by Google
 - ✅ boussolemunicipale.com: Primary domain for all SEO
 - 🚀 Consolidated ranking signals and improved SEO performance
+
+## Animation Architecture - Server/Client Hybrid Pattern (Optimal)
+
+### Architecture Philosophy: "Client Components to the Leaves"
+
+**Pattern Established (Commit 71b4fd4):** Optimal architecture for Next.js 15 animations with SEO preservation.
+
+**Core Principle:**
+- ✅ Pages = Server Components (for metadata and SEO)
+- ✅ Animations = Client Component wrappers (for interactivity)
+- ✅ Content flows through children pattern
+
+### Implementation Structure
+
+**1. Animation Wrappers (`/components/ui/animated-wrappers.tsx`):**
+```tsx
+'use client'
+import { motion } from 'framer-motion'
+
+export function AnimatedSection({ children, className, delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay }}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
+// More wrappers: AnimatedGrid, AnimatedTitle, AnimatedStats, AnimatedCTA
+```
+
+**2. Page Pattern (Server Component + Metadata):**
+```tsx
+// ✅ Server Component with metadata
+export const metadata: Metadata = {
+  title: "Page Title",
+  description: "SEO description",
+  // ... complete SEO config
+}
+
+export default function PageName() {
+  return (
+    <div>
+      <AnimatedSection delay={0.2}>
+        <h1>Content wrapped in Client animation</h1>
+      </AnimatedSection>
+    </div>
+  )
+}
+```
+
+### Benefits of Hybrid Architecture
+
+**SEO Performance:**
+- Full metadata control in Server Components
+- Static content pre-rendered
+- Search engines crawl content before hydration
+
+**Animation Performance:**
+- Animations isolated to Client Components only
+- Minimal client-side JavaScript
+- Progressive enhancement approach
+
+**Development Experience:**
+- Clear separation of concerns
+- Reusable animation wrappers
+- Type-safe animation props
+
+### Applied Across All Pages
+
+**✅ Implemented Pages:**
+- `app/page.tsx` - Homepage (optimized from full Client Component)
+- `app/(static)/comment-ca-marche/page.tsx` - Process explanation
+- `app/(static)/pourquoi-important/page.tsx` - Importance messaging
+- `app/(static)/faq/page.tsx` - FAQ with accordion animations
+- `app/(static)/centre-aide/page.tsx` - Help center
+
+**Animation Consistency:**
+- Staggered entrance animations (0.1s-0.5s delays)
+- Scroll-triggered reveals with `whileInView`
+- Grid layouts with coordinated timing
+- CTA sections with enhanced emphasis
+
+### Wrapper Components Available
+
+**Layout Animations:**
+- `AnimatedSection` - Basic fade-in with delay
+- `AnimatedGrid` - Staggered grid animations
+- `AnimatedStats` - Emphasized statistics display
+
+**Content Animations:**
+- `AnimatedTitle` - Enhanced title reveals
+- `AnimatedCTA` - Call-to-action emphasis
+
+**Usage Pattern:**
+```tsx
+<AnimatedSection delay={0.2} className="mb-8">
+  <AnimatedGrid staggerDelay={0.1}>
+    <Card>Static content</Card>
+    <Card>More content</Card>
+  </AnimatedGrid>
+</AnimatedSection>
+```
+
+### Architecture Decision Rationale
+
+**Why Not Full Client Components?**
+- ❌ Loss of metadata export capability
+- ❌ SEO performance degradation
+- ❌ Larger JavaScript bundle size
+- ❌ Delayed content availability
+
+**Why Not Server-Safe Fallbacks?**
+- ❌ No actual animations (poor UX)
+- ❌ Conditional rendering complexity
+- ❌ Inconsistent animation behavior
+
+**✅ Hybrid Pattern Advantages:**
+- Perfect SEO with full animations
+- Follows Next.js 15 best practices
+- Minimal performance impact
+- Maximum developer flexibility
+
+This hybrid architecture is now the standard for all new animated pages in the application.

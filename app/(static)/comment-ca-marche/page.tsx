@@ -4,6 +4,12 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { StepCard, EngagementCard } from "@/components/ui/uniform-card"
+import {
+  AnimatedSection,
+  AnimatedGrid,
+  AnimatedTitle,
+  AnimatedCTA
+} from "@/components/ui/animated-wrappers"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -29,17 +35,19 @@ export default function CommentCaMarchePage() {
           </Link>
         </Button>
         
-        <h1 className="text-3xl font-bold text-foreground mb-4">
-          Comment ça marche
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Découvrez votre compatibilité politique municipale en 4 étapes simples.
-        </p>
+        <AnimatedTitle>
+          <h1 className="text-3xl font-bold text-foreground mb-4">
+            Comment ça marche
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Découvrez votre compatibilité politique municipale en 4 étapes simples.
+          </p>
+        </AnimatedTitle>
       </div>
 
       {/* Processus en étapes */}
-      <div className="space-y-8 mb-12">
-        <div className="card-grid-standard">
+      <AnimatedSection delay={0.2} className="space-y-8 mb-12">
+        <AnimatedGrid className="card-grid-standard">
           <StepCard
             step={1}
             title="Profil"
@@ -60,13 +68,15 @@ export default function CommentCaMarchePage() {
             title="Résultats"
             description="Obtenez votre boussole politique et vos matches avec les partis"
           />
-        </div>
-      </div>
+        </AnimatedGrid>
+      </AnimatedSection>
 
       {/* Fonctionnement détaillé */}
-      <div className="space-y-8">
+      <AnimatedSection delay={0.4} className="space-y-8">
         <section>
-          <h2 className="text-2xl font-bold mb-6">Fonctionnement détaillé</h2>
+          <AnimatedTitle delay={0.1}>
+            <h2 className="text-2xl font-bold mb-6">Fonctionnement détaillé</h2>
+          </AnimatedTitle>
           
           <div className="space-y-6">
             {/* Le questionnaire */}
@@ -152,9 +162,11 @@ export default function CommentCaMarchePage() {
 
         {/* Fiabilité et objectivité */}
         <section>
-          <h2 className="text-2xl font-bold mb-6">Notre engagement</h2>
-          
-          <div className="card-grid-two-cols">
+          <AnimatedTitle delay={0.3}>
+            <h2 className="text-2xl font-bold mb-6">Notre engagement</h2>
+          </AnimatedTitle>
+
+          <AnimatedGrid staggerDelay={0.15} className="card-grid-two-cols">
             <EngagementCard
               title="🔒 Confidentialité totale"
               description="Vos réponses sont anonymes. Aucune donnée personnelle identifiable n'est collectée sans votre consentement explicite."
@@ -171,11 +183,11 @@ export default function CommentCaMarchePage() {
               title="🎯 Outil d'aide à la décision"
               description="Nos résultats sont une aide à la réflexion, pas une recommandation. La décision finale vous appartient toujours."
             />
-          </div>
+          </AnimatedGrid>
         </section>
 
         {/* Call to action */}
-        <section className="text-center py-8">
+        <AnimatedCTA delay={0.5} className="text-center py-8">
           <h2 className="text-2xl font-bold mb-4">Prêt à découvrir vos affinités ?</h2>
           <p className="text-muted-foreground mb-6">
             Le processus complet prend environ 10 minutes.
@@ -193,8 +205,8 @@ export default function CommentCaMarchePage() {
               </Link>
             </Button>
           </div>
-        </section>
-      </div>
+        </AnimatedCTA>
+      </AnimatedSection>
     </div>
   )
 }

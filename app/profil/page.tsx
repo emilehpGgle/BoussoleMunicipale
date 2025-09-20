@@ -12,8 +12,9 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence } from 'framer-motion'
 import { fadeInUp } from "@/components/ui/animation-utils"
+import { EmailCollectionModal } from '@/components/email-collection-modal'
 
 // Interface pour la structure d'une question de profil
 interface ProfileQuestion {
@@ -108,6 +109,7 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
 
 export default function ProfilePage() {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
+  const [showEmailModal, setShowEmailModal] = useState(false)
   const router = useRouter()
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
@@ -292,7 +294,26 @@ export default function ProfilePage() {
   }
 
   const handleSubmit = () => {
-    console.log('📋 [Profil] Profil complété, redirection vers les résultats')
+    console.log('📋 [Profil] Profil complété')
+
+    // Vérifier si l'utilisateur a déjà un email et a consenti à le recevoir
+    if (profile.email && profile.emailConsent) {
+      console.log('📧 [Profil] Email déjà fourni, redirection directe vers résultats')
+      router.push("/resultats")
+    } else {
+      console.log('📧 [Profil] Pas d\'email, affichage du modal de collecte')
+      setShowEmailModal(true)
+    }
+  }
+
+  const handleEmailModalSuccess = () => {
+    setShowEmailModal(false)
+    router.push("/resultats")
+  }
+
+  const handleEmailModalClose = () => {
+    setShowEmailModal(false)
+    // Permettre à l'utilisateur de voir ses résultats même s'il ferme le modal
     router.push("/resultats")
   }
 
@@ -594,6 +615,7 @@ export default function ProfilePage() {
   }
 
   return (
+    <>
     <div className="mobile-constrained">
 
       {/* Affichage d'erreur uniquement si problème critique et après chargement initial */}
@@ -805,5 +827,13 @@ export default function ProfilePage() {
       </div>
       </div>
     </div>
+
+    {/* Modal de collecte d'email */}
+    <EmailCollectionModal
+      isOpen={showEmailModal}
+      onClose={handleEmailModalClose}
+      onSuccess={handleEmailModalSuccess}
+    />
+  </>
   )
 }

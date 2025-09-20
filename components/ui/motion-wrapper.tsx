@@ -1,7 +1,7 @@
 "use client"
 
 import React, { forwardRef } from "react"
-import { motion, HTMLMotionProps } from "motion/react"
+import { motion, HTMLMotionProps } from 'framer-motion'
 import { cn } from "@/lib/utils"
 import { useScrollAnimation } from "@/hooks/useScrollAnimation"
 import Image, { ImageProps } from "next/image"

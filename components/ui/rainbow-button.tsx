@@ -1,26 +1,34 @@
 import React from "react";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
+import { Slot } from "@radix-ui/react-slot";
 
 import { cn } from "@/lib/utils";
 
 type RainbowButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "white"
+  asChild?: boolean
 }
 
-export function RainbowButton({
-  children,
-  className,
-  variant = "default",
-  ...props
-}: RainbowButtonProps) {
+export const RainbowButton = React.forwardRef<HTMLButtonElement, RainbowButtonProps>((
+  {
+    children,
+    className,
+    variant = "default",
+    asChild = false,
+    ...props
+  },
+  ref
+) => {
   // Filtrer les props qui pourraient causer des conflits avec motion
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...motionSafeProps } = props;
 
   const isWhite = variant === "white";
+  const Comp = asChild ? Slot : motion.button;
 
   return (
-    <motion.button
+    <Comp
+      ref={ref}
       className={cn(
         "group relative inline-flex h-11 cursor-pointer items-center justify-center rounded-xl px-8 py-2 font-medium transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
 
@@ -44,12 +52,16 @@ export function RainbowButton({
 
         className,
       )}
-      whileHover={{ scale: 1.02, y: -1 }}
-      whileTap={{ scale: 0.98 }}
-      transition={{ duration: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
-      {...motionSafeProps}
+      {...(asChild ? motionSafeProps : {
+        whileHover: { scale: 1.02, y: -1 },
+        whileTap: { scale: 0.98 },
+        transition: { duration: 0.15, ease: [0.25, 0.1, 0.25, 1] },
+        ...motionSafeProps
+      })}
     >
       {children}
-    </motion.button>
+    </Comp>
   );
-}
+});
+
+RainbowButton.displayName = "RainbowButton";

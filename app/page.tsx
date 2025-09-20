@@ -1,4 +1,3 @@
-"use client"
 import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react"
 import Image from "next/image"
@@ -8,25 +7,77 @@ import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
 import { CountdownBadge } from "@/components/ui/countdown-badge"
 import { StepCard, FeatureCard, StatCard } from "@/components/ui/uniform-card"
-import { FadeInSection, StaggeredList, ParallaxSection } from "@/components/ui/scroll-animations"
- 
+import {
+  AnimatedHero,
+  AnimatedSection,
+  AnimatedCardList,
+  AnimatedTitle,
+  AnimatedContent,
+  AnimatedGrid,
+  AnimatedCTA
+} from "@/components/ui/animated-wrappers"
+import { StartQuestionnaireButton } from "@/components/start-questionnaire-button"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Boussole Électorale Municipale | Test Politique Québec 2025",
+  description: "La boussole électorale de référence pour les élections municipales 2025 à Québec. Découvrez en 5 minutes quel parti municipal correspond à vos valeurs. Test politique gratuit sur 21 questions touchant transport, logement, fiscalité.",
+  keywords: [
+    "boussole électorale",
+    "boussole electorale",
+    "boussole electorale 2025",
+    "boussole électorale québec",
+    "test politique",
+    "test political compass",
+    "political compass québec",
+    "élections municipales 2025",
+    "élections municipales québec",
+    "bruno marchand",
+    "sam hamad",
+    "partis politiques québec",
+    "maire québec 2025",
+    "denis coderre",
+    "test politique municipal"
+  ],
+  openGraph: {
+    title: "Boussole Électorale 2025 | Test Politique Municipal Québec",
+    description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Bruno Marchand, Sam Hamad et tous les partis.",
+    url: "https://boussolemunicipale.com",
+    siteName: "Boussole Électorale Québec",
+    locale: "fr_CA",
+    type: "website",
+    images: [
+      {
+        url: "/hero-illustration-v2.webp",
+        width: 1200,
+        height: 630,
+        alt: "Boussole Électorale Municipale - Spécialisée pour les élections municipales de Québec"
+      }
+    ]
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Boussole Électorale 2025 | Test Politique Québec",
+    description: "Boussole electorale gratuite pour les élections municipales 2025. Découvrez vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux.",
+    images: ["/hero-illustration-v2.webp"]
+  },
+  alternates: {
+    canonical: "https://boussolemunicipale.com"
+  }
+}
 
 export default function HomePage() {
   return (
     <div>
 
       {/* Section Hero avec parallaxe et animations modernes */}
-      <ParallaxSection className="section-contained w-full py-fluid-lg bg-gradient-to-br from-isabelline to-azure-web/20 relative overflow-hidden">
+      <AnimatedHero className="section-contained w-full py-fluid-lg bg-gradient-to-br from-isabelline to-azure-web/20 relative overflow-hidden">
         {/* Glow effect en arrière-plan */}
         <div className="absolute inset-0 bg-gradient-to-br from-midnight-green/5 to-transparent pointer-events-none" />
-        
+
         <div className="container relative">
           <div className="grid md:grid-cols-2 gap-fluid-md items-center">
-            <FadeInSection 
-              variant="slide-up" 
-              delay={0.1}
-              className="flex flex-col space-y-fluid-sm"
-            >
+            <AnimatedTitle delay={0.1} className="flex flex-col space-y-fluid-sm">
               <div className="flex items-center gap-3 flex-wrap">
                 <span className="text-sm font-semibold text-muted-foreground/80 flex items-center">
                   <Compass className="w-5 h-5 mr-2" /> Élections municipales
@@ -61,12 +112,9 @@ export default function HomePage() {
                 <div className="flex flex-col gap-2">
                   <RainbowButton
                     className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
-                    onClick={() => {
-                      const event = new CustomEvent('openPostalCodeModal')
-                      window.dispatchEvent(event)
-                    }}
+                    asChild
                   >
-                    Découvrez vos affinités politiques
+                    <StartQuestionnaireButton>Découvrez vos affinités politiques</StartQuestionnaireButton>
                   </RainbowButton>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ Test politique rapide • 5 minutes • 21 questions</span>
                   <div className="flex flex-col sm:flex-row gap-2 mt-2 text-center sm:text-left">
@@ -79,12 +127,8 @@ export default function HomePage() {
                   </div>
                 </div>
               </div>
-            </FadeInSection>
-            <FadeInSection
-              variant="slide-right"
-              delay={0.3}
-              className="relative"
-            >
+            </AnimatedTitle>
+            <AnimatedContent delay={0.3} className="relative">
               <div className="relative w-full aspect-[4/3] md:aspect-[16/10] max-w-full rounded-2xl overflow-hidden">
                 <Image
                   src="/Image_parc_crisp.webp"
@@ -97,21 +141,21 @@ export default function HomePage() {
                   style={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
                 />
               </div>
-            </FadeInSection>
+            </AnimatedContent>
           </div>
         </div>
-      </ParallaxSection>
+      </AnimatedHero>
 
       {/* Section d'explication */}
       <section id="comment-ca-marche" className="py-fluid-xl bg-gray-50">
         <div className="container">
-          <FadeInSection className="text-center mb-fluid-lg">
+          <AnimatedSection className="text-center mb-fluid-lg">
             <h2 className="text-fluid-3xl font-bold text-eerie-black mb-fluid-xs">Comment fonctionne notre boussole électorale ?</h2>
             <p className="text-fluid-lg text-muted-foreground max-w-3xl mx-auto">
               Notre <strong>boussole electorale municipale</strong> utilise un processus simple en 4 étapes pour découvrir vos affinités politiques pour les élections 2025
             </p>
-          </FadeInSection>
-          <StaggeredList className="card-grid-standard">
+          </AnimatedSection>
+          <AnimatedGrid className="card-grid-standard">
             {[
               {
                 icon: <FileText className="w-6 h-6 text-midnight-green" />,
@@ -143,23 +187,19 @@ export default function HomePage() {
                 icon={step.icon}
               />
             ))}
-          </StaggeredList>
+          </AnimatedGrid>
         </div>
       </section>
 
       {/* Section pourquoi c'est important */}
       <section className="section-contained-rainbow w-full py-fluid-lg bg-azure-web/40">
         <div className="container-rainbow">
-          <FadeInSection 
-            variant="slide-up" 
-            delay={0.1}
-            className="text-center mb-fluid-md"
-          >
+          <AnimatedTitle delay={0.1} className="text-center mb-fluid-md">
             <h2 className="text-fluid-3xl text-foreground">
               Pourquoi vos élections municipales comptent autant ?
             </h2>
-          </FadeInSection>
-          <StaggeredList className="card-grid-three-cols">
+          </AnimatedTitle>
+          <AnimatedCardList className="card-grid-three-cols">
             {[
               {
                 image: "/Image_cycliste_chien.webp",
@@ -188,31 +228,28 @@ export default function HomePage() {
                 className="bg-card rounded-xl shadow-soft hover:shadow-md transition-shadow duration-200"
               />
             ))}
-          </StaggeredList>
-          <FadeInSection delay={0.6} className="mt-8">
+          </AnimatedCardList>
+          <AnimatedCTA delay={0.6} className="mt-8">
             <p className="text-muted-foreground mb-4 text-center">
-              <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux. 
+              <strong>Le problème ?</strong> Il n&apos;existait aucun moyen simple de comparer les partis municipaux sur ces enjeux.
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
             <div className="flex justify-center">
               <RainbowButton
                 className="rounded-xl px-6 py-4 text-base font-semibold"
-                onClick={() => {
-                  const event = new CustomEvent('openPostalCodeModal')
-                  window.dispatchEvent(event)
-                }}
+                asChild
               >
-                Découvrez vos affinités politiques
+                <StartQuestionnaireButton>Découvrez vos affinités politiques</StartQuestionnaireButton>
               </RainbowButton>
             </div>
-          </FadeInSection>
+          </AnimatedCTA>
         </div>
       </section>
 
       {/* Section éducative avec glow subtil */}
-      <GlowSection 
-        glowProps={{ 
-          mode: 'drift', 
+      <GlowSection
+        glowProps={{
+          mode: 'drift',
           intensity: 'subtle',
           colors: ['#04454A', '#EAFCFC'],
           duration: 12
@@ -220,17 +257,14 @@ export default function HomePage() {
         className="section-contained w-full py-16 md:py-20 bg-gradient-to-br from-azure-web to-isabelline"
       >
         <div className="container px-4 md:px-6 max-w-[1200px] mx-auto text-center">
-          <FadeInSection 
-            variant="slide-up" 
-            delay={0.2}
-          >
+          <AnimatedSection variant="slide-up" delay={0.2}>
             <h2 className="mb-6 text-foreground">Votre vote municipal a plus d&apos;impact que vous pensez</h2>
             <p className="text-lg text-muted-foreground mb-10 max-w-4xl mx-auto leading-relaxed">
-              Transport, logement, parcs, déneigement, taxes : votre ville décide de tout ce qui façonne votre quotidien. 
-              Pourtant, seulement <ColoredText variant="accent" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales. 
+              Transport, logement, parcs, déneigement, taxes : votre ville décide de tout ce qui façonne votre quotidien.
+              Pourtant, seulement <ColoredText variant="accent" intensity="bold">40% des citoyens</ColoredText> votent aux élections municipales.
               Résultat ? Votre voix compte encore plus ! Notre boussole vous aide à faire un choix éclairé en quelques minutes.
             </p>
-          </FadeInSection>
+          </AnimatedSection>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
@@ -265,11 +299,7 @@ export default function HomePage() {
         <div className="container">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             {/* Image - PROFESSIONAL SIZE */}
-            <FadeInSection
-              variant="slide-right"
-              delay={0.2}
-              className="relative"
-            >
+            <AnimatedContent delay={0.2} className="relative">
               <div className="relative w-full h-96 lg:h-[500px] rounded-2xl shadow-lg overflow-hidden">
                 <Image
                   src="/Image_famille.webp"
@@ -281,7 +311,7 @@ export default function HomePage() {
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
               </div>
-            </FadeInSection>
+            </AnimatedContent>
             {/* Contenu textuel */}
             <div className="space-y-8">
               <div className="space-y-4">
@@ -308,10 +338,7 @@ export default function HomePage() {
       {/* Section Call-to-Action */}
       <section className="section-contained-rainbow w-full py-12 md:py-16 bg-gradient-to-r from-midnight-green to-teal-main">
         <div className="container-rainbow px-4 md:px-6 max-w-[1200px] mx-auto text-center">
-          <FadeInSection 
-            variant="slide-up" 
-            delay={0.2}
-          >
+          <AnimatedSection variant="slide-up" delay={0.2}>
             <h2 className="mb-6 text-primary-foreground">Prêt à découvrir vos affinités politiques ?</h2>
             <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
@@ -319,14 +346,11 @@ export default function HomePage() {
             <RainbowButton
               variant="white"
               className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
-              onClick={() => {
-                const event = new CustomEvent('openPostalCodeModal')
-                window.dispatchEvent(event)
-              }}
+              asChild
             >
-              Découvrez vos affinités politiques
+              <StartQuestionnaireButton>Découvrez vos affinités politiques</StartQuestionnaireButton>
             </RainbowButton>
-          </FadeInSection>
+          </AnimatedSection>
         </div>
       </section>
 

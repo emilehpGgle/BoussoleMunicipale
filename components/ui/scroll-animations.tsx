@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { motion, useInView, type Variants } from "motion/react"
+import { motion, useInView, type Variants } from 'framer-motion'
 import { cn } from "@/lib/utils"
 
 // Variants d'animation selon le plan (MUST #6)

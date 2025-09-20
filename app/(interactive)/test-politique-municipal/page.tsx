@@ -14,13 +14,14 @@ import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import { useResults } from "@/hooks/useResults"
 import { usePriorities } from "@/hooks/usePriorities"
+import { useProfile as _useProfile } from "@/hooks/useProfile"
 import { useSweepTransitions, useReducedMotion, useAnimationPerformance } from "@/hooks/useSweepTransitions"
 import { PageWithGlow } from "@/components/ui/background-glow"
 import './styles.css'
 import { ButtonWithEffects } from "@/components/ui/button-effects"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import { SwipeContainer, useTouchSupport } from "@/components/ui/swipe-container"
-import { motion, AnimatePresence } from "motion/react"
+import { motion, AnimatePresence } from 'framer-motion'
 import { fadeInUp } from "@/components/ui/animation-utils"
 
 
@@ -329,9 +330,9 @@ export default function QuestionnairePage() {
         setCurrentQuestionIndex(currentQuestionIndex + 1)
       }, 'forward')
     } else {
-      // ✅ Questionnaire terminé → Résultats !
-      console.log('🎯 [Questionnaire] Questionnaire complet, redirection vers les résultats')
-      router.push("/resultats")
+      // ✅ Questionnaire terminé → Email Gate pour optimiser conversion !
+      console.log('🎯 [Questionnaire] Questionnaire complet, redirection vers collecte email')
+      router.push("/collect-email")
     }
   }, [canInteract, currentQuestionIndex, startSweepTransition, router])
 

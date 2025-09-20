@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { ServiceCard } from "@/components/ui/uniform-card"
+import {
+  AnimatedSection,
+  AnimatedGrid,
+  AnimatedTitle,
+  AnimatedStats,
+  AnimatedCTA
+} from "@/components/ui/animated-wrappers"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -28,20 +35,24 @@ export default function PourquoiImportantPage() {
             Retour à l&apos;accueil
           </Link>
         </Button>
-        
-        <h1 className="text-3xl font-bold text-foreground mb-4">
-          Pourquoi c&apos;est important
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Les élections municipales façonnent votre quotidien plus que vous ne le pensez.
-        </p>
+
+        <AnimatedTitle>
+          <h1 className="text-3xl font-bold text-foreground mb-4">
+            Pourquoi c&apos;est important
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Les élections municipales façonnent votre quotidien plus que vous ne le pensez.
+          </p>
+        </AnimatedTitle>
       </div>
 
       {/* Impact direct */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">La municipalité : votre gouvernement le plus proche</h2>
-        
-        <div className="card-grid-services mb-8">
+      <AnimatedSection delay={0.2} className="mb-12">
+        <AnimatedTitle delay={0.1}>
+          <h2 className="text-2xl font-bold mb-6">La municipalité : votre gouvernement le plus proche</h2>
+        </AnimatedTitle>
+
+        <AnimatedGrid className="card-grid-services mb-8">
           <ServiceCard
             icon={<Car className="icon-large" />}
             title="Transport"
@@ -102,30 +113,34 @@ export default function PourquoiImportantPage() {
               "• Programmes jeunesse"
             ]}
           />
-        </div>
+        </AnimatedGrid>
 
-        <Card className="p-6 bg-midnight-green/5">
-          <div className="flex items-start space-x-4">
-            <Users className="w-8 h-8 text-midnight-green mt-1" />
-            <div>
-              <h3 className="text-xl font-semibold mb-3 text-midnight-green">
-                Le niveau de gouvernement le plus proche de vous
-              </h3>
-              <p className="text-muted-foreground">
-                Contrairement aux gouvernements provincial et fédéral, la municipalité gère les services 
-                que vous utilisez <strong>quotidiennement</strong>. Vos décisions d&apos;aujourd&apos;hui 
-                façonnent directement votre cadre de vie pour les 4 prochaines années.
-              </p>
+        <AnimatedStats delay={0.4}>
+          <Card className="p-6 bg-midnight-green/5">
+            <div className="flex items-start space-x-4">
+              <Users className="w-8 h-8 text-midnight-green mt-1" />
+              <div>
+                <h3 className="text-xl font-semibold mb-3 text-midnight-green">
+                  Le niveau de gouvernement le plus proche de vous
+                </h3>
+                <p className="text-muted-foreground">
+                  Contrairement aux gouvernements provincial et fédéral, la municipalité gère les services
+                  que vous utilisez <strong>quotidiennement</strong>. Vos décisions d&apos;aujourd&apos;hui
+                  façonnent directement votre cadre de vie pour les 4 prochaines années.
+                </p>
+              </div>
             </div>
-          </div>
-        </Card>
-      </section>
+          </Card>
+        </AnimatedStats>
+      </AnimatedSection>
 
       {/* Statistiques participation */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">La réalité de la participation</h2>
-        
-        <div className="grid md:grid-cols-2 gap-8">
+      <AnimatedSection delay={0.5} className="mb-12">
+        <AnimatedTitle delay={0.1}>
+          <h2 className="text-2xl font-bold mb-6">La réalité de la participation</h2>
+        </AnimatedTitle>
+
+        <AnimatedGrid staggerDelay={0.2} className="grid md:grid-cols-2 gap-8">
           <Card className="p-6">
             <h3 className="text-lg font-semibold mb-4">Taux de participation historique</h3>
             <div className="space-y-4">
@@ -182,37 +197,41 @@ export default function PourquoiImportantPage() {
               </p>
             </div>
           </Card>
-        </div>
-      </section>
+        </AnimatedGrid>
+      </AnimatedSection>
 
       {/* Impact de votre vote */}
-      <section className="mb-12">
-        <h2 className="text-2xl font-bold mb-6">Votre vote compte vraiment</h2>
-        
-        <Card className="p-6 mb-6">
-          <div className="grid md:grid-cols-3 gap-6 text-center">
-            <div>
-              <div className="text-2xl font-bold text-midnight-green mb-2">15,000</div>
-              <p className="text-sm text-muted-foreground">
-                Électeurs moyens par district à Québec
-              </p>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-midnight-green mb-2">1 sur 15,000</div>
-              <p className="text-sm text-muted-foreground">
-                Le poids de votre vote municipal
-              </p>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-midnight-green mb-2">4 ans</div>
-              <p className="text-sm text-muted-foreground">
-                Durée d&apos;impact de votre choix
-              </p>
-            </div>
-          </div>
-        </Card>
+      <AnimatedSection delay={0.7} className="mb-12">
+        <AnimatedTitle delay={0.1}>
+          <h2 className="text-2xl font-bold mb-6">Votre vote compte vraiment</h2>
+        </AnimatedTitle>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <AnimatedStats delay={0.2}>
+          <Card className="p-6 mb-6">
+            <div className="grid md:grid-cols-3 gap-6 text-center">
+              <div>
+                <div className="text-2xl font-bold text-midnight-green mb-2">15,000</div>
+                <p className="text-sm text-muted-foreground">
+                  Électeurs moyens par district à Québec
+                </p>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-midnight-green mb-2">1 sur 15,000</div>
+                <p className="text-sm text-muted-foreground">
+                  Le poids de votre vote municipal
+                </p>
+              </div>
+              <div>
+                <div className="text-2xl font-bold text-midnight-green mb-2">4 ans</div>
+                <p className="text-sm text-muted-foreground">
+                  Durée d&apos;impact de votre choix
+                </p>
+              </div>
+            </div>
+          </Card>
+        </AnimatedStats>
+
+        <AnimatedGrid staggerDelay={0.15} className="grid md:grid-cols-2 gap-6">
           <Card className="p-6">
             <TrendingUp className="w-8 h-8 text-midnight-green mb-4" />
             <h3 className="text-lg font-semibold mb-3">Exemples d&apos;impact direct</h3>
@@ -236,15 +255,15 @@ export default function PourquoiImportantPage() {
               <li>🛡️ La sécurité dans votre communauté</li>
             </ul>
           </Card>
-        </div>
-      </section>
+        </AnimatedGrid>
+      </AnimatedSection>
 
       {/* Call to action */}
-      <section className="text-center py-8">
+      <AnimatedCTA delay={0.9} className="text-center py-8">
         <Card className="p-8 bg-gradient-to-r from-midnight-green/10 to-midnight-green/5">
           <h2 className="text-2xl font-bold mb-4">Votez en connaissance de cause</h2>
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Ne laissez pas les autres décider pour vous. Découvrez quels partis correspondent 
+            Ne laissez pas les autres décider pour vous. Découvrez quels partis correspondent
             vraiment à vos valeurs et priorités municipales.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -264,7 +283,7 @@ export default function PourquoiImportantPage() {
             Anonyme par défaut • 10 minutes • Résultats instantanés
           </p>
         </Card>
-      </section>
+      </AnimatedCTA>
     </div>
   )
 }

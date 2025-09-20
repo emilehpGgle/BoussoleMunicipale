@@ -1,3 +1,4 @@
+import React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -5,7 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { AccordionClient as Accordion, AccordionContentClient as AccordionContent, AccordionItemClient as AccordionItem, AccordionTriggerClient as AccordionTrigger } from "@/components/ui/accordion-client"
 import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
-import { PageTransition, ScrollReveal, AnimatedCard } from "@/components/ui/server-safe-animations"
+import {
+  AnimatedSection,
+  AnimatedGrid,
+  AnimatedTitle,
+  AnimatedCTA
+} from "@/components/ui/animated-wrappers"
 
 export const metadata: Metadata = {
   title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec 2025",
@@ -195,19 +201,18 @@ export default function FAQPage() {
   }
 
   return (
-    <>
+    <React.Fragment>
       {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <PageTransition>
-        <div className="container max-w-4xl mx-auto py-8 px-4">
+      <div className="container max-w-4xl mx-auto py-8 px-4">
           {/* Breadcrumbs avec structured data */}
           <Breadcrumbs items={breadcrumbConfigs.faq} />
         {/* En-tête SEO optimisé */}
-        <ScrollReveal>
+        <AnimatedTitle>
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold mb-4">
               Questions Fréquentes sur la Boussole Électorale 2025
@@ -216,10 +221,10 @@ export default function FAQPage() {
               Tout ce que vous devez savoir sur notre boussole électorale pour les élections municipales de Québec 2025.
             </p>
           </div>
-        </ScrollReveal>
+        </AnimatedTitle>
 
         {/* Introduction */}
-        <ScrollReveal delay={0.1}>
+        <AnimatedSection delay={0.2}>
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -238,12 +243,12 @@ export default function FAQPage() {
               </p>
             </CardContent>
           </Card>
-        </ScrollReveal>
+        </AnimatedSection>
 
         {/* FAQ par catégorie */}
+        <AnimatedGrid staggerDelay={0.15}>
         {faqs.map((category, categoryIndex) => (
-          <ScrollReveal key={categoryIndex} delay={0.2 + categoryIndex * 0.1}>
-            <AnimatedCard className="mb-6" delay={categoryIndex * 0.1}>
+            <Card key={categoryIndex} className="mb-6">
               <CardHeader>
                 <CardTitle className="text-xl">{category.category}</CardTitle>
               </CardHeader>
@@ -261,13 +266,13 @@ export default function FAQPage() {
                   ))}
                 </Accordion>
               </CardContent>
-            </AnimatedCard>
-          </ScrollReveal>
+            </Card>
         ))}
+        </AnimatedGrid>
 
         {/* Section d'aide */}
-        <ScrollReveal delay={0.4}>
-          <AnimatedCard>
+        <AnimatedSection delay={0.4}>
+          <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-6 w-6 text-primary" />
@@ -313,12 +318,12 @@ export default function FAQPage() {
             </div>
           </div>
             </CardContent>
-          </AnimatedCard>
-        </ScrollReveal>
+          </Card>
+        </AnimatedSection>
 
         {/* Call to Action final */}
-        <ScrollReveal delay={0.5}>
-          <AnimatedCard className="text-center">
+        <AnimatedCTA delay={0.5} className="text-center">
+          <Card>
             <CardContent className="pt-6">
               <h2 className="text-2xl font-bold mb-4">
                 Prêt à découvrir vos affinités politiques ?
@@ -345,19 +350,18 @@ export default function FAQPage() {
                 </Button>
               </div>
             </CardContent>
-          </AnimatedCard>
-        </ScrollReveal>
+          </Card>
+        </AnimatedCTA>
 
         {/* Lien retour vers l'accueil */}
-        <ScrollReveal delay={0.6}>
+        <AnimatedSection delay={0.6}>
           <div className="text-center mt-8">
             <Link href="/" className="text-primary underline hover:text-primary/80 text-base">
               Retour à la boussole électorale municipale
             </Link>
           </div>
-        </ScrollReveal>
+        </AnimatedSection>
       </div>
-    </PageTransition>
-    </>
+    </React.Fragment>
   )
 } 
