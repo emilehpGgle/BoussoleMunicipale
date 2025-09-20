@@ -19,21 +19,42 @@ export interface UserProfile {
     district: string
     coordinates?: { lat: number; lng: number }
   }
-  // Nouveaux champs pour email et consentements
+
+  // Données de contact
   email?: string
+  phone?: string
+
+  // Consentements avec timestamps
+  analyticsConsent?: boolean // Collecte de données analytiques - obligatoire
+  analyticsConsentTimestamp?: string
   emailConsent?: boolean // Consentement pour recevoir les résultats par email
+  emailConsentTimestamp?: string
+  phoneConsent?: boolean // Consentement pour recevoir des SMS
+  phoneConsentTimestamp?: string
   marketingConsent?: boolean // Consentement pour marketing ciblé/vente de données
-  consentTimestamp?: string // ISO timestamp du consentement
+  marketingConsentTimestamp?: string
+
+  // Métadonnées de consentement
+  consentVersion?: string // Version du système de consentement
+  consentTimestamp?: string // ISO timestamp du dernier consentement (pour rétrocompatibilité)
+  consentIpAddress?: string // Adresse IP lors du consentement (pour traçabilité légale)
+
+  // Vérifications
   emailVerified?: boolean // Statut de vérification de l'email
+  phoneVerified?: boolean // Statut de vérification du téléphone
   unsubscribeToken?: string // Token pour se désabonner facilement
+
   [key: string]: any // Pour permettre d'autres champs dynamiques
 }
 
 // Types pour les consentements spécifiquement
 export interface ConsentData {
+  analyticsConsent: boolean
   emailConsent: boolean
+  phoneConsent: boolean
   marketingConsent: boolean
   timestamp: string
+  version?: string
   ipAddress?: string // Pour traçabilité légale
 }
 
@@ -280,63 +301,196 @@ export function useProfile() {
     return summary
   }, [state.profile])
 
-  // Méthodes spécifiques pour les consentements et email
+  // Méthodes spécifiques pour les consentements et coordonnées
   const updateConsent = useCallback(async (consentData: Partial<ConsentData>) => {
+    const timestamp = new Date().toISOString()
     const updatedProfile = {
       ...consentData,
-      consentTimestamp: new Date().toISOString(),
+      consentTimestamp: timestamp,
+      consentVersion: '1.0.0',
+      // Mettre à jour les timestamps spécifiques selon les consentements changés
+      ...(consentData.analyticsConsent !== undefined && { analyticsConsentTimestamp: timestamp }),
+      ...(consentData.emailConsent !== undefined && { emailConsentTimestamp: timestamp }),
+      ...(consentData.phoneConsent !== undefined && { phoneConsentTimestamp: timestamp }),
+      ...(consentData.marketingConsent !== undefined && { marketingConsentTimestamp: timestamp }),
     }
     return saveProfile(updatedProfile)
   }, [saveProfile])
 
+  const setAnalyticsConsent = useCallback(async (consent: boolean) => {
+    return updateConsent({ analyticsConsent: consent, emailConsent: false, phoneConsent: false, marketingConsent: false })
+  }, [updateConsent])
+
   const setEmailConsent = useCallback(async (consent: boolean) => {
     return updateConsent({ emailConsent: consent })
+  }, [updateConsent])
+
+  const setPhoneConsent = useCallback(async (consent: boolean) => {
+    return updateConsent({ phoneConsent: consent })
   }, [updateConsent])
 
   const setMarketingConsent = useCallback(async (consent: boolean) => {
     return updateConsent({ marketingConsent: consent })
   }, [updateConsent])
 
-  const updateEmailAndConsent = useCallback(async (email: string, emailConsent: boolean = true, marketingConsent: boolean = false) => {
+  const validateEmail = useCallback((email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(email)) {
-      throw new Error('Adresse email invalide')
+    return emailRegex.test(email)
+  }, [])
+
+  const validatePhone = useCallback((phone: string) => {
+    // Format canadien : XXX-XXX-XXXX ou (XXX) XXX-XXXX ou XXXXXXXXXX
+    const phoneRegex = /^(\+?1[-.\s]?)?(\(\d{3}\)|\d{3})[-.\s]?\d{3}[-.\s]?\d{4}$/
+    return phoneRegex.test(phone.replace(/\s/g, ''))
+  }, [])
+
+  const updateEmailAndConsent = useCallback(async (email: string, emailConsent: boolean = true, marketingConsent: boolean = false) => {
+    if (!validateEmail(email)) {
+      throw new Error('Adresse courriel invalide')
     }
 
+    const timestamp = new Date().toISOString()
     const updatedProfile = {
       email: email.toLowerCase().trim(),
       emailConsent,
       marketingConsent,
-      consentTimestamp: new Date().toISOString(),
+      consentTimestamp: timestamp,
+      emailConsentTimestamp: emailConsent ? timestamp : undefined,
+      marketingConsentTimestamp: marketingConsent ? timestamp : undefined,
       emailVerified: false, // À vérifier ultérieurement
+      consentVersion: '1.0.0',
     }
-    
-    return saveProfile(updatedProfile)
-  }, [saveProfile])
 
-  const hasValidConsent = useCallback((consentType: 'email' | 'marketing') => {
-    if (consentType === 'email') {
-      return state.profile.emailConsent === true && !!state.profile.email
+    return saveProfile(updatedProfile)
+  }, [saveProfile, validateEmail])
+
+  const updatePhoneAndConsent = useCallback(async (phone: string, phoneConsent: boolean = true, marketingConsent: boolean = false) => {
+    if (!validatePhone(phone)) {
+      throw new Error('Numéro de téléphone invalide')
     }
-    return state.profile.marketingConsent === true
+
+    const timestamp = new Date().toISOString()
+    const updatedProfile = {
+      phone: phone.trim(),
+      phoneConsent,
+      marketingConsent,
+      consentTimestamp: timestamp,
+      phoneConsentTimestamp: phoneConsent ? timestamp : undefined,
+      marketingConsentTimestamp: marketingConsent ? timestamp : undefined,
+      phoneVerified: false, // À vérifier ultérieurement
+      consentVersion: '1.0.0',
+    }
+
+    return saveProfile(updatedProfile)
+  }, [saveProfile, validatePhone])
+
+  const updateContactAndConsents = useCallback(async (data: {
+    email?: string
+    phone?: string
+    analyticsConsent?: boolean
+    emailConsent?: boolean
+    phoneConsent?: boolean
+    marketingConsent?: boolean
+  }) => {
+    // Validations
+    if (data.email && !validateEmail(data.email)) {
+      throw new Error('Adresse courriel invalide')
+    }
+    if (data.phone && !validatePhone(data.phone)) {
+      throw new Error('Numéro de téléphone invalide')
+    }
+
+    const timestamp = new Date().toISOString()
+    const updatedProfile = {
+      ...(data.email && { email: data.email.toLowerCase().trim(), emailVerified: false }),
+      ...(data.phone && { phone: data.phone.trim(), phoneVerified: false }),
+      analyticsConsent: data.analyticsConsent,
+      emailConsent: data.emailConsent,
+      phoneConsent: data.phoneConsent,
+      marketingConsent: data.marketingConsent,
+      consentTimestamp: timestamp,
+      consentVersion: '1.0.0',
+      // Timestamps spécifiques
+      ...(data.analyticsConsent !== undefined && { analyticsConsentTimestamp: timestamp }),
+      ...(data.emailConsent !== undefined && { emailConsentTimestamp: timestamp }),
+      ...(data.phoneConsent !== undefined && { phoneConsentTimestamp: timestamp }),
+      ...(data.marketingConsent !== undefined && { marketingConsentTimestamp: timestamp }),
+    }
+
+    return saveProfile(updatedProfile)
+  }, [saveProfile, validateEmail, validatePhone])
+
+  const hasValidConsent = useCallback((consentType: 'analytics' | 'email' | 'phone' | 'marketing') => {
+    switch (consentType) {
+      case 'analytics':
+        return state.profile.analyticsConsent === true
+      case 'email':
+        return state.profile.emailConsent === true && !!state.profile.email
+      case 'phone':
+        return state.profile.phoneConsent === true && !!state.profile.phone
+      case 'marketing':
+        return state.profile.marketingConsent === true
+      default:
+        return false
+    }
   }, [state.profile])
 
   const getConsentStatus = useCallback(() => {
     return {
+      // Données de contact
       hasEmail: !!state.profile.email,
-      emailConsent: state.profile.emailConsent === true,
-      marketingConsent: state.profile.marketingConsent === true,
-      consentDate: state.profile.consentTimestamp ? new Date(state.profile.consentTimestamp) : null,
+      hasPhone: !!state.profile.phone,
       emailVerified: state.profile.emailVerified === true,
+      phoneVerified: state.profile.phoneVerified === true,
+
+      // Consentements
+      analyticsConsent: state.profile.analyticsConsent === true,
+      emailConsent: state.profile.emailConsent === true,
+      phoneConsent: state.profile.phoneConsent === true,
+      marketingConsent: state.profile.marketingConsent === true,
+
+      // Timestamps
+      consentDate: state.profile.consentTimestamp ? new Date(state.profile.consentTimestamp) : null,
+      analyticsConsentDate: state.profile.analyticsConsentTimestamp ? new Date(state.profile.analyticsConsentTimestamp) : null,
+      emailConsentDate: state.profile.emailConsentTimestamp ? new Date(state.profile.emailConsentTimestamp) : null,
+      phoneConsentDate: state.profile.phoneConsentTimestamp ? new Date(state.profile.phoneConsentTimestamp) : null,
+      marketingConsentDate: state.profile.marketingConsentTimestamp ? new Date(state.profile.marketingConsentTimestamp) : null,
+
+      // Métadonnées
+      consentVersion: state.profile.consentVersion,
     }
   }, [state.profile])
 
   const revokeAllConsents = useCallback(async () => {
+    const timestamp = new Date().toISOString()
+    const updatedProfile = {
+      analyticsConsent: false, // Attention: cela empêchera l'utilisation du service
+      emailConsent: false,
+      phoneConsent: false,
+      marketingConsent: false,
+      consentTimestamp: timestamp,
+      emailConsentTimestamp: timestamp,
+      phoneConsentTimestamp: timestamp,
+      marketingConsentTimestamp: timestamp,
+      analyticsConsentTimestamp: timestamp,
+      consentVersion: '1.0.0',
+      // Garde l'email/téléphone mais retire les consentements
+    }
+    return saveProfile(updatedProfile)
+  }, [saveProfile])
+
+  const revokeOptionalConsents = useCallback(async () => {
+    const timestamp = new Date().toISOString()
     const updatedProfile = {
       emailConsent: false,
+      phoneConsent: false,
       marketingConsent: false,
-      consentTimestamp: new Date().toISOString(),
-      // Garde l'email mais retire les consentements
+      consentTimestamp: timestamp,
+      emailConsentTimestamp: timestamp,
+      phoneConsentTimestamp: timestamp,
+      marketingConsentTimestamp: timestamp,
+      consentVersion: '1.0.0',
+      // Garde analytics consent et les coordonnées
     }
     return saveProfile(updatedProfile)
   }, [saveProfile])
@@ -382,14 +536,21 @@ export function useProfile() {
     isProfileComplete,
     getProfileSummary,
 
-    // Méthodes pour consentements et email
+    // Méthodes pour consentements et coordonnées
     updateConsent,
+    setAnalyticsConsent,
     setEmailConsent,
+    setPhoneConsent,
     setMarketingConsent,
     updateEmailAndConsent,
+    updatePhoneAndConsent,
+    updateContactAndConsents,
     hasValidConsent,
     getConsentStatus,
     revokeAllConsents,
+    revokeOptionalConsents,
+    validateEmail,
+    validatePhone,
 
     // Alias pour compatibilité avec le code existant
     userProfile: state.profile

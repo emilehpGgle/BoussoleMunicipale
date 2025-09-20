@@ -67,6 +67,12 @@ export default function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/preferences" className="hover:text-midnight-green transition-colors flex items-center gap-1">
+                  <Shield className="w-3 h-3" />
+                  Mes préférences
+                </Link>
+              </li>
+              <li>
                 <Link href="/conditions" className="hover:text-midnight-green transition-colors">
                   Conditions d&apos;utilisation
                 </Link>

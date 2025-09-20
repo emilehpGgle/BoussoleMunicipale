@@ -9,6 +9,7 @@ import { Analytics } from "@/components/analytics"
 import ConditionalFooter from "@/components/conditional-footer"
 import CSSOptimizer from "@/components/css-optimizer"
 import StickyStartButton from "@/components/sticky-start-button"
+import { CookieConsentBanner } from "@/components/cookie-consent-banner"
 // import { RouteTransition } from "@/components/ui/page-transitions" // Temporairement désactivé
 
 const inter = Inter({ 
@@ -482,7 +483,8 @@ export default function RootLayout({
           </div>
           <CSSOptimizer />
           <StickyStartButton />
-          <Toaster 
+          <CookieConsentBanner />
+          <Toaster
             position="bottom-right"
             toastOptions={{
               style: {
