@@ -1,15 +1,16 @@
 "use client"
 
-import { useState, useRef, ElementType } from "react"
+import { useState, useRef, ElementType, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp } from "lucide-react"
+import { ArrowRight, User, Home, Car, ChevronLeft, ChevronRight, Check, Edit3, ChevronDown, ChevronUp, Shield, Mail, Info, ExternalLink, CheckCircle, X } from "lucide-react"
 import { useProfile } from "@/hooks/useProfile"
 import { useSession } from "@/hooks/useSession"
 import { motion, AnimatePresence } from 'framer-motion'
@@ -20,12 +21,18 @@ import { EmailCollectionModal } from '@/components/email-collection-modal'
 interface ProfileQuestion {
   id: string
   text: string
-  type: "button_horizontal" | "checkbox_multiple" | "priority_ranking_enhanced" | "text_area"
+  type: "button_horizontal" | "checkbox_multiple" | "priority_ranking_enhanced" | "text_area" | "consent_checkbox" | "consent_email"
   category: "Informations de base" | "Contexte municipal" | "Enjeux"
   icon: ElementType
   options?: string[]
   placeholder?: string
   description?: string
+  helpText?: string
+  benefits?: string[]
+  linkText?: string
+  linkAction?: () => void
+  required?: boolean
+  disabled?: boolean
 }
 
 // Données pour les questions de profil (organisées par page)
@@ -100,16 +107,42 @@ const profileQuestions: Record<'basic' | 'municipal' | 'issues', ProfileQuestion
     },
   ],
   
-  // Page 3 - Enjeux (optionnel)
+  // Page 3 - Consentements et données
   issues: [
-    // Note: Cette question est maintenant optionnelle et ne compte pas dans le total de progression
-    // puisque les priorités municipales sont gérées dans le questionnaire principal (Q21)
+    {
+      id: "analytics_consent",
+      text: "Collecte de données anonymisées",
+      type: "consent_checkbox",
+      category: "Enjeux",
+      icon: Shield,
+      description: "Requis pour utiliser la Boussole Municipale - Améliore le service",
+      required: true,
+      disabled: true,
+    },
+    {
+      id: "email_consent",
+      text: "Recevoir mes résultats personnalisés et accéder aux avantages exclusifs",
+      type: "consent_email",
+      category: "Enjeux",
+      icon: Mail,
+      helpText: "En échange de votre email, vous recevez :",
+      benefits: [
+        "Votre rapport politique personnalisé permanent",
+        "Actualités municipales ciblées selon VOS résultats",
+        "Communications de partis politiques alignés sur votre profil",
+        "Analyses exclusives adaptées à vos intérêts"
+      ],
+      placeholder: "votre@email.ca",
+      linkText: "Qu'est-ce que cela implique exactement ?",
+      description: "Fréquence : 3-4 communications par an (+ périodes électorales)"
+    }
   ]
 }
 
 export default function ProfilePage() {
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0)
   const [showEmailModal, setShowEmailModal] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
   const router = useRouter()
   const questionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
 
@@ -126,10 +159,16 @@ export default function ProfilePage() {
 
     // Utilitaires
     getCompletionPercentage,
-    getConsentStatus,
 
     // Alias pour compatibilité
   } = useProfile()
+
+  // Initialiser automatiquement le consentement obligatoire pour les données anonymisées
+  useEffect(() => {
+    if (!profile.analytics_consent) {
+      updateProfileField('analytics_consent', true)
+    }
+  }, [profile.analytics_consent, updateProfileField])
 
   // Obtenir toutes les questions dans l'ordre
   const getAllQuestions = () => [
@@ -143,20 +182,35 @@ export default function ProfilePage() {
   // Vérifier si une question est complétée (pour l'affichage visuel)
   const isQuestionComplete = (question: ProfileQuestion) => {
     const answer = profile[question.id]
-    
+
     if (question.type === "checkbox_multiple" || question.id === "main_transport") {
       return Array.isArray(answer) && answer.length > 0
     }
-    
+
     if (question.type === "priority_ranking_enhanced") {
       return answer && typeof answer === "object" && Object.keys(answer).length > 0
     }
-    
+
     if (question.type === "text_area") {
       // Pour l'affichage visuel : complété seulement si il y a du contenu
       return answer && answer.trim().length > 0
     }
-    
+
+    if (question.type === "consent_checkbox") {
+      // Checkbox de consentement - toujours complétée (pré-cochée)
+      return true
+    }
+
+    if (question.type === "consent_email") {
+      // Complétée si pas cochée OU si cochée + email valide
+      const emailConsent = profile[question.id] as boolean
+      if (!emailConsent) return true // Pas cochée = complétée
+
+      const email = profile['email'] as string
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return email && emailRegex.test(email)
+    }
+
     return answer !== undefined && answer !== ""
   }
 
@@ -170,7 +224,7 @@ export default function ProfilePage() {
     step: "1/1"
   }
 
-  const handleAnswerChange = async (questionId: string, value: string | string[] | Record<string, number>) => {
+  const handleAnswerChange = async (questionId: string, value: string | string[] | Record<string, number> | boolean) => {
     try {
       // Sauvegarder via notre hook sécurisé
       await updateProfileField(questionId, value)
@@ -231,19 +285,37 @@ export default function ProfilePage() {
   // Vérifier si une question est requise pour la progression (différent de l'affichage visuel)
   const isQuestionRequiredForProgression = (question: ProfileQuestion) => {
     const answer = profile[question.id]
-    
+
     if (question.type === "checkbox_multiple" || question.id === "main_transport") {
       return Array.isArray(answer) && answer.length > 0
     }
-    
+
     if (question.type === "priority_ranking_enhanced") {
       return answer && typeof answer === "object" && Object.keys(answer).length > 0
     }
-    
+
     if (question.type === "text_area") {
       return true // Toujours optionnel pour la progression
     }
-    
+
+    if (question.type === "consent_checkbox") {
+      // Données anonymisées obligatoires - toujours valide car pré-cochée
+      if (question.required) return true
+      // Autres consentements optionnels
+      return true
+    }
+
+    if (question.type === "consent_email") {
+      // Question email optionnelle pour la progression
+      // Mais si cochée, email requis et valide
+      const emailConsent = profile[question.id] as boolean
+      if (!emailConsent) return true // Pas cochée = optionnel, OK
+
+      const email = profile['email'] as string
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      return email && emailRegex.test(email)
+    }
+
     return answer !== undefined && answer !== ""
   }
 
@@ -255,6 +327,17 @@ export default function ProfilePage() {
   // Vérifier si tout le questionnaire est complété
   const canSubmit = () => {
     return allQuestions.every(q => isQuestionRequiredForProgression(q))
+  }
+
+  // Déterminer le texte du bouton selon le type d'accès
+  const getSubmitButtonText = () => {
+    const emailConsent = profile.email_consent as boolean
+    const email = profile.email as string
+
+    if (emailConsent && email) {
+      return "🎯 Voir mes résultats complets"
+    }
+    return "👁️ Voir résultats en mode anonyme"
   }
 
   const handleNext = () => {
@@ -294,24 +377,34 @@ export default function ProfilePage() {
     }
   }
 
-  const handleSubmit = () => {
-    console.log('📋 [Profil] Profil complété')
+  const handleSubmit = async () => {
+    console.log('📋 [Profil] Profil complété avec nouveau système de consentement')
 
-    // Vérifier si l'utilisateur a déjà un email et a consenti à le recevoir
-    const consentStatus = getConsentStatus()
-    console.log('📧 [Profil] Status des consentements:', {
-      hasEmail: consentStatus.hasEmail,
-      emailConsent: consentStatus.emailConsent,
-      profile_email: profile.email,
-      profile_emailConsent: profile.emailConsent
-    })
+    try {
+      // Déterminer le type d'accès selon les consentements
+      const emailConsent = profile.email_consent as boolean
+      const email = profile.email as string
 
-    if (consentStatus.hasEmail && consentStatus.emailConsent) {
-      console.log('📧 [Profil] Email déjà fourni, redirection directe vers résultats')
+      if (emailConsent && email) {
+        console.log('📧 [Profil] Accès complet - Email fourni')
+        // Sauvegarder les consentements avec email
+        await updateProfileField('emailConsent', true)
+        await updateProfileField('marketingConsent', true)
+        console.log('🎯 [Profil] Redirection vers résultats complets')
+      } else {
+        console.log('👁️ [Profil] Accès anonyme - Pas d\'email')
+        // Sauvegarder seulement le consentement analytique
+        await updateProfileField('emailConsent', false)
+        await updateProfileField('marketingConsent', false)
+        console.log('🔍 [Profil] Redirection vers résultats anonymes')
+      }
+
+      // Redirection directe vers les résultats
       router.push("/resultats")
-    } else {
-      console.log('📧 [Profil] Pas d\'email ou pas de consentement, affichage du modal de collecte')
-      setShowEmailModal(true)
+    } catch (error) {
+      console.error('❌ [Profil] Erreur lors de la sauvegarde des consentements:', error)
+      // En cas d'erreur, on redirige quand même vers les résultats
+      router.push("/resultats")
     }
   }
 
@@ -587,20 +680,154 @@ export default function ProfilePage() {
     )
   }
 
+  const renderConsentCheckbox = (question: ProfileQuestion) => {
+    const isChecked = question.disabled ? true : (profile[question.id] as boolean) || false
+
+    return (
+      <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+        <div className="flex items-start gap-3">
+          <div className="mt-1">
+            <Checkbox
+              checked={isChecked}
+              disabled={question.disabled}
+              onCheckedChange={(checked) => !question.disabled && handleAnswerChange(question.id, checked)}
+              className="border-blue-500 bg-blue-500"
+            />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-sm font-semibold text-blue-700">{question.text}</span>
+              {question.required && (
+                <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
+                  Obligatoire
+                </span>
+              )}
+            </div>
+            {question.description && (
+              <p className="text-xs text-blue-600">{question.description}</p>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const renderConsentEmail = (question: ProfileQuestion) => {
+    const emailConsent = (profile[question.id] as boolean) || false
+    const email = (profile['email'] as string) || ''
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-start gap-3">
+          <div className="mt-1">
+            <Checkbox
+              checked={emailConsent}
+              onCheckedChange={(checked) => handleAnswerChange(question.id, checked)}
+              className="border-midnight-green"
+            />
+          </div>
+          <div className="flex-1">
+            <Label className="text-sm font-semibold text-foreground cursor-pointer">
+              {question.text}
+            </Label>
+            {question.helpText && (
+              <p className="text-xs text-muted-foreground mt-1">{question.helpText}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Progressive disclosure du champ email */}
+        <AnimatePresence>
+          {emailConsent && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="ml-7 space-y-3"
+            >
+              <div>
+                <Label htmlFor="email" className="text-sm font-medium">
+                  Adresse courriel
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder={question.placeholder}
+                  value={email}
+                  onChange={(e) => handleAnswerChange('email', e.target.value)}
+                  className="mt-1"
+                />
+              </div>
+
+              {/* Avantages avec design attractif */}
+              {question.benefits && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle className="w-4 h-4 text-amber-600" />
+                    <span className="text-sm font-medium text-amber-700">Cela vous donne accès à :</span>
+                  </div>
+                  <div className="space-y-1 text-xs text-amber-600">
+                    {question.benefits.map((benefit, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <Check className="w-3 h-3" />
+                        <span>{benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {question.description && (
+                    <div className="mt-2 p-2 bg-orange-100 rounded border border-orange-200">
+                      <p className="text-xs text-orange-700 italic">{question.description}</p>
+                    </div>
+                  )}
+
+                  {/* Lien vers modal détaillé */}
+                  {question.linkText && (
+                    <div className="mt-3 pt-2 border-t border-amber-200">
+                      <button
+                        onClick={() => setShowDetailsModal(true)}
+                        className="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-800 underline"
+                      >
+                        <Info className="w-3 h-3" />
+                        {question.linkText}
+                      </button>
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    )
+  }
+
   const renderQuestionInput = (question: ProfileQuestion) => {
     switch (question.type) {
       case "button_horizontal":
         return renderHorizontalButtons(question)
-        
+
       case "checkbox_multiple":
         return renderCheckboxMultiple(question)
-        
+
       case "priority_ranking_enhanced":
         return renderEnhancedPriorityRanking(question)
-        
+
       case "text_area":
         return renderTextArea(question)
-        
+
+      case "consent_checkbox":
+        return renderConsentCheckbox(question)
+
+      case "consent_email":
+        return renderConsentEmail(question)
+
       default:
         return <p>Type de question non supporté.</p>
     }
@@ -819,7 +1046,7 @@ export default function ProfilePage() {
               disabled={!canSubmit()}
               className="flex items-center gap-2 bg-midnight-green hover:bg-midnight-green/90 text-white"
             >
-              Voir mes résultats
+              {getSubmitButtonText()}
               <ArrowRight className="h-4 w-4" />
             </Button>
           ) : (
@@ -836,6 +1063,146 @@ export default function ProfilePage() {
       </div>
       </div>
     </div>
+
+    {/* Modal d'information détaillée pour transparence complète */}
+    <AnimatePresence>
+      {showDetailsModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowDetailsModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl max-h-[80vh] overflow-auto"
+          >
+            <Card className="p-6 shadow-2xl bg-white">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Info className="w-5 h-5 text-midnight-green" />
+                  <h3 className="text-xl font-semibold">Qu&apos;est-ce que cela implique exactement ?</h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDetailsModal(false)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Échange de valeur transparent */}
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Échange de valeur transparent
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm text-green-700">
+                    <div>
+                      <p className="font-medium mb-1">Votre contribution :</p>
+                      <ul className="space-y-1">
+                        <li>• Accès à votre email et résultats politiques</li>
+                        <li>• Profil démographique anonymisé</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-medium mb-1">Ce que vous recevez :</p>
+                      <ul className="space-y-1">
+                        <li>• Rapport politique personnalisé permanent</li>
+                        <li>• Communications ultra-ciblées (3-4 par an)</li>
+                        <li>• Accès prioritaire aux analyses municipales</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Qui peut vous contacter */}
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <h4 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Qui vous contactera
+                  </h4>
+                  <ul className="space-y-1 text-sm text-amber-700">
+                    <li>• <strong>Partis politiques municipaux :</strong> seulement ceux alignés &gt;70% avec vos résultats</li>
+                    <li>• <strong>Médias locaux :</strong> spécialisés en politique municipale de Québec</li>
+                    <li>• <strong>Organisations civiques :</strong> pertinentes à vos enjeux prioritaires</li>
+                    <li>• <strong>Notre équipe :</strong> analyses et conseils politiques personnalisés</li>
+                  </ul>
+                </div>
+
+                {/* Comment ça marche */}
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Comment ça marche
+                  </h4>
+                  <div className="text-sm text-blue-700 space-y-2">
+                    <p>
+                      <strong>Ciblage intelligent :</strong> Nous partageons votre profil avec des organisations
+                      sélectionnées qui correspondent à vos intérêts politiques. C&apos;est du ciblage personnalisé,
+                      pas du spam générique.
+                    </p>
+                    <div className="p-2 bg-blue-100 rounded">
+                      <p className="font-medium">Fréquence des communications :</p>
+                      <ul className="mt-1">
+                        <li>• <strong>Temps normal :</strong> 3-4 envois par an maximum</li>
+                        <li>• <strong>Périodes électorales :</strong> fréquence plus élevée (campagnes actives)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Protection des données */}
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-4 h-4 text-slate-600" />
+                    <h4 className="font-semibold text-slate-800">Protection de vos données</h4>
+                  </div>
+                  <p className="text-sm text-slate-700 mb-3">
+                    Vos données sont protégées selon les standards RGPD et Loi 25 du Québec.
+                    Elles ne sont partagées qu&apos;avec des partenaires approuvés et seulement
+                    selon vos consentements explicites.
+                  </p>
+                  <div className="bg-slate-100 p-2 rounded text-xs text-slate-600">
+                    <p className="font-medium mb-1">Vos droits :</p>
+                    <ul>
+                      <li>• Désinscription en 1 clic à tout moment</li>
+                      <li>• Modification de vos préférences</li>
+                      <li>• Suppression complète de vos données</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Footer avec action */}
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <a
+                    href="/politique-confidentialite"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-midnight-green hover:text-midnight-green/80 underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Lire notre politique complète
+                  </a>
+                  <Button
+                    onClick={() => setShowDetailsModal(false)}
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white"
+                  >
+                    J&apos;ai compris
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
 
     {/* Modal de collecte d'email */}
     <EmailCollectionModal
