@@ -31,8 +31,6 @@ import { useSession } from "@/hooks/useSession"
 import { usePriorities } from "@/hooks/usePriorities"
 import dynamic from "next/dynamic"
 import Head from "next/head"
-import { ConsentForm, type ConsentFormData } from "@/components/consent-form"
-import { useProfile } from "@/hooks/useProfile"
 import { motion } from 'framer-motion'
 import { ScrollReveal, AnimatedCard, AnimatedCounter } from "@/components/ui/animation-utils"
 
@@ -129,50 +127,11 @@ export default function ResultsPage() {
     hasResults
   } = useResults()
   const { priorities: userPriorities } = usePriorities()
-  const { 
-    updateEmailAndConsent, 
-    getConsentStatus, 
-    isSaving: profileSaving 
-  } = useProfile()
 
-  // États pour la collecte d'email
-  const [showConsentForm, setShowConsentForm] = useState(false)
-  const [emailSubmitted, setEmailSubmitted] = useState(false)
-  
-  // Vérifier si l'utilisateur a déjà un email et des consentements
-  const consentStatus = getConsentStatus()
-  
-  // Gérer la soumission du formulaire de consentement
-  const handleConsentSubmit = async (data: ConsentFormData) => {
-    try {
-      if (data.email && data.emailConsent) {
-        await updateEmailAndConsent(data.email, data.emailConsent, data.marketingConsent)
-        setEmailSubmitted(true)
-        
-        // Optionnel : envoyer les résultats par email immédiatement
-        // TODO: Intégrer avec le service d'email
-        console.log('Email et consentements sauvegardés:', data)
-      }
-      setShowConsentForm(false)
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde des consentements:', error)
-    }
-  }
   
   // ✅ État consolidé de chargement - inclure le chargement de session
   const isLoading = sessionLoading || responsesLoading || resultsLoading
 
-  // Afficher le formulaire de consentement automatiquement si pas d'email
-  useEffect(() => {
-    if (!isLoading && hasResults && !consentStatus.hasEmail && !emailSubmitted && !showConsentForm) {
-      // Attendre un peu après l'affichage du TopMatchModal
-      const timer = setTimeout(() => {
-        setShowConsentForm(true)
-      }, 3000) // 3 secondes après les résultats
-      
-      return () => clearTimeout(timer)
-    }
-  }, [isLoading, hasResults, consentStatus.hasEmail, emailSubmitted, showConsentForm])
 
   // ✅ Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
   const calculatedScores = useMemo(() => {
@@ -782,60 +741,6 @@ export default function ResultsPage() {
           </Card>
         </div>
 
-        {/* Section de collecte d'email - affichée si l'utilisateur n'a pas d'email */}
-        {showConsentForm && !isLoading && (
-          <div className="mt-12">
-            <Card className="max-w-2xl mx-auto p-6 bg-gradient-to-br from-midnight-green/5 to-midnight-green/10 border-2 border-midnight-green/20">
-              <div className="text-center mb-6">
-                <h3 className="text-xl font-bold text-midnight-green mb-2">
-                  💾 Sauvegarder vos résultats
-                </h3>
-                <p className="text-muted-foreground">
-                  Recevez vos résultats par courriel et aidez-nous à améliorer la démocratie municipale
-                </p>
-              </div>
-              
-              <ConsentForm
-                onSubmit={handleConsentSubmit}
-                isLoading={profileSaving}
-                variant="inline"
-                showTitle={false}
-                initialEmailConsent={true} // Par défaut, consent pour recevoir les résultats
-              />
-              
-              <div className="mt-4 text-center">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowConsentForm(false)}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Passer cette étape
-                </Button>
-              </div>
-            </Card>
-          </div>
-        )}
-
-        {/* Message de confirmation si email déjà fourni */}
-        {(consentStatus.hasEmail || emailSubmitted) && !isLoading && (
-          <div className="mt-8 text-center">
-            <Card className="max-w-md mx-auto p-4 bg-green-50 border border-green-200">
-              <div className="flex items-center justify-center gap-2 text-green-700">
-                <span className="text-2xl">✅</span>
-                <div>
-                  <p className="font-medium">Résultats sauvegardés !</p>
-                  <p className="text-sm">
-                    {consentStatus.emailConsent 
-                      ? "Vos résultats vous ont été envoyés par courriel"
-                      : "Vos résultats sont disponibles dans votre profil"
-                    }
-                  </p>
-                </div>
-              </div>
-            </Card>
-          </div>
-        )}
 
         <div className="mt-10 flex justify-center">
           <Button

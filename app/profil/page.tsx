@@ -120,13 +120,14 @@ export default function ProfilePage() {
     profile,
     isLoading,
     error,
-    
+
     // Actions pour sauvegarder
     updateProfileField,
-    
+
     // Utilitaires
     getCompletionPercentage,
-    
+    getConsentStatus,
+
     // Alias pour compatibilité
   } = useProfile()
 
@@ -297,11 +298,19 @@ export default function ProfilePage() {
     console.log('📋 [Profil] Profil complété')
 
     // Vérifier si l'utilisateur a déjà un email et a consenti à le recevoir
-    if (profile.email && profile.emailConsent) {
+    const consentStatus = getConsentStatus()
+    console.log('📧 [Profil] Status des consentements:', {
+      hasEmail: consentStatus.hasEmail,
+      emailConsent: consentStatus.emailConsent,
+      profile_email: profile.email,
+      profile_emailConsent: profile.emailConsent
+    })
+
+    if (consentStatus.hasEmail && consentStatus.emailConsent) {
       console.log('📧 [Profil] Email déjà fourni, redirection directe vers résultats')
       router.push("/resultats")
     } else {
-      console.log('📧 [Profil] Pas d\'email, affichage du modal de collecte')
+      console.log('📧 [Profil] Pas d\'email ou pas de consentement, affichage du modal de collecte')
       setShowEmailModal(true)
     }
   }
