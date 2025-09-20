@@ -356,7 +356,7 @@ export default function ShareModal({
               Découvrez votre compatibilité politique municipale
             </p>
             <p className="text-xs text-midnight-green font-medium">
-              boussolemunicipalequebec.ca
+              boussolemunicipale.com
             </p>
           </div>
         </div>

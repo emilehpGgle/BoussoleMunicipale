@@ -109,7 +109,7 @@ export async function generateMetadata({ params }: SharePageProps): Promise<Meta
   
   // Amélioration 1: URL absolue pour Open Graph (CRITIQUE pour les réseaux sociaux)
   const baseUrl = process.env.NODE_ENV === 'production' 
-    ? 'https://boussolemunicipalequebec.ca' 
+    ? 'https://boussolemunicipale.com' 
     : 'http://localhost:3000'
   const imageUrl = `${baseUrl}/api/generate-share-image?id=${id}`
 

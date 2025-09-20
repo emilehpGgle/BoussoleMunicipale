@@ -165,7 +165,7 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
               Découvrez votre compatibilité politique municipale
             </p>
             <p className="text-xs text-blue-600 font-medium">
-              boussolemunicipalequebec.ca
+              boussolemunicipale.com
             </p>
             <Button 
               onClick={startQuestionnaire}
