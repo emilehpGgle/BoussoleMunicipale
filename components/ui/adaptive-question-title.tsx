@@ -21,14 +21,10 @@ function useAdaptiveFontSize(
   maxSize: number = 24
 ) {
   const [fontSize, setFontSize] = useState(maxSize)
-  const containerRef = useRef<HTMLElement>(null)
+  const containerRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     const calculateFontSize = () => {
-      if (!containerRef.current) return
-
-      const container = containerRef.current
-      const containerWidth = container.offsetWidth || 300 // fallback
       const textLength = text.length
 
       // Calcul basé sur plusieurs facteurs
@@ -104,7 +100,7 @@ export function AdaptiveQuestionTitle({
 
   return (
     <Component
-      ref={containerRef}
+      ref={containerRef as React.Ref<HTMLHeadingElement>}
       className={cn(baseClasses, className)}
       style={{
         fontSize: `${fontSize}px`,
