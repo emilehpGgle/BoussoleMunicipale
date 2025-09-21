@@ -537,8 +537,8 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               </Button>
             </div>
 
-              {/* Lien discret "Continuer anonymement" - toujours présent */}
-              <div className="text-center">
+            {/* Lien discret "Continuer anonymement" - toujours présent */}
+            <div className="text-center">
                 <button
                   onClick={() => {
                     // Continuer anonymement - sans email
@@ -591,7 +591,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 >
                   Continuer anonymement
                 </button>
-              </div>
             </div>
           </div>
         )}
