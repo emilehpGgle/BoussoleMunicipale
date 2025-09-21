@@ -211,7 +211,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
       )}
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-[500px] rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
             <MapPin className="h-6 w-6 text-midnight-green" />
@@ -408,23 +408,30 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               </div>
             </div>
 
-            {/* Case à cocher optionnelle pour email et marketing */}
+            {/* Case à cocher optionnelle pour email et marketing - avec effet attractif */}
             <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="mt-1">
-                  <Checkbox
-                    checked={emailConsent}
-                    onCheckedChange={(checked) => setEmailConsent(checked as boolean)}
-                    className="border-midnight-green"
-                  />
-                </div>
-                <div className="flex-1">
-                  <Label className="text-sm font-semibold text-foreground cursor-pointer">
-                    Recevoir mes résultats personnalisés et accéder aux avantages exclusifs
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Optionnel - Recevez votre rapport politique détaillé et des communications ciblées de partenaires sélectionnés.
-                  </p>
+              <div className="relative group">
+                {/* Effet glow inspiré du RainbowButton */}
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-midnight-green/20 via-azure-web/30 to-midnight-green/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div className="relative p-4 bg-gradient-to-br from-azure-web/20 to-azure-web/40 rounded-lg border-2 border-midnight-green/30 hover:border-midnight-green/50 hover:shadow-lg transition-all duration-300">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1">
+                      <Checkbox
+                        checked={emailConsent}
+                        onCheckedChange={(checked) => setEmailConsent(checked as boolean)}
+                        className="border-midnight-green"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <Label className="text-sm font-semibold text-midnight-green cursor-pointer">
+                        Recevoir mes résultats personnalisés et accéder aux avantages exclusifs
+                      </Label>
+                      <p className="text-xs text-midnight-green/70 mt-1">
+                        Optionnel - Recevez votre rapport politique détaillé et des communications ciblées de partenaires sélectionnés.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
@@ -504,36 +511,31 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               </AnimatePresence>
             </div>
 
-            {/* Logique progressive des boutons */}
-            <div className="space-y-4">
-              {/* Bouton Retour toujours présent */}
-              <div className="flex justify-start">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={goBackFromConsent}
-                  className="rounded-xl"
-                >
-                  Retour
-                </Button>
-              </div>
+            {/* Boutons alignés horizontalement */}
+            <div className="flex justify-between items-center pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={goBackFromConsent}
+                className="rounded-xl"
+              >
+                Retour
+              </Button>
 
-              {/* Bouton principal - toujours visible, désactivé si conditions non remplies */}
-              <div className="flex justify-center">
-                <Button
-                  type="button"
-                  onClick={handleConsentConfirmation}
-                  className={`rounded-xl px-8 py-3 ${
-                    !emailConsent || !email
-                      ? "bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300"
-                      : "bg-midnight-green hover:bg-midnight-green/90 text-white"
-                  }`}
-                  disabled={isSaving || !emailConsent || !email}
-                >
-                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                  Accepter et commencer
-                </Button>
-              </div>
+              <Button
+                type="button"
+                onClick={handleConsentConfirmation}
+                className={`rounded-xl px-8 py-3 ${
+                  !emailConsent || !email
+                    ? "bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300"
+                    : "bg-midnight-green hover:bg-midnight-green/90 text-white"
+                }`}
+                disabled={isSaving || !emailConsent || !email}
+              >
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                Accepter et commencer
+              </Button>
+            </div>
 
               {/* Lien discret "Continuer anonymement" - toujours présent */}
               <div className="text-center">
