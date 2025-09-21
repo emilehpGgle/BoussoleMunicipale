@@ -109,6 +109,9 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
         description: 'Vérifiez votre boîte de réception pour confirmer votre inscription.',
       })
 
+      // Reset le flag TopMatchModal pour forcer l'affichage sur la page résultats
+      sessionStorage.removeItem('hasSeenTopMatchModal')
+
       // Rediriger vers les résultats après 2 secondes
       setTimeout(() => {
         onSuccess()
@@ -133,6 +136,9 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
         emailConsent: false,
         marketingConsent: false,
       })
+
+      // Reset le flag TopMatchModal pour forcer l'affichage sur la page résultats
+      sessionStorage.removeItem('hasSeenTopMatchModal')
 
       setTimeout(() => {
         onSuccess()
@@ -165,7 +171,7 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
             exit={{ scale: 0.95, opacity: 0, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-4xl"
+            className="w-full max-w-4xl max-h-[90vh] overflow-auto"
           >
             <Card className="p-8 shadow-2xl border-2 border-midnight-green/20 bg-white">
               {/* En-tête avec bouton fermer */}
@@ -203,9 +209,9 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
                       <h3 className="font-semibold">Vos résultats personnalisés</h3>
                     </div>
                     <div className="space-y-2 mb-3">
-                      <div className="h-3 bg-gradient-to-r from-midnight-green/20 to-midnight-green/5 rounded-full"></div>
-                      <div className="h-3 bg-gradient-to-r from-midnight-green/15 to-transparent rounded-full w-3/4"></div>
-                      <div className="h-3 bg-gradient-to-r from-midnight-green/10 to-transparent rounded-full w-1/2"></div>
+                      <div className="h-2 bg-gradient-to-r from-midnight-green/30 to-midnight-green/10 rounded-full w-full"></div>
+                      <div className="h-2 bg-gradient-to-r from-midnight-green/25 to-midnight-green/8 rounded-full w-4/5"></div>
+                      <div className="h-2 bg-gradient-to-r from-midnight-green/20 to-midnight-green/5 rounded-full w-3/5"></div>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       🎯 Analyse complète de vos affinités politiques municipales
@@ -483,7 +489,7 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl"
+            className="w-full max-w-2xl max-h-[80vh] overflow-auto"
           >
             <Card className="p-6 shadow-2xl bg-white">
               <div className="flex items-center justify-between mb-6">

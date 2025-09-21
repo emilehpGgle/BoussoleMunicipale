@@ -20,7 +20,9 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Loader2, MapPin, Check, X } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Loader2, MapPin, Check, X, CheckCircle, Info, Mail, Shield, ExternalLink } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
 import { 
   getDistrictFromPostalCode, 
   isValidCanadianPostalCode, 
@@ -39,11 +41,18 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [postalCode, setPostalCode] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [step, setStep] = useState<'postal' | 'confirm'>('postal')
+  const [step, setStep] = useState<'postal' | 'confirm' | 'consent'>('postal')
   const [estimatedDistrict, setEstimatedDistrict] = useState<string | null>(null)
   const [confirmedDistrict, setConfirmedDistrict] = useState<string>("")
   const [districtInfo, setDistrictInfo] = useState<DistrictInfo | null>(null)
   const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
+
+  // États pour le consentement
+  const [analyticsConsent] = useState(true) // Toujours vrai, obligatoire
+  const [emailConsent, setEmailConsent] = useState(false)
+  const [email, setEmail] = useState("")
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+
   const router = useRouter()
   
   // Intégration des hooks
@@ -101,27 +110,42 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   }
 
   const handleDistrictConfirmation = async () => {
+    // Passer à l'étape de consentement au lieu de fermer le modal
+    setStep('consent')
+  }
+
+  const handleConsentConfirmation = async () => {
     try {
-      console.log('💾 Sauvegarde du code postal dans le profil...')
-      
-      // Sauvegarder dans le profil unifié (Supabase uniquement)
-      await updateProfileFields({
+      console.log('💾 Sauvegarde du profil avec consentements...')
+
+      // Préparer les données du profil avec consentements
+      const profileData: Record<string, string | boolean | object> = {
         postalCode: formatPostalCode(postalCode),
         district: confirmedDistrict,
-        // Informations supplémentaires utiles pour l'analyse
-        residenceArea: confirmedDistrict, // Compatible avec les autres champs de profil
+        residenceArea: confirmedDistrict,
         location: {
           postalCode: formatPostalCode(postalCode),
           district: confirmedDistrict,
           coordinates: districtInfo?.coordinates
-        }
-      })
-      
-      console.log('✅ Code postal sauvegardé dans le profil utilisateur')
-      
+        },
+        analyticsConsent: true, // Toujours vrai
+        emailConsent: emailConsent,
+        marketingConsent: emailConsent
+      }
+
+      // Ajouter l'email si consentement donné
+      if (emailConsent && email) {
+        profileData.email = email
+      }
+
+      // Sauvegarder dans le profil unifié
+      await updateProfileFields(profileData)
+
+      console.log('✅ Profil et consentements sauvegardés')
+
       // Fermer ce modal d'abord
       onClose()
-      
+
       // Attendre la fin du chargement des réponses avant de vérifier
       if (isSessionValid) {
         // Fonction pour vérifier les réponses existantes après le chargement
@@ -129,14 +153,14 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
           if (!responsesLoading) {
             const counts = getResponseCounts
             console.log('🔍 Vérification des réponses existantes:', counts)
-            
+
             // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
             if (counts.total > 0) {
               console.log('📋 Réponses existantes détectées, ouverture du modal de choix')
               setIsExistingResponsesModalOpen(true)
               return
             }
-            
+
             console.log('🆕 Aucune réponse existante, redirection vers le questionnaire')
             router.push("/test-politique-municipal")
           } else {
@@ -145,20 +169,20 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
             setTimeout(checkExistingResponses, 100)
           }
         }
-        
+
         // Démarrer la vérification avec un petit délai pour s'assurer que le modal est fermé
         setTimeout(checkExistingResponses, 50)
       } else {
         // Pas de session, aller directement au questionnaire
         router.push("/test-politique-municipal")
       }
-      
+
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde du profil:', error)
-      
+
       // Plus de localStorage - session obligatoire pour sauvegarder
       console.warn('⚠️ Impossible de sauvegarder le code postal sans session valide')
-      
+
       onClose()
       router.push("/test-politique-municipal")
     }
@@ -177,6 +201,10 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     setError("")
   }
 
+  const goBackFromConsent = () => {
+    setStep('confirm')
+  }
+
   return (
     <>
       {isOpen && (
@@ -187,13 +215,14 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
             <MapPin className="h-6 w-6 text-midnight-green" />
-            {step === 'postal' ? 'Entrez votre code postal' : 'Confirmez votre arrondissement'}
+            {step === 'postal' && 'Entrez votre code postal'}
+            {step === 'confirm' && 'Confirmez votre arrondissement'}
+            {step === 'consent' && 'Consentement et transparence'}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
-            {step === 'postal' 
-              ? "Votre code postal nous aide à personnaliser le questionnaire pour votre région."
-              : "Vérifiez que l'arrondissement estimé correspond à votre lieu de résidence."
-            }
+            {step === 'postal' && "Votre code postal nous aide à personnaliser le questionnaire pour votre région."}
+            {step === 'confirm' && "Vérifiez que l'arrondissement estimé correspond à votre lieu de résidence."}
+            {step === 'consent' && "Avant de commencer, nous devons obtenir votre consentement pour la collecte de données."}
           </DialogDescription>
         </DialogHeader>
 
@@ -352,30 +381,177 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
           </div>
         )}
 
-        {/* Option pour continuer sans géolocalisation */}
-        <div className="text-center">
-          <Button
-            variant="link"
-            className="text-sm text-muted-foreground hover:text-midnight-green"
-            onClick={() => {
-              onClose()
-              
-              // Vérifier s'il y a des réponses existantes avant de continuer
-              if (isSessionValid && !responsesLoading) {
-                const counts = getResponseCounts
-                
-                if (counts.total > 0) {
-                  setIsExistingResponsesModalOpen(true)
-                  return
+        {/* Étape de consentement */}
+        {step === 'consent' && (
+          <div className="space-y-4 py-4">
+            {/* Case à cocher obligatoire pour collecte anonymisée */}
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <div className="flex items-start gap-3">
+                <div className="mt-1">
+                  <Checkbox
+                    checked={analyticsConsent}
+                    disabled={true}
+                    className="border-blue-500 bg-blue-500"
+                  />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold text-blue-700">Collecte de données anonymisées</span>
+                    <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
+                      Obligatoire
+                    </span>
+                  </div>
+                  <p className="text-xs text-blue-600">
+                    Vos réponses sont anonymisées et utilisées pour améliorer notre service et analyser les tendances politiques.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Case à cocher optionnelle pour email et marketing */}
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="mt-1">
+                  <Checkbox
+                    checked={emailConsent}
+                    onCheckedChange={(checked) => setEmailConsent(checked as boolean)}
+                    className="border-midnight-green"
+                  />
+                </div>
+                <div className="flex-1">
+                  <Label className="text-sm font-semibold text-foreground cursor-pointer">
+                    Recevoir mes résultats personnalisés et accéder aux avantages exclusifs
+                  </Label>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Optionnel - Recevez votre rapport politique détaillé et des communications ciblées de partenaires sélectionnés.
+                  </p>
+                </div>
+              </div>
+
+              {/* Progressive disclosure du champ email */}
+              <AnimatePresence>
+                {emailConsent && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="ml-7 space-y-3"
+                  >
+                    <div>
+                      <Label htmlFor="email" className="text-sm font-medium">
+                        Adresse courriel
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="votre@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+
+                    {/* Avantages avec design attractif */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.2 }}
+                      className="p-3 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border border-amber-200"
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <CheckCircle className="w-4 h-4 text-amber-600" />
+                        <span className="text-sm font-medium text-amber-700">Cela vous donne accès à :</span>
+                      </div>
+                      <div className="space-y-1 text-xs text-amber-600">
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3 h-3" />
+                          <span>Votre rapport politique personnalisé permanent</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3 h-3" />
+                          <span>Actualités municipales ciblées selon VOS résultats</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3 h-3" />
+                          <span>Communications de partis politiques alignés sur votre profil</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Check className="w-3 h-3" />
+                          <span>Analyses exclusives adaptées à vos intérêts</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-2 p-2 bg-orange-100 rounded border border-orange-200">
+                        <p className="text-xs text-orange-700 italic">
+                          💡 Échange transparent : Nous partageons vos données avec des partenaires politiques et médiatiques pertinents.
+                        </p>
+                      </div>
+
+                      {/* Lien vers modal détaillé */}
+                      <div className="mt-3 pt-2 border-t border-amber-200">
+                        <button
+                          onClick={() => setShowDetailsModal(true)}
+                          className="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-800 underline"
+                        >
+                          <Info className="w-3 h-3" />
+                          Voir tous les détails sur l&apos;utilisation de vos données
+                        </button>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <DialogFooter className="gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={goBackFromConsent}
+                className="rounded-xl"
+              >
+                Retour
+              </Button>
+              <Button
+                type="button"
+                onClick={handleConsentConfirmation}
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl"
+                disabled={isSaving || (emailConsent && !email)}
+              >
+                {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                {emailConsent ? "Accepter et commencer" : "Continuer anonymement"}
+              </Button>
+            </DialogFooter>
+          </div>
+        )}
+
+        {/* Option pour continuer sans géolocalisation - seulement sur les étapes postal et confirm */}
+        {(step === 'postal' || step === 'confirm') && (
+          <div className="text-center">
+            <Button
+              variant="link"
+              className="text-sm text-muted-foreground hover:text-midnight-green"
+              onClick={() => {
+                onClose()
+
+                // Vérifier s'il y a des réponses existantes avant de continuer
+                if (isSessionValid && !responsesLoading) {
+                  const counts = getResponseCounts
+
+                  if (counts.total > 0) {
+                    setIsExistingResponsesModalOpen(true)
+                    return
+                  }
                 }
-              }
-              
-              router.push("/test-politique-municipal?skipLocation=true")
-            }}
-          >
-            Continuer sans localisation
-          </Button>
-        </div>
+
+                router.push("/test-politique-municipal?skipLocation=true")
+              }}
+            >
+              Continuer sans localisation
+            </Button>
+          </div>
+        )}
 
       </DialogContent>
     </Dialog>
@@ -386,6 +562,146 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       onClose={() => setIsExistingResponsesModalOpen(false)}
       targetPath="/test-politique-municipal"
     />
+
+    {/* Modal d'information détaillée pour transparence complète */}
+    <AnimatePresence>
+      {showDetailsModal && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowDetailsModal(false)}
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            onClick={(e) => e.stopPropagation()}
+            className="w-full max-w-2xl max-h-[80vh] overflow-auto"
+          >
+            <Card className="p-6 shadow-2xl bg-white">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Info className="w-5 h-5 text-midnight-green" />
+                  <h3 className="text-xl font-semibold">Qu&apos;est-ce que cela implique exactement ?</h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowDetailsModal(false)}
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                {/* Échange de valeur transparent */}
+                <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                  <h4 className="font-semibold text-green-800 mb-2 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4" />
+                    Échange de valeur transparent
+                  </h4>
+                  <div className="grid md:grid-cols-2 gap-4 text-sm text-green-700">
+                    <div>
+                      <p className="font-medium mb-1">Votre contribution :</p>
+                      <ul className="space-y-1">
+                        <li>• Accès à votre email et résultats politiques</li>
+                        <li>• Profil démographique anonymisé</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <p className="font-medium mb-1">Ce que vous recevez :</p>
+                      <ul className="space-y-1">
+                        <li>• Rapport politique personnalisé permanent</li>
+                        <li>• Communications ultra-ciblées (3-4 par an)</li>
+                        <li>• Accès prioritaire aux analyses municipales</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Qui peut vous contacter */}
+                <div className="p-4 bg-amber-50 rounded-lg border border-amber-200">
+                  <h4 className="font-semibold text-amber-800 mb-2 flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    Qui vous contactera
+                  </h4>
+                  <ul className="space-y-1 text-sm text-amber-700">
+                    <li>• <strong>Partis politiques municipaux :</strong> seulement ceux alignés &gt;70% avec vos résultats</li>
+                    <li>• <strong>Médias locaux :</strong> spécialisés en politique municipale de Québec</li>
+                    <li>• <strong>Organisations civiques :</strong> pertinentes à vos enjeux prioritaires</li>
+                    <li>• <strong>Notre équipe :</strong> analyses et conseils politiques personnalisés</li>
+                  </ul>
+                </div>
+
+                {/* Comment ça marche */}
+                <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <h4 className="font-semibold text-blue-800 mb-2 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Comment ça marche
+                  </h4>
+                  <div className="text-sm text-blue-700 space-y-2">
+                    <p>
+                      <strong>Ciblage intelligent :</strong> Nous partageons votre profil avec des organisations
+                      sélectionnées qui correspondent à vos intérêts politiques. C&apos;est du ciblage personnalisé,
+                      pas du spam générique.
+                    </p>
+                    <div className="p-2 bg-blue-100 rounded">
+                      <p className="font-medium">Fréquence des communications :</p>
+                      <ul className="mt-1">
+                        <li>• <strong>Temps normal :</strong> 3-4 envois par an maximum</li>
+                        <li>• <strong>Périodes électorales :</strong> fréquence plus élevée (campagnes actives)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Protection des données */}
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Shield className="w-4 h-4 text-slate-600" />
+                    <h4 className="font-semibold text-slate-800">Protection de vos données</h4>
+                  </div>
+                  <p className="text-sm text-slate-700 mb-3">
+                    Vos données sont protégées selon les standards RGPD et Loi 25 du Québec.
+                    Elles ne sont partagées qu&apos;avec des partenaires approuvés et seulement
+                    selon vos consentements explicites.
+                  </p>
+                  <div className="bg-slate-100 p-2 rounded text-xs text-slate-600">
+                    <p className="font-medium mb-1">Vos droits :</p>
+                    <ul>
+                      <li>• Désinscription en 1 clic à tout moment</li>
+                      <li>• Modification de vos préférences</li>
+                      <li>• Suppression complète de vos données</li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Footer avec action */}
+                <div className="flex items-center justify-between pt-4 border-t">
+                  <a
+                    href="/politique-confidentialite"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-midnight-green hover:text-midnight-green/80 underline"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Lire notre politique complète
+                  </a>
+                  <Button
+                    onClick={() => setShowDetailsModal(false)}
+                    className="bg-midnight-green hover:bg-midnight-green/90 text-white"
+                  >
+                    J&apos;ai compris
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
     </>
   )
 } 
