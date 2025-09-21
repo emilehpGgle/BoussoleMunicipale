@@ -518,20 +518,22 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 </Button>
               </div>
 
-              {/* Bouton principal - seulement si email consent ET email valide */}
-              {emailConsent && email && (
-                <div className="flex justify-center">
-                  <Button
-                    type="button"
-                    onClick={handleConsentConfirmation}
-                    className="bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl px-8 py-3"
-                    disabled={isSaving}
-                  >
-                    {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                    Accepter et commencer
-                  </Button>
-                </div>
-              )}
+              {/* Bouton principal - toujours visible, désactivé si conditions non remplies */}
+              <div className="flex justify-center">
+                <Button
+                  type="button"
+                  onClick={handleConsentConfirmation}
+                  className={`rounded-xl px-8 py-3 ${
+                    !emailConsent || !email
+                      ? "bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300"
+                      : "bg-midnight-green hover:bg-midnight-green/90 text-white"
+                  }`}
+                  disabled={isSaving || !emailConsent || !email}
+                >
+                  {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  Accepter et commencer
+                </Button>
+              </div>
 
               {/* Lien discret "Continuer anonymement" - toujours présent */}
               <div className="text-center">
