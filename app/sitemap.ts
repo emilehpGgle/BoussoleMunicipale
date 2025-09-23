@@ -1,172 +1,103 @@
 import { MetadataRoute } from 'next'
-import { partiesData } from '@/lib/boussole-data'
 
-// Fonction pour générer le slug à partir du nom du leader
-function generateSlug(leaderName: string): string {
-  return leaderName
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
-    .replace(/[^a-z0-9\s-]/g, "") // Supprime les caractères spéciaux
-    .replace(/\s+/g, "-") // Remplace les espaces par des tirets
-    .replace(/-+/g, "-") // Remplace les tirets multiples par un seul
-    .trim()
+// Municipalités supportées
+const supportedMunicipalities = [
+  'quebec',
+  'montreal',
+  'laval',
+  'gatineau',
+  'longueuil',
+  'levis'
+]
+
+// IDs des partis par municipalité (à terme, cela viendra de Supabase)
+const partyIdsByMunicipality = {
+  quebec: [1, 2, 3, 4, 5, 6, 7],
+  montreal: [1, 2, 3], // Exemple pour Montreal
+  laval: [1, 2], // Exemple pour Laval
+  gatineau: [1, 2], // Exemple pour Gatineau
+  longueuil: [1, 2], // Exemple pour Longueuil
+  levis: [1, 2] // Exemple pour Lévis
 }
+
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://boussolemunicipale.com'
-  
-  return [
-    // Page principale - Priorité maximale
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    
-    // Test Politique Municipal - Très important pour SEO
-    {
-      url: `${baseUrl}/test-politique-municipal`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    
-    // Page À Propos - Importante pour "boussole électorale québec"
-    {
-      url: `${baseUrl}/a-propos`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    
-    // Page FAQ - Importante pour longue traîne SEO
-    {
-      url: `${baseUrl}/faq`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    
-    // Page Leaders - Hub principal
-    {
-      url: `${baseUrl}/leaders`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
+  const urls: MetadataRoute.Sitemap = []
 
-    // Page Leaders Québec - Très importante pour SEO des noms de leaders
-    {
-      url: `${baseUrl}/leaders/quebec`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
+  // Page principale - Priorité maximale
+  urls.push({
+    url: baseUrl,
+    lastModified: new Date(),
+    changeFrequency: 'weekly',
+    priority: 1.0,
+  })
 
-    // Page Élections Municipales 2025 - Importante pour mot-clé cible
-    {
-      url: `${baseUrl}/elections-municipales-2025-quebec`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    
-    // Page Résultats
-    {
-      url: `${baseUrl}/resultats`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    },
-    
-    // Page Profil
-    {
-      url: `${baseUrl}/profil`, 
+  // Pages statiques globales
+  const staticPages = [
+    { path: '/comment-ca-marche', priority: 0.7 },
+    { path: '/pourquoi-important', priority: 0.7 },
+    { path: '/faq', priority: 0.8 },
+    { path: '/centre-aide', priority: 0.5 },
+    { path: '/confidentialite', priority: 0.3 },
+    { path: '/conditions', priority: 0.3 },
+  ]
+
+  staticPages.forEach(page => {
+    urls.push({
+      url: `${baseUrl}${page.path}`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    // Pages légales
-    {
-      url: `${baseUrl}/confidentialite`,
+      priority: page.priority,
+    })
+  })
+
+  // URLs par municipalité
+  supportedMunicipalities.forEach(municipality => {
+    // Pages principales par municipalité
+    const municipalityPages = [
+      { path: '/test-politique-municipal', priority: 0.9 },
+      { path: '/resultats', priority: 0.7 },
+      { path: '/profil', priority: 0.6 },
+    ]
+
+    municipalityPages.forEach(page => {
+      urls.push({
+        url: `${baseUrl}/${municipality}${page.path}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: page.priority,
+      })
+    })
+
+    // Pages des partis par municipalité
+    const partyIds = partyIdsByMunicipality[municipality as keyof typeof partyIdsByMunicipality] || []
+    partyIds.forEach(partyId => {
+      urls.push({
+        url: `${baseUrl}/${municipality}/parti/${partyId}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly',
+        priority: 0.6,
+      })
+    })
+  })
+
+  // URLs legacy (redirections) pour Québec - priorité plus basse
+  const legacyPages = [
+    '/test-politique-municipal',
+    '/resultats',
+    '/profil',
+    '/parti/1', '/parti/2', '/parti/3', '/parti/4', '/parti/5', '/parti/6', '/parti/7'
+  ]
+
+  legacyPages.forEach(page => {
+    urls.push({
+      url: `${baseUrl}${page}`,
       lastModified: new Date(),
       changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    
-    {
-      url: `${baseUrl}/conditions`,
-      lastModified: new Date(),
-      changeFrequency: 'yearly', 
-      priority: 0.3,
-    },
-    
-    {
-      url: `${baseUrl}/aide`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    
-    // Pages des partis - Importantes pour "partis politiques québec"
-    {
-      url: `${baseUrl}/parti/1`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    {
-      url: `${baseUrl}/parti/2`, 
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    {
-      url: `${baseUrl}/parti/3`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    {
-      url: `${baseUrl}/parti/4`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly', 
-      priority: 0.6,
-    },
-    
-    {
-      url: `${baseUrl}/parti/5`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    {
-      url: `${baseUrl}/parti/6`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    {
-      url: `${baseUrl}/parti/7`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.6,
-    },
-    
-    // Pages individuelles des leaders - Très importantes pour SEO des noms
-    ...partiesData.map((party) => ({
-      url: `${baseUrl}/leaders/${generateSlug(party.leader)}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
-  ]
+      priority: 0.2, // Priorité basse car ce sont des redirections
+    })
+  })
+
+  return urls
 } 

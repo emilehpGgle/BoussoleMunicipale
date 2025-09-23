@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon-optimized.svg?v=2025",
+        url: "/logo-main.svg?v=2025",
         type: "image/svg+xml",
       },
       {
@@ -74,10 +74,10 @@ export const metadata: Metadata = {
     ],
   },
   openGraph: {
-    title: "Boussole Électorale 2025 | Test Politique Municipal Québec",
-    description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Comparez votre vision avec tous les partis et candidats municipaux de Québec.",
+    title: "Boussole Électorale 2025 | Test Politique Municipal",
+    description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Comparez votre vision avec tous les partis et candidats municipaux.",
     url: "https://boussolemunicipale.com",
-    siteName: "Boussole Électorale Québec",
+    siteName: "Boussole Électorale",
     locale: "fr_CA",
     type: "website",
     images: [
@@ -85,14 +85,14 @@ export const metadata: Metadata = {
         url: "/Image_parc_crisp.webp?v=2025",
         width: 1200,
         height: 630,
-        alt: "Boussole Électorale Municipale - Découvrez vos affinités politiques pour les élections municipales de Québec"
+        alt: "Boussole Électorale Municipale - Découvrez vos affinités politiques pour les élections municipales"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Boussole Électorale 2025 | Test Politique Québec",
-    description: "Boussole electorale gratuite pour les élections municipales 2025. Découvrez vos affinités avec tous les partis et candidats municipaux de Québec.",
+    title: "Boussole Électorale 2025 | Test Politique Municipal",
+    description: "Boussole electorale gratuite pour les élections municipales 2025. Découvrez vos affinités avec tous les partis et candidats municipaux.",
     images: ["/Image_parc_crisp.webp?v=2025"]
   },
   robots: {
@@ -412,6 +412,59 @@ export default function RootLayout({
 
               console.log('[SEO] Dynamic canonical set to:', canonicalUrl);
 
+              // Municipality-specific metadata optimization
+              const pathname = window.location.pathname;
+              const municipalityMatch = pathname.match(/^\/([^\/]+)/);
+
+              if (municipalityMatch) {
+                const municipality = municipalityMatch[1];
+                const supportedMunicipalities = ['quebec', 'montreal', 'laval', 'gatineau', 'longueuil', 'levis'];
+
+                if (supportedMunicipalities.includes(municipality)) {
+                  // Update page title dynamically for better SEO
+                  const originalTitle = document.title;
+                  const municipalityNames = {
+                    quebec: 'Québec',
+                    montreal: 'Montréal',
+                    laval: 'Laval',
+                    gatineau: 'Gatineau',
+                    longueuil: 'Longueuil',
+                    levis: 'Lévis'
+                  };
+                  const municipalityName = municipalityNames[municipality] || municipality.charAt(0).toUpperCase() + municipality.slice(1);
+
+                  if (!originalTitle.includes(municipalityName)) {
+                    const newTitle = originalTitle.replace(/Test Politique Municipal.*/, \`Test Politique Municipal \${municipalityName}\`);
+                    document.title = newTitle;
+                    console.log('[SEO] Updated title for municipality:', municipalityName);
+                  }
+
+                  // Update Open Graph meta tags dynamically
+                  const ogTitle = document.querySelector('meta[property="og:title"]');
+                  const ogDescription = document.querySelector('meta[property="og:description"]');
+                  const twitterTitle = document.querySelector('meta[name="twitter:title"]');
+                  const twitterDescription = document.querySelector('meta[name="twitter:description"]');
+
+                  if (ogTitle && !ogTitle.getAttribute('content').includes(municipalityName)) {
+                    ogTitle.setAttribute('content', \`Boussole Électorale 2025 | Test Politique Municipal \${municipalityName}\`);
+                  }
+
+                  if (ogDescription) {
+                    ogDescription.setAttribute('content', \`Boussole electorale officielle pour découvrir vos affinités politiques à \${municipalityName}. Test politique gratuit pour les élections municipales 2025.\`);
+                  }
+
+                  if (twitterTitle && !twitterTitle.getAttribute('content').includes(municipalityName)) {
+                    twitterTitle.setAttribute('content', \`Boussole Électorale 2025 | Test Politique \${municipalityName}\`);
+                  }
+
+                  if (twitterDescription) {
+                    twitterDescription.setAttribute('content', \`Boussole electorale gratuite pour les élections municipales 2025 à \${municipalityName}. Découvrez vos affinités avec tous les partis et candidats municipaux.\`);
+                  }
+
+                  console.log('[SEO] Updated Open Graph metadata for municipality:', municipalityName);
+                }
+              }
+
               // Logs de debug pour hydratation
               if (typeof window !== 'undefined') {
                 console.log('[HYDRATION] Client-side render detected');
@@ -451,7 +504,7 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "Boussole Électorale Québec",
               "url": "https://boussolemunicipale.com",
-              "logo": "https://boussolemunicipale.com/favicon-optimized.svg",
+              "logo": "https://boussolemunicipale.com/logo-main.svg",
               "description": "Boussole électorale municipale de Québec 2025 : test politique gratuit pour découvrir vos affinités avec les partis municipaux.",
               "sameAs": [
                 "https://www.facebook.com/boussolemunicipale",
