@@ -59,6 +59,7 @@ export interface Party {
   shortName?: string
   leader: string
   logoUrl: string
+  leaderPhotoUrl?: string
   color: string
   websiteUrl?: string
   orientation?: string
@@ -382,7 +383,8 @@ export const partiesData: Party[] = [
     name: "Équipe priorité Québec",
     shortName: "EPQ",
     leader: "Stevens Mélançon",
-    logoUrl: "/logos/equipe-priorite-quebec-new.png", // Updated
+    logoUrl: "/logos/equipe-priorite-quebec-new.png",
+    leaderPhotoUrl: "/Leaders/Stevens_Melancons.jpg", // Updated
     color: "#004b87",
     websiteUrl: "https://equipeprioritequebec.ca/",
     orientation: "Centre pragmatique, opposition constructive",
@@ -488,6 +490,7 @@ export const partiesData: Party[] = [
     shortName: "LQ",
     leader: "Sam Hamad",
     logoUrl: "/logos/leadership-quebec-new.png",
+    leaderPhotoUrl: "/Leaders/Sam_Hamad.jpg",
     color: "#004a99",
     websiteUrl: "https://leadershipquebec.ca/",
     orientation: "Centriste, posture prudente et technocratique",
@@ -633,7 +636,8 @@ export const partiesData: Party[] = [
     name: "Québec d'abord",
     shortName: "QD",
     leader: "Claude Villeneuve",
-    logoUrl: "/logos/quebec-dabord-new.png", // Updated
+    logoUrl: "/logos/quebec-dabord-new.png",
+    leaderPhotoUrl: "/Leaders/Claude_Villeneuve.jpg", // Updated
     color: "#00aef0",
     websiteUrl: "https://quebecdabord.com/",
     orientation: "Centre, pragmatique",
@@ -779,7 +783,8 @@ export const partiesData: Party[] = [
     name: "Québec forte et fière",
     shortName: "QFF",
     leader: "Bruno Marchand",
-    logoUrl: "/logos/quebec-forte-et-fiere-new.png", // Updated
+    logoUrl: "/logos/quebec-forte-et-fiere-new.png",
+    leaderPhotoUrl: "/Leaders/Bruno_Marchand.jpg", // Updated
     color: "#FDB813",
     websiteUrl: "https://quebecforteetfiere.org/",
     orientation: "Centre-gauche, progressiste",
@@ -925,7 +930,8 @@ export const partiesData: Party[] = [
     name: "Respect citoyens",
     shortName: "RC",
     leader: "Stéphane Lachance",
-    logoUrl: "/logos/respect-citoyens-new.png",
+    logoUrl: "/logos/respect-citoyens-new.jpg",
+    leaderPhotoUrl: "/Leaders/Stephane_Lachance.png",
     color: "#D32F2F",
     websiteUrl: "https://www.respectcitoyens.org/",
     orientation: "Conservateur-populiste, localiste",
@@ -1071,7 +1077,8 @@ export const partiesData: Party[] = [
     name: "Transition Québec",
     shortName: "TQ",
     leader: "Jackie Smith",
-    logoUrl: "/logos/transition-quebec-new.png", // Updated
+    logoUrl: "/logos/transition-quebec-new.png",
+    leaderPhotoUrl: "/Leaders/Jackie_Smith.jpg", // Updated
     color: "#00965e",
     websiteUrl: "https://transitionqc.org/",
     orientation: "Écologiste progressiste, gauche municipale",

@@ -45,7 +45,7 @@ Forces : Environnement, Transport collectif, Logement.
 
 Réserves : Développement économique traditionnel.', '["Environnement", "Transport collectif", "Logement"]'::jsonb, '["Développement économique traditionnel"]'::jsonb, NOW(), NOW()),
 
-('respect_citoyens', 'Respect citoyens', 'RC', 'Stéphane Lachance', '/logos/respect-citoyens-new.png', 'https://www.respectcitoyens.org/', 'Conservateur-populiste, localiste', 'Conservateur-populiste, localiste
+('respect_citoyens', 'Respect citoyens', 'RC', 'Stéphane Lachance', '/logos/respect-citoyens-new.jpg', 'https://www.respectcitoyens.org/', 'Conservateur-populiste, localiste', 'Conservateur-populiste, localiste
 
 Forces : Gestion budgétaire stricte, Proximité citoyenne, Opposition aux grands projets coûteux.
 

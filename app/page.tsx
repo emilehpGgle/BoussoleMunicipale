@@ -134,7 +134,7 @@ export default function HomePage() {
                   src="/Image_parc_crisp.webp"
                   alt="Parc municipal de Québec - Illustration citoyens et espaces verts - Boussole électorale municipale 2025"
                   fill
-                  className="rounded-2xl object-cover object-center transition-transform duration-300 hover:scale-105"
+                  className="rounded-2xl object-cover object-center"
                   priority={true}
                   quality={95}
                   sizes="(max-width: 768px) 100vw, 50vw"
@@ -305,7 +305,7 @@ export default function HomePage() {
                   src="/Image_famille.webp"
                   alt="Famille dans la municipalité de Québec - Illustration vie de quartier - Boussole électorale municipale 2025"
                   fill
-                  className="object-cover transition-transform duration-300 hover:scale-105"
+                  className="object-cover"
                   quality={90}
                   loading="lazy"
                   sizes="(max-width: 768px) 100vw, 50vw"

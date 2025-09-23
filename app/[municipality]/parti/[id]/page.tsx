@@ -150,14 +150,27 @@ export default function PartyDetailPage() {
       <Card className="shadow-soft rounded-2xl overflow-hidden">
         <CardHeader className="bg-muted/30 p-6">
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
-              <Image
-                src={party.logoUrl || "/placeholder.svg?width=128&height=128&query=Logo+non+disponible"}
-                alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
-                fill
-                style={{ objectFit: "contain" }}
-              />
-            </LogoContainer>
+            <div className="flex flex-col gap-4 flex-shrink-0">
+              <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
+                <Image
+                  src={party.logoUrl || "/placeholder.svg?width=128&height=128&query=Logo+non+disponible"}
+                  alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
+                  fill
+                  style={{ objectFit: "contain" }}
+                />
+              </LogoContainer>
+              {party.leaderPhotoUrl && (
+                <div className="w-24 h-24 sm:w-32 sm:h-32 relative bg-white rounded-xl shadow-sm overflow-hidden">
+                  <Image
+                    src={party.leaderPhotoUrl}
+                    alt={`Photo de ${party.leader} - Chef de ${party.name}`}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    className="rounded-lg"
+                  />
+                </div>
+              )}
+            </div>
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{party.name}</h1>
               {party.leader && (
@@ -167,8 +180,8 @@ export default function PartyDetailPage() {
                   </p>
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4 text-muted-foreground" />
-                    <Link 
-                      href={`/leaders/${generateSlug(party.leader)}`}
+                    <Link
+                      href={`/${municipality}/leaders/${generateSlug(party.leader)}`}
                       className="text-sm text-primary hover:underline font-medium"
                     >
                       Voir le profil détaillé du leader
