@@ -1,27 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-// Import retiré car non utilisé - les APIs utilisent leurs propres clients
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResponsesAPI } from '@/lib/api/responses'
 import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
-
-// Helper function to extract sessionToken from Authorization header
-function extractSessionToken(request: NextRequest): string | null {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null
-  }
-  return authHeader.substring(7) // Remove 'Bearer ' prefix
-}
-
-// Helper function for session validation
-async function validateSession(sessionToken: string) {
-  const sessionsAPI = new SessionsAPI()
-  const session = await sessionsAPI.getSessionByToken(sessionToken)
-  if (!session) {
-    throw new Error('Session invalide ou expirée')
-  }
-  return { session, sessionsAPI }
-}
+import { validateSessionWithTestBypass } from '@/lib/api/auth-helper'
 
 // Types pour les requêtes (sessionToken retiré du body)
 interface SaveResponseRequest {
@@ -30,22 +11,14 @@ interface SaveResponseRequest {
   agreementValue?: AgreementOptionKey
   importanceDirectValue?: ImportanceDirectOptionKey
   priorityData?: Record<string, number>
+  municipalityId?: string // Support optionnel pour multi-municipalités
 }
 
 // POST - Sauvegarder une réponse
 export async function POST(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
     const body: SaveResponseRequest = await request.json()
-    const { questionId, responseType, agreementValue, importanceDirectValue, priorityData } = body
+    const { questionId, responseType, agreementValue, importanceDirectValue, priorityData, municipalityId } = body
 
     // Validation des paramètres requis
     if (!questionId || !responseType) {
@@ -55,16 +28,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Valider et récupérer la session
-    const { session, sessionsAPI } = await validateSession(sessionToken)
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
+
+    // Créer les instances d'API
     const responsesAPI = new ResponsesAPI()
+    const sessionsAPI = new SessionsAPI()
 
     // Sauvegarder la réponse selon le type
     let response
     if (responseType === 'agreement' && agreementValue) {
-      response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue)
+      response = await responsesAPI.saveAgreementResponse(session.id, questionId, agreementValue, municipalityId)
     } else if (responseType === 'importance_direct' && importanceDirectValue) {
-      response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue)
+      response = await responsesAPI.saveImportanceDirectResponse(session.id, questionId, importanceDirectValue, municipalityId)
     } else if (responseType === 'priority_ranking') {
       if (!priorityData) {
         return NextResponse.json({
@@ -77,7 +53,7 @@ export async function POST(request: NextRequest) {
 
       try {
         // Utiliser la méthode normale maintenant que la question existe
-        const result = await responsesAPI.savePriorityResponse(session.id, questionId, priorityData)
+        const result = await responsesAPI.savePriorityResponse(session.id, questionId, priorityData, municipalityId)
         
         console.log('✅ [RESPONSES API] Priorité sauvegardée avec succès')
         return NextResponse.json({
@@ -99,17 +75,23 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       response,
-      message: 'Réponse sauvegardée avec succès' 
+      message: 'Réponse sauvegardée avec succès'
     })
 
   } catch (error) {
-    if (error instanceof Error && error.message === 'Session invalide ou expirée') {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
       return NextResponse.json(
         { error: error.message },
         { status: 401 }
@@ -126,24 +108,24 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer toutes les réponses d'une session
 export async function GET(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
+    // Extraire municipalityId depuis les paramètres de requête
+    const url = new URL(request.url)
+    const municipalityId = url.searchParams.get('municipalityId')
 
-    // Valider et récupérer la session
-    const { session, sessionsAPI } = await validateSession(sessionToken)
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
+
+    // Créer les instances d'API
     const responsesAPI = new ResponsesAPI()
+    const sessionsAPI = new SessionsAPI()
 
-    // Récupérer toutes les réponses de la session
-    const responses = await responsesAPI.getSessionResponses(session.id)
+    // Récupérer toutes les réponses de la session avec filtrage optionnel par municipalité
+    const responses = await responsesAPI.getSessionResponses(session.id, municipalityId || undefined)
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
     return NextResponse.json({
       success: true,
@@ -152,7 +134,11 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    if (error instanceof Error && error.message === 'Session invalide ou expirée') {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
       return NextResponse.json(
         { error: error.message },
         { status: 401 }
@@ -169,32 +155,32 @@ export async function GET(request: NextRequest) {
 // DELETE - Supprimer toutes les réponses d'une session
 export async function DELETE(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
-    // Valider et récupérer la session
-    const { session, sessionsAPI } = await validateSession(sessionToken)
+    // Créer les instances d'API
     const responsesAPI = new ResponsesAPI()
+    const sessionsAPI = new SessionsAPI()
 
     // Supprimer toutes les réponses de la session
     await responsesAPI.clearSessionResponses(session.id)
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      message: 'Toutes les réponses ont été supprimées avec succès' 
+      message: 'Toutes les réponses ont été supprimées avec succès'
     })
 
   } catch (error) {
-    if (error instanceof Error && error.message === 'Session invalide ou expirée') {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
       return NextResponse.json(
         { error: error.message },
         { status: 401 }

@@ -1,33 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ResultsAPI, type ResultsData } from '@/lib/api/results'
-
-// Helper function to extract sessionToken from Authorization header
-function extractSessionToken(request: NextRequest): string | null {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null
-  }
-  return authHeader.substring(7) // Remove 'Bearer ' prefix
-}
-
-// Helper function for session validation
-const validateSession = async (sessionToken: string) => {
-  const sessionsAPI = new SessionsAPI()
-  const session = await sessionsAPI.getSessionByToken(sessionToken)
-  
-  if (!session) {
-    return {
-      error: NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      ),
-      session: null
-    }
-  }
-  
-  return { error: null, session }
-}
+import { validateSessionWithTestBypass } from '@/lib/api/auth-helper'
 
 // Utility function for results metadata generation
 const createResultsMetadata = () => ({
@@ -58,22 +32,14 @@ interface RequestCalculatedResults {
 // Types pour les requêtes
 interface SaveResultsRequest {
   resultsData: RequestCalculatedResults
+  municipalityId?: string // Support optionnel pour multi-municipalités
 }
 
 // POST - Calculer et sauvegarder les résultats
 export async function POST(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
     const body: SaveResultsRequest = await request.json()
-    const { resultsData } = body
+    const { resultsData, municipalityId } = body
 
     // Validation des paramètres requis
     if (!resultsData) {
@@ -83,9 +49,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Valider la session
-    const { error, session } = await validateSession(sessionToken)
-    if (error) return error
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
     // Créer les instances d'API
     const resultsAPI = new ResultsAPI()
@@ -106,21 +71,34 @@ export async function POST(request: NextRequest) {
 
     // Sauvegarder les résultats
     const results = await resultsAPI.saveResults(
-      session!.id, 
+      session!.id,
       formattedResultsData,
-      'completed'
+      'completed',
+      municipalityId
     )
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session!.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       results,
-      message: 'Résultats sauvegardés avec succès' 
+      message: 'Résultats sauvegardés avec succès'
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la sauvegarde des résultats:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -132,36 +110,42 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer les résultats d'une session
 export async function GET(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
+    // Extraire municipalityId depuis les paramètres de requête
+    const url = new URL(request.url)
+    const municipalityId = url.searchParams.get('municipalityId')
 
-    // Valider la session
-    const { error, session } = await validateSession(sessionToken)
-    if (error) return error
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
     // Créer les instances d'API
     const resultsAPI = new ResultsAPI()
     const sessionsAPI = new SessionsAPI()
 
-    // Récupérer les résultats de la session
-    const results = await resultsAPI.getResults(session!.id)
+    // Récupérer les résultats de la session avec filtrage optionnel par municipalité
+    const results = await resultsAPI.getResults(session.id, municipalityId || undefined)
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session!.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
     return NextResponse.json({
       success: true,
       results,
-      sessionId: session!.id
+      sessionId: session.id
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la récupération des résultats:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -173,17 +157,8 @@ export async function GET(request: NextRequest) {
 // PUT - Mettre à jour les résultats existants
 export async function PUT(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
     const body: SaveResultsRequest = await request.json()
-    const { resultsData } = body
+    const { resultsData, municipalityId } = body
 
     if (!resultsData) {
       return NextResponse.json(
@@ -192,9 +167,8 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    // Valider la session
-    const { error, session } = await validateSession(sessionToken)
-    if (error) return error
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
     // Créer les instances d'API
     const resultsAPI = new ResultsAPI()
@@ -214,13 +188,16 @@ export async function PUT(request: NextRequest) {
     }
 
     const results = await resultsAPI.saveResults(
-      session!.id, 
+      session.id,
       formattedResultsData,
-      'completed'
+      'completed',
+      municipalityId
     )
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session!.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
     return NextResponse.json({
       success: true,
@@ -229,6 +206,16 @@ export async function PUT(request: NextRequest) {
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la mise à jour des résultats:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -240,35 +227,37 @@ export async function PUT(request: NextRequest) {
 // DELETE - Supprimer les résultats d'une session
 export async function DELETE(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
-    // Valider la session
-    const { error, session } = await validateSession(sessionToken)
-    if (error) return error
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
     // Créer les instances d'API
     const resultsAPI = new ResultsAPI()
     const sessionsAPI = new SessionsAPI()
 
     // Supprimer les résultats de la session
-    await resultsAPI.deleteResults(session!.id)
+    await resultsAPI.deleteResults(session.id)
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session!.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      message: 'Résultats supprimés avec succès' 
+      message: 'Résultats supprimés avec succès'
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('Erreur lors de la suppression des résultats:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },

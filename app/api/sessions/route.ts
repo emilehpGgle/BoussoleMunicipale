@@ -24,8 +24,8 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🆕 [API SESSIONS] Création session...')
 
-    // ✅ Récupérer l'IP et l'user agent
-    const clientIP = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    // ✅ Récupérer l'IP et l'user agent (optimisé pour anti-abus)
+    const clientIP = SessionsAPI.getClientIP(request) || 'unknown'
     const rawUserAgent = request.headers.get('user-agent')
     const userAgent = rawUserAgent?.slice(0, 255) || 'Unknown'
 
@@ -58,8 +58,8 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ✅ Créer une nouvelle session
-    const session = await sessionsAPI.createSession(userAgent)
+    // ✅ Créer une nouvelle session (avec IP pour anti-abus)
+    const session = await sessionsAPI.createSession(userAgent, clientIP !== 'unknown' ? clientIP : undefined)
 
     console.log('✅ [API SESSIONS] Session créée:', session.id, 'IP:', clientIP)
 

@@ -511,8 +511,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               </AnimatePresence>
             </div>
 
-            {/* Boutons alignés horizontalement */}
-            <div className="flex justify-between items-center pt-4">
+            <DialogFooter className="gap-2 pt-4">
               <Button
                 type="button"
                 variant="outline"
@@ -535,7 +534,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Accepter et commencer
               </Button>
-            </div>
+            </DialogFooter>
 
             {/* Lien discret "Continuer anonymement" - toujours présent */}
             <div className="text-center">
@@ -595,32 +594,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
           </div>
         )}
 
-        {/* Option pour continuer sans géolocalisation - seulement sur les étapes postal et confirm */}
-        {(step === 'postal' || step === 'confirm') && (
-          <div className="text-center">
-            <Button
-              variant="link"
-              className="text-sm text-muted-foreground hover:text-midnight-green"
-              onClick={() => {
-                onClose()
-
-                // Vérifier s'il y a des réponses existantes avant de continuer
-                if (isSessionValid && !responsesLoading) {
-                  const counts = getResponseCounts
-
-                  if (counts.total > 0) {
-                    setIsExistingResponsesModalOpen(true)
-                    return
-                  }
-                }
-
-                router.push("/test-politique-municipal?skipLocation=true")
-              }}
-            >
-              Continuer sans localisation
-            </Button>
-          </div>
-        )}
 
       </DialogContent>
     </Dialog>

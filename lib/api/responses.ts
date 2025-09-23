@@ -14,7 +14,8 @@ export class ResponsesAPI {
     sessionId: string,
     questionId: string,
     responseType: 'agreement' | 'importance_direct',
-    value: AgreementOptionKey | ImportanceDirectOptionKey
+    value: AgreementOptionKey | ImportanceDirectOptionKey,
+    municipalityId?: string
   ) {
     // Validate inputs
     if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
@@ -35,6 +36,7 @@ export class ResponsesAPI {
       response_type: responseType,
       ...(responseType === 'agreement' && { agreement_value: value as AgreementOptionKey }),
       ...(responseType === 'importance_direct' && { importance_direct_value: value as ImportanceDirectOptionKey }),
+      ...(municipalityId && { municipality_id: municipalityId }),
     }
 
     const { data, error } = await this.supabase
@@ -60,9 +62,10 @@ export class ResponsesAPI {
   async saveAgreementResponse(
     sessionId: string,
     questionId: string,
-    agreementValue: AgreementOptionKey
+    agreementValue: AgreementOptionKey,
+    municipalityId?: string
   ) {
-    return this.saveResponse(sessionId, questionId, 'agreement', agreementValue)
+    return this.saveResponse(sessionId, questionId, 'agreement', agreementValue, municipalityId)
   }
 
   /**
@@ -71,9 +74,10 @@ export class ResponsesAPI {
   async saveImportanceDirectResponse(
     sessionId: string,
     questionId: string,
-    importanceDirectValue: ImportanceDirectOptionKey
+    importanceDirectValue: ImportanceDirectOptionKey,
+    municipalityId?: string
   ) {
-    return this.saveResponse(sessionId, questionId, 'importance_direct', importanceDirectValue)
+    return this.saveResponse(sessionId, questionId, 'importance_direct', importanceDirectValue, municipalityId)
   }
 
   /**
@@ -82,7 +86,8 @@ export class ResponsesAPI {
   async savePriorityResponse(
     sessionId: string,
     questionId: string,
-    priorityData: Record<string, number>
+    priorityData: Record<string, number>,
+    municipalityId?: string
   ) {
     // Validate inputs
     if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
@@ -105,6 +110,7 @@ export class ResponsesAPI {
       question_id: questionId,
       response_type: 'priority_ranking' as const,
       priority_data: priorityData,
+      ...(municipalityId && { municipality_id: municipalityId }),
     }
 
     // Utiliser upsert avec la clé primaire pour éviter les doublons
@@ -129,17 +135,23 @@ export class ResponsesAPI {
   /**
    * Récupère toutes les réponses d'une session
    */
-  async getSessionResponses(sessionId: string): Promise<UserResponse[]> {
+  async getSessionResponses(sessionId: string, municipalityId?: string): Promise<UserResponse[]> {
     // Validate sessionId
     if (!sessionId || typeof sessionId !== 'string' || sessionId.trim().length === 0) {
       throw new Error('Session ID est requis et doit être une chaîne non vide')
     }
 
-    const { data, error } = await this.supabase
+    let query = this.supabase
       .from('user_responses')
       .select('*')
       .eq('session_id', sessionId)
-      .order('created_at', { ascending: true })
+
+    // Filtrer par municipalité si spécifié
+    if (municipalityId) {
+      query = query.eq('municipality_id', municipalityId)
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: true })
 
     if (error) {
       console.error('Erreur lors de la récupération des réponses:', error)

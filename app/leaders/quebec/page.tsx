@@ -55,9 +55,9 @@ function generateSlug(leaderName: string): string {
 
 // Descriptions courtes pour les leaders actuels
 const currentLeaderDescriptions: Record<string, string> = {
-  "bruno-marchand": "Maire sortant de Québec depuis 2021, ancien journaliste et animateur radio reconnu, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux pour les élections 2025.",
+  "bruno-marchand": "Maire sortant de Québec depuis 2021, ancien président-directeur général de Centraide Québec, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux pour les élections 2025.",
   "sam-hamad": "Homme d'affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique pour Leadership Québec.",
-  "stevens-melancon": "Leader d'Équipe priorité Québec, Stevens Mélançon prône une approche collaborative axée sur les priorités environnementales et citoyennes.",
+  "stevens-melancon": "Leader intérimaire d'Équipe priorité Québec depuis mars 2025 et conseiller municipal, Stevens Mélançon apporte 34 ans d'expérience en éducation avec une approche collaborative axée sur les priorités environnementales et citoyennes.",
   "claude-villeneuve": "Chef de Québec d'abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
   "stephane-lachance": "Dirigeant de Respect citoyens, Stéphane Lachance met l'accent sur le respect des droits et une approche inclusive de la gouvernance municipale.",
   "alain-giasson": "Chef de l'Alliance citoyenne, Alain Giasson promeut l'engagement communautaire et la démocratie participative dans les décisions municipales.",

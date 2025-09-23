@@ -13,7 +13,7 @@ interface PrioritiesState {
  * ✅ Hook simplifié pour gérer les réponses de priorité
  * Remplace l'usage du localStorage par Supabase
  */
-export function usePriorities() {
+export function usePriorities(municipalityId?: string) {
   const { sessionToken, isSessionValid, isLoading: sessionLoading, error: sessionError } = useSession()
   
   const [state, setState] = useState<PrioritiesState>({
@@ -45,7 +45,11 @@ export function usePriorities() {
         return
       }
 
-      const response = await fetch('/api/responses', {
+      const url = municipalityId
+        ? `/api/responses?municipalityId=${encodeURIComponent(municipalityId)}`
+        : '/api/responses'
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -84,7 +88,7 @@ export function usePriorities() {
         error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
-  }, [sessionToken, isSessionValid, sessionLoading])
+  }, [sessionToken, isSessionValid, sessionLoading, municipalityId])
 
   // ✅ Sauvegarder les priorités vers Supabase (logique simplifiée)
   const savePriorities = useCallback(async (priorityData: Record<string, number>) => {
@@ -107,7 +111,8 @@ export function usePriorities() {
       const requestBody = {
         questionId: 'q21_enjeux_prioritaires',
         responseType: 'priority_ranking',
-        priorityData
+        priorityData,
+        municipalityId
       }
 
       console.log('📤 [usePriorities] Envoi requête API:', requestBody)
@@ -153,7 +158,7 @@ export function usePriorities() {
       // ✅ Propager l'erreur pour que le composant puisse réagir
       throw error
     }
-  }, [sessionToken, isSessionValid])
+  }, [sessionToken, isSessionValid, municipalityId])
 
   // ✅ Charger automatiquement quand la session change
   useEffect(() => {

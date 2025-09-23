@@ -9,24 +9,54 @@ export class SessionsAPI {
   private supabase = createClient()
 
   /**
+   * Extrait l'adresse IP depuis les headers de la requête
+   * Utilise les headers standards des proxies/CDN pour obtenir l'IP réelle
+   */
+  static getClientIP(request: Request): string | null {
+    // Headers à vérifier dans l'ordre de priorité
+    const ipHeaders = [
+      'x-forwarded-for',      // Proxy/CDN standard
+      'x-real-ip',            // Nginx
+      'cf-connecting-ip',     // Cloudflare
+      'x-client-ip',          // Apache
+      'forwarded',            // RFC 7239
+    ]
+
+    for (const header of ipHeaders) {
+      const headerValue = request.headers.get(header)
+      if (headerValue) {
+        // x-forwarded-for peut contenir plusieurs IPs séparées par des virgules
+        const ip = headerValue.split(',')[0].trim()
+        if (ip && ip !== 'unknown') {
+          return ip
+        }
+      }
+    }
+
+    return null // IP non trouvée
+  }
+
+  /**
    * Crée une nouvelle session utilisateur avec un token unique
    */
-  async createSession(userAgent?: string): Promise<UserSession> {
+  async createSession(userAgent?: string, ipAddress?: string): Promise<UserSession> {
     console.log('🎯 [SESSIONS API] createSession - Début')
-    
+
     // Générer un token de session unique et sécurisé
     const sessionToken = this.generateSessionToken()
     console.log('🔑 [SESSIONS API] Token généré:', sessionToken?.substring(0, 8) + '...')
-    
+
     const session: UserSessionInsert = {
       session_token: sessionToken,
       user_agent: userAgent || null,
+      ip_address: ipAddress || null,
       expires_at: this.getExpirationDate(),
     }
 
     console.log('📦 [SESSIONS API] Session à insérer:', {
       token: session.session_token?.substring(0, 8) + '...',
       userAgent: session.user_agent,
+      ipAddress: session.ip_address?.substring(0, 10) + '...' || 'N/A',
       expires: session.expires_at,
       fullObject: session
     })

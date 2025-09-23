@@ -41,11 +41,12 @@ interface LeaderProfile {
 // Données enrichies des leaders (à étendre selon vos recherches)
 const leadersProfiles: Record<string, Omit<LeaderProfile, 'party' | 'slug'>> = {
   "bruno-marchand": {
-    biography: "Bruno Marchand est le maire sortant de la Ville de Québec depuis novembre 2021. Ancien journaliste et animateur radio reconnu, il a marqué le paysage médiatique québécois avant de se lancer en politique municipale. Diplômé en communications, il a développé une expertise dans la communication publique et l'engagement citoyen.",
+    biography: "Bruno Marchand est le maire sortant de la Ville de Québec depuis novembre 2021. Avant son entrée en politique, il a œuvré dans le milieu communautaire et l'éducation. Diplômé en philosophie de l'Université Laval (1995) et en travail social du Cégep de Sainte-Foy (1998), il a développé une expertise dans l'engagement communautaire et la gestion d'organismes à but non lucratif.",
     experience: [
       "Maire de Québec depuis novembre 2021",
-      "Animateur radio à CHOI Radio X pendant plus de 15 ans",
-      "Journaliste et communicateur expérimenté",
+      "Président-directeur général de Centraide Québec–Chaudière-Appalaches et Bas-Saint-Laurent (2014-2021)",
+      "Coordonnateur de la vie étudiante au Cégep de Sainte-Foy (1999-2008)",
+      "Association québécoise de prévention du suicide (2008-2014)",
       "Fondateur de plusieurs initiatives communautaires"
     ],
     vision2025: "Pour les élections municipales 2025, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux, avec un accent particulier sur le transport durable, la densification urbaine intelligente et la transition écologique de la ville de Québec.",
@@ -76,12 +77,13 @@ const leadersProfiles: Record<string, Omit<LeaderProfile, 'party' | 'slug'>> = {
     ]
   },
   "stevens-melancon": {
-    biography: "Stevens Mélançon dirige Équipe priorité Québec avec une vision axée sur les priorités citoyennes et l'amélioration de la qualité de vie. Il prône une approche collaborative et à l'écoute des besoins des résidents de tous les quartiers de Québec.",
+    biography: "Stevens Mélançon est le leader intérimaire d'Équipe priorité Québec depuis mars 2025. Avec une solide expérience de 34 ans en éducation, incluant 15 ans comme directeur d'école, il apporte une vision axée sur les priorités citoyennes et l'amélioration de la qualité de vie. Il prône une approche collaborative et à l'écoute des besoins des résidents de tous les quartiers de Québec.",
     experience: [
-      "Chef d'Équipe priorité Québec",
-      "Militant communautaire engagé",
-      "Défenseur des droits des citoyens",
-      "Organisateur politique expérimenté"
+      "Leader intérimaire d'Équipe priorité Québec depuis mars 2025",
+      "Conseiller municipal pour Chute-Montmorency–Seigneurial",
+      "34 ans d'expérience en éducation, dont 15 ans comme directeur d'école",
+      "Militant communautaire engagé (Le Pivot, conseils de quartier)",
+      "Défenseur des droits des citoyens"
     ],
     vision2025: "Stevens Mélançon met l'accent sur les priorités environnementales, l'amélioration du transport en commun et la protection des espaces verts, tout en maintenant des finances municipales saines pour les élections 2025.",
     achievements: [

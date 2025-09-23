@@ -18,6 +18,38 @@ export type ImportanceDirectOptionKey = 'TI' | 'AI' | 'NI' | 'PI' | 'PTI' | 'IDK
 export interface Database {
   public: {
     Tables: {
+      municipalities: {
+        Row: {
+          id: string
+          name: string
+          code: string
+          province: string
+          population: number | null
+          is_active: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id: string
+          name: string
+          code: string
+          province?: string
+          population?: number | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          code?: string
+          province?: string
+          population?: number | null
+          is_active?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
       questions: {
         Row: {
           id: string
@@ -33,6 +65,8 @@ export interface Database {
           custom_agreement_labels: Json | null
           custom_importance_direct_labels: Json | null
           order_index: number
+          municipality_id: string | null
+          is_generic: boolean
           created_at: string
           updated_at: string
         }
@@ -50,6 +84,8 @@ export interface Database {
           custom_agreement_labels?: Json | null
           custom_importance_direct_labels?: Json | null
           order_index: number
+          municipality_id?: string | null
+          is_generic?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -67,6 +103,8 @@ export interface Database {
           custom_agreement_labels?: Json | null
           custom_importance_direct_labels?: Json | null
           order_index?: number
+          municipality_id?: string | null
+          is_generic?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -83,6 +121,7 @@ export interface Database {
           main_ideas_summary: string | null
           strengths: Json
           reserves: Json
+          municipality_id: string
           created_at: string
           updated_at: string
         }
@@ -97,6 +136,7 @@ export interface Database {
           main_ideas_summary?: string | null
           strengths?: Json
           reserves?: Json
+          municipality_id: string
           created_at?: string
           updated_at?: string
         }
@@ -111,6 +151,7 @@ export interface Database {
           main_ideas_summary?: string | null
           strengths?: Json
           reserves?: Json
+          municipality_id?: string
           created_at?: string
           updated_at?: string
         }
@@ -156,6 +197,7 @@ export interface Database {
           session_token: string
           ip_address: string | null
           user_agent: string | null
+          municipality_id: string | null
           created_at: string
           updated_at: string
           expires_at: string | null
@@ -165,6 +207,7 @@ export interface Database {
           session_token: string
           ip_address?: string | null
           user_agent?: string | null
+          municipality_id?: string | null
           created_at?: string
           updated_at?: string
           expires_at?: string | null
@@ -174,6 +217,7 @@ export interface Database {
           session_token?: string
           ip_address?: string | null
           user_agent?: string | null
+          municipality_id?: string | null
           created_at?: string
           updated_at?: string
           expires_at?: string | null
@@ -188,6 +232,7 @@ export interface Database {
           agreement_value: AgreementOptionKey | null
           importance_direct_value: ImportanceDirectOptionKey | null
           priority_data: Json | null
+          municipality_id: string | null
           created_at: string
           updated_at: string
         }
@@ -199,6 +244,7 @@ export interface Database {
           agreement_value?: AgreementOptionKey | null
           importance_direct_value?: ImportanceDirectOptionKey | null
           priority_data?: Json | null
+          municipality_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -210,6 +256,7 @@ export interface Database {
           agreement_value?: AgreementOptionKey | null
           importance_direct_value?: ImportanceDirectOptionKey | null
           priority_data?: Json | null
+          municipality_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -244,6 +291,7 @@ export interface Database {
           results_data: Json
           political_position: Json | null
           completion_status: 'partial' | 'completed'
+          municipality_id: string | null
           created_at: string
           updated_at: string
         }
@@ -253,6 +301,7 @@ export interface Database {
           results_data: Json
           political_position?: Json | null
           completion_status?: 'partial' | 'completed'
+          municipality_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -262,6 +311,7 @@ export interface Database {
           results_data?: Json
           political_position?: Json | null
           completion_status?: 'partial' | 'completed'
+          municipality_id?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -312,4 +362,22 @@ export interface Database {
       [_ in never]: never
     }
   }
+}
+
+// Types helpers pour les municipalités
+export interface Municipality {
+  id: string
+  name: string
+  code: string
+  province: string
+  population: number | null
+  is_active: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface PostalCodeMapping {
+  postal_code_prefix: string
+  municipality_id: string
+  district_name?: string
 } 

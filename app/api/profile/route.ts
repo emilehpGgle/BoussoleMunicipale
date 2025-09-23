@@ -2,48 +2,24 @@ import { NextRequest, NextResponse } from 'next/server'
 import { SessionsAPI } from '@/lib/api/sessions'
 import { ProfilesAPI } from '@/lib/api/profiles'
 import type { ProfileData } from '@/lib/api/profiles'
-
-// Helper function to extract sessionToken from Authorization header
-function extractSessionToken(request: NextRequest): string | null {
-  const authHeader = request.headers.get('authorization')
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return null
-  }
-  return authHeader.substring(7) // Remove 'Bearer ' prefix
-}
+import { validateSessionWithTestBypass } from '@/lib/api/auth-helper'
 
 // Types pour les requêtes (sessionToken retiré du body)
 interface SaveProfileRequest {
   profileData: ProfileData
+  municipalityId?: string // Support optionnel pour multi-municipalités
 }
 
 // POST - Sauvegarder un profil utilisateur
 export async function POST(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
     const body: SaveProfileRequest = await request.json()
-    const { profileData } = body
+    const { profileData, municipalityId } = body
 
     // Validation des paramètres requis
     if (!profileData) {
       return NextResponse.json(
         { error: 'profileData est requis' },
-        { status: 400 }
-      )
-    }
-
-    // Validate sessionToken format
-    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
-      return NextResponse.json(
-        { error: 'Format de sessionToken invalide' },
         { status: 400 }
       )
     }
@@ -56,32 +32,39 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
-    const profilesAPI = new ProfilesAPI()
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
+    // Créer les instances d'API
+    const profilesAPI = new ProfilesAPI()
+    const sessionsAPI = new SessionsAPI()
+
+    // Sauvegarder le profil
+    const profile = await profilesAPI.saveProfile(session.id, profileData, municipalityId)
+
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
+
+    return NextResponse.json({
+      success: true,
+      profile,
+      message: 'Profil sauvegardé avec succès'
+    })
+
+  } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
       return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
+        { error: error.message },
         { status: 401 }
       )
     }
 
-    // Sauvegarder le profil
-    const profile = await profilesAPI.saveProfile(session.id, profileData)
-
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
-
-    return NextResponse.json({ 
-      success: true, 
-      profile,
-      message: 'Profil sauvegardé avec succès' 
-    })
-
-  } catch (error) {
     console.error('[profile] Profile save failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -93,41 +76,24 @@ export async function POST(request: NextRequest) {
 // GET - Récupérer le profil d'une session
 export async function GET(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
+    // Extraire municipalityId depuis les paramètres de requête
+    const url = new URL(request.url)
+    const municipalityId = url.searchParams.get('municipalityId')
 
-    // Validate sessionToken format
-    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
-      return NextResponse.json(
-        { error: 'Format de sessionToken invalide' },
-        { status: 400 }
-      )
-    }
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
     // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
     const profilesAPI = new ProfilesAPI()
+    const sessionsAPI = new SessionsAPI()
 
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
+    // Récupérer le profil de la session avec filtrage optionnel par municipalité
+    const profile = await profilesAPI.getProfile(session.id, municipalityId || undefined)
+
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
     }
-
-    // Récupérer le profil de la session
-    const profile = await profilesAPI.getProfile(session.id)
-
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
 
     return NextResponse.json({
       success: true,
@@ -136,6 +102,16 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('[profile] Profile fetch failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -147,30 +123,13 @@ export async function GET(request: NextRequest) {
 // PUT - Mettre à jour un profil existant
 export async function PUT(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
     const body: SaveProfileRequest = await request.json()
-    const { profileData } = body
+    const { profileData, municipalityId } = body
 
     // Validation des paramètres requis
     if (!profileData) {
       return NextResponse.json(
         { error: 'profileData est requis' },
-        { status: 400 }
-      )
-    }
-
-    // Validate sessionToken format
-    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
-      return NextResponse.json(
-        { error: 'Format de sessionToken invalide' },
         { status: 400 }
       )
     }
@@ -183,32 +142,38 @@ export async function PUT(request: NextRequest) {
       )
     }
 
-    // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
-    const profilesAPI = new ProfilesAPI()
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
+    // Créer les instances d'API
+    const profilesAPI = new ProfilesAPI()
+    const sessionsAPI = new SessionsAPI()
 
     // Mettre à jour le profil
-    const profile = await profilesAPI.updateProfile(session.id, profileData)
+    const profile = await profilesAPI.updateProfile(session.id, profileData, municipalityId)
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       profile,
-      message: 'Profil mis à jour avec succès' 
+      message: 'Profil mis à jour avec succès'
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('[profile] Profile update failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },
@@ -220,48 +185,37 @@ export async function PUT(request: NextRequest) {
 // DELETE - Supprimer le profil d'une session
 export async function DELETE(request: NextRequest) {
   try {
-    // Extraire le sessionToken depuis le header Authorization
-    const sessionToken = extractSessionToken(request)
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: 'Header Authorization Bearer requis' },
-        { status: 401 }
-      )
-    }
-
-    // Validate sessionToken format
-    if (typeof sessionToken !== 'string' || sessionToken.length < 10) {
-      return NextResponse.json(
-        { error: 'Format de sessionToken invalide' },
-        { status: 400 }
-      )
-    }
+    // Valider la session (avec bypass pour les tests)
+    const { session, isTestMode } = await validateSessionWithTestBypass(request)
 
     // Créer les instances d'API
-    const sessionsAPI = new SessionsAPI()
     const profilesAPI = new ProfilesAPI()
-
-    // Vérifier que la session existe et est valide
-    const session = await sessionsAPI.getSessionByToken(sessionToken)
-    if (!session) {
-      return NextResponse.json(
-        { error: 'Session invalide ou expirée' },
-        { status: 401 }
-      )
-    }
+    const sessionsAPI = new SessionsAPI()
 
     // Supprimer le profil
     await profilesAPI.deleteProfile(session.id)
 
-    // Mettre à jour l'activité de la session
-    await sessionsAPI.updateSessionActivity(session.id)
+    // Mettre à jour l'activité de la session (sauf en mode test)
+    if (!isTestMode) {
+      await sessionsAPI.updateSessionActivity(session.id)
+    }
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
-      message: 'Profil supprimé avec succès' 
+      message: 'Profil supprimé avec succès'
     })
 
   } catch (error) {
+    // Gestion spéciale des erreurs d'authentification
+    if (error instanceof Error && (
+      error.message.includes('Authorization') ||
+      error.message.includes('Session')
+    )) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      )
+    }
     console.error('[profile] Profile deletion failed:', error)
     return NextResponse.json(
       { error: 'Erreur interne du serveur' },

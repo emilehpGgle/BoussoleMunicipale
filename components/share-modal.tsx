@@ -32,6 +32,7 @@ interface ShareModalProps {
   userImportance: Record<string, ImportanceDirectOptionKey>
   calculatedScores: CalculatedPartyScore[]
   topParties: CalculatedPartyScore[]
+  municipality: string // Ajouter municipality pour le partage
 }
 
 // Types pour Facebook SDK
@@ -54,14 +55,15 @@ declare global {
   }
 }
 
-export default function ShareModal({ 
-  isOpen, 
-  onClose, 
-  results, 
-  politicalPosition, 
-  userAnswers, 
+export default function ShareModal({
+  isOpen,
+  onClose,
+  results,
+  politicalPosition,
+  userAnswers,
   userImportance,
-  topParties
+  topParties,
+  municipality
 }: ShareModalProps) {
   const [isSharing, setIsSharing] = useState(false)
   const [email, setEmail] = useState("")
@@ -89,14 +91,16 @@ export default function ShareModal({
       userPosition: politicalPosition,
       timestamp: Date.now(),
       userAnswers: userAnswers,
-      userImportance: userImportance
+      userImportance: userImportance,
+      municipality: municipality // Inclure la municipality pour le partage
     }
     
     console.log(`📦 [generateShareUrl] Données à sauvegarder:`, {
       id: shareData.id,
       topPartiesCount: shareData.topParties.length,
       hasUserAnswers: !!shareData.userAnswers,
-      userAnswersCount: Object.keys(shareData.userAnswers || {}).length
+      userAnswersCount: Object.keys(shareData.userAnswers || {}).length,
+      municipality: shareData.municipality
     })
     
     try {
@@ -346,7 +350,7 @@ export default function ShareModal({
           {/* Section "Votre position par rapport aux plateformes" retirée du modal de partage */}
 
           {/* COPIE EXACTE: Carte de positionnement politique 2D */}
-          <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} />
+          <PoliticalCompassChart userAnswers={userAnswers} userImportance={userImportance} municipality={municipality} />
 
           {/* Anciens boutons de partage supprimés */}
 

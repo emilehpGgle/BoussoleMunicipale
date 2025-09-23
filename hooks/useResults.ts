@@ -32,9 +32,9 @@ interface ResultsState {
   hasResults: boolean
 }
 
-export function useResults() {
+export function useResults(municipalityId?: string) {
   const { sessionToken, isSessionValid, isInitializing } = useSession()
-  const { responses, getResponseCounts } = useUserResponses()
+  const { responses, getResponseCounts } = useUserResponses(municipalityId)
   
   const [state, setState] = useState<ResultsState>({
     results: null,

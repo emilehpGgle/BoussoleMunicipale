@@ -26,7 +26,7 @@ interface ResponsesState {
   lastSaved: Date | null
 }
 
-export function useUserResponses() {
+export function useUserResponses(municipalityId?: string) {
   const { sessionToken, isSessionValid, isInitializing } = useSession()
   
   const [state, setState] = useState<ResponsesState>({
@@ -77,8 +77,12 @@ export function useUserResponses() {
 
       console.log('🔍 [useUserResponses] Requête API avec token:', sessionToken.substring(0, 8) + '...')
 
-      // Charger depuis Supabase
-      const response = await fetch('/api/responses', {
+      // Charger depuis Supabase avec municipalityId optionnel
+      const url = municipalityId
+        ? `/api/responses?municipalityId=${encodeURIComponent(municipalityId)}`
+        : '/api/responses'
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${sessionToken}`,
@@ -151,7 +155,7 @@ export function useUserResponses() {
         error: error instanceof Error ? error.message : 'Erreur inconnue'
       }))
     }
-  }, [sessionToken, isSessionValid])
+  }, [sessionToken, isSessionValid, municipalityId])
 
   // Sauvegarder une réponse (Supabase uniquement)
   const saveResponse = useCallback(async (
@@ -190,9 +194,11 @@ export function useUserResponses() {
         responseType: string
         agreementValue?: AgreementOptionKey
         importanceDirectValue?: ImportanceDirectOptionKey
+        municipalityId?: string
       } = {
         questionId,
-        responseType
+        responseType,
+        ...(municipalityId && { municipalityId })
       }
 
       if (responseType === 'agreement') {
@@ -237,7 +243,7 @@ export function useUserResponses() {
         isSaving: false
       }))
     }
-  }, [sessionToken, isSessionValid])
+  }, [sessionToken, isSessionValid, municipalityId])
 
   // Méthodes de convenance pour chaque type de réponse
   const saveAgreementResponse = useCallback((questionId: string, value: AgreementOptionKey) => {

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from './useSession'
+import { detectMunicipalityFromPostalCode } from '@/lib/postal-code-mapping'
 
 // Types pour le profil utilisateur
 export interface UserProfile {
@@ -14,6 +15,13 @@ export interface UserProfile {
   informationSources?: string[]
   postalCode?: string
   district?: string
+  municipality?: {
+    id: string
+    name: string
+    population: number
+    postalCode: string
+    district?: string | null
+  }
   location?: {
     postalCode: string
     district: string
@@ -497,6 +505,41 @@ export function useProfile() {
     return saveProfile(updatedProfile)
   }, [saveProfile])
 
+  // Fonction pour détecter et sauvegarder la municipalité à partir du code postal
+  const updatePostalCodeAndMunicipality = useCallback(async (postalCode: string) => {
+    // Détecter la municipalité automatiquement
+    const municipalityData = detectMunicipalityFromPostalCode(postalCode)
+
+    const updatedProfile: Partial<UserProfile> = {
+      postalCode: postalCode,
+    }
+
+    if (municipalityData) {
+      updatedProfile.municipality = municipalityData
+      // Pour Québec, on garde aussi l'arrondissement dans le champ district
+      if (municipalityData.district) {
+        updatedProfile.district = municipalityData.district
+      }
+    }
+
+    return saveProfile(updatedProfile)
+  }, [saveProfile])
+
+  // Obtenir l'ID de la municipalité actuelle
+  const getCurrentMunicipalityId = useCallback((): string => {
+    return state.profile.municipality?.id || 'quebec' // Fallback vers Québec
+  }, [state.profile])
+
+  // Obtenir les informations de la municipalité actuelle
+  const getCurrentMunicipality = useCallback(() => {
+    return state.profile.municipality || null
+  }, [state.profile])
+
+  // Vérifier si l'utilisateur est dans une municipalité spécifique
+  const isInMunicipality = useCallback((municipalityId: string): boolean => {
+    return getCurrentMunicipalityId() === municipalityId
+  }, [getCurrentMunicipalityId])
+
   // Charger le profil au montage du composant avec patience pour l'initialisation
   useEffect(() => {
     // Attendre que la session soit complètement initialisée avant de charger
@@ -553,6 +596,12 @@ export function useProfile() {
     revokeOptionalConsents,
     validateEmail,
     validatePhone,
+
+    // Méthodes pour municipalités
+    updatePostalCodeAndMunicipality,
+    getCurrentMunicipalityId,
+    getCurrentMunicipality,
+    isInMunicipality,
 
     // Alias pour compatibilité avec le code existant
     userProfile: state.profile

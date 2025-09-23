@@ -13,7 +13,9 @@
       "mcp__cloudflare-playwright-mcp__browser_navigate",
       "mcp__cloudflare-playwright-mcp__browser_take_screenshot",
       "mcp__cloudflare-playwright-mcp__browser_press_key",
-      "mcp__exa__web_search_exa"
+      "mcp__exa__web_search_exa",
+      "mcp__exa__deep_researcher_check",
+      "mcp__exa__deep_researcher_start"
     ],
     "deny": []
   },

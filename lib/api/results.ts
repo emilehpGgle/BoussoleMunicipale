@@ -84,15 +84,17 @@ export class ResultsAPI {
    * Sauvegarde les résultats calculés pour une session
    */
   async saveResults(
-    sessionId: string, 
-    resultsData: ResultsData, 
-    completionStatus: 'partial' | 'completed' = 'partial'
+    sessionId: string,
+    resultsData: ResultsData,
+    completionStatus: 'partial' | 'completed' = 'partial',
+    municipalityId?: string
   ) {
     const result: UserResultInsert = {
       session_id: sessionId,
       results_data: resultsData as Json, // Cast vers Json pour la compatibilité avec Supabase
       political_position: resultsData.calculatedResults.politicalPosition || null,
       completion_status: completionStatus,
+      ...(municipalityId && { municipality_id: municipalityId }),
     }
 
     const { data, error } = await this.supabase
@@ -115,12 +117,18 @@ export class ResultsAPI {
   /**
    * Récupère les résultats pour une session
    */
-  async getResults(sessionId: string): Promise<UserResult | null> {
-    const { data, error } = await this.supabase
+  async getResults(sessionId: string, municipalityId?: string): Promise<UserResult | null> {
+    let query = this.supabase
       .from('user_results')
       .select('*')
       .eq('session_id', sessionId)
-      .single()
+
+    // Filtrer par municipalité si spécifié
+    if (municipalityId) {
+      query = query.eq('municipality_id', municipalityId)
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       if (error.code === 'PGRST116') {
@@ -137,8 +145,8 @@ export class ResultsAPI {
   /**
    * Récupère les données de résultats au format attendu par l'application
    */
-  async getResultsData(sessionId: string): Promise<ResultsData | null> {
-    const result = await this.getResults(sessionId)
+  async getResultsData(sessionId: string, municipalityId?: string): Promise<ResultsData | null> {
+    const result = await this.getResults(sessionId, municipalityId)
     if (!result?.results_data) {
       return null
     }
@@ -205,12 +213,18 @@ export class ResultsAPI {
   /**
    * Vérifie si des résultats existent pour une session
    */
-  async resultsExist(sessionId: string): Promise<boolean> {
-    const { data, error } = await this.supabase
+  async resultsExist(sessionId: string, municipalityId?: string): Promise<boolean> {
+    let query = this.supabase
       .from('user_results')
       .select('id')
       .eq('session_id', sessionId)
-      .single()
+
+    // Filtrer par municipalité si spécifié
+    if (municipalityId) {
+      query = query.eq('municipality_id', municipalityId)
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       if (error.code === 'PGRST116') {

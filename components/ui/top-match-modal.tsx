@@ -34,6 +34,7 @@ interface TopMatchModalProps {
     rawScore: number;
     maxPossibleRawScoreForParty: number;
   }>;
+  municipality: string; // Ajouter municipality pour le partage
 }
 
 // Composant LogoContainer identique à celui des résultats (carré avec coins arrondis)
@@ -115,7 +116,8 @@ export function TopMatchModal({
   userAnswers,
   userImportance,
   calculatedScores,
-  topParties
+  topParties,
+  municipality
 }: TopMatchModalProps) {
   const [showContent, setShowContent] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
@@ -268,6 +270,7 @@ export function TopMatchModal({
         userImportance={userImportance}
         calculatedScores={calculatedScores}
         topParties={topParties}
+        municipality={municipality}
       />
     </>
   );

@@ -23,12 +23,12 @@ export class ProfilesAPI {
   /**
    * Sauvegarde ou met à jour le profil utilisateur pour une session
    */
-  async saveProfile(sessionId: string, profileData: ProfileData) {
+  async saveProfile(sessionId: string, profileData: ProfileData, municipalityId?: string) {
     // Validate sessionId format
     if (!sessionId || typeof sessionId !== 'string' || sessionId.length < 10) {
       throw new Error('Invalid session ID format')
     }
-    
+
     // Validate profile data structure
     if (!profileData || typeof profileData !== 'object') {
       throw new Error('Profile data must be a valid object')
@@ -37,6 +37,7 @@ export class ProfilesAPI {
     const profile: UserProfileInsert = {
       session_id: sessionId,
       profile_data: profileData,
+      ...(municipalityId && { municipality_id: municipalityId }),
     }
 
     const { data, error } = await this.supabase
@@ -59,12 +60,18 @@ export class ProfilesAPI {
   /**
    * Récupère le profil utilisateur pour une session
    */
-  async getProfile(sessionId: string): Promise<UserProfile | null> {
-    const { data, error } = await this.supabase
+  async getProfile(sessionId: string, municipalityId?: string): Promise<UserProfile | null> {
+    let query = this.supabase
       .from('user_profiles')
       .select('*')
       .eq('session_id', sessionId)
-      .single()
+
+    // Filtrer par municipalité si spécifié
+    if (municipalityId) {
+      query = query.eq('municipality_id', municipalityId)
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       if (error.code === 'PGRST116') {
@@ -81,20 +88,20 @@ export class ProfilesAPI {
   /**
    * Récupère les données du profil
    */
-  async getProfileData(sessionId: string): Promise<ProfileData> {
-    const profile = await this.getProfile(sessionId)
+  async getProfileData(sessionId: string, municipalityId?: string): Promise<ProfileData> {
+    const profile = await this.getProfile(sessionId, municipalityId)
     return profile?.profile_data as ProfileData || {}
   }
 
   /**
    * Met à jour partiellement le profil utilisateur
    */
-  async updateProfile(sessionId: string, profileUpdates: Partial<ProfileData>) {
+  async updateProfile(sessionId: string, profileUpdates: Partial<ProfileData>, municipalityId?: string) {
     // D'abord récupérer le profil existant
-    const existingProfile = await this.getProfile(sessionId)
-    
+    const existingProfile = await this.getProfile(sessionId, municipalityId)
+
     let updatedProfileData: ProfileData
-    
+
     if (existingProfile) {
       // Fusionner avec les données existantes
       updatedProfileData = {
@@ -106,7 +113,7 @@ export class ProfilesAPI {
       updatedProfileData = profileUpdates
     }
 
-    return this.saveProfile(sessionId, updatedProfileData)
+    return this.saveProfile(sessionId, updatedProfileData, municipalityId)
   }
 
   /**
@@ -127,12 +134,18 @@ export class ProfilesAPI {
   /**
    * Vérifie si un profil existe pour une session
    */
-  async profileExists(sessionId: string): Promise<boolean> {
-    const { data, error } = await this.supabase
+  async profileExists(sessionId: string, municipalityId?: string): Promise<boolean> {
+    let query = this.supabase
       .from('user_profiles')
       .select('id')
       .eq('session_id', sessionId)
-      .single()
+
+    // Filtrer par municipalité si spécifié
+    if (municipalityId) {
+      query = query.eq('municipality_id', municipalityId)
+    }
+
+    const { data, error } = await query.single()
 
     if (error) {
       if (error.code === 'PGRST116') {

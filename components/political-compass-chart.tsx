@@ -6,42 +6,60 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Info, Maximize2, X } from "lucide-react"
-import { 
-  type PoliticalPosition, 
-  calculateUserPoliticalPosition, 
+import {
+  type PoliticalPosition,
+  calculateUserPoliticalPosition,
   getPoliticalPositionDescription,
   calculatePoliticalDistance,
   axisConfiguration,
   type UserAnswers,
-  calculatePartyPositions,
   calculateMapBounds,
   normalizePositionForDisplay,
   calculateExactCompatibility
 } from '@/lib/political-map-calculator'
-import { partiesData } from '@/lib/boussole-data'
+import { transformAllPartyPositionsToUserAnswers } from '@/lib/supabase-transform'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { usePriorities } from '@/hooks/usePriorities'
+import { useParties } from '@/hooks/useParties'
+import { usePartyPositions } from '@/hooks/usePartyPositions'
 
 interface PoliticalCompassChartProps {
   userAnswers: UserAnswers
+  municipality: string
   userImportance?: Record<string, unknown> // Paramètre optionnel pour compatibilité, mais non utilisé
 }
 
-export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassChartProps) {
+export default function PoliticalCompassChart({ userAnswers, municipality }: PoliticalCompassChartProps) {
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const router = useRouter();
   const { priorities: userPriorities } = usePriorities()
+
+  // Hooks Supabase pour récupérer les données dynamiques
+  const { parties, isLoading: partiesLoading, error: partiesError } = useParties(municipality)
+  const { positionsByParty, isLoading: positionsLoading, error: positionsError } = usePartyPositions(municipality)
 
   // Calcul des positions originales (sans compression)
   const userPosition = useMemo(() => {
     return calculateUserPoliticalPosition(userAnswers)
   }, [userAnswers])
 
+  // Calcul des positions des partis depuis les données Supabase
   const partyPositions = useMemo(() => {
-    return calculatePartyPositions()
-  }, [])
+    if (!positionsByParty) return {}
+
+    // Transformer les données Supabase vers le format UserAnswers
+    const partyAnswers = transformAllPartyPositionsToUserAnswers(positionsByParty)
+
+    // Calculer les positions politiques pour chaque parti
+    const positions: Record<string, PoliticalPosition> = {}
+    Object.entries(partyAnswers).forEach(([partyId, answers]) => {
+      positions[partyId] = calculateUserPoliticalPosition(answers)
+    })
+
+    return positions
+  }, [positionsByParty])
 
   // Description de la position politique
   const positionDescription = useMemo(() => {
@@ -50,19 +68,23 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
 
   // Calcul des distances avec les partis (utilisant les positions originales et le calcul unifié)
   const partyDistances = useMemo(() => {
+    if (!parties || Object.keys(partyPositions).length === 0) return []
+
     return Object.entries(partyPositions).map(([partyId, position]) => {
-      const party = partiesData.find(p => p.id === partyId)
+      const party = parties.find(p => p.id === partyId)
+      if (!party) return null
+
       const distance = calculatePoliticalDistance(userPosition, position)
-      
+
       // Utiliser le calcul exact identique à resultats/page.tsx
-      const partyPriorities = party?.priorities || []
+      const partyPriorities = party.priorities || []
       const compatibility = calculateExactCompatibility(
-        userPosition, 
-        position, 
-        userPriorities || {}, 
+        userPosition,
+        position,
+        userPriorities || {},
         partyPriorities
       )
-      
+
       return {
         party,
         position,
@@ -70,8 +92,8 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
         compatibility,
         partyId
       }
-    }).filter(item => item.party).sort((a, b) => b.compatibility - a.compatibility) // Trier par compatibilité décroissante
-  }, [userPosition, partyPositions, userPriorities])
+    }).filter(item => item !== null).sort((a, b) => b.compatibility - a.compatibility) // Trier par compatibilité décroissante
+  }, [userPosition, partyPositions, userPriorities, parties])
 
   // Calcul des limites de la carte pour l'affichage adaptatif
   const mapBounds = useMemo(() => {
@@ -190,7 +212,7 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
         return (
           <g key={partyId}
             style={{ cursor: 'pointer' }}
-            onClick={() => router.push(`/parti/${partyId}`)}
+            onClick={() => router.push(`/${municipality}/parti/${partyId}`)}
             onMouseEnter={() => setHoveredParty(partyId)}
             onMouseLeave={() => setHoveredParty(null)}
             onTouchStart={() => setHoveredParty(partyId)}
@@ -297,6 +319,59 @@ export default function PoliticalCompassChart({ userAnswers }: PoliticalCompassC
   // Dimensions responsive : utiliser viewBox au lieu de dimensions fixes
   const svgWidth = 600
   const svgHeight = 400
+
+  // États de chargement et d'erreur
+  const isLoading = partiesLoading || positionsLoading
+  const error = partiesError || positionsError
+
+  // Affichage en cas de chargement
+  if (isLoading) {
+    return (
+      <Card className="shadow-soft rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <span>Votre position dans le paysage politique</span>
+            <Info className="h-5 w-5 text-muted-foreground" />
+          </CardTitle>
+          <CardDescription>
+            Chargement de votre positionnement politique...
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center h-64">
+          <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <span>Chargement des données politiques...</span>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  // Affichage en cas d'erreur
+  if (error) {
+    return (
+      <Card className="shadow-soft rounded-2xl">
+        <CardHeader>
+          <CardTitle className="text-2xl flex items-center gap-2">
+            <span>Votre position dans le paysage politique</span>
+            <Info className="h-5 w-5 text-muted-foreground" />
+          </CardTitle>
+          <CardDescription>
+            Une erreur est survenue lors du chargement
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-center h-64">
+          <div className="text-center space-y-2">
+            <p className="text-destructive">❌ Erreur de chargement</p>
+            <p className="text-sm text-muted-foreground">{error}</p>
+            <p className="text-xs text-muted-foreground">
+              Veuillez rafraîchir la page ou réessayer plus tard.
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <>

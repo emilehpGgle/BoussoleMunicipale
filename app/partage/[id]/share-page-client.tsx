@@ -11,6 +11,40 @@ import PoliticalCompassChart from '@/components/political-compass-chart'
 import { type AgreementOptionKey } from '@/lib/boussole-data'
 // import { calculateUserPoliticalPosition } from '@/lib/political-map-calculator' // Unused
 
+// Fonction simplifiée pour obtenir la municipality depuis les données partagées
+function getMunicipalityFromSharedResult(sharedResult: SharedResult): string {
+  // 1. Priorité: municipality_id depuis la base de données (après migration)
+  if (sharedResult.municipality_id) {
+    console.log(`✅ [SharePageClient] Municipality depuis DB: ${sharedResult.municipality_id}`)
+    return sharedResult.municipality_id
+  }
+
+  // 2. Fallback: municipality depuis shareData (données JSON)
+  if (sharedResult.municipality) {
+    console.log(`✅ [SharePageClient] Municipality depuis shareData: ${sharedResult.municipality}`)
+    return sharedResult.municipality
+  }
+
+  // 3. Fallback d'urgence: détecter depuis les partis (pour compatibilité anciens partages)
+  if (sharedResult.topParties && sharedResult.topParties.length > 0) {
+    const firstPartyId = sharedResult.topParties[0].party.id
+    console.log(`🔍 [SharePageClient] Fallback détection par parti: ${firstPartyId}`)
+
+    // Détection simple par mots-clés dans les IDs
+    if (firstPartyId.includes('quebec') || firstPartyId.includes('labeaume')) {
+      return 'quebec'
+    }
+    if (firstPartyId.includes('montreal')) {
+      return 'montreal'
+    }
+    // Ajouter d'autres selon besoins
+  }
+
+  // 4. Fallback final par défaut
+  console.warn('⚠️ [SharePageClient] Aucune municipality trouvée, fallback vers quebec')
+  return 'quebec'
+}
+
 
 // Types pour les données partagées (doivent correspondre à ce qui est sauvegardé)
 interface SharedResult {
@@ -34,6 +68,9 @@ interface SharedResult {
   // Ajouter les réponses utilisateur pour la carte politique
   userAnswers?: Record<string, AgreementOptionKey>
   userImportance?: Record<string, unknown>
+  // Ajouter municipality depuis les nouvelles données
+  municipality?: string
+  municipality_id?: string // Depuis la base de données après migration
 }
 
 interface SharePageClientProps {
@@ -151,9 +188,10 @@ export default function SharePageClient({ sharedResult }: SharePageClientProps) 
 
           {/* CORRECTION 3: Ajouter la carte des positions politiques */}
           {sharedResult.userAnswers && Object.keys(sharedResult.userAnswers).length > 0 && (
-            <PoliticalCompassChart 
-              userAnswers={sharedResult.userAnswers} 
-              userImportance={sharedResult.userImportance || {}} 
+            <PoliticalCompassChart
+              userAnswers={sharedResult.userAnswers}
+              municipality={getMunicipalityFromSharedResult(sharedResult)}
+              userImportance={sharedResult.userImportance || {}}
             />
           )}
 
