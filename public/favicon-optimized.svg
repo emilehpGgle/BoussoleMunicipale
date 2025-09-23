@@ -1,0 +1,43 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Compass Circle -->
+  <circle cx="256" cy="256" r="200" fill="#1e7262" stroke="#1e7262" stroke-width="12"/>
+  <circle cx="256" cy="256" r="160" fill="white"/>
+
+  <!-- North Star -->
+  <polygon points="256,56 270,100 256,110 242,100" fill="#1e7262"/>
+
+  <!-- East Star -->
+  <polygon points="456,256 412,242 402,256 412,270" fill="#1e7262"/>
+
+  <!-- South Star -->
+  <polygon points="256,456 242,412 256,402 270,412" fill="#1e7262"/>
+
+  <!-- West Star -->
+  <polygon points="56,256 100,270 110,256 100,242" fill="#1e7262"/>
+
+  <!-- Central voting scene -->
+  <!-- Voting box -->
+  <rect x="220" y="180" width="72" height="60" fill="#1e7262" rx="4"/>
+  <rect x="230" y="200" width="52" height="32" fill="white" rx="2"/>
+
+  <!-- Ballot with checkmark -->
+  <rect x="240" y="160" width="32" height="24" fill="#1e7262" rx="2" transform="rotate(-15 256 172)"/>
+  <path d="M248 168 L252 172 L264 160" stroke="white" stroke-width="2" fill="none" transform="rotate(-15 256 172)"/>
+
+  <!-- People figures -->
+  <!-- Left person -->
+  <circle cx="180" cy="220" r="12" fill="#1e7262"/>
+  <rect x="172" y="235" width="16" height="40" fill="#1e7262" rx="8"/>
+  <rect x="165" y="245" width="10" height="25" fill="#1e7262" rx="5"/>
+  <rect x="197" y="245" width="10" height="25" fill="#1e7262" rx="5"/>
+  <rect x="175" y="275" width="6" height="20" fill="#1e7262" rx="3"/>
+  <rect x="185" y="275" width="6" height="20" fill="#1e7262" rx="3"/>
+
+  <!-- Right person -->
+  <circle cx="332" cy="220" r="12" fill="#1e7262"/>
+  <rect x="324" y="235" width="16" height="40" fill="#1e7262" rx="8"/>
+  <rect x="317" y="245" width="10" height="25" fill="#1e7262" rx="5"/>
+  <rect x="349" y="245" width="10" height="25" fill="#1e7262" rx="5"/>
+  <rect x="327" y="275" width="6" height="20" fill="#1e7262" rx="3"/>
+  <rect x="337" y="275" width="6" height="20" fill="#1e7262" rx="3"/>
+</svg>

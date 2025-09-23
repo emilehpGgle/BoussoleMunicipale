@@ -110,50 +110,51 @@ const leadersProfiles: Record<string, Omit<LeaderProfile, 'party' | 'slug'>> = {
     ]
   },
   "stephane-lachance": {
-    biography: "Stéphane Lachance dirige Respect citoyens avec une philosophie centrée sur le respect des droits et des préoccupations de tous les citoyens de Québec. Il prône une approche inclusive et démocratique de la gouvernance municipale.",
+    biography: "Stéphane Lachance est le chef de Respect citoyens depuis mars 2025, un parti fondé en juillet 2023. Co-fondateur du mouvement citoyen 'Tramway, non merci' en 2020, il s'est fait connaître par son opposition au projet de tramway et son engagement en faveur de la consultation citoyenne. Il prône une approche participative et démocratique de la gouvernance municipale.",
     experience: [
-      "Chef de Respect citoyens",
-      "Défenseur des droits civiques",
-      "Promoteur de l'inclusion sociale",
-      "Organisateur communautaire"
+      "Chef de Respect citoyens depuis mars 2025",
+      "Co-fondateur du mouvement 'Tramway, non merci' (2020)",
+      "Organisateur communautaire et militant municipal",
+      "Promoteur de la démocratie participative"
     ],
-    vision2025: "Stéphane Lachance mise sur le respect des citoyens, l'amélioration de la sécurité publique et une approche équitable du développement urbain pour créer une ville où tous se sentent respectés et entendus.",
+    vision2025: "Stéphane Lachance mise sur le respect des citoyens, l'amélioration des processus de consultation publique et une approche équitable du développement urbain pour créer une ville où tous se sentent respectés et entendus.",
     achievements: [
-      "Promotion des droits des citoyens",
-      "Développement de l'inclusion sociale",
-      "Amélioration des relations communautaires",
-      "Advocacy pour la justice sociale"
+      "Leadership du mouvement d'opposition au tramway",
+      "Fondation du parti Respect citoyens",
+      "Organisation de consultations citoyennes",
+      "Promotion de la démocratie participative"
     ]
   },
   "alain-giasson": {
-    biography: "Alain Giasson mène l'Alliance citoyenne de Québec avec une vision citoyenne et collaborative. Il met l'accent sur l'importance de l'engagement communautaire et de la participation citoyenne dans les décisions municipales.",
+    biography: "Alain Giasson est le chef de l'Alliance citoyenne de Québec depuis juillet 2017. Leader d'un petit parti municipal, il prône une approche citoyenne de la politique municipale avec un focus sur les enjeux fiscaux et d'infrastructure pour la ville de Québec.",
     experience: [
-      "Chef de l'Alliance citoyenne de Québec",
-      "Organisateur communautaire",
-      "Promoteur de la démocratie participative",
-      "Militant pour l'engagement citoyen"
+      "Chef de l'Alliance citoyenne de Québec depuis 2017",
+      "Candidat municipal en 2017 (Charlesbourg)",
+      "Leader de parti politique municipal",
+      "Militant pour les enjeux municipaux"
     ],
-    vision2025: "Alain Giasson propose de renforcer l'alliance entre les citoyens et l'administration municipale, en favorisant la participation citoyenne et en créant des espaces de dialogue pour les élections municipales 2025.",
+    vision2025: "Alain Giasson propose une approche centrée sur la responsabilité fiscale et le développement d'infrastructures, notamment le projet de troisième lien, avec une attention aux préoccupations des citoyens de Québec.",
     achievements: [
-      "Développement de la démocratie participative",
-      "Création d'alliances citoyennes",
-      "Promotion de l'engagement communautaire",
-      "Facilitation du dialogue citoyen"
+      "Leadership de l'Alliance citoyenne depuis 2017",
+      "Maintien de l'enregistrement du parti municipal",
+      "Promotion des enjeux d'infrastructure",
+      "Représentation d'une alternative politique municipale"
     ]
   },
   "jackie-smith": {
-    biography: "Jackie Smith dirige Transition Québec avec une vision axée sur la transition écologique et le développement durable. Elle apporte une perspective environnementale forte et une expertise en développement communautaire durable.",
+    biography: "Jackie Smith est la cheffe de Transition Québec depuis 2019 et conseillère municipale de Limoilou depuis 2021. Militante écologiste anglophone, elle s'est fait connaître comme animatrice d'une émission radiophonique sur l'environnement et par son engagement pour la lutte contre les changements climatiques. Elle apporte une perspective environnementale forte à la gouvernance municipale.",
     experience: [
-      "Cheffe de Transition Québec",
-      "Militante écologiste reconnue",
-      "Experte en développement durable",
-      "Organisatrice communautaire"
+      "Cheffe de Transition Québec depuis 2019",
+      "Conseillère municipale de Limoilou depuis 2021",
+      "Militante écologiste et animatrice radio environnementale",
+      "Organisatrice communautaire (conseils de quartier)",
+      "Gestionnaire de changement"
     ],
     vision2025: "Jackie Smith propose une transition écologique ambitieuse pour Québec, avec un focus sur les énergies renouvelables, la protection de l'environnement et un développement urbain respectueux de la nature pour 2025.",
     achievements: [
-      "Leadership en transition écologique",
-      "Promotion des énergies renouvelables",
-      "Développement de politiques environnementales",
+      "Leadership de Transition Québec depuis 2019",
+      "Élection comme conseillère municipale en 2021",
+      "Animation d'émission radiophonique environnementale",
       "Mobilisation citoyenne pour l'environnement"
     ]
   }

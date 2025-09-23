@@ -23,11 +23,10 @@ import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Loader2, MapPin, Check, X, CheckCircle, Info, Mail, Shield, ExternalLink } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import { 
-  getDistrictFromPostalCode, 
-  isValidCanadianPostalCode, 
+import {
+  detectMunicipalityFromPostalCode,
+  isValidCanadianPostalCode,
   formatPostalCode,
-  quebecDistricts,
   getDistrictInfo,
   type DistrictInfo
 } from '@/lib/postal-code-mapping'
@@ -42,9 +41,20 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [step, setStep] = useState<'postal' | 'confirm' | 'consent'>('postal')
+  const [detectedMunicipality, setDetectedMunicipality] = useState<{
+    id: string;
+    name: string;
+    population: number;
+    postalCode: string;
+    district: string | null;
+    terminology: string;
+    availableDistricts: string[];
+  } | null>(null)
   const [estimatedDistrict, setEstimatedDistrict] = useState<string | null>(null)
   const [confirmedDistrict, setConfirmedDistrict] = useState<string>("")
   const [districtInfo, setDistrictInfo] = useState<DistrictInfo | null>(null)
+  const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
+  const [districtTerminology, setDistrictTerminology] = useState<string>('arrondissement')
   const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
 
   // États pour le consentement
@@ -88,22 +98,29 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
 
     // Simulation d'une vérification en ligne
     await new Promise((resolve) => setTimeout(resolve, 800))
-    
-    // Déterminer l'arrondissement estimé
-    const district = getDistrictFromPostalCode(postalCode)
-    
-    if (district) {
-      setEstimatedDistrict(district)
-      setConfirmedDistrict(district)
-      setDistrictInfo(getDistrictInfo(district))
+
+    // Détecter automatiquement la municipalité et l'arrondissement/secteur
+    const detectedInfo = detectMunicipalityFromPostalCode(postalCode)
+
+    if (detectedInfo) {
+      setDetectedMunicipality(detectedInfo)
+      setEstimatedDistrict(detectedInfo.district)
+      setConfirmedDistrict(detectedInfo.district || detectedInfo.availableDistricts[0])
+      setAvailableDistricts(detectedInfo.availableDistricts)
+      setDistrictTerminology(detectedInfo.terminology)
+
+      // Mettre à jour les infos du district sélectionné
+      const districtToUse = detectedInfo.district || detectedInfo.availableDistricts[0]
+      if (districtToUse) {
+        setDistrictInfo(getDistrictInfo(districtToUse))
+      }
+
       setStep('confirm')
     } else {
-      // Code postal non reconnu dans Québec
-      setError("Ce code postal ne semble pas être dans la ville de Québec. Veuillez vérifier ou sélectionner votre arrondissement manuellement.")
-      setStep('confirm')
+      // Code postal non reconnu dans aucune municipalité supportée
+      setError("Ce code postal ne semble pas être dans une municipalité supportée. Veuillez vérifier.")
       setEstimatedDistrict(null)
-      setConfirmedDistrict(quebecDistricts[0])
-      setDistrictInfo(getDistrictInfo(quebecDistricts[0]))
+      setDetectedMunicipality(null)
     }
     
     setIsLoading(false)
@@ -123,9 +140,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         postalCode: formatPostalCode(postalCode),
         district: confirmedDistrict,
         residenceArea: confirmedDistrict,
+        municipality: detectedMunicipality?.id || '',
+        municipalityName: detectedMunicipality?.name || '',
         location: {
           postalCode: formatPostalCode(postalCode),
           district: confirmedDistrict,
+          municipality: detectedMunicipality?.id || '',
           coordinates: districtInfo?.coordinates
         },
         analyticsConsent: true, // Toujours vrai
@@ -146,6 +166,11 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       // Fermer ce modal d'abord
       onClose()
 
+      // Déterminer l'URL de redirection selon la municipalité
+      const targetUrl = detectedMunicipality?.id
+        ? `/${detectedMunicipality.id}/test-politique-municipal`
+        : "/test-politique-municipal"
+
       // Attendre la fin du chargement des réponses avant de vérifier
       if (isSessionValid) {
         // Fonction pour vérifier les réponses existantes après le chargement
@@ -161,8 +186,8 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
               return
             }
 
-            console.log('🆕 Aucune réponse existante, redirection vers le questionnaire')
-            router.push("/test-politique-municipal")
+            console.log(`🆕 Aucune réponse existante, redirection vers ${targetUrl}`)
+            router.push(targetUrl)
           } else {
             // Réessayer après 100ms si encore en chargement
             console.log('⏳ Chargement des réponses en cours, nouvelle tentative...')
@@ -174,7 +199,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         setTimeout(checkExistingResponses, 50)
       } else {
         // Pas de session, aller directement au questionnaire
-        router.push("/test-politique-municipal")
+        router.push(targetUrl)
       }
 
     } catch (error) {
@@ -198,6 +223,9 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     setEstimatedDistrict(null)
     setConfirmedDistrict("")
     setDistrictInfo(null)
+    setDetectedMunicipality(null)
+    setAvailableDistricts([])
+    setDistrictTerminology('arrondissement')
     setError("")
   }
 
@@ -243,7 +271,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                   maxLength={7}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Format: G1A 1A1 (codes postaux de la ville de Québec)
+                  Format: G1A 1A1 (codes postaux de la province de Québec)
                 </p>
               </div>
               {error && (
@@ -286,21 +314,33 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                   Code postal analysé: {formatPostalCode(postalCode)}
                 </span>
               </div>
-              {estimatedDistrict ? (
-                <p className="text-sm text-midnight-green/80">
-                  Arrondissement estimé : <strong>{estimatedDistrict}</strong>
-                </p>
+              {detectedMunicipality ? (
+                <div className="space-y-1">
+                  <p className="text-sm text-midnight-green font-medium">
+                    Municipalité détectée : <strong>{detectedMunicipality.name}</strong>
+                  </p>
+                  {estimatedDistrict ? (
+                    <p className="text-sm text-midnight-green/80">
+                      {districtTerminology.charAt(0).toUpperCase() + districtTerminology.slice(1)} estimé : <strong>{estimatedDistrict}</strong>
+                    </p>
+                  ) : (
+                    <p className="text-sm text-midnight-green/80">
+                      {districtTerminology.charAt(0).toUpperCase() + districtTerminology.slice(1)} non déterminé. Veuillez sélectionner.
+                    </p>
+                  )}
+                </div>
               ) : (
                 <p className="text-sm text-midnight-green/80">
-                  Code postal non reconnu. Veuillez sélectionner votre arrondissement.
+                  Municipalité non reconnue. Veuillez vérifier votre code postal.
                 </p>
               )}
             </div>
 
-            {/* Sélection d'arrondissement */}
+            {/* Sélection d'arrondissement/secteur */}
+            {availableDistricts.length > 0 && (
             <div className="space-y-2">
               <Label className="text-sm font-medium text-foreground">
-                Confirmez ou modifiez votre arrondissement :
+                Confirmez ou modifiez votre {districtTerminology} :
               </Label>
               <div className="relative">
                 <Select 
@@ -318,9 +358,9 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                     position="popper"
                     sideOffset={4}
                   >
-                    {quebecDistricts.map((district) => (
-                      <SelectItem 
-                        key={district} 
+                    {availableDistricts.map((district) => (
+                      <SelectItem
+                        key={district}
                         value={district}
                         className="cursor-pointer hover:bg-white focus:bg-white px-3 py-2"
                       >
@@ -331,11 +371,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 </Select>
               </div>
               
-              {/* Debug: Afficher le nombre d'arrondissements */}
+              {/* Info: Afficher le nombre d'options disponibles */}
               <p className="text-xs text-muted-foreground">
-                {quebecDistricts.length} arrondissements disponibles
+                {availableDistricts.length} {districtTerminology}s disponibles pour {detectedMunicipality?.name}
               </p>
             </div>
+            )}
 
             {/* Information sur l'arrondissement sélectionné */}
             {districtInfo && (
@@ -547,9 +588,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                           postalCode: formatPostalCode(postalCode),
                           district: confirmedDistrict,
                           residenceArea: confirmedDistrict,
+                          municipality: detectedMunicipality?.id || '',
+                          municipalityName: detectedMunicipality?.name || '',
                           location: {
                             postalCode: formatPostalCode(postalCode),
                             district: confirmedDistrict,
+                            municipality: detectedMunicipality?.id || '',
                             coordinates: districtInfo?.coordinates
                           },
                           analyticsConsent: true,
@@ -560,6 +604,10 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                         await updateProfileFields(profileData)
                         onClose()
 
+                        const targetUrl = detectedMunicipality?.id
+                          ? `/${detectedMunicipality.id}/test-politique-municipal`
+                          : "/test-politique-municipal"
+
                         if (isSessionValid) {
                           const checkExistingResponses = () => {
                             if (!responsesLoading) {
@@ -568,19 +616,22 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                                 setIsExistingResponsesModalOpen(true)
                                 return
                               }
-                              router.push("/test-politique-municipal")
+                              router.push(targetUrl)
                             } else {
                               setTimeout(checkExistingResponses, 100)
                             }
                           }
                           setTimeout(checkExistingResponses, 50)
                         } else {
-                          router.push("/test-politique-municipal")
+                          router.push(targetUrl)
                         }
                       } catch (error) {
                         console.error('Erreur mode anonyme:', error)
                         onClose()
-                        router.push("/test-politique-municipal")
+                        const targetUrl = detectedMunicipality?.id
+                          ? `/${detectedMunicipality.id}/test-politique-municipal`
+                          : "/test-politique-municipal"
+                        router.push(targetUrl)
                       }
                     }
                     anonymousHandler()
@@ -602,7 +653,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
     <ContinueOrRestartModal
       isOpen={isExistingResponsesModalOpen}
       onClose={() => setIsExistingResponsesModalOpen(false)}
-      targetPath="/test-politique-municipal"
+      targetPath={detectedMunicipality?.id ? `/${detectedMunicipality.id}/test-politique-municipal` : "/test-politique-municipal"}
     />
 
     {/* Modal d'information détaillée pour transparence complète */}

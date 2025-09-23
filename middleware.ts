@@ -14,8 +14,20 @@ const supportedMunicipalities = [
 export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  // Exclure les routes API du middleware
+  // Exclure les routes API et les pages statiques du middleware
   if (pathname.startsWith('/api/')) {
+    return NextResponse.next()
+  }
+
+  // Pages statiques globales qui ne doivent pas être redirigées
+  const staticPages = [
+    '/comment-ca-marche',
+    '/pourquoi-important',
+    '/faq',
+    '/centre-aide'
+  ]
+
+  if (staticPages.includes(pathname)) {
     return NextResponse.next()
   }
 
@@ -45,11 +57,7 @@ export function middleware(request: NextRequest) {
       'elections-municipales-2025-quebec',
       'leaders',
       'partage',
-      'preferences',
-      'comment-ca-marche',
-      'pourquoi-important',
-      'faq',
-      'centre-aide'
+      'preferences'
     ]
 
     // Si c'est un chemin legacy, rediriger vers quebec par défaut

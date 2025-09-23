@@ -14,6 +14,10 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Loader2 } from "lucide-react"
+import {
+  detectMunicipalityFromPostalCode,
+  isValidCanadianPostalCode
+} from '@/lib/postal-code-mapping'
 
 type PostalCodeModalProps = {
   isOpen: boolean
@@ -24,6 +28,15 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
   const [postalCode, setPostalCode] = useState("")
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [detectedMunicipality, setDetectedMunicipality] = useState<{
+    id: string;
+    name: string;
+    population: number;
+    postalCode: string;
+    district: string | null;
+    terminology: string;
+    availableDistricts: string[];
+  } | null>(null)
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -31,19 +44,30 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
     setError("")
     setIsLoading(true)
 
-    const postalCodeRegex = /^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/
-    if (!postalCodeRegex.test(postalCode)) {
-      setError("Veuillez entrer un code postal valide (ex: A1A 1A1).")
+    if (!isValidCanadianPostalCode(postalCode)) {
+      setError("Veuillez entrer un code postal valide (ex: G1A 1A1).")
       setIsLoading(false)
       return
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
-    // ATTENTION: Ce composant est obsolète - utiliser enhanced-postal-code-modal.tsx
-    // localStorage.setItem("userPostalCode", postalCode.toUpperCase().replace(/\s+/g, ""))
+
+    // Détecter automatiquement la municipalité
+    const detectedInfo = detectMunicipalityFromPostalCode(postalCode)
+
+    if (detectedInfo) {
+      setDetectedMunicipality(detectedInfo)
+
+      // Redirection selon la municipalité détectée
+      const targetUrl = `/${detectedInfo.id}/test-politique-municipal`
+      router.push(targetUrl)
+    } else {
+      // Code postal non reconnu - redirection par défaut
+      router.push("/test-politique-municipal")
+    }
+
     setIsLoading(false)
     onClose()
-    router.push("/test-politique-municipal")
   }
 
   return (
@@ -54,6 +78,13 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
           <DialogDescription className="text-muted-foreground">
             Votre code postal nous aide à personnaliser le questionnaire pour votre municipalité.
           </DialogDescription>
+          {detectedMunicipality && (
+            <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded">
+              <p className="text-sm text-green-700">
+                Municipalité détectée : <strong>{detectedMunicipality.name}</strong>
+              </p>
+            </div>
+          )}
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 py-4">
@@ -65,7 +96,7 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
                 id="postal-code"
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
-                placeholder="A1A 1A1"
+                placeholder="G1A 1A1"
                 className="col-span-3 rounded-lg bg-background focus:ring-midnight-green"
                 aria-describedby="postal-code-error"
               />
@@ -103,7 +134,7 @@ export default function PostalCodeModal({ isOpen, onClose }: PostalCodeModalProp
             className="text-sm text-muted-foreground hover:text-midnight-green"
             onClick={() => {
               onClose()
-              router.push("/test-politique-municipal?skipPostal=true")
+              router.push("/quebec/test-politique-municipal?skipPostal=true")
             }}
           >
             Continuer sans code postal

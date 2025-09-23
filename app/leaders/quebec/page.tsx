@@ -59,9 +59,9 @@ const currentLeaderDescriptions: Record<string, string> = {
   "sam-hamad": "Homme d'affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique pour Leadership Québec.",
   "stevens-melancon": "Leader intérimaire d'Équipe priorité Québec depuis mars 2025 et conseiller municipal, Stevens Mélançon apporte 34 ans d'expérience en éducation avec une approche collaborative axée sur les priorités environnementales et citoyennes.",
   "claude-villeneuve": "Chef de Québec d'abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
-  "stephane-lachance": "Dirigeant de Respect citoyens, Stéphane Lachance met l'accent sur le respect des droits et une approche inclusive de la gouvernance municipale.",
-  "alain-giasson": "Chef de l'Alliance citoyenne, Alain Giasson promeut l'engagement communautaire et la démocratie participative dans les décisions municipales.",
-  "jackie-smith": "Cheffe de Transition Québec, Jackie Smith propose une vision ambitieuse de transition écologique et de développement durable pour la ville."
+  "stephane-lachance": "Chef de Respect citoyens depuis mars 2025, Stéphane Lachance est co-fondateur du mouvement 'Tramway, non merci' et prône une approche participative de la gouvernance municipale.",
+  "alain-giasson": "Chef de l'Alliance citoyenne de Québec depuis 2017, Alain Giasson représente une alternative politique municipale axée sur la responsabilité fiscale et les enjeux d'infrastructure.",
+  "jackie-smith": "Cheffe de Transition Québec depuis 2019 et conseillère municipale de Limoilou, Jackie Smith est une militante écologiste proposant une transition environnementale ambitieuse pour la ville."
 }
 
 // Leaders marquants de l'histoire de Québec

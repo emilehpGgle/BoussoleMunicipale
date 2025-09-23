@@ -33,11 +33,11 @@ export const metadata: Metadata = {
     "political compass québec",
     "élections municipales 2025",
     "élections municipales québec",
-    "bruno marchand",
-    "sam hamad",
     "partis politiques québec",
+    "candidats municipaux québec",
     "maire québec 2025",
-    "denis coderre",
+    "comparateur politique municipal",
+    "affinités politiques municipales",
     "test politique municipal"
   ],
   authors: [{ name: "Boussole Électorale Québec" }],
@@ -51,43 +51,49 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon.svg",
+        url: "/favicon-optimized.svg?v=2025",
         type: "image/svg+xml",
       },
       {
-        url: "/logo-main.svg",
-        sizes: "any",
+        url: "/favicon-32x32.png?v=2025",
+        sizes: "32x32",
+        type: "image/png",
+      },
+      {
+        url: "/favicon.ico?v=2025",
+        sizes: "16x16",
+        type: "image/x-icon",
       },
     ],
     apple: [
       {
-        url: "/logo-main.svg",
+        url: "/favicon-180x180.png?v=2025",
         sizes: "180x180",
-        type: "image/svg+xml",
+        type: "image/png",
       },
     ],
   },
   openGraph: {
     title: "Boussole Électorale 2025 | Test Politique Municipal Québec",
-    description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Bruno Marchand, Sam Hamad et tous les partis.",
+    description: "Boussole electorale officielle pour découvrir vos affinités politiques. Test politique gratuit pour les élections municipales 2025. Comparez votre vision avec tous les partis et candidats municipaux de Québec.",
     url: "https://boussolemunicipale.com",
     siteName: "Boussole Électorale Québec",
     locale: "fr_CA",
     type: "website",
     images: [
       {
-        url: "/hero-illustration-v2.webp",
+        url: "/Image_parc_crisp.webp?v=2025",
         width: 1200,
         height: 630,
-        alt: "Boussole Électorale Municipale - Spécialisée pour les élections municipales de Québec"
+        alt: "Boussole Électorale Municipale - Découvrez vos affinités politiques pour les élections municipales de Québec"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
     title: "Boussole Électorale 2025 | Test Politique Québec",
-    description: "Boussole electorale gratuite pour les élections municipales 2025. Découvrez vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux.",
-    images: ["/hero-illustration-v2.webp"]
+    description: "Boussole electorale gratuite pour les élections municipales 2025. Découvrez vos affinités avec tous les partis et candidats municipaux de Québec.",
+    images: ["/Image_parc_crisp.webp?v=2025"]
   },
   robots: {
     index: true,
@@ -123,7 +129,7 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Boussole Électorale | Test Politique Municipal Québec 2025",
-    "description": "Boussole electorale (boussole électorale) officielle pour les élections municipales 2025 à Québec. Test politique gratuit type political compass pour découvrir vos affinités avec Bruno Marchand, Sam Hamad et tous les partis municipaux.",
+    "description": "Boussole electorale (boussole électorale) officielle pour les élections municipales 2025 à Québec. Test politique gratuit type political compass pour découvrir vos affinités avec tous les partis et candidats municipaux de Québec.",
     "url": "https://boussolemunicipale.com",
     "applicationCategory": "Political Tool",
     "operatingSystem": "Web Browser",
@@ -170,7 +176,7 @@ export default function RootLayout({
         "name": "Affinités politiques"
       }
     ],
-    "keywords": "boussole électorale, boussole electorale, boussole electorale 2025, test politique, test political compass, political compass québec, élections municipales québec 2025, bruno marchand, sam hamad, denis coderre, partis politiques québec, maire québec 2025"
+    "keywords": "boussole électorale, boussole electorale, boussole electorale 2025, test politique, test political compass, political compass québec, élections municipales québec 2025, partis politiques québec, candidats municipaux québec, maire québec 2025, comparateur politique municipal"
   }
 
   return (
@@ -445,7 +451,7 @@ export default function RootLayout({
               "@type": "Organization",
               "name": "Boussole Électorale Québec",
               "url": "https://boussolemunicipale.com",
-              "logo": "https://boussolemunicipale.com/logo-main.svg",
+              "logo": "https://boussolemunicipale.com/favicon-optimized.svg",
               "description": "Boussole électorale municipale de Québec 2025 : test politique gratuit pour découvrir vos affinités avec les partis municipaux.",
               "sameAs": [
                 "https://www.facebook.com/boussolemunicipale",
