@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     ]
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/elections-municipales-2025-quebec"
+    canonical: "https://boussolemunicipale.com/elections-municipales-2025-quebec"
   }
 }
 
@@ -177,7 +177,7 @@ export default function ElectionsMunicipales2025Page() {
               🗳️ Découvrez vos affinités politiques
             </StartTestButton>
             <Button asChild variant="outline" size="lg">
-              <Link href="/leaders/quebec">
+              <Link href="/quebec/leaders">
                 Voir tous les candidats
               </Link>
             </Button>
@@ -290,7 +290,7 @@ export default function ElectionsMunicipales2025Page() {
 
           <div className="text-center">
             <Button asChild variant="outline" size="lg">
-              <Link href="/leaders/quebec">
+              <Link href="/quebec/leaders">
                 Voir tous les candidats et leur biographie
               </Link>
             </Button>

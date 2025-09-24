@@ -762,11 +762,11 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 type="button"
                 onClick={handleConsentConfirmation}
                 className={`rounded-xl px-8 py-3 ${
-                  emailConsent && (!email || emailError)
+                  !emailConsent || !email || emailError
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300"
                     : "bg-midnight-green hover:bg-midnight-green/90 text-white"
                 }`}
-                disabled={isSaving || (emailConsent && (!email || !!emailError))}
+                disabled={isSaving || !emailConsent || !email || !!emailError}
               >
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 {showSuccess ? (
