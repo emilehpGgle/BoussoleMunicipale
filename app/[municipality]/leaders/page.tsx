@@ -5,8 +5,47 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowRight, Users, Calendar, MapPin, Award, History } from "lucide-react"
-import { partiesData } from "@/lib/boussole-data"
+import { Party } from "@/lib/boussole-data"
 import { Breadcrumbs } from "@/components/breadcrumbs"
+
+// Fonction pour récupérer les partis par municipalité
+async function getPartiesByMunicipality(municipality: string): Promise<Party[]> {
+  try {
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000'
+        : 'https://boussolemunicipale.com'
+
+    const response = await fetch(
+      `${baseUrl}/api/parties?municipality=${encodeURIComponent(municipality)}`,
+      { next: { revalidate: 3600 } } // Cache avec revalidation toutes les heures
+    )
+
+    if (!response.ok) {
+      console.error(`Failed to fetch parties for ${municipality}:`, response.status)
+      return []
+    }
+
+    const data = await response.json()
+    return data.parties || []
+  } catch (error) {
+    console.error(`Error fetching parties for ${municipality}:`, error)
+    return []
+  }
+}
+
+// Génération statique des paramètres pour les municipalités connues
+export async function generateStaticParams() {
+  return [
+    { municipality: 'quebec' },
+    { municipality: 'montreal' },
+    { municipality: 'laval' },
+    { municipality: 'levis' },
+    { municipality: 'longueuil' },
+    { municipality: 'gatineau' }
+  ]
+}
 
 interface LeadersPageProps {
   params: Promise<{
@@ -26,15 +65,29 @@ function generateSlug(leaderName: string): string {
     .trim()
 }
 
-// Descriptions courtes pour les leaders actuels
-const currentLeaderDescriptions: Record<string, string> = {
-  "bruno-marchand": "Maire sortant de Québec depuis 2021, ancien président-directeur général de Centraide Québec, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux pour les élections 2025.",
-  "sam-hamad": "Homme d'affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique pour Leadership Québec.",
-  "stevens-melancon": "Leader intérimaire d'Équipe priorité Québec depuis mars 2025 et conseiller municipal, Stevens Mélançon apporte 34 ans d'expérience en éducation avec une approche collaborative axée sur les priorités environnementales et citoyennes.",
-  "claude-villeneuve": "Chef de Québec d'abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
-  "stephane-lachance": "Chef de Respect citoyens depuis mars 2025, Stéphane Lachance est co-fondateur du mouvement 'Tramway, non merci' et prône une approche participative de la gouvernance municipale.",
-  "alain-giasson": "Chef de l'Alliance citoyenne de Québec depuis 2017, Alain Giasson représente une alternative politique municipale axée sur la responsabilité fiscale et les enjeux d'infrastructure.",
-  "jackie-smith": "Cheffe de Transition Québec depuis 2019 et conseillère municipale de Limoilou, Jackie Smith est une militante écologiste proposant une transition environnementale ambitieuse pour la ville."
+// Descriptions courtes pour les leaders actuels par municipalité
+const currentLeaderDescriptions: Record<string, Record<string, string>> = {
+  quebec: {
+    "bruno-marchand": "Maire sortant de Québec depuis 2021, ancien président-directeur général de Centraide Québec, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux pour les élections 2025.",
+    "sam-hamad": "Homme d'affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique pour Leadership Québec.",
+    "stevens-melancon": "Leader intérimaire d'Équipe priorité Québec depuis mars 2025 et conseiller municipal, Stevens Mélançon apporte 34 ans d'expérience en éducation avec une approche collaborative axée sur les priorités environnementales et citoyennes.",
+    "claude-villeneuve": "Chef de Québec d'abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
+    "stephane-lachance": "Chef de Respect citoyens depuis mars 2025, Stéphane Lachance est co-fondateur du mouvement 'Tramway, non merci' et prône une approche participative de la gouvernance municipale.",
+    "alain-giasson": "Chef de l'Alliance citoyenne de Québec depuis 2017, Alain Giasson représente une alternative politique municipale axée sur la responsabilité fiscale et les enjeux d'infrastructure.",
+    "jackie-smith": "Cheffe de Transition Québec depuis 2019 et conseillère municipale de Limoilou, Jackie Smith est une militante écologiste proposant une transition environnementale ambitieuse pour la ville."
+  },
+  montreal: {
+    "luc-rabouin": "Chef de Projet Montréal depuis mars 2025, président du comité exécutif et maire d'arrondissement du Plateau-Mont-Royal depuis 2019, Luc Rabouin apporte une expertise en développement économique communautaire et démocratie participative avec une vision de continuité écologique et sociale.",
+    "soraya-martinez-ferrada": "Ancienne ministre fédérale du Tourisme et députée de Hochelaga, ex-conseillère municipale de Montréal (2005-2009), Soraya Martinez Ferrada combine expérience gouvernementale et vision municipale avec une approche axée sur la gestion efficace et l'inclusion.",
+    "gilbert-thibodeau": "Chef d'Action Montréal depuis 2022 et candidat à la mairie en 2017 et 2021, Gilbert Thibodeau apporte une expertise en finance et gestion d'entreprise avec une vision conservatrice axée sur la responsabilité fiscale et la sécurité publique.",
+    "jean-francois-kacou": "Chef et fondateur de Futur Montréal depuis 2025, ancien directeur général de Percé et expert en développement économique, Jean-François Kacou représente la première candidature afro-canadienne à la mairie avec une vision centriste axée sur l'inclusion, l'équité et le pragmatisme.",
+    "craig-sauve": "Conseiller municipal depuis 2013 et fondateur de Transition Montréal en juillet 2025, ancien membre de Projet Montréal, Craig Sauvé propose une alternative progressiste axée sur l'itinérance, la crise du logement et l'équité fiscale avec des solutions innovantes."
+  },
+  levis: {
+    "isabelle-demers": "Chef de Lévis Force 10 et candidate à la mairie de Lévis en 2025, Isabelle Demers apporte une riche expérience municipale comme conseillère (2001-2009, 2017-présent) et présidente du comité des finances depuis 2021. Bachelière en science politique et communication de l'Université Laval, elle est reconnue pour son engagement auprès des jeunes et des organismes lévisiens.",
+    "serge-bonin": "Chef de Repensons Lévis depuis avril 2024 et candidat à la mairie en 2025, Serge Bonin est conseiller municipal de Saint-Étienne depuis 2021 et porte-parole de l'opposition officielle à l'Hôtel de Ville. Comédien et entrepreneur (ClicVox), il apporte une approche participative et citoyenne avec 8 ans d'expérience en vulgarisation scientifique à l'Université Laval.",
+    "steven-blaney": "Chef de Prospérité Lévis et candidat potentiel à la mairie en 2025, Steven Blaney apporte une vaste expérience politique comme ancien député fédéral conservateur (2006-2021) et ministre sous Stephen Harper (2013-2015). Ingénieur civil de formation et entrepreneur (fondateur de Stratech), il mise sur la responsabilité fiscale intergénérationnelle et le développement économique."
+  }
 }
 
 // Leaders marquants de l'histoire de Québec
@@ -93,31 +146,32 @@ export async function generateMetadata({ params }: LeadersPageProps): Promise<Me
   const resolvedParams = await params
   const { municipality } = resolvedParams
 
+  const municipalityDisplay = municipality.charAt(0).toUpperCase() + municipality.slice(1)
+
   return {
-    title: `Leaders Politiques ${municipality.charAt(0).toUpperCase() + municipality.slice(1)} | Actuels & Marquants - Élections Municipales 2025`,
-    description: `Découvrez les leaders politiques de ${municipality.charAt(0).toUpperCase() + municipality.slice(1)} : Bruno Marchand, Sam Hamad et les candidats actuels 2025, plus les figures marquantes comme Régis Labeaume, Jean-Paul L'Allier. Biographies complètes et positions politiques.`,
+    title: `Leaders Politiques ${municipalityDisplay} | Candidats & Profils - Élections Municipales 2025`,
+    description: `Découvrez les leaders politiques de ${municipalityDisplay} pour les élections municipales 2025. Profils complets des candidats à la mairie, leurs parcours, visions et positions politiques détaillées.`,
     keywords: [
       `leaders politiques ${municipality}`,
       `chefs de parti municipaux ${municipality}`,
-      "bruno marchand maire québec",
-      "sam hamad leadership québec",
-      "régis labeaume ancien maire",
-      "jean-paul lallier",
-      "andrée boucher première femme maire",
-      `élections municipales ${municipality} 2025`,
       `candidats maire ${municipality}`,
-      `histoire politique ${municipality}`
+      `élections municipales ${municipality} 2025`,
+      `politique municipale ${municipality}`,
+      `profils politiques ${municipality}`,
+      "élections municipales 2025",
+      "candidats municipaux",
+      `partis politiques ${municipality}`
     ],
     openGraph: {
-      title: `Leaders Politiques ${municipality.charAt(0).toUpperCase() + municipality.slice(1)} - Actuels & Marquants | Élections 2025`,
-      description: `Profils complets des leaders politiques de ${municipality.charAt(0).toUpperCase() + municipality.slice(1)} pour 2025 et les figures historiques marquantes de la politique municipale.`,
+      title: `Leaders Politiques ${municipalityDisplay} - Candidats & Profils | Élections 2025`,
+      description: `Profils complets des leaders politiques de ${municipalityDisplay} pour les élections municipales 2025. Découvrez les candidats, leurs parcours et positions politiques.`,
       type: "website",
       images: [
         {
           url: "/hero-illustration-v2.webp",
           width: 1200,
           height: 630,
-          alt: `Leaders politiques de ${municipality.charAt(0).toUpperCase() + municipality.slice(1)} - Actuels et marquants`
+          alt: `Leaders politiques de ${municipalityDisplay} - Candidats et profils`
         }
       ]
     },
@@ -131,6 +185,9 @@ export default async function LeadersPage({ params }: LeadersPageProps) {
   const resolvedParams = await params
   const { municipality } = resolvedParams
 
+  // Récupérer les partis pour cette municipalité
+  const partiesData = await getPartiesByMunicipality(municipality)
+
   // Capitalize first letter for display
   const municipalityDisplay = municipality.charAt(0).toUpperCase() + municipality.slice(1)
 
@@ -138,8 +195,8 @@ export default async function LeadersPage({ params }: LeadersPageProps) {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": `Leaders Politiques de ${municipalityDisplay} - Actuels et Marquants`,
-    "description": `Collection complète des leaders politiques municipaux de ${municipalityDisplay} : candidats actuels pour 2025 et figures historiques marquantes`,
+    "name": `Leaders Politiques de ${municipalityDisplay} - Candidats et Profils`,
+    "description": `Collection complète des leaders politiques municipaux de ${municipalityDisplay} : candidats pour les élections 2025 avec leurs profils et positions politiques`,
     "url": `https://boussolemunicipale.com/${municipality}/leaders`,
     "mainEntity": {
       "@type": "ItemList",
@@ -226,7 +283,7 @@ export default async function LeadersPage({ params }: LeadersPageProps) {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {partiesData.map((party) => {
               const slug = generateSlug(party.leader)
-              const description = currentLeaderDescriptions[slug] || "Candidat aux élections municipales 2025."
+              const description = currentLeaderDescriptions[municipality]?.[slug] || "Candidat aux élections municipales 2025."
 
               return (
                 <Card key={party.id} className="hover:shadow-lg transition-all duration-200 group">
