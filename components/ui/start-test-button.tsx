@@ -1,6 +1,6 @@
 'use client'
 
-import { RainbowButton } from './rainbow-button'
+import { PrimaryButton } from './primary-button'
 
 interface StartTestButtonProps {
   children: React.ReactNode
@@ -19,11 +19,13 @@ export function StartTestButton({ children, className }: StartTestButtonProps) {
   }
 
   return (
-    <RainbowButton
+    <PrimaryButton
       className={className}
       onClick={handleStartTest}
+      size="lg"
+      showCompass
     >
       {children}
-    </RainbowButton>
+    </PrimaryButton>
   )
 }

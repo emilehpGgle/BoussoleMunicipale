@@ -1,0 +1,123 @@
+{
+  "metadata": {
+    "municipalite": "levis",
+    "date_analyse": "2025-09-23",
+    "source_recherche": "Radio-Canada, Le Devoir, Journal de Lévis, Élections Québec, sites officiels partis",
+    "echelle_scores": {
+      "STRONGLY_AGREE": 4,
+      "AGREE": 3,
+      "NEUTRAL": 2,
+      "DISAGREE": 1,
+      "STRONGLY_DISAGREE": 0,
+      "IDK": -1
+    }
+  },
+  "partis": [
+    {
+      "id": "levis_force_10_lev",
+      "nom": "Lévis Force 10",
+      "chef": "Isabelle Demers",
+      "orientation_politique": "centre",
+      "positions": {
+        "lev_q3_troisieme_lien": "AGREE",
+        "lev_traverse_quebec_levis": "AGREE",
+        "lev_q2_pistes_cyclables": "AGREE",
+        "lev_q4_priorite_mobilite_active": "NEUTRAL",
+        "lev_q5_quotas_logements_abordables": "NEUTRAL",
+        "lev_q6_reduction_depenses_taxes": "STRONGLY_AGREE",
+        "lev_q7_immeubles_grande_hauteur": "NEUTRAL",
+        "lev_q8_interdire_essence_centre_ville": "DISAGREE",
+        "lev_q9_protection_espaces_verts": "AGREE",
+        "lev_q10_transition_carboneutre": "NEUTRAL",
+        "lev_q11_reduction_dechets": "NEUTRAL",
+        "lev_q12_augmentation_taxes": "DISAGREE",
+        "lev_q13_pouvoir_conseils_quartier": "NEUTRAL",
+        "lev_q14_reduction_dette": "AGREE",
+        "lev_q15_avantages_fiscaux_entreprises": "AGREE",
+        "lev_q16_limitation_touristes": "NEUTRAL",
+        "lev_q17_soutien_organismes_communautaires": "NEUTRAL",
+        "lev_q18_augmentation_effectifs_policiers": "NEUTRAL",
+        "lev_q19_investissement_infrastructures_loisirs_sportives": "AGREE",
+        "lev_q20_protection_patrimoine": "AGREE"
+      },
+      "justifications": {
+        "lev_q3_troisieme_lien": "Continuité avec position Lehouillier favorable au 3e lien",
+        "lev_traverse_quebec_levis": "Amélioration services transport collectif cohérente avec réalisations",
+        "lev_q6_reduction_depenses_taxes": "Engagement central: hausse taxes limitée maximum à l'inflation",
+        "lev_q2_pistes_cyclables": "Réalisations 'mobilité durable et transport actif' documentées",
+        "lev_q9_protection_espaces_verts": "Réalisations environnementales et qualité de vie prioritaires"
+      }
+    },
+    {
+      "id": "repensons_levis_lev",
+      "nom": "Repensons Lévis",
+      "chef": "Serge Bonin",
+      "orientation_politique": "centre-gauche",
+      "positions": {
+        "lev_q3_troisieme_lien": "NEUTRAL",
+        "lev_traverse_quebec_levis": "AGREE",
+        "lev_q2_pistes_cyclables": "AGREE",
+        "lev_q4_priorite_mobilite_active": "AGREE",
+        "lev_q5_quotas_logements_abordables": "AGREE",
+        "lev_q6_reduction_depenses_taxes": "STRONGLY_AGREE",
+        "lev_q7_immeubles_grande_hauteur": "NEUTRAL",
+        "lev_q8_interdire_essence_centre_ville": "NEUTRAL",
+        "lev_q9_protection_espaces_verts": "AGREE",
+        "lev_q10_transition_carboneutre": "AGREE",
+        "lev_q11_reduction_dechets": "NEUTRAL",
+        "lev_q12_augmentation_taxes": "NEUTRAL",
+        "lev_q13_pouvoir_conseils_quartier": "STRONGLY_AGREE",
+        "lev_q14_reduction_dette": "AGREE",
+        "lev_q15_avantages_fiscaux_entreprises": "DISAGREE",
+        "lev_q16_limitation_touristes": "NEUTRAL",
+        "lev_q17_soutien_organismes_communautaires": "STRONGLY_AGREE",
+        "lev_q18_augmentation_effectifs_policiers": "NEUTRAL",
+        "lev_q19_investissement_infrastructures_loisirs_sportives": "AGREE",
+        "lev_q20_protection_patrimoine": "AGREE"
+      },
+      "justifications": {
+        "lev_q6_reduction_depenses_taxes": "Engagement central: plafonnement taxes résidentielles à l'IPC",
+        "lev_q13_pouvoir_conseils_quartier": "Participation citoyenne et pouvoir aux arrondissements prioritaire",
+        "lev_q17_soutien_organismes_communautaires": "Réduction iniquités et enjeux sociaux dans mandat",
+        "lev_q14_reduction_dette": "Pilier prioriser entretien infrastructures existantes",
+        "lev_q3_troisieme_lien": "Position non claire de l'opposition, approche prudente"
+      }
+    },
+    {
+      "id": "prosperite_levis_lev",
+      "nom": "Prospérité Lévis",
+      "chef": "Steven Blaney",
+      "orientation_politique": "centre-droit",
+      "positions": {
+        "lev_q3_troisieme_lien": "STRONGLY_AGREE",
+        "lev_traverse_quebec_levis": "AGREE",
+        "lev_q2_pistes_cyclables": "NEUTRAL",
+        "lev_q4_priorite_mobilite_active": "DISAGREE",
+        "lev_q5_quotas_logements_abordables": "NEUTRAL",
+        "lev_q6_reduction_depenses_taxes": "AGREE",
+        "lev_q7_immeubles_grande_hauteur": "AGREE",
+        "lev_q8_interdire_essence_centre_ville": "STRONGLY_DISAGREE",
+        "lev_q9_protection_espaces_verts": "NEUTRAL",
+        "lev_q10_transition_carboneutre": "NEUTRAL",
+        "lev_q11_reduction_dechets": "AGREE",
+        "lev_q12_augmentation_taxes": "DISAGREE",
+        "lev_q13_pouvoir_conseils_quartier": "NEUTRAL",
+        "lev_q14_reduction_dette": "STRONGLY_AGREE",
+        "lev_q15_avantages_fiscaux_entreprises": "AGREE",
+        "lev_q16_limitation_touristes": "DISAGREE",
+        "lev_q17_soutien_organismes_communautaires": "NEUTRAL",
+        "lev_q18_augmentation_effectifs_policiers": "AGREE",
+        "lev_q19_investissement_infrastructures_loisirs_sportives": "STRONGLY_AGREE",
+        "lev_q20_protection_patrimoine": "AGREE"
+      },
+      "justifications": {
+        "lev_q3_troisieme_lien": "Position très claire pour 3e lien à l'est, opposition au tracé central",
+        "lev_traverse_quebec_levis": "Amélioration mobilité cohérente avec focus circulation",
+        "lev_q14_reduction_dette": "Gestion rigoureuse et responsabilité fiscale intergénérationnelle",
+        "lev_q19_investissement_infrastructures_loisirs_sportives": "Engagement soutien infrastructures sportives et communautaires",
+        "lev_q8_interdire_essence_centre_ville": "Opposition aux mesures environnementales radicales, focus mobilité automobile",
+        "lev_q18_augmentation_effectifs_policiers": "Engagement assurer sécurité dans les quartiers"
+      }
+    }
+  ]
+}

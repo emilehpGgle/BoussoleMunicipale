@@ -5,21 +5,27 @@ import { Button } from '@/components/ui/button'
 import { useUserResponses } from '@/hooks/useUserResponses'
 import { useSession } from '@/hooks/useSession'
 import { boussoleQuestions } from '@/lib/boussole-data'
+import { PrimaryButton } from '@/components/ui/primary-button'
 
 const ContinueOrRestartModal = lazy(() => import('@/components/existing-responses-modal'))
 
 type StartQuestionnaireButtonProps = {
   className?: string
-  variant?: 'default' | 'outline' | 'ghost' | 'secondary' | 'destructive'
+  variant?: 'default' | 'outline' | 'ghost' | 'secondary' | 'destructive' | 'primary'
+  size?: 'sm' | 'md' | 'lg'
   children?: React.ReactNode
+  onClick?: (event: React.MouseEvent<HTMLButtonElement>) => void
 }
 
-export function StartQuestionnaireButton({ className, variant = 'default', children }: StartQuestionnaireButtonProps) {
+export function StartQuestionnaireButton({ className, variant = 'default', size, children, onClick, ...props }: StartQuestionnaireButtonProps) {
   const { sessionToken } = useSession()
   const { getResponseCounts, isLoading } = useUserResponses()
   const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
 
-  const handleStartQuestionnaire = async () => {
+  const handleStartQuestionnaire = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    // Call the passed onClick handler first if it exists
+    onClick?.(event)
+
     try {
       if (!sessionToken) {
         const event = new CustomEvent('openPostalCodeModal')
@@ -46,12 +52,27 @@ export function StartQuestionnaireButton({ className, variant = 'default', child
     }
   }
 
+  // Use PrimaryButton for primary variant, regular Button for others
+  const ButtonComponent = variant === 'primary' ? (
+    <PrimaryButton
+      onClick={handleStartQuestionnaire}
+      className={className}
+      size={size}
+      showCompass
+      {...props}
+    >
+      {children}
+    </PrimaryButton>
+  ) : (
+    <Button onClick={handleStartQuestionnaire} className={className} variant={variant} {...props}>
+      {children}
+    </Button>
+  )
+
   return (
     <>
-      <Button onClick={handleStartQuestionnaire} className={className} variant={variant}>
-        {children}
-      </Button>
-      <Suspense fallback={<div />}> 
+      {ButtonComponent}
+      <Suspense fallback={<div />}>
         <ContinueOrRestartModal
           isOpen={isExistingResponsesModalOpen}
           onClose={() => setIsExistingResponsesModalOpen(false)}

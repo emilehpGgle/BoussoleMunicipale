@@ -1,0 +1,42 @@
+{
+  "gatineau_questions_specifiques": [
+    {
+      "id": "q19_services_bilingues",
+      "text": "La municipalité devrait renforcer l'offre de services municipaux en français et en anglais pour répondre aux besoins de la population bilingue de Gatineau.",
+      "category": "Gouvernance et services municipaux",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue l'importance accordée au bilinguisme dans les services municipaux, enjeu spécifique à Gatineau en raison de sa proximité avec Ottawa et sa population bilingue."
+    },
+    {
+      "id": "q20_coordination_ottawa",
+      "text": "La Ville de Gatineau devrait développer davantage de partenariats et de projets conjoints avec la Ville d'Ottawa pour des enjeux interproviciaux.",
+      "category": "Gouvernance et services municipaux",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue l'approche collaborative avec Ottawa pour les enjeux qui dépassent les frontières provinciales, spécifique à la région de la capitale nationale."
+    },
+    {
+      "id": "q21_transport_interprovincial",
+      "text": "La municipalité devrait investir davantage dans l'amélioration du transport interprovincial (ponts, traverse, transport en commun) entre Gatineau et Ottawa.",
+      "category": "Mobilité et transport",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux infrastructures de transport interprovincial, enjeu critique pour les nombreux travailleurs qui traversent quotidiennement entre le Québec et l'Ontario."
+    }
+  ],
+  "gatineau_priorites_specifiques": [
+    "Services bilingues",
+    "Relations avec Ottawa",
+    "Transport interprovincial"
+  ],
+  "notes": {
+    "creation_date": "2025-09-23",
+    "source": "Plan d'informations multi-municipalités",
+    "methodology": "Questions adaptées aux spécificités de Gatineau: bilinguisme, proximité Ottawa, enjeux interprovicciaux",
+    "neutralite_politique": "Questions formulées de manière neutre pour éviter tout biais politique"
+  }
+}

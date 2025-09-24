@@ -1,0 +1,224 @@
+{
+  "gatineau_questions_completes": [
+    {
+      "id": "q1_pistes_cyclables",
+      "text": "La municipalité devrait développer davantage les pistes cyclables, même si cela réduit l'espace pour les voitures.",
+      "category": "Mobilité et transport",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux transports actifs versus l'automobile."
+    },
+    {
+      "id": "q2_priorite_mobilite_active",
+      "text": "Pour améliorer l'attractivité du centre-ville de Gatineau, la priorité devrait être donnée aux piétons, cyclistes et au transport collectif, même si cela implique de réduire l'espace dédié à l'automobile (stationnements, voies de circulation, etc.).",
+      "category": "Mobilité et transport",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q3_quotas_logements_abordables",
+      "text": "La Ville de Gatineau devrait obliger un nombre minimum de logements abordables dans chaque nouveau projet immobilier.",
+      "category": "Habitation et aménagement urbain",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q4_reduction_depenses_taxes",
+      "text": "La municipalité devrait réduire ses dépenses et ses taxes pour respecter la capacité de payer des citoyens.",
+      "category": "Gouvernance et finances municipales",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée à la réduction de la charge fiscale municipale."
+    },
+    {
+      "id": "q5_immeubles_grande_hauteur",
+      "text": "Les immeubles de grande hauteur devraient être favorisés à Gatineau pour maximiser l'utilisation des terrains disponibles.",
+      "category": "Habitation et aménagement urbain",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q6_interdire_essence_centre_ville",
+      "text": "La Ville de Gatineau devrait interdire les véhicules à essence dans le centre-ville d'ici 2035.",
+      "category": "Environnement et développement durable",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux mesures environnementales radicales en mobilité urbaine."
+    },
+    {
+      "id": "q7_protection_espaces_verts",
+      "text": "La Ville de Gatineau devrait mettre plus d'argent pour protéger et agrandir les espaces verts, même si cela nuit au développement de projets immobiliers.",
+      "category": "Environnement et développement durable",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux espaces verts face à la pression immobilière."
+    },
+    {
+      "id": "q8_transition_carboneutre",
+      "text": "La Ville de Gatineau devrait accélérer la transition des bâtiments \"carboneutres\" (qui n'ajoutent pas de pollution au climat), même si ça coûte plus cher.",
+      "category": "Environnement et développement durable",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q9_reduction_dechets",
+      "text": "La Ville de Gatineau devrait améliorer la collecte des ordures au lieu de la réduire pour des raisons environnementales.",
+      "category": "Environnement et développement durable",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux services municipaux (collecte) par rapport à la réduction des collectes justifiée par l'environnement."
+    },
+    {
+      "id": "q10_augmentation_taxes",
+      "text": "La Ville de Gatineau devrait investir davantage dans des projets écoresponsables (énergie verte, transport durable, bâtiments écologiques), même si cela nécessite d'augmenter les taxes foncières (impôt sur la propriété).",
+      "category": "Gouvernance et finances municipales",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q11_pouvoir_conseils_secteur",
+      "text": "La Ville de Gatineau devrait donner plus de pouvoir aux conseils de secteur pour décider des projets locaux.",
+      "category": "Gouvernance et finances municipales",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée à la décentralisation de la gouvernance municipale dans les secteurs de Gatineau."
+    },
+    {
+      "id": "q12_reduction_dette",
+      "text": "La Ville de Gatineau devrait prioriser l'amélioration des services essentiels (collecte des ordures, déneigement, etc.) avant d'investir dans des projets d'avenir.",
+      "category": "Gouvernance et finances municipales",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q13_avantages_fiscaux_entreprises",
+      "text": "La Ville de Gatineau devrait offrir plus de réductions de taxes ou autres avantages fiscaux pour attirer de grandes entreprises.",
+      "category": "Développement économique et social",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q14_limitation_touristes",
+      "text": "La Ville de Gatineau devrait limiter le nombre de touristes dans certains secteurs pour protéger la qualité de vie des résidents.",
+      "category": "Développement économique et social",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question mesure la priorité accordée à l'équilibre entre tourisme et vie locale."
+    },
+    {
+      "id": "q15_soutien_organismes_communautaires",
+      "text": "La Ville de Gatineau devrait donner plus d'argent aux organismes communautaires qui aident pour des services sociaux essentiels (itinérance, aide alimentaire, etc).",
+      "category": "Développement économique et social",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q16_augmentation_effectifs_policiers",
+      "text": "Il faudrait augmenter le nombre de policiers pour améliorer la sécurité dans les secteurs de Gatineau.",
+      "category": "Sécurité publique et services municipaux",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q17_investissement_infrastructures_loisirs_sportives",
+      "text": "La Ville de Gatineau devrait investir plus dans les parcs, arénas et terrains de sport de secteur.",
+      "category": "Sécurité publique et services municipaux",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux services de proximité."
+    },
+    {
+      "id": "q18_protection_patrimoine",
+      "text": "La Ville de Gatineau devrait renforcer les règles qui protègent les vieux bâtiments et le patrimoine, même si cela limite certains projets.",
+      "category": "Patrimoine et identité",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1]
+    },
+    {
+      "id": "q19_services_bilingues",
+      "text": "La municipalité devrait renforcer l'offre de services municipaux en français et en anglais pour répondre aux besoins de la population bilingue de Gatineau.",
+      "category": "Gouvernance et services municipaux",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue l'importance accordée au bilinguisme dans les services municipaux, enjeu spécifique à Gatineau en raison de sa proximité avec Ottawa et sa population bilingue."
+    },
+    {
+      "id": "q20_coordination_ottawa",
+      "text": "La Ville de Gatineau devrait développer davantage de partenariats et de projets conjoints avec la Ville d'Ottawa pour des enjeux interproviciaux.",
+      "category": "Gouvernance et services municipaux",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue l'approche collaborative avec Ottawa pour les enjeux qui dépassent les frontières provinciales, spécifique à la région de la capitale nationale."
+    },
+    {
+      "id": "q21_transport_interprovincial",
+      "text": "La municipalité devrait investir davantage dans l'amélioration du transport interprovincial (ponts, traverse, transport en commun) entre Gatineau et Ottawa.",
+      "category": "Mobilité et transport",
+      "responseType": "agreement",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Cette question évalue la priorité accordée aux infrastructures de transport interprovincial, enjeu critique pour les nombreux travailleurs qui traversent quotidiennement entre le Québec et l'Ontario."
+    },
+    {
+      "id": "q22_enjeux_prioritaires",
+      "text": "Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d'importance : 1er, 2e et 3e choix)",
+      "category": "Priorités municipales",
+      "responseType": "priority_ranking",
+      "agreementOptions": ["FA", "PA", "N", "PD", "FD", "IDK"],
+      "importanceOptions": [5, 4, 3, 2, 1],
+      "description": "Sélectionnez vos 3 enjeux municipaux prioritaires et classez-les par ordre d'importance.",
+      "priorityOptions": [
+        "Transport et mobilité",
+        "Logement abordable",
+        "Environnement et espaces verts",
+        "Sécurité publique",
+        "Gestion des finances municipales",
+        "Services municipaux",
+        "Lutte aux changements climatiques",
+        "Patrimoine et identité",
+        "Services bilingues",
+        "Relations avec Ottawa",
+        "Transport interprovincial"
+      ]
+    }
+  ],
+  "metadata": {
+    "municipalite": "Gatineau",
+    "total_questions": 22,
+    "questions_generiques_adaptees": 18,
+    "questions_specifiques": 3,
+    "question_priorites": 1,
+    "adaptations_principales": [
+      "Remplacement de 'quartiers' par 'secteurs' (spécifique à Gatineau)",
+      "Ajout de références spécifiques à Gatineau",
+      "Intégration des enjeux bilingues et interprovincialité",
+      "Adaptation de la question priorités avec enjeux locaux"
+    ],
+    "questions_exclues_quebec": [
+      "q1_tramway (spécifique à Québec)",
+      "q3_troisieme_lien (spécifique à Québec-Lévis)"
+    ],
+    "creation_date": "2025-09-23",
+    "source": "Adaptation des questions génériques selon plan multi-municipalités"
+  }
+}

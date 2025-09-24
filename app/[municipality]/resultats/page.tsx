@@ -39,7 +39,7 @@ const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").the
 
 // Lazy loading des modals (pas critiques pour le first paint)
 const ShareModal = lazy(() => import("@/components/share-modal"))
-const TopMatchModal = lazy(() => import("@/components/ui/top-match-modal").then(module => ({ default: module.TopMatchModal })))
+const ProgressiveResultsModal = lazy(() => import("@/components/ui/progressive-results-modal").then(module => ({ default: module.ProgressiveResultsModal })))
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 
 
@@ -110,7 +110,7 @@ export default function ResultsPage() {
   const municipality = params.municipality as string
   const [isShareModalOpen, setIsShareModalOpen] = useState(false)
   const [showFloatingShare, setShowFloatingShare] = useState(false)
-  const [showTopMatchModal, setShowTopMatchModal] = useState(false)
+  const [showProgressiveResultsModal, setShowProgressiveResultsModal] = useState(false)
 
   // ✅ Utiliser correctement le hook useSession et récupérer ses valeurs
   const { isSessionValid, isLoading: sessionLoading } = useSession()
@@ -247,21 +247,21 @@ export default function ResultsPage() {
 
   // Afficher le modal de révélation automatiquement (une seule fois par session)
   useEffect(() => {
-    if (!isLoading && calculatedScores.length > 0 && !showTopMatchModal) {
+    if (!isLoading && calculatedScores.length > 0 && !showProgressiveResultsModal) {
       // Vérifier si le modal a déjà été affiché dans cette session
-      const hasSeenModal = sessionStorage.getItem('hasSeenTopMatchModal')
-      
+      const hasSeenModal = sessionStorage.getItem('hasSeenProgressiveResultsModal')
+
       if (!hasSeenModal) {
         // Délai pour laisser la page se charger complètement
         const timer = setTimeout(() => {
-          setShowTopMatchModal(true)
-          sessionStorage.setItem('hasSeenTopMatchModal', 'true')
+          setShowProgressiveResultsModal(true)
+          sessionStorage.setItem('hasSeenProgressiveResultsModal', 'true')
         }, 1000)
-        
+
         return () => clearTimeout(timer)
       }
     }
-  }, [isLoading, calculatedScores.length, showTopMatchModal])
+  }, [isLoading, calculatedScores.length, showProgressiveResultsModal])
 
   // Observer pour détecter si le bouton header est visible
   useEffect(() => {
@@ -812,18 +812,18 @@ export default function ResultsPage() {
           />
         </Suspense>
 
-        {/* Modal pour le "Top Match" - avec lazy loading */}
+        {/* Modal de révélation progressive des résultats - avec lazy loading */}
         <Suspense fallback={<div />}>
-          <TopMatchModal
-            isOpen={showTopMatchModal}
-            onClose={() => setShowTopMatchModal(false)}
+          <ProgressiveResultsModal
+            isOpen={showProgressiveResultsModal}
+            onClose={() => setShowProgressiveResultsModal(false)}
             topMatch={topParties.length > 0 ? {
               partyId: topParties[0].party.id,
               score: topParties[0].score,
               percentage: topParties[0].score,
               rank: 1
             } : null}
-            onViewPartyProfile={() => setShowTopMatchModal(false)}
+            onViewPartyProfile={() => setShowProgressiveResultsModal(false)}
             results={results}
             userAnswers={userAnswers}
             userImportance={userImportance}

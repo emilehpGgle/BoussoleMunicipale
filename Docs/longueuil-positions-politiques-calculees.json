@@ -1,0 +1,273 @@
+{
+  "municipalite": "longueuil",
+  "date_creation": "2025-09-23",
+  "source_methodologie": "Recherche approfondie des positions de Catherine Fournier et Coalition Longueuil basée sur plateformes électorales, déclarations publiques, bilans de mandat 2021-2025, et sources médiatiques fiables.",
+  "partis": [
+    {
+      "id": "coalition_longueuil",
+      "nom": "Coalition Longueuil",
+      "leader": "Catherine Fournier",
+      "statut": "Au pouvoir (depuis 2021)",
+      "orientation_politique": "Centre-gauche progressiste",
+      "description": "Parti au pouvoir dirigé par Catherine Fournier, axé sur la durabilité, la croissance responsable et la gouvernance collaborative.",
+      "positions": [
+        {
+          "question_id": "lng_q2_pistes_cyclables",
+          "position": "agree",
+          "justification": "Sous Fournier, Longueuil a complété plus de 20 km de nouvelles pistes cyclables protégées et priorise les transports actifs.",
+          "sources": ["Ville de Longueuil - Plan mobilité active", "Le Courrier du Sud - Consultation mobilité durable"]
+        },
+        {
+          "question_id": "lng_q4_priorite_mobilite_active",
+          "position": "agree",
+          "justification": "Le parti favorise la mobilité active au centre-ville avec des aménagements pour piétons et cyclistes, tout en maintenant un équilibre avec l'automobile.",
+          "sources": ["Recherche Exa - Rapport complet positions Coalition Longueuil"]
+        },
+        {
+          "question_id": "lng_q5_quotas_logements_abordables",
+          "position": "strongly_agree",
+          "justification": "Coalition Longueuil a établi un quota de 25% de logements abordables pour les tours de 12+ étages, premier parmi les banlieues du Grand Montréal.",
+          "sources": ["Le Devoir - Politique logement Longueuil", "Communiqué municipal 2024"]
+        },
+        {
+          "question_id": "lng_q6_reduction_depenses_taxes",
+          "position": "agree",
+          "justification": "L'administration Fournier a maintenu les hausses de taxes sous le taux d'inflation (plafonné à 1.8% annuellement) tout en équilibrant les budgets.",
+          "sources": ["Recherche Exa - Gestion finances municipales"]
+        },
+        {
+          "question_id": "lng_q7_immeubles_grande_hauteur",
+          "position": "strongly_agree",
+          "justification": "Soutient activement les immeubles haute densité dans des zones ciblées comme le Vieux-Longueuil, avec des incitatifs financiers pour développeurs.",
+          "sources": ["Recherche Exa - Politique aménagement urbain"]
+        },
+        {
+          "question_id": "lng_q8_interdire_essence_centre_ville",
+          "position": "agree",
+          "justification": "Soutient l'interdiction des véhicules à essence au centre-ville d'ici 2030, avec installation de bornes de recharge rapide.",
+          "sources": ["Recherche Exa - Objectifs environnementaux"]
+        },
+        {
+          "question_id": "lng_q9_protection_espaces_verts",
+          "position": "strongly_agree",
+          "justification": "Campagne de plantation de 5000+ arbres, création de deux zones de conservation, mandat de 50% de couverture verte sur toits publics.",
+          "sources": ["Ville de Longueuil Plan directeur 2023", "Recherche Exa - Initiatives vertes"]
+        },
+        {
+          "question_id": "lng_q10_transition_carboneutre",
+          "position": "strongly_agree",
+          "justification": "Objectif de carboneutralité d'ici 2050, avec crédits fiscaux de 3M$ pour rénovations écoresponsables via obligations vertes.",
+          "sources": ["Recherche Exa - Plan environnemental 2023"]
+        },
+        {
+          "question_id": "lng_q11_reduction_dechets",
+          "position": "disagree",
+          "justification": "A introduit la collecte de compost organique à l'échelle municipale en 2022, réduisant les déchets de 35%. Oppose tout retour en arrière des services verts.",
+          "sources": ["Recherche Exa - Réforme gestion déchets"]
+        },
+        {
+          "question_id": "lng_q12_augmentation_taxes",
+          "position": "agree",
+          "justification": "Soutient les investissements écoresponsables financés par des hausses de taxes modérées, comme démontré par les obligations vertes de 3M$.",
+          "sources": ["Recherche Exa - Politique fiscale verte"]
+        },
+        {
+          "question_id": "lng_q13_pouvoir_conseils_quartier",
+          "position": "neutral",
+          "justification": "A doublé l'autonomie budgétaire des conseils d'arrondissement mais maintient la planification stratégique centralisée. Approche hybride équilibrée.",
+          "sources": ["Recherche Exa - Réformes gouvernance 2022"]
+        },
+        {
+          "question_id": "lng_q14_reduction_dette",
+          "position": "agree",
+          "justification": "Priorise les services essentiels tout en maintenant des investissements stratégiques dans l'infrastructure et l'environnement.",
+          "sources": ["Recherche Exa - Gestion budgétaire"]
+        },
+        {
+          "question_id": "lng_q15_avantages_fiscaux_entreprises",
+          "position": "agree",
+          "justification": "Utilise des crédits fiscaux ciblés pour attirer des PME, particulièrement dans l'aérospatiale et la technologie.",
+          "sources": ["Recherche Exa - Stratégie développement économique"]
+        },
+        {
+          "question_id": "lng_q16_limitation_touristes",
+          "position": "disagree",
+          "justification": "Promotion touristique active avec budget annuel de 2M$, focus sur développement riverain et festivals culturels.",
+          "sources": ["Recherche Exa - Initiatives touristiques"]
+        },
+        {
+          "question_id": "lng_q17_soutien_organismes_communautaires",
+          "position": "strongly_agree",
+          "justification": "Nouveau programme de subventions communautaires de 1.5M$ en 2024, finançant plus de 60 projets locaux.",
+          "sources": ["Recherche Exa - Programme subventions communautaires 2024"]
+        },
+        {
+          "question_id": "lng_q18_augmentation_effectifs_policiers",
+          "position": "agree",
+          "justification": "Augmentation de 30 policiers de 2021 à 2024, favorisant le modèle de police communautaire avec amélioration de l'éclairage urbain.",
+          "sources": ["Recherche Exa - Réformes sécurité publique"]
+        },
+        {
+          "question_id": "lng_q19_investissement_infrastructures_loisirs_sportives",
+          "position": "agree",
+          "justification": "8M$ investis dans la réfection de centres communautaires et construction de deux nouveaux complexes multisports à Saint-Hubert et Greenfield Park.",
+          "sources": ["Recherche Exa - Investissements infrastructures 2021-2024"]
+        },
+        {
+          "question_id": "lng_q20_protection_patrimoine",
+          "position": "neutral",
+          "justification": "Maintient des règles strictes de patrimoine mais permet des exemptions stratégiques pour répondre aux besoins de logement. Approche équilibrée.",
+          "sources": ["Recherche Exa - Politique patrimoine vs développement"]
+        },
+        {
+          "question_id": "lng_transport_metropolitain",
+          "position": "strongly_agree",
+          "justification": "Lobby actif pour extension REM Rive-Sud, études de faisabilité en partenariat avec Brossard, route express Taschereau pilote lancée.",
+          "sources": ["Ville de Longueuil - Programme triennal 2025-2027", "Recherche Exa - Transport métropolitain"]
+        },
+        {
+          "question_id": "lng_aeroport_qualite_vie",
+          "position": "disagree",
+          "justification": "Partenariat avec Aéroports de Montréal pour moderniser pistes (50M$ provincial), voit l'aéroport comme moteur économique régional.",
+          "sources": ["Recherche Exa - Développement aéroportuaire 2023"]
+        }
+      ]
+    },
+    {
+      "id": "option_alliance",
+      "nom": "Option Alliance",
+      "leader": "Susan Rasmussen (et autres)",
+      "statut": "Opposition - nouveau parti",
+      "orientation_politique": "Centre-droit, participation citoyenne",
+      "description": "Nouveau parti municipal créé en 2025, misant sur la participation citoyenne, la justice sociale et le développement durable selon leurs valeurs déclarées.",
+      "note": "Positions estimées basées sur les valeurs déclarées du parti et les tendances politiques générales de l'opposition.",
+      "positions": [
+        {
+          "question_id": "lng_q2_pistes_cyclables",
+          "position": "neutral",
+          "justification": "Position modérée probable sur les pistes cyclables, favorisant l'équilibre entre transports actifs et automobile.",
+          "sources": ["Estimation basée sur orientation centre-droit"]
+        },
+        {
+          "question_id": "lng_q4_priorite_mobilite_active",
+          "position": "neutral",
+          "justification": "Approche équilibrée probable entre mobilité active et besoins automobilistes.",
+          "sources": ["Estimation basée sur profil politique"]
+        },
+        {
+          "question_id": "lng_q5_quotas_logements_abordables",
+          "position": "neutral",
+          "justification": "Soutien probable aux logements abordables mais avec approche moins interventionniste que Coalition Longueuil.",
+          "sources": ["Estimation basée sur tendances centre-droit"]
+        },
+        {
+          "question_id": "lng_q6_reduction_depenses_taxes",
+          "position": "agree",
+          "justification": "Parti d'opposition probable de favoriser la réduction des dépenses et taxes municipales.",
+          "sources": ["Tendance typique partis opposition municipaux"]
+        },
+        {
+          "question_id": "lng_q7_immeubles_grande_hauteur",
+          "position": "neutral",
+          "justification": "Position équilibrée probable sur la densification urbaine.",
+          "sources": ["Estimation centre-droit"]
+        },
+        {
+          "question_id": "lng_q8_interdire_essence_centre_ville",
+          "position": "disagree",
+          "justification": "Opposition probable aux mesures restrictives sur l'automobile, approche plus graduelle.",
+          "sources": ["Tendance centre-droit sur enjeux automobiles"]
+        },
+        {
+          "question_id": "lng_q9_protection_espaces_verts",
+          "position": "agree",
+          "justification": "Soutien probable aux espaces verts, enjeu consensuel, mais avec approche moins interventionniste.",
+          "sources": ["Valeur développement durable déclarée"]
+        },
+        {
+          "question_id": "lng_q10_transition_carboneutre",
+          "position": "neutral",
+          "justification": "Soutien modéré à la transition environnementale mais avec préoccupations sur les coûts.",
+          "sources": ["Estimation équilibre environnement/économie"]
+        },
+        {
+          "question_id": "lng_q11_reduction_dechets",
+          "position": "neutral",
+          "justification": "Position équilibrée sur les services de collecte.",
+          "sources": ["Estimation"]
+        },
+        {
+          "question_id": "lng_q12_augmentation_taxes",
+          "position": "disagree",
+          "justification": "Opposition probable aux hausses de taxes, même pour projets écologiques.",
+          "sources": ["Tendance centre-droit fiscalité"]
+        },
+        {
+          "question_id": "lng_q13_pouvoir_conseils_quartier",
+          "position": "agree",
+          "justification": "Parti axé sur participation citoyenne, favoriserait plus d'autonomie locale.",
+          "sources": ["Valeur participation citoyenne déclarée"]
+        },
+        {
+          "question_id": "lng_q14_reduction_dette",
+          "position": "agree",
+          "justification": "Priorité probable aux services essentiels avant nouveaux projets.",
+          "sources": ["Tendance opposition fiscale"]
+        },
+        {
+          "question_id": "lng_q15_avantages_fiscaux_entreprises",
+          "position": "agree",
+          "justification": "Soutien probable aux incitatifs économiques pour entreprises.",
+          "sources": ["Orientation centre-droit économique"]
+        },
+        {
+          "question_id": "lng_q16_limitation_touristes",
+          "position": "disagree",
+          "justification": "Favorise probablement le développement touristique pour l'économie locale.",
+          "sources": ["Tendance pro-développement économique"]
+        },
+        {
+          "question_id": "lng_q17_soutien_organismes_communautaires",
+          "position": "agree",
+          "justification": "Soutien probable aux organismes communautaires, aligné avec justice sociale déclarée.",
+          "sources": ["Valeur justice sociale déclarée"]
+        },
+        {
+          "question_id": "lng_q18_augmentation_effectifs_policiers",
+          "position": "agree",
+          "justification": "Soutien probable au renforcement de la sécurité publique.",
+          "sources": ["Tendance centre-droit sécurité"]
+        },
+        {
+          "question_id": "lng_q19_investissement_infrastructures_loisirs_sportives",
+          "position": "agree",
+          "justification": "Soutien probable aux infrastructures de loisirs, services de base populaires.",
+          "sources": ["Consensus municipal général"]
+        },
+        {
+          "question_id": "lng_q20_protection_patrimoine",
+          "position": "agree",
+          "justification": "Soutien probable à la protection du patrimoine avec équilibre développement.",
+          "sources": ["Valeur conservation modérée"]
+        },
+        {
+          "question_id": "lng_transport_metropolitain",
+          "position": "agree",
+          "justification": "Soutien probable au transport métropolitain mais avec préoccupations sur les coûts municipaux.",
+          "sources": ["Estimation équilibre transport/fiscalité"]
+        },
+        {
+          "question_id": "lng_aeroport_qualite_vie",
+          "position": "neutral",
+          "justification": "Position équilibrée probable entre développement économique aéroportuaire et qualité de vie.",
+          "sources": ["Estimation centre-droit équilibre"]
+        }
+      ]
+    }
+  ],
+  "notes_methodologiques": {
+    "coalition_longueuil": "Positions basées sur recherche approfondie documentée avec sources multiples incluant actions concrètes du mandat 2021-2025.",
+    "option_alliance": "Positions estimées en raison du manque de programme politique détaillé disponible. Basées sur valeurs déclarées et tendances politiques typiques de partis centre-droit d'opposition municipale.",
+    "limitation": "Longueuil 2025 présente peu d'opposition organisée. Catherine Fournier pourrait être réélue par acclamation selon certaines sources."
+  }
+}

@@ -1,0 +1,489 @@
+{
+  "metadata": {
+    "municipality": "laval",
+    "total_parties": 3,
+    "total_questions": 21,
+    "total_positions": 63,
+    "sources": [
+      "Plateformes électorales officielles 2025",
+      "Sites web des partis politiques",
+      "Courrier Laval (septembre 2025)",
+      "MCL Média Laval (septembre 2025)",
+      "Le Devoir - articles récents sur Laval",
+      "Déclarations publiques des chefs"
+    ],
+    "analysis_date": "2025-09-23"
+  },
+  "parties": [
+    {
+      "id": "mouvement_lavallois",
+      "nom": "Mouvement lavallois – Équipe Stéphane Boyer",
+      "chef": "Stéphane Boyer",
+      "orientation": "Centre-gauche, progressiste",
+      "description": "Parti au pouvoir depuis 2021, axé sur la bonne gouvernance, le développement durable et les services de qualité",
+      "site_web": "mouvementlavallois.org",
+      "priorite_2025": "Opération 440M$ pour modernisation des infrastructures"
+    },
+    {
+      "id": "parti_laval",
+      "nom": "Parti Laval – Équipe Claude Larochelle",
+      "chef": "Claude Larochelle",
+      "orientation": "Centre-droit, responsabilité fiscale",
+      "description": "Opposition principale depuis 2017, ingénieur avec 30 ans d'expérience en gestion",
+      "site_web": "partilaval.com",
+      "priorite_2025": "Responsable et efficace, dès maintenant"
+    },
+    {
+      "id": "action_laval",
+      "nom": "Action Laval",
+      "chef": "Frédéric Mayer (candidat mairie), Achille Cifelli (chef intérimaire)",
+      "orientation": "Centre, dynamisme économique",
+      "description": "Parti d'opposition avec 3 élus actuels, équipe complète dans 22 districts",
+      "site_web": "actionlaval.com",
+      "priorite_2025": "Renouveau politique et gestion efficace"
+    }
+  ],
+  "positions": [
+    {
+      "question_id": "lav_srb_transport_montreal",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Le maire Boyer a développé plusieurs projets de transport structurant. Priorité infrastructure 2025 inclut amélioration transport.",
+        "source": "Priorités infrastructures 2025, réalisations transport collectif"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Plateforme axée sur mobilité fluide et accessible. Support projets structurants qui désengorgent Laval.",
+        "source": "Plateforme électorale 2025, section mobilité"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Support au développement économique nécessite amélioration transport. Candidats parlent d'accessibilité.",
+        "source": "Déclarations candidats, LinkedIn Action Laval"
+      }
+    },
+    {
+      "question_id": "lav_equilibre_developpement_espaces_verts",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Programme environnemental fort, protection milieux naturels. Vision 2035 priorise espaces verts.",
+        "source": "Programme politique ML, Vision stratégique Laval 2035"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Plateforme valorise durabilité et protection environnement. Mention protection milieux naturels.",
+        "source": "Plateforme 2025, valeurs durabilité"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position non clairement définie dans sources disponibles. Focus sur économie et finances.",
+        "source": "Analyse des communications publiques"
+      }
+    },
+    {
+      "question_id": "lav_q2_pistes_cyclables",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Plan mobilité active existant, bien que retards reconnus. Engagement environnemental fort.",
+        "source": "Plan mobilité active Laval, rapport vérificatrice 2024"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 1,
+        "justification": "Support transport actif mais priorité sécurité et efficacité. Approche plus modérée.",
+        "source": "Plateforme mobilité, déclarations publiques"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Pas de position claire trouvée sur développement pistes cyclables spécifiquement.",
+        "source": "Communications publiques analysées"
+      }
+    },
+    {
+      "question_id": "lav_q4_priorite_mobilite_active",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Engagement dans Plan mobilité active, bien que défis de mise en œuvre reconnus.",
+        "source": "Plan mobilité active, politiques urbaines actuelles"
+      },
+      "parti_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Priorité équilibre entre tous modes transport. Pas de favoritisme marqué mobilité active.",
+        "source": "Plateforme mobilité équitable"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position non définie clairement sur priorisation mobilité active vs automobile.",
+        "source": "Analyse communications disponibles"
+      }
+    },
+    {
+      "question_id": "lav_q5_quotas_logements_abordables",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Utilisation 'superpouvoirs' municipaux pour logement abordable. Politiques actives en cours.",
+        "source": "Le Devoir mai 2025, politiques logement abordable"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Support logement abordable dans plateforme. Approche équilibrée développement.",
+        "source": "Plateforme habitation et aménagement"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Pas de position claire sur quotas obligatoires trouvée dans sources.",
+        "source": "Analyse communications publiques"
+      }
+    },
+    {
+      "question_id": "lav_q6_reduction_depenses_taxes",
+      "mouvement_lavallois": {
+        "position": "OPPOSE",
+        "niveau": -2,
+        "justification": "Opération 440M$ infrastructures nécessite investissements. Priorité services qualité.",
+        "source": "Priorités campagne 2025, investissements infrastructures"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Plateforme axée protection portefeuille citoyens, limitation hausses taxes, efficacité dépenses.",
+        "source": "Plateforme 2025, section finances responsables"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Frédéric Mayer veut 'mettre ordre dans finances'. Focus gestion efficace ressources.",
+        "source": "Courrier Laval février 2025, positions finances"
+      }
+    },
+    {
+      "question_id": "lav_q7_immeubles_grande_hauteur",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Politiques densification avec 'superpouvoirs' municipaux. Vision développement durable.",
+        "source": "Politiques d'aménagement, utilisation superpouvoirs"
+      },
+      "parti_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position équilibrée entre développement et préservation. Pas de favoritisme hauteur.",
+        "source": "Plateforme aménagement urbain"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Pas de position claire sur immeubles grande hauteur dans sources disponibles.",
+        "source": "Communications analysées"
+      }
+    },
+    {
+      "question_id": "lav_q8_interdire_essence_centre_ville",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 1,
+        "justification": "Engagement environnemental fort, transition écologique dans programme politique.",
+        "source": "Programme politique ML, engagement environnemental"
+      },
+      "parti_laval": {
+        "position": "OPPOSE",
+        "niveau": -1,
+        "justification": "Approche plus pragmatique. Priorité efficacité vs mesures radicales environnementales.",
+        "source": "Approche pragmatique en transport"
+      },
+      "action_laval": {
+        "position": "OPPOSE",
+        "niveau": -1,
+        "justification": "Focus économie et praticité. Mesures radicales incompatibles avec approche économique.",
+        "source": "Orientation économique du parti"
+      }
+    },
+    {
+      "question_id": "lav_q9_protection_espaces_verts",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Programme environnemental explicite, protection milieux naturels prioritaire.",
+        "source": "Programme politique, policies environnementales"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Valeurs durabilité dans plateforme. Protection environnement mentionnée.",
+        "source": "Plateforme 2025, valeurs durabilité"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position non définie clairement sur équilibre espaces verts vs développement.",
+        "source": "Analyse communications disponibles"
+      }
+    },
+    {
+      "question_id": "lav_q10_transition_carboneutre",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Engagement transition écologique central dans programme politique 2023.",
+        "source": "Programme politique ML, transition écologique"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 1,
+        "justification": "Support général environnement mais priorité coûts et efficacité.",
+        "source": "Plateforme environnement, approche équilibrée"
+      },
+      "action_laval": {
+        "position": "OPPOSE",
+        "niveau": -1,
+        "justification": "Focus gestion financière rigide. Réticence coûts supplémentaires pour transition.",
+        "source": "Priorités financières, gestion efficace"
+      }
+    },
+    {
+      "question_id": "lav_q11_reduction_dechets",
+      "mouvement_lavallois": {
+        "position": "OPPOSE",
+        "niveau": -1,
+        "justification": "Priorité services qualité citoyens vs réduction services pour environnement.",
+        "source": "Services municipaux qualité, priorités citoyens"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Amélioration services essentiels prioritaire dans plateforme. Services avant projets avenir.",
+        "source": "Plateforme services essentiels, collecte ordures"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Focus services de base efficaces. Amélioration services vs considérations environnementales.",
+        "source": "Priorités services municipaux de base"
+      }
+    },
+    {
+      "question_id": "lav_q12_augmentation_taxes",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Opération 440M$ infrastructures nécessite investissements pour projets écoresponsables.",
+        "source": "Investissements infrastructures 2025, priorités environnementales"
+      },
+      "parti_laval": {
+        "position": "OPPOSE",
+        "niveau": -3,
+        "justification": "Opposition centrale aux hausses taxes. Protection portefeuille citoyens prioritaire.",
+        "source": "Plateforme finances responsables, protection contribuables"
+      },
+      "action_laval": {
+        "position": "OPPOSE",
+        "niveau": -3,
+        "justification": "Mayer veut 'ordre dans finances'. Opposition augmentation taxes pour projets.",
+        "source": "Positions financières, gestion efficace ressources"
+      }
+    },
+    {
+      "question_id": "lav_q13_pouvoir_conseils_quartier",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Valeurs gouvernance participative et consultation citoyenne dans programme.",
+        "source": "Programme politique, gouvernance participative"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Valeur transparence et proximité citoyens. Remettre citoyens au cœur décisions.",
+        "source": "Valeurs plateforme, transparence et proximité"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 1,
+        "justification": "Parti opposition prône ouverture et écoute citoyens selon description LinkedIn.",
+        "source": "Description parti LinkedIn, écoute citoyens"
+      }
+    },
+    {
+      "question_id": "lav_q14_reduction_dette",
+      "mouvement_lavallois": {
+        "position": "OPPOSE",
+        "niveau": -2,
+        "justification": "Priorité projets avenir et infrastructures modernes vs seulement services essentiels.",
+        "source": "Opération 440M$ infrastructures, vision 2035"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Services essentiels (collecte, déneigement) prioritaires avant investir projets avenir.",
+        "source": "Plateforme services essentiels vs projets spectacle"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Gestion financière rigoureuse et efficacité avant projets coûteux.",
+        "source": "Priorités gestion financière, efficacité"
+      }
+    },
+    {
+      "question_id": "lav_q15_avantages_fiscaux_entreprises",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Développement économique durable prioritaire. Attraction entreprises pour emplois.",
+        "source": "Valeurs développement économique durable"
+      },
+      "parti_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Équilibre entre développement économique et protection finances municipales.",
+        "source": "Approche équilibrée économie-finances"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Focus dynamisme économique central. Attraction entreprises pour emplois et croissance.",
+        "source": "Orientation économique parti, développement emplois"
+      }
+    },
+    {
+      "question_id": "lav_q16_limitation_touristes",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 1,
+        "justification": "Équilibre développement touristique et qualité vie résidents dans gouvernance.",
+        "source": "Approche équilibrée développement-résidents"
+      },
+      "parti_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position non clairement définie sur limitation tourisme vs développement économique.",
+        "source": "Pas de position claire trouvée"
+      },
+      "action_laval": {
+        "position": "OPPOSE",
+        "niveau": -1,
+        "justification": "Priorité développement économique inclurait tourism sans limitations restrictives.",
+        "source": "Focus développement économique sans restriction"
+      }
+    },
+    {
+      "question_id": "lav_q17_soutien_organismes_communautaires",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Équité et justice sociale valeurs centrales. Support services sociaux essentiels.",
+        "source": "Valeurs fondamentales ML, justice sociale"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Support services essentiels incluant aide organismes communautaires.",
+        "source": "Plateforme services citoyens, support communautaire"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position non clairement définie sur financement organismes vs priorités financières.",
+        "source": "Pas de position claire dans sources"
+      }
+    },
+    {
+      "question_id": "lav_q18_augmentation_effectifs_policiers",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Sécurité population prioritaire dans réalisations et programme politique.",
+        "source": "Programme politique, sécurité citoyens"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Sécurité routière et quartiers priorité explicite. Augmentation présence policière.",
+        "source": "Plateforme sécurité, présence policière prioritaire"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Sécurité publique importante pour développement économique et qualité vie.",
+        "source": "Priorités développement et sécurité"
+      }
+    },
+    {
+      "question_id": "lav_q19_investissement_infrastructures_loisirs_sportives",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Services municipaux qualité prioritaires. Infrastructures proximité dans programme.",
+        "source": "Services qualité, infrastructures proximité"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Infrastructures proximité prioritaires. Quartiers équipés et accueillants.",
+        "source": "Plateforme infrastructures proximité, quartiers équipés"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Services municipaux de base incluent infrastructures sportives et loisirs.",
+        "source": "Focus services municipaux essentiels"
+      }
+    },
+    {
+      "question_id": "lav_q20_protection_patrimoine",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 2,
+        "justification": "Développement durable inclut préservation patrimoine et identité locale.",
+        "source": "Programme développement durable, identité"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Valorisation culture, patrimoine et langue prioritaire dans plateforme.",
+        "source": "Plateforme culture et patrimoine, valeurs identité"
+      },
+      "action_laval": {
+        "position": "NEUTRE",
+        "niveau": 0,
+        "justification": "Position non clairement définie sur équilibre patrimoine vs développement économique.",
+        "source": "Pas de position claire trouvée"
+      }
+    },
+    {
+      "question_id": "lav_enjeux_prioritaires",
+      "mouvement_lavallois": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Priorités: Services municipaux, Environnement espaces verts, Transport mobilité",
+        "source": "Programme politique et priorités campagne 2025"
+      },
+      "parti_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Priorités: Gestion finances municipales, Sécurité publique, Services municipaux",
+        "source": "Plateforme 2025 'responsable et efficace'"
+      },
+      "action_laval": {
+        "position": "FAVORISE",
+        "niveau": 3,
+        "justification": "Priorités: Gestion finances municipales, Développement économique, Services municipaux",
+        "source": "Orientations parti et déclarations publiques"
+      }
+    }
+  ]
+}

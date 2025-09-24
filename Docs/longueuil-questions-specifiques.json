@@ -1,0 +1,43 @@
+{
+  "questions_specifiques": [
+    {
+      "id": "lng_transport_metropolitain",
+      "text": "La Ville de Longueuil devrait investir davantage dans l'amélioration du transport collectif métropolitain vers Montréal (métro, autobus, REM), même si cela nécessite d'augmenter les taxes municipales.",
+      "category": "Mobilité et transport",
+      "response_type": "agreement",
+      "description": "Cette question évalue la priorité accordée au transport métropolitain face aux contraintes budgétaires municipales.",
+      "response_format": "standard",
+      "order_index": 1
+    },
+    {
+      "id": "lng_aeroport_qualite_vie",
+      "text": "La Ville devrait limiter l'expansion aéroportuaire et le développement d'activités connexes pour préserver la qualité de vie des résidents, même si cela réduit les opportunités économiques locales.",
+      "category": "Développement économique et social",
+      "response_type": "agreement",
+      "description": "Cette question évalue l'équilibre entre le développement économique aéroportuaire et la protection de la qualité de vie résidentielle.",
+      "response_format": "standard",
+      "order_index": 2
+    }
+  ],
+  "question_priorites": {
+    "id": "lng_enjeux_prioritaires",
+    "text": "Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d'importance : 1er, 2e et 3e choix)",
+    "category": "Priorités municipales",
+    "response_type": "priority_ranking",
+    "description": "Sélectionnez vos 3 enjeux municipaux prioritaires et classez-les par ordre d'importance.",
+    "response_format": "standard",
+    "order_index": 21,
+    "priority_options": [
+      "Transport et mobilité",
+      "Logement abordable",
+      "Environnement et espaces verts",
+      "Sécurité publique",
+      "Gestion des finances municipales",
+      "Services municipaux",
+      "Lutte aux changements climatiques",
+      "Patrimoine et identité",
+      "Transport métropolitain",
+      "Développement aéroportuaire"
+    ]
+  }
+}

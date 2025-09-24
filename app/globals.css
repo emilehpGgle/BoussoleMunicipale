@@ -79,7 +79,6 @@
     --chart-5: 340 75% 55%;
   }
   .theme {
-    --animate-rainbow: rainbow var(--speed, 6s) infinite linear;
   }
 }
 
@@ -803,14 +802,6 @@
 }
 
 @theme inline {
-  @keyframes rainbow {
-  0% {
-    background-position: 0%;
-    }
-  100% {
-    background-position: 200%;
-    }
-  }
 
   @keyframes border-pulse {
     0%, 100% {

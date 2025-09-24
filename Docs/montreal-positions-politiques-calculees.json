@@ -1,0 +1,188 @@
+{
+  "metadata": {
+    "municipalite": "montreal",
+    "date_analyse": "2025-09-23",
+    "source_recherche": "Radio-Canada, Le Devoir, La Presse, Élections Québec, sites officiels partis",
+    "echelle_scores": {
+      "STRONGLY_AGREE": 4,
+      "AGREE": 3,
+      "NEUTRAL": 2,
+      "DISAGREE": 1,
+      "STRONGLY_DISAGREE": 0,
+      "IDK": -1
+    }
+  },
+  "partis": [
+    {
+      "id": "projet_montreal_mtl",
+      "nom": "Projet Montréal",
+      "chef": "Luc Rabouin",
+      "orientation_politique": "centre-gauche",
+      "positions": {
+        "mtl_metro_rem": "STRONGLY_AGREE",
+        "mtl_arrondissements_autonomie": "AGREE",
+        "mtl_festivals_equilibre": "AGREE",
+        "mtl_q2_pistes_cyclables": "STRONGLY_AGREE",
+        "mtl_q4_priorite_mobilite_active": "STRONGLY_AGREE",
+        "mtl_q5_quotas_logements_abordables": "STRONGLY_AGREE",
+        "mtl_q6_reduction_depenses_taxes": "DISAGREE",
+        "mtl_q7_immeubles_grande_hauteur": "AGREE",
+        "mtl_q8_interdire_essence_centre_ville": "AGREE",
+        "mtl_q9_protection_espaces_verts": "STRONGLY_AGREE",
+        "mtl_q10_transition_carboneutre": "STRONGLY_AGREE",
+        "mtl_q11_reduction_dechets": "DISAGREE",
+        "mtl_q12_augmentation_taxes": "AGREE",
+        "mtl_q13_pouvoir_conseils_quartier": "AGREE",
+        "mtl_q14_reduction_dette": "DISAGREE",
+        "mtl_q15_avantages_fiscaux_entreprises": "DISAGREE",
+        "mtl_q16_limitation_touristes": "AGREE",
+        "mtl_q17_soutien_organismes_communautaires": "STRONGLY_AGREE",
+        "mtl_q18_augmentation_effectifs_policiers": "NEUTRAL",
+        "mtl_q19_investissement_infrastructures_loisirs_sportives": "AGREE",
+        "mtl_q20_protection_patrimoine": "AGREE"
+      },
+      "justifications": {
+        "mtl_metro_rem": "Luc Rabouin soutient fortement la mobilité structurante et les investissements en transport collectif",
+        "mtl_q2_pistes_cyclables": "Continuité de la vision Projet Montréal pro-vélo",
+        "mtl_q5_quotas_logements_abordables": "Création fonds d'investissement logement, 1000 logements transitoires",
+        "mtl_q6_reduction_depenses_taxes": "Approche interventionniste maintenue malgré virage pragmatique"
+      }
+    },
+    {
+      "id": "ensemble_montreal_mtl",
+      "nom": "Ensemble Montréal",
+      "chef": "Soraya Martinez Ferrada",
+      "orientation_politique": "centre-droit",
+      "positions": {
+        "mtl_metro_rem": "AGREE",
+        "mtl_arrondissements_autonomie": "STRONGLY_AGREE",
+        "mtl_festivals_equilibre": "NEUTRAL",
+        "mtl_q2_pistes_cyclables": "NEUTRAL",
+        "mtl_q4_priorite_mobilite_active": "DISAGREE",
+        "mtl_q5_quotas_logements_abordables": "AGREE",
+        "mtl_q6_reduction_depenses_taxes": "STRONGLY_AGREE",
+        "mtl_q7_immeubles_grande_hauteur": "AGREE",
+        "mtl_q8_interdire_essence_centre_ville": "DISAGREE",
+        "mtl_q9_protection_espaces_verts": "NEUTRAL",
+        "mtl_q10_transition_carboneutre": "NEUTRAL",
+        "mtl_q11_reduction_dechets": "AGREE",
+        "mtl_q12_augmentation_taxes": "DISAGREE",
+        "mtl_q13_pouvoir_conseils_quartier": "STRONGLY_AGREE",
+        "mtl_q14_reduction_dette": "STRONGLY_AGREE",
+        "mtl_q15_avantages_fiscaux_entreprises": "STRONGLY_AGREE",
+        "mtl_q16_limitation_touristes": "DISAGREE",
+        "mtl_q17_soutien_organismes_communautaires": "NEUTRAL",
+        "mtl_q18_augmentation_effectifs_policiers": "AGREE",
+        "mtl_q19_investissement_infrastructures_loisirs_sportives": "AGREE",
+        "mtl_q20_protection_patrimoine": "NEUTRAL"
+      },
+      "justifications": {
+        "mtl_q6_reduction_depenses_taxes": "Proposition de réduction 1000 postes fonction publique",
+        "mtl_q15_avantages_fiscaux_entreprises": "Réconciliation avec milieu des affaires prioritaire",
+        "mtl_q5_quotas_logements_abordables": "Exemption permis construction logements sociaux/abordables",
+        "mtl_q14_reduction_dette": "Focus services essentiels et gestion rigoureuse"
+      }
+    },
+    {
+      "id": "transition_montreal_mtl",
+      "nom": "Transition Montréal",
+      "chef": "Craig Sauvé",
+      "orientation_politique": "centre-gauche",
+      "positions": {
+        "mtl_metro_rem": "AGREE",
+        "mtl_arrondissements_autonomie": "AGREE",
+        "mtl_festivals_equilibre": "NEUTRAL",
+        "mtl_q2_pistes_cyclables": "AGREE",
+        "mtl_q4_priorite_mobilite_active": "AGREE",
+        "mtl_q5_quotas_logements_abordables": "STRONGLY_AGREE",
+        "mtl_q6_reduction_depenses_taxes": "NEUTRAL",
+        "mtl_q7_immeubles_grande_hauteur": "NEUTRAL",
+        "mtl_q8_interdire_essence_centre_ville": "NEUTRAL",
+        "mtl_q9_protection_espaces_verts": "AGREE",
+        "mtl_q10_transition_carboneutre": "AGREE",
+        "mtl_q11_reduction_dechets": "NEUTRAL",
+        "mtl_q12_augmentation_taxes": "AGREE",
+        "mtl_q13_pouvoir_conseils_quartier": "AGREE",
+        "mtl_q14_reduction_dette": "NEUTRAL",
+        "mtl_q15_avantages_fiscaux_entreprises": "DISAGREE",
+        "mtl_q16_limitation_touristes": "NEUTRAL",
+        "mtl_q17_soutien_organismes_communautaires": "STRONGLY_AGREE",
+        "mtl_q18_augmentation_effectifs_policiers": "NEUTRAL",
+        "mtl_q19_investissement_infrastructures_loisirs_sportives": "AGREE",
+        "mtl_q20_protection_patrimoine": "NEUTRAL"
+      },
+      "justifications": {
+        "mtl_q5_quotas_logements_abordables": "Focus fort sur logement abordable et justice sociale",
+        "mtl_q12_augmentation_taxes": "Surtaxe propriétés luxe 3,5M+ pour financer lutte itinérance",
+        "mtl_q17_soutien_organismes_communautaires": "Priorité soutien social et lutte itinérance"
+      }
+    },
+    {
+      "id": "action_montreal_mtl",
+      "nom": "Action Montréal",
+      "chef": "Gilbert Thibodeau",
+      "orientation_politique": "centre-droit",
+      "positions": {
+        "mtl_metro_rem": "NEUTRAL",
+        "mtl_arrondissements_autonomie": "AGREE",
+        "mtl_festivals_equilibre": "NEUTRAL",
+        "mtl_q2_pistes_cyclables": "NEUTRAL",
+        "mtl_q4_priorite_mobilite_active": "NEUTRAL",
+        "mtl_q5_quotas_logements_abordables": "NEUTRAL",
+        "mtl_q6_reduction_depenses_taxes": "AGREE",
+        "mtl_q7_immeubles_grande_hauteur": "NEUTRAL",
+        "mtl_q8_interdire_essence_centre_ville": "DISAGREE",
+        "mtl_q9_protection_espaces_verts": "NEUTRAL",
+        "mtl_q10_transition_carboneutre": "NEUTRAL",
+        "mtl_q11_reduction_dechets": "NEUTRAL",
+        "mtl_q12_augmentation_taxes": "DISAGREE",
+        "mtl_q13_pouvoir_conseils_quartier": "AGREE",
+        "mtl_q14_reduction_dette": "AGREE",
+        "mtl_q15_avantages_fiscaux_entreprises": "AGREE",
+        "mtl_q16_limitation_touristes": "NEUTRAL",
+        "mtl_q17_soutien_organismes_communautaires": "NEUTRAL",
+        "mtl_q18_augmentation_effectifs_policiers": "AGREE",
+        "mtl_q19_investissement_infrastructures_loisirs_sportives": "NEUTRAL",
+        "mtl_q20_protection_patrimoine": "NEUTRAL"
+      },
+      "justifications": {
+        "note": "Positions largement inférées car peu d'informations publiques disponibles. Orientation centre-droit assumée."
+      }
+    },
+    {
+      "id": "futur_montreal_mtl",
+      "nom": "Futur Montréal",
+      "chef": "Jean-François Kacou",
+      "orientation_politique": "centre",
+      "positions": {
+        "mtl_metro_rem": "AGREE",
+        "mtl_arrondissements_autonomie": "AGREE",
+        "mtl_festivals_equilibre": "NEUTRAL",
+        "mtl_q2_pistes_cyclables": "AGREE",
+        "mtl_q4_priorite_mobilite_active": "AGREE",
+        "mtl_q5_quotas_logements_abordables": "AGREE",
+        "mtl_q6_reduction_depenses_taxes": "NEUTRAL",
+        "mtl_q7_immeubles_grande_hauteur": "NEUTRAL",
+        "mtl_q8_interdire_essence_centre_ville": "NEUTRAL",
+        "mtl_q9_protection_espaces_verts": "AGREE",
+        "mtl_q10_transition_carboneutre": "AGREE",
+        "mtl_q11_reduction_dechets": "NEUTRAL",
+        "mtl_q12_augmentation_taxes": "NEUTRAL",
+        "mtl_q13_pouvoir_conseils_quartier": "AGREE",
+        "mtl_q14_reduction_dette": "NEUTRAL",
+        "mtl_q15_avantages_fiscaux_entreprises": "NEUTRAL",
+        "mtl_q16_limitation_touristes": "NEUTRAL",
+        "mtl_q17_soutien_organismes_communautaires": "AGREE",
+        "mtl_q18_augmentation_effectifs_policiers": "AGREE",
+        "mtl_q19_investissement_infrastructures_loisirs_sportives": "AGREE",
+        "mtl_q20_protection_patrimoine": "AGREE"
+      },
+      "justifications": {
+        "mtl_q2_pistes_cyclables": "Volonté de cohésion entre tous usagers de la route",
+        "mtl_q5_quotas_logements_abordables": "Mobilité, logement abordable dans priorités",
+        "mtl_q18_augmentation_effectifs_policiers": "Plan anti-haine avec intervention rapide",
+        "mtl_q13_pouvoir_conseils_quartier": "Écoute et dialogue avec citoyens prioritaires"
+      }
+    }
+  ]
+}

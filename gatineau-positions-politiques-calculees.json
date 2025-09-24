@@ -1,0 +1,382 @@
+{
+  "gatineau_positions_politiques": {
+    "metadata": {
+      "municipalite": "Gatineau",
+      "date_creation": "2025-09-23",
+      "total_questions": 22,
+      "partis_analyses": 2,
+      "methodologie": "Analyse des plateformes électorales, déclarations publiques et orientations politiques des partis",
+      "sources_principales": [
+        "Site web Action Gatineau",
+        "Site web Équipe Mario Aubé",
+        "Radio-Canada Outaouais",
+        "Le Droit",
+        "Déclarations publiques des leaders"
+      ],
+      "echelle_positions": {
+        "FA": "Fortement d'accord (+2)",
+        "PA": "Plutôt d'accord (+1)",
+        "N": "Neutre (0)",
+        "PD": "Plutôt en désaccord (-1)",
+        "FD": "Fortement en désaccord (-2)",
+        "IDK": "Position inconnue/non documentée"
+      }
+    },
+    "action_gatineau": {
+      "parti_info": {
+        "nom": "Action Gatineau",
+        "leader": "Maude Marquis-Bissonnette",
+        "orientation": "Centre-gauche",
+        "ideologie": ["New Urbanism", "Environmentalism", "Social democracy", "Localism"],
+        "vision": "Une ville bienveillante qui ne laisse personne derrière",
+        "couleurs": ["teal", "orange"],
+        "sieges_actuels": "10/20"
+      },
+      "positions": [
+        {
+          "questionId": "q1_pistes_cyclables",
+          "position": "PA",
+          "source": "Plateforme électorale Action Gatineau - orientation environnementale et mobilité durable",
+          "justification": "Parti centre-gauche avec forte orientation environnementale. Mention de 'transports et mobilité améliorée' dans les réalisations.",
+          "note": "Aligné avec idéologie New Urbanism du parti"
+        },
+        {
+          "questionId": "q2_priorite_mobilite_active",
+          "position": "PA",
+          "source": "Orientations New Urbanism et environnementales d'Action Gatineau",
+          "justification": "Idéologie New Urbanism favorise mobilité active en centre-ville. Engagement pour 'transition écologique ambitieuse'.",
+          "note": "Cohérent avec vision de développement durable"
+        },
+        {
+          "questionId": "q3_quotas_logements_abordables",
+          "position": "FA",
+          "source": "Réalisations annoncées: 'Plus de logements sociaux et abordables pour répondre à la crise du logement'",
+          "justification": "Position explicite du parti sur le logement abordable. Priorité clairement établie.",
+          "quote": "Plus de logements sociaux et abordables pour répondre à la crise du logement"
+        },
+        {
+          "questionId": "q4_reduction_depenses_taxes",
+          "position": "N",
+          "source": "Engagement pour 'diversification des sources de revenus pour réduire la pression sur les portefeuilles'",
+          "justification": "Position équilibrée : cherche à réduire pression fiscale mais pas par réduction services. Diversification plutôt que réduction.",
+          "note": "Approche nuancée entre services et fiscalité"
+        },
+        {
+          "questionId": "q5_immeubles_grande_hauteur",
+          "position": "N",
+          "source": "Aucune position claire documentée",
+          "justification": "Pas de position spécifique trouvée sur ce sujet dans les sources consultées.",
+          "note": "Position à préciser lors de la campagne"
+        },
+        {
+          "questionId": "q6_interdire_essence_centre_ville",
+          "position": "PA",
+          "source": "Engagement pour 'transition écologique ambitieuse'",
+          "justification": "Orientation environnementale forte suggère ouverture aux mesures environnementales ambitieuses.",
+          "note": "Cohérent avec ideologie environnementale"
+        },
+        {
+          "questionId": "q7_protection_espaces_verts",
+          "position": "FA",
+          "source": "Idéologie environnementale d'Action Gatineau et engagement 'transition écologique ambitieuse'",
+          "justification": "Environnementalisme au cœur de l'idéologie du parti. Protection espaces verts prioritaire.",
+          "note": "Position forte attendue du parti"
+        },
+        {
+          "questionId": "q8_transition_carboneutre",
+          "position": "FA",
+          "source": "Engagement explicite pour 'promouvoir une transition écologique ambitieuse'",
+          "justification": "Position claire et explicite du parti sur la transition écologique.",
+          "quote": "promouvoir une transition écologique ambitieuse"
+        },
+        {
+          "questionId": "q9_reduction_dechets",
+          "position": "PA",
+          "source": "Engagement pour 'services municipaux renforcés, accessibles et de qualité'",
+          "justification": "Priorité aux services de qualité suggère maintien/amélioration collecte plutôt que réduction.",
+          "note": "Équilibre entre services et environnement"
+        },
+        {
+          "questionId": "q10_augmentation_taxes",
+          "position": "PA",
+          "source": "Engagement 'transition écologique ambitieuse' et vision sociale-démocrate",
+          "justification": "Parti social-démocrate accepterait augmentation taxes pour projets environnementaux prioritaires.",
+          "note": "Cohérent avec ideologie sociale-démocrate"
+        },
+        {
+          "questionId": "q11_pouvoir_conseils_secteur",
+          "position": "FA",
+          "source": "Engagement 'renforcer la participation citoyenne' et idéologie localisme",
+          "justification": "Localisme et participation citoyenne au cœur des valeurs. Position claire pour décentralisation.",
+          "quote": "renforcer la participation citoyenne"
+        },
+        {
+          "questionId": "q12_reduction_dette",
+          "position": "PA",
+          "source": "Mention 'gestion rigoureuse' et 'services municipaux renforcés'",
+          "justification": "Équilibre entre gestion rigoureuse et maintien services essentiels de qualité.",
+          "note": "Gestion responsable mais pas austérité"
+        },
+        {
+          "questionId": "q13_avantages_fiscaux_entreprises",
+          "position": "PA",
+          "source": "Engagement 'développer une économie locale dynamique et inclusive'",
+          "justification": "Développement économique inclusif peut inclure incitatifs ciblés pour entreprises.",
+          "note": "Approche équilibrée développement économique"
+        },
+        {
+          "questionId": "q14_limitation_touristes",
+          "position": "N",
+          "source": "Aucune position spécifique documentée",
+          "justification": "Pas de position claire sur cette question spécifique dans les sources.",
+          "note": "Position à clarifier"
+        },
+        {
+          "questionId": "q15_soutien_organismes_communautaires",
+          "position": "FA",
+          "source": "Vision 'ville bienveillante qui ne laisse personne derrière' et idéologie sociale-démocrate",
+          "justification": "Social-démocratie et inclusion sociale impliquent fort soutien aux organismes communautaires.",
+          "quote": "ville bienveillante qui ne laisse personne derrière"
+        },
+        {
+          "questionId": "q16_augmentation_effectifs_policiers",
+          "position": "PA",
+          "source": "Priorité annoncée pour 'sécurité routière' avec radars photo près écoles",
+          "justification": "Préoccupation sécurité publique établie, ouverture probable à renforcement si justifié.",
+          "note": "Approche sécurité par prévention et technologie"
+        },
+        {
+          "questionId": "q17_investissement_infrastructures_loisirs_sportives",
+          "position": "FA",
+          "source": "Engagement 'services municipaux renforcés' et 'infrastructures essentielles consolidées'",
+          "justification": "Infrastructures et services de proximité prioritaires selon programme.",
+          "quote": "infrastructures essentielles consolidées"
+        },
+        {
+          "questionId": "q18_protection_patrimoine",
+          "position": "PA",
+          "source": "Idéologie du parti et contexte historique Gatineau",
+          "justification": "Orientation générale du parti suggère attention au patrimoine, mais sans position explicite.",
+          "note": "Position probable mais à confirmer"
+        },
+        {
+          "questionId": "q19_services_bilingues",
+          "position": "FA",
+          "source": "Vision 'inclusive' et 'services municipaux renforcés, accessibles et de qualité'",
+          "justification": "Inclusivité et accessibilité des services impliquent services bilingues dans contexte Gatineau.",
+          "quote": "services municipaux renforcés, accessibles et de qualité"
+        },
+        {
+          "questionId": "q20_coordination_ottawa",
+          "position": "FA",
+          "source": "Approche 'collaborative avec tous les acteurs de la région'",
+          "justification": "Approche collaborative régionale explicitement mentionnée dans programme.",
+          "quote": "approche collaborative avec tous les acteurs de la région"
+        },
+        {
+          "questionId": "q21_transport_interprovincial",
+          "position": "PA",
+          "source": "Priorité 'transports et mobilité améliorée, adaptés aux besoins'",
+          "justification": "Transport interprovincial fait partie des besoins de mobilité de Gatineau.",
+          "quote": "transports et mobilité améliorée, adaptés aux besoins"
+        },
+        {
+          "questionId": "q22_enjeux_prioritaires",
+          "position": "N/A",
+          "source": "Question de classement des priorités",
+          "justification": "Question de type ranking, pas de position accord/désaccord",
+          "note": "Priorités: Transport, Logement, Environnement, Services, Relations Ottawa"
+        }
+      ]
+    },
+    "equipe_mario_aube": {
+      "parti_info": {
+        "nom": "Équipe Mario Aubé",
+        "leader": "Mario Aubé",
+        "orientation": "Big tent, conservatisme fiscal, localisme",
+        "ideologie": ["Localism", "Fiscal conservatism"],
+        "vision": "Un vent de renouveau - investissements vers priorités municipales fondamentales",
+        "couleurs": ["magenta", "dark blue", "teal"],
+        "sieges_actuels": "2/20",
+        "fonde": "10 janvier 2025"
+      },
+      "positions": [
+        {
+          "questionId": "q1_pistes_cyclables",
+          "position": "N",
+          "source": "Aucune position spécifique documentée - parti récent",
+          "justification": "Parti fondé en 2025, positions détaillées en développement. Approche big tent suggère position équilibrée.",
+          "note": "Position à préciser pendant campagne"
+        },
+        {
+          "questionId": "q2_priorite_mobilite_active",
+          "position": "N",
+          "source": "Focus sur 'priorités municipales fondamentales' - interprétation large possible",
+          "justification": "Approche pragmatique suggère équilibre entre différents modes transport selon besoins.",
+          "note": "Approche basée sur besoins concrets"
+        },
+        {
+          "questionId": "q3_quotas_logements_abordables",
+          "position": "PD",
+          "source": "Orientation conservatisme fiscal et approche 'capacité de payer des citoyens'",
+          "justification": "Conservatisme fiscal suggère réticence aux quotas obligatoires qui pourraient augmenter coûts.",
+          "note": "Préférence probable pour incitatifs vs obligations"
+        },
+        {
+          "questionId": "q4_reduction_depenses_taxes",
+          "position": "FA",
+          "source": "Programme explicite: 'décisions budgétaires respecteront la capacité de payer des citoyens'",
+          "justification": "Position centrale du parti sur gestion fiscale responsable et respect capacité de payer.",
+          "quote": "décisions budgétaires respecteront la capacité de payer des citoyens"
+        },
+        {
+          "questionId": "q5_immeubles_grande_hauteur",
+          "position": "N",
+          "source": "Aucune position spécifique - approche big tent",
+          "justification": "Pas de position doctrinaire, évaluation probable au cas par cas selon contexte local.",
+          "note": "Décisions basées sur besoins secteurs"
+        },
+        {
+          "questionId": "q6_interdire_essence_centre_ville",
+          "position": "PD",
+          "source": "Conservatisme fiscal et approche pragmatique 'priorités fondamentales'",
+          "justification": "Mesures radicales environnementales possiblement vues comme non-prioritaires vs services de base.",
+          "note": "Préférence approche graduelle vs interdictions"
+        },
+        {
+          "questionId": "q7_protection_espaces_verts",
+          "position": "PA",
+          "source": "Vision 'ville durable' dans programme",
+          "justification": "Durabilité inclut protection environnement, mais équilibrée avec développement économique.",
+          "quote": "ville prospère, durable et inclusive"
+        },
+        {
+          "questionId": "q8_transition_carboneutre",
+          "position": "N",
+          "source": "Vision 'durable' mais approche 'capacité de payer'",
+          "justification": "Soutien durabilité mais conditionné à la capacité financière et aux priorités.",
+          "note": "Transition graduelle selon moyens"
+        },
+        {
+          "questionId": "q9_reduction_dechets",
+          "position": "FA",
+          "source": "Programme 'services publics efficaces et accessibles' et 'services de base'",
+          "justification": "Services de base incluent collecte efficace. Priorité aux services citoyens.",
+          "quote": "services publics efficaces et accessibles"
+        },
+        {
+          "questionId": "q10_augmentation_taxes",
+          "position": "FD",
+          "source": "Conservatisme fiscal et 'respecter la capacité de payer des citoyens'",
+          "justification": "Position fiscale conservatrice oppose augmentations taxes, même pour projets environnementaux.",
+          "note": "Recherche solutions sans hausse fiscale"
+        },
+        {
+          "questionId": "q11_pouvoir_conseils_secteur",
+          "position": "FA",
+          "source": "Idéologie 'localisme' et philosophie 'donner du pouvoir aux citoyens'",
+          "justification": "Localisme au cœur de l'idéologie. Décentralisation vers secteurs cohérente.",
+          "quote": "donner du pouvoir aux citoyens"
+        },
+        {
+          "questionId": "q12_reduction_dette",
+          "position": "FA",
+          "source": "Programme priorité 'infrastructures essentielles' et 'services de base'",
+          "justification": "Philosophie priorisant services essentiels avant projets d'envergure.",
+          "quote": "services publics efficaces et accessibles"
+        },
+        {
+          "questionId": "q13_avantages_fiscaux_entreprises",
+          "position": "PA",
+          "source": "Vision 'ville prospère' et 'développement économique'",
+          "justification": "Prospérité économique peut justifier incitatifs ciblés pour attraction entreprises.",
+          "note": "Approche pragmatique développement"
+        },
+        {
+          "questionId": "q14_limitation_touristes",
+          "position": "PD",
+          "source": "Vision 'ville prospère' et approche développement économique",
+          "justification": "Développement économique suggère ouverture au tourisme plutôt que limitations.",
+          "note": "Équilibre tourisme-résidents sans restrictions"
+        },
+        {
+          "questionId": "q15_soutien_organismes_communautaires",
+          "position": "PA",
+          "source": "Vision 'inclusive' et approche 'bien-être de chaque citoyen'",
+          "justification": "Bien-être citoyen inclut soutien organismes, mais conditionné aux priorités budgétaires.",
+          "quote": "bien-être de chaque citoyen"
+        },
+        {
+          "questionId": "q16_augmentation_effectifs_policiers",
+          "position": "PA",
+          "source": "Approche pragmatique 'sécurité' comme service de base",
+          "justification": "Sécurité fait partie des services essentiels selon approche du parti.",
+          "note": "Si justifié par besoins concrets"
+        },
+        {
+          "questionId": "q17_investissement_infrastructures_loisirs_sportives",
+          "position": "FA",
+          "source": "Programme explicite: 'investir dans infrastructures essentielles, incluant installations sportives et communautaires'",
+          "justification": "Position explicite du programme sur installations sportives et communautaires.",
+          "quote": "installations sportives et communautaires"
+        },
+        {
+          "questionId": "q18_protection_patrimoine",
+          "position": "N",
+          "source": "Aucune position spécifique documentée",
+          "justification": "Pas de position claire dans programme initial. Évaluation probable au cas par cas.",
+          "note": "Position à développer"
+        },
+        {
+          "questionId": "q19_services_bilingues",
+          "position": "PA",
+          "source": "Vision 'inclusive' et 'services publics accessibles'",
+          "justification": "Services accessibles dans contexte Gatineau inclut dimension bilingue.",
+          "quote": "services publics accessibles"
+        },
+        {
+          "questionId": "q20_coordination_ottawa",
+          "position": "PA",
+          "source": "Approche pragmatique et 'priorités municipales fondamentales'",
+          "justification": "Coopération interprovinciale peut servir priorités municipales de Gatineau.",
+          "note": "Si bénéfique pour Gatineau"
+        },
+        {
+          "questionId": "q21_transport_interprovincial",
+          "position": "PA",
+          "source": "Focus 'infrastructures essentielles' et besoins concrets citoyens",
+          "justification": "Transport interprovincial répond aux besoins concrets des travailleurs gatinois.",
+          "note": "Infrastructure essentielle pour économie"
+        },
+        {
+          "questionId": "q22_enjeux_prioritaires",
+          "position": "N/A",
+          "source": "Question de classement des priorités",
+          "justification": "Question de type ranking, pas de position accord/désaccord",
+          "note": "Priorités: Services de base, Infrastructures, Gestion finances, Transport"
+        }
+      ]
+    }
+  },
+  "synthese_positions": {
+    "principales_differences": [
+      "Gestion fiscale: Action Gatineau plus ouvert hausses vs ÉMA strictement conservateur",
+      "Environnement: Action Gatineau plus ambitieux vs ÉMA plus pragmatique",
+      "Logement: Action Gatineau pro-quotas vs ÉMA préfère incitatifs",
+      "Services vs projets: ÉMA priorise services de base vs Action Gatineau plus large"
+    ],
+    "convergences": [
+      "Décentralisation pouvoir vers secteurs/quartiers",
+      "Soutien infrastructures loisirs/sport",
+      "Services bilingues",
+      "Coopération avec Ottawa",
+      "Transport interprovincial"
+    ],
+    "notes_methodologiques": [
+      "Positions Action Gatineau basées sur historique et idéologie établie",
+      "Positions ÉMA parfois extrapolées du programme initial (parti récent)",
+      "Certaines positions marquées IDK si insuffisamment documentées",
+      "Sources principalement déclarations publiques 2024-2025"
+    ]
+  }
+}

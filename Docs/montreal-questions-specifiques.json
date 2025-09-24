@@ -1,0 +1,53 @@
+{
+  "questions_specifiques": [
+    {
+      "id": "mtl_metro_rem",
+      "text": "La Ville de Montréal devrait prioriser l'extension du métro et l'intégration du REM, même si cela nécessite des investissements majeurs.",
+      "category": "Mobilité et transport",
+      "response_type": "agreement",
+      "description": "Cette question évalue la priorité accordée au développement du transport collectif structurant face aux contraintes budgétaires.",
+      "response_format": "standard",
+      "order_index": 1
+    },
+    {
+      "id": "mtl_festivals_equilibre",
+      "text": "La Ville devrait mieux encadrer les festivals et grands événements pour protéger la qualité de vie des résidents, même si cela réduit leur ampleur.",
+      "category": "Développement économique et social",
+      "response_type": "agreement",
+      "description": "Cette question évalue l'équilibre entre l'attractivité touristique/culturelle et la qualité de vie résidentielle.",
+      "response_format": "standard",
+      "order_index": 3
+    },
+    {
+      "id": "mtl_arrondissements_autonomie",
+      "text": "Les arrondissements devraient avoir plus d'autonomie pour décider de leurs priorités locales, même si cela complique la coordination à l'échelle de la ville.",
+      "category": "Gouvernance et finances municipales",
+      "response_type": "agreement",
+      "description": "Cette question évalue la priorité accordée à la décentralisation versus la cohérence administrative.",
+      "response_format": "standard",
+      "order_index": 2
+    }
+  ],
+  "question_priorites": {
+    "id": "mtl_enjeux_prioritaires",
+    "text": "Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d'importance : 1er, 2e et 3e choix)",
+    "category": "Priorités municipales",
+    "response_type": "priority_ranking",
+    "description": "Sélectionnez vos 3 enjeux municipaux prioritaires et classez-les par ordre d'importance.",
+    "response_format": "standard",
+    "order_index": 21,
+    "priority_options": [
+      "Transport et mobilité",
+      "Logement abordable",
+      "Environnement et espaces verts",
+      "Sécurité publique",
+      "Gestion des finances municipales",
+      "Services municipaux",
+      "Lutte aux changements climatiques",
+      "Patrimoine et identité",
+      "Extension du métro et REM",
+      "Gestion des festivals et événements",
+      "Coordination des arrondissements"
+    ]
+  }
+}

@@ -3,7 +3,6 @@ import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-
 import Image from "next/image"
 import Link from "next/link"
 import { ColoredText } from "@/components/ui/colored-text"
-import { RainbowButton } from "@/components/ui/rainbow-button"
 import { GlowSection } from "@/components/ui/subtle-glow"
 import { CountdownBadge } from "@/components/ui/countdown-badge"
 import { StepCard, FeatureCard, StatCard } from "@/components/ui/uniform-card"
@@ -110,12 +109,9 @@ export default function HomePage() {
                   </Link>
                 </Button>
                 <div className="flex flex-col gap-2">
-                  <RainbowButton
-                    className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
-                    asChild
-                  >
-                    <StartQuestionnaireButton>Découvrez vos affinités politiques</StartQuestionnaireButton>
-                  </RainbowButton>
+                  <StartQuestionnaireButton variant="primary" size="lg" className="w-fit">
+                    Découvrez vos affinités politiques
+                  </StartQuestionnaireButton>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ Test politique rapide • 5 minutes • 21 questions</span>
                   <div className="flex flex-col sm:flex-row gap-2 mt-2 text-center sm:text-left">
                     <Link href="/elections-municipales-2025-quebec" className="text-sm text-midnight-green underline hover:text-midnight-green/80">
@@ -235,12 +231,9 @@ export default function HomePage() {
               C&apos;est pourquoi nous avons créé cette boussole.
             </p>
             <div className="flex justify-center">
-              <RainbowButton
-                className="rounded-xl px-6 py-4 text-base font-semibold"
-                asChild
-              >
-                <StartQuestionnaireButton>Découvrez vos affinités politiques</StartQuestionnaireButton>
-              </RainbowButton>
+              <StartQuestionnaireButton variant="primary" size="lg">
+                Découvrez vos affinités politiques
+              </StartQuestionnaireButton>
             </div>
           </AnimatedCTA>
         </div>
@@ -343,13 +336,9 @@ export default function HomePage() {
             <p className="text-base sm:text-lg text-primary-foreground/90 mb-10 max-w-3xl mx-auto leading-relaxed w-full break-words px-4">
               Participez à notre questionnaire interactif et obtenez une vue claire de votre positionnement politique municipal.
             </p>
-            <RainbowButton
-              variant="white"
-              className="rounded-xl px-6 py-4 text-base font-semibold w-fit"
-              asChild
-            >
-              <StartQuestionnaireButton>Découvrez vos affinités politiques</StartQuestionnaireButton>
-            </RainbowButton>
+            <StartQuestionnaireButton variant="secondary" size="lg" className="w-fit border-2 border-white text-midnight-green hover:bg-white/90">
+              Découvrez vos affinités politiques
+            </StartQuestionnaireButton>
           </AnimatedSection>
         </div>
       </section>

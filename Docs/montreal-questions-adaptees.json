@@ -1,0 +1,213 @@
+[
+  {
+    "id": "mtl_metro_rem",
+    "text": "La Ville de Montréal devrait prioriser l'extension du métro et l'intégration du REM, même si cela nécessite des investissements majeurs.",
+    "category": "Mobilité et transport",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée au développement du transport collectif structurant face aux contraintes budgétaires.",
+    "response_format": "standard",
+    "order_index": 1
+  },
+  {
+    "id": "mtl_arrondissements_autonomie",
+    "text": "Les arrondissements devraient avoir plus d'autonomie pour décider de leurs priorités locales, même si cela complique la coordination à l'échelle de la ville.",
+    "category": "Gouvernance et finances municipales",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée à la décentralisation versus la cohérence administrative.",
+    "response_format": "standard",
+    "order_index": 2
+  },
+  {
+    "id": "mtl_festivals_equilibre",
+    "text": "La Ville devrait mieux encadrer les festivals et grands événements pour protéger la qualité de vie des résidents, même si cela réduit leur ampleur.",
+    "category": "Développement économique et social",
+    "response_type": "agreement",
+    "description": "Cette question évalue l'équilibre entre l'attractivité touristique/culturelle et la qualité de vie résidentielle.",
+    "response_format": "standard",
+    "order_index": 3
+  },
+  {
+    "id": "mtl_q2_pistes_cyclables",
+    "text": "La Ville de Montréal devrait développer davantage les pistes cyclables, même si cela réduit l'espace pour les voitures.",
+    "category": "Mobilité et transport",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée aux transports actifs versus l'automobile.",
+    "response_format": "standard",
+    "order_index": 4
+  },
+  {
+    "id": "mtl_q4_priorite_mobilite_active",
+    "text": "Pour améliorer l'attractivité du centre-ville, la priorité devrait être donnée aux piétons, cyclistes et au transport collectif, même si cela implique de réduire l'espace dédié à l'automobile (stationnements, voies de circulation, etc.).",
+    "category": "Mobilité et transport",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 5
+  },
+  {
+    "id": "mtl_q5_quotas_logements_abordables",
+    "text": "La Ville de Montréal devrait obliger un nombre minimum de logements abordables dans chaque nouveau projet immobilier.",
+    "category": "Habitation et aménagement urbain",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 6
+  },
+  {
+    "id": "mtl_q6_reduction_depenses_taxes",
+    "text": "La Ville de Montréal devrait réduire ses dépenses et ses taxes pour respecter la capacité de payer des citoyens.",
+    "category": "Gouvernance et finances municipales",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée à la réduction de la charge fiscale municipale.",
+    "response_format": "standard",
+    "order_index": 7
+  },
+  {
+    "id": "mtl_q7_immeubles_grande_hauteur",
+    "text": "Les immeubles de grande hauteur devraient être favorisés pour maximiser l'utilisation des terrains disponibles.",
+    "category": "Habitation et aménagement urbain",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 8
+  },
+  {
+    "id": "mtl_q8_interdire_essence_centre_ville",
+    "text": "La Ville de Montréal devrait interdire les véhicules à essence dans le centre-ville d'ici 2035.",
+    "category": "Environnement et développement durable",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée aux mesures environnementales radicales en mobilité urbaine.",
+    "response_format": "standard",
+    "order_index": 9
+  },
+  {
+    "id": "mtl_q9_protection_espaces_verts",
+    "text": "La Ville de Montréal devrait mettre plus d'argent pour protéger et agrandir les espaces verts, même si cela nuit au développement de projets immobiliers.",
+    "category": "Environnement et développement durable",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée aux espaces verts face à la pression immobilière.",
+    "response_format": "standard",
+    "order_index": 10
+  },
+  {
+    "id": "mtl_q10_transition_carboneutre",
+    "text": "La Ville de Montréal devrait accélérer la transition des bâtiments \"carboneutres\" (qui n'ajoutent pas de pollution au climat), même si ça coûte plus cher.",
+    "category": "Environnement et développement durable",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 11
+  },
+  {
+    "id": "mtl_q11_reduction_dechets",
+    "text": "La Ville de Montréal devrait améliorer la collecte des ordures au lieu de la réduire pour des raisons environnementales.",
+    "category": "Environnement et développement durable",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée aux services municipaux (collecte) par rapport à la réduction des collectes justifiée par l'environnement.",
+    "response_format": "standard",
+    "order_index": 12
+  },
+  {
+    "id": "mtl_q12_augmentation_taxes",
+    "text": "La Ville de Montréal devrait investir davantage dans des projets écoresponsables (énergie verte, transport durable, bâtiments écologiques), même si cela nécessite d'augmenter les taxes foncières (impôt sur la propriété).",
+    "category": "Gouvernance et finances municipales",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 13
+  },
+  {
+    "id": "mtl_q13_pouvoir_conseils_quartier",
+    "text": "La Ville de Montréal devrait donner plus de pouvoir aux conseils d'arrondissement pour décider des projets locaux.",
+    "category": "Gouvernance et finances municipales",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée à la décentralisation de la gouvernance municipale.",
+    "response_format": "standard",
+    "order_index": 14
+  },
+  {
+    "id": "mtl_q14_reduction_dette",
+    "text": "La Ville de Montréal devrait prioriser l'amélioration des services essentiels (collecte des ordures, déneigement, etc.) avant d'investir dans des projets d'avenir.",
+    "category": "Gouvernance et finances municipales",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 15
+  },
+  {
+    "id": "mtl_q15_avantages_fiscaux_entreprises",
+    "text": "La Ville de Montréal devrait offrir plus de réductions de taxes ou autres avantages fiscaux pour attirer de grandes entreprises.",
+    "category": "Développement économique et social",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 16
+  },
+  {
+    "id": "mtl_q16_limitation_touristes",
+    "text": "La Ville de Montréal devrait limiter le nombre de touristes dans certains quartiers pour protéger la qualité de vie des résidents.",
+    "category": "Développement économique et social",
+    "response_type": "agreement",
+    "description": "Cette question mesure la priorité accordée à l'équilibre entre tourisme et vie locale.",
+    "response_format": "standard",
+    "order_index": 17
+  },
+  {
+    "id": "mtl_q17_soutien_organismes_communautaires",
+    "text": "La Ville de Montréal devrait donner plus d'argent aux organismes communautaires qui aident pour des services sociaux essentiels (itinérance, aide alimentaire, etc).",
+    "category": "Développement économique et social",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 18
+  },
+  {
+    "id": "mtl_q18_augmentation_effectifs_policiers",
+    "text": "Il faudrait augmenter le nombre de policiers pour améliorer la sécurité dans les arrondissements.",
+    "category": "Sécurité publique et services municipaux",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 19
+  },
+  {
+    "id": "mtl_q19_investissement_infrastructures_loisirs_sportives",
+    "text": "La Ville de Montréal devrait investir plus dans les parcs, arénas et terrains de sport de quartier.",
+    "category": "Sécurité publique et services municipaux",
+    "response_type": "agreement",
+    "description": "Cette question évalue la priorité accordée aux services de proximité.",
+    "response_format": "standard",
+    "order_index": 20
+  },
+  {
+    "id": "mtl_q20_protection_patrimoine",
+    "text": "La Ville de Montréal devrait renforcer les règles qui protègent les vieux bâtiments et le patrimoine, même si cela limite certains projets.",
+    "category": "Patrimoine et identité",
+    "response_type": "agreement",
+    "description": null,
+    "response_format": "standard",
+    "order_index": 21
+  },
+  {
+    "id": "mtl_enjeux_prioritaires",
+    "text": "Parmi les enjeux suivants, lesquels sont vos 3 priorités municipales les plus importantes ? (Classez par ordre d'importance : 1er, 2e et 3e choix)",
+    "category": "Priorités municipales",
+    "response_type": "priority_ranking",
+    "description": "Sélectionnez vos 3 enjeux municipaux prioritaires et classez-les par ordre d'importance.",
+    "response_format": "standard",
+    "order_index": 22,
+    "priority_options": [
+      "Transport et mobilité",
+      "Logement abordable",
+      "Environnement et espaces verts",
+      "Sécurité publique",
+      "Gestion des finances municipales",
+      "Services municipaux",
+      "Lutte aux changements climatiques",
+      "Patrimoine et identité",
+      "Extension du métro et REM",
+      "Gestion des festivals et événements",
+      "Coordination des arrondissements"
+    ]
+  }
+]

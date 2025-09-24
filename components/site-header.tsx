@@ -3,7 +3,7 @@ import React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { RainbowButton } from "@/components/ui/rainbow-button"
+import { PrimaryButton } from "@/components/ui/primary-button"
 import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
 import ContinueOrRestartModal from "@/components/existing-responses-modal"
 import { useState, useEffect } from "react"
@@ -137,12 +137,13 @@ export default function SiteHeader() {
           {/* Action Button à droite (Desktop seulement) */}
           <div className="hidden md:block">
             {!shouldHideStartButton ? (
-              <RainbowButton
+              <PrimaryButton
                 onClick={handleStartQuestionnaire}
-                className="text-white rounded-xl px-7 py-3 text-sm font-semibold"
+                size="md"
+                showCompass
               >
                 Commencer
-              </RainbowButton>
+              </PrimaryButton>
             ) : (
               <Button
                 onClick={handleGoHome}
@@ -209,7 +210,7 @@ export default function SiteHeader() {
                   
                   {/* Navigation conditionnelle pour mobile aussi */}
                   {!shouldHideStartButton ? (
-                    <RainbowButton
+                    <PrimaryButton
                       onClick={() => {
                         // Fermer le sheet d'abord
                         const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
@@ -217,10 +218,12 @@ export default function SiteHeader() {
                         // Puis gérer le commencement
                         setTimeout(() => handleStartQuestionnaire(), 100)
                       }}
-                      className="w-full text-white rounded-xl py-3 text-base font-semibold mt-4"
+                      className="w-full mt-4"
+                      size="md"
+                      showCompass
                     >
                       Commencer
-                    </RainbowButton>
+                    </PrimaryButton>
                   ) : (
                     <Button
                       onClick={() => {

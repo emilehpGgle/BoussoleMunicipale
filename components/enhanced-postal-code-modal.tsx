@@ -21,8 +21,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Loader2, MapPin, Check, X, CheckCircle, Info, Mail, Shield, ExternalLink } from "lucide-react"
+import { Loader2, MapPin, Check, X, CheckCircle, Info, Mail, Shield } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import Link from "next/link"
 import {
   detectMunicipalityFromPostalCode,
   isValidCanadianPostalCode,
@@ -61,14 +62,96 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [analyticsConsent] = useState(true) // Toujours vrai, obligatoire
   const [emailConsent, setEmailConsent] = useState(false)
   const [email, setEmail] = useState("")
-  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [showDetails, setShowDetails] = useState(false) // Remplace showDetailsModal
+  const [emailError, setEmailError] = useState("")
+  const [emailSuggestion, setEmailSuggestion] = useState("")
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const router = useRouter()
-  
+
   // Intégration des hooks
   const { updateProfileFields, isSaving } = useProfile()
   const { getResponseCounts, isLoading: responsesLoading, responses } = useUserResponses()
   const { isSessionValid } = useSession()
+
+  // Dictionnaire des typos communes pour domaines email
+  const commonTypos: Record<string, string> = {
+    // Gmail variants
+    'gmial.com': 'gmail.com',
+    'gmai.com': 'gmail.com',
+    'gmail.co': 'gmail.com',
+    'gmil.com': 'gmail.com',
+    'gmail.con': 'gmail.com',
+
+    // Hotmail/Outlook variants
+    'hotmial.com': 'hotmail.com',
+    'hotmai.com': 'hotmail.com',
+    'hotmail.co': 'hotmail.com',
+    'hotmial.ca': 'hotmail.ca',
+    'outloo.com': 'outlook.com',
+    'outlook.co': 'outlook.com',
+    'outlok.com': 'outlook.com',
+
+    // Yahoo variants
+    'yahooo.com': 'yahoo.com',
+    'yaho.com': 'yahoo.com',
+    'yahoo.co': 'yahoo.com',
+    'yahooo.ca': 'yahoo.ca',
+
+    // Domaines québécois/canadiens
+    'videotro.ca': 'videotron.ca',
+    'videotron.c': 'videotron.ca',
+    'sympatico.c': 'sympatico.ca',
+    'sympatico.com': 'sympatico.ca',
+    'bell.c': 'bell.ca',
+    'rogers.c': 'rogers.ca',
+    'telus.c': 'telus.ca'
+  }
+
+  // Validation d'email améliorée avec détection de typos
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Fonction pour détecter et suggérer des corrections de typos
+  const detectEmailTypo = (email: string): string => {
+    const parts = email.split('@')
+    if (parts.length !== 2) return ''
+
+    const domain = parts[1].toLowerCase()
+    return commonTypos[domain] || ''
+  }
+
+  // Handler pour changement d'email avec validation en temps réel et détection de typos
+  const handleEmailChange = (newEmail: string) => {
+    setEmail(newEmail)
+    setEmailError("")
+    setEmailSuggestion("")
+
+    if (newEmail && newEmail.includes('@')) {
+      // Détecter les typos communes
+      const suggestion = detectEmailTypo(newEmail)
+      if (suggestion) {
+        const correctedEmail = newEmail.split('@')[0] + '@' + suggestion
+        setEmailSuggestion(correctedEmail)
+      }
+
+      // Validation du format
+      if (!validateEmail(newEmail)) {
+        setEmailError("Veuillez entrer une adresse courriel valide")
+      }
+    }
+  }
+
+  // Fonction pour accepter la suggestion de correction
+  const acceptSuggestion = () => {
+    if (emailSuggestion) {
+      setEmail(emailSuggestion)
+      setEmailSuggestion("")
+      setEmailError("")
+    }
+  }
 
   // Monitor response state changes
   React.useEffect(() => {
@@ -133,6 +216,21 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
 
   const handleConsentConfirmation = async () => {
     try {
+      // Réinitialiser les erreurs
+      setEmailError("")
+
+      // Validation si email requis
+      if (emailConsent) {
+        if (!email.trim()) {
+          setEmailError("Veuillez entrer votre adresse courriel")
+          return
+        }
+        if (!validateEmail(email)) {
+          setEmailError("Veuillez entrer une adresse courriel valide")
+          return
+        }
+      }
+
       console.log('💾 Sauvegarde du profil avec consentements...')
 
       // Préparer les données du profil avec consentements
@@ -162,6 +260,10 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       await updateProfileFields(profileData)
 
       console.log('✅ Profil et consentements sauvegardés')
+
+      // Afficher message de succès
+      setShowSuccess(true)
+      setTimeout(() => setShowSuccess(false), 2000)
 
       // Fermer ce modal d'abord
       onClose()
@@ -245,12 +347,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
             <MapPin className="h-6 w-6 text-midnight-green" />
             {step === 'postal' && 'Entrez votre code postal'}
             {step === 'confirm' && 'Confirmez votre arrondissement'}
-            {step === 'consent' && 'Consentement et transparence'}
+            {step === 'consent' && 'Personnalisez votre expérience'}
           </DialogTitle>
           <DialogDescription className="text-muted-foreground">
             {step === 'postal' && "Votre code postal nous aide à personnaliser le questionnaire pour votre région."}
             {step === 'confirm' && "Vérifiez que l'arrondissement estimé correspond à votre lieu de résidence."}
-            {step === 'consent' && "Avant de commencer, nous devons obtenir votre consentement pour la collecte de données."}
+            {step === 'consent' && "Choisissez comment vous souhaitez utiliser la Boussole Municipale."}
           </DialogDescription>
         </DialogHeader>
 
@@ -426,25 +528,33 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
         {step === 'consent' && (
           <div className="space-y-4 py-4">
             {/* Case à cocher obligatoire pour collecte anonymisée */}
-            <div className="p-4 bg-azure-web/30 rounded-lg border border-midnight-green/20">
-              <div className="flex items-start gap-3">
-                <div className="mt-1">
-                  <Checkbox
-                    checked={analyticsConsent}
-                    disabled={true}
-                    className="border-midnight-green bg-midnight-green"
-                  />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-sm font-semibold text-midnight-green">Collecte de données anonymisées</span>
-                    <span className="text-xs bg-midnight-green/10 text-midnight-green px-2 py-0.5 rounded-full font-medium">
-                      Obligatoire
-                    </span>
+            <div className="relative group">
+              {/* Effet glow subtil pour cohérence avec la section optionnelle */}
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-midnight-green/10 via-azure-web/20 to-midnight-green/10 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+              <div className="relative p-4 bg-azure-web/30 rounded-lg border border-midnight-green/20">
+                <span className="absolute top-3 right-3 text-xs sm:text-xs bg-midnight-green/10 text-midnight-green px-2 py-0.5 rounded-full font-medium">
+                  Obligatoire
+                </span>
+                <div className="flex items-start gap-3">
+                  <div className="mt-1">
+                    <Checkbox
+                      checked={analyticsConsent}
+                      disabled={true}
+                      className="border-midnight-green bg-midnight-green"
+                    />
                   </div>
-                  <p className="text-xs text-midnight-green/70">
-                    Vos réponses sont anonymisées et utilisées pour améliorer notre service et analyser les tendances politiques.
-                  </p>
+                  <div className="flex-1 pr-12 sm:pr-16">
+                    <div className="mb-2">
+                      <span className="text-sm font-semibold text-midnight-green">Données anonymisées et analytics</span>
+                    </div>
+                    <p className="text-xs text-midnight-green/70 mb-3 leading-relaxed">
+                      Vos réponses au questionnaire sont anonymisées. Nous utilisons aussi Google Analytics (avec IP anonymisée) pour améliorer notre service.
+                    </p>
+                    <p className="text-xs text-midnight-green/60 leading-relaxed">
+                      Durée de conservation: 2 ans • <a href="/confidentialite" target="_blank" className="underline hover:text-midnight-green">Politique complète</a>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -456,6 +566,9 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-midnight-green/20 via-azure-web/30 to-midnight-green/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div className="relative p-4 bg-gradient-to-br from-azure-web/20 to-azure-web/40 rounded-lg border-2 border-midnight-green/30 hover:border-midnight-green/50 hover:shadow-lg transition-all duration-300">
+                  <span className="absolute top-3 right-3 text-xs sm:text-xs bg-midnight-green/10 text-midnight-green px-2 py-0.5 rounded-full font-medium">
+                    Optionnel
+                  </span>
                   <div className="flex items-start gap-3">
                     <div className="mt-1">
                       <Checkbox
@@ -464,12 +577,14 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                         className="border-midnight-green"
                       />
                     </div>
-                    <div className="flex-1">
-                      <Label className="text-sm font-semibold text-midnight-green cursor-pointer">
-                        Recevoir mes résultats personnalisés et accéder aux avantages exclusifs
-                      </Label>
-                      <p className="text-xs text-midnight-green/70 mt-1">
-                        Optionnel - Recevez votre rapport politique détaillé et des communications ciblées de partenaires sélectionnés.
+                    <div className="flex-1 pr-12 sm:pr-16">
+                      <div className="mb-2">
+                        <Label className="text-sm font-semibold text-midnight-green cursor-pointer">
+                          Recevoir mes résultats personnalisés et communications ciblées
+                        </Label>
+                      </div>
+                      <p className="text-xs text-midnight-green/70 leading-relaxed">
+                        Recevez vos résultats personnalisés et des communications ciblées de nos partenaires politiques alignés sur votre profil.
                       </p>
                     </div>
                   </div>
@@ -495,9 +610,24 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                         type="email"
                         placeholder="votre@email.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="mt-1"
+                        onChange={(e) => handleEmailChange(e.target.value)}
+                        className={`mt-1 ${emailError ? 'border-red-500 focus:border-red-500' : ''}`}
                       />
+                      {emailError && (
+                        <p className="text-xs text-red-600 mt-1">{emailError}</p>
+                      )}
+                      {emailSuggestion && !emailError && (
+                        <div className="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-xs text-blue-700 mb-1">Vouliez-vous dire :</p>
+                          <button
+                            type="button"
+                            onClick={acceptSuggestion}
+                            className="text-xs text-blue-600 hover:text-blue-800 underline font-medium"
+                          >
+                            {emailSuggestion}
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     {/* Avantages avec design attractif */}
@@ -536,16 +666,82 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                         </p>
                       </div>
 
-                      {/* Lien vers modal détaillé */}
+                      {/* Lien vers détails intégrés */}
                       <div className="mt-3 pt-2 border-t border-midnight-green/20">
                         <button
-                          onClick={() => setShowDetailsModal(true)}
+                          type="button"
+                          onClick={() => setShowDetails(!showDetails)}
                           className="flex items-center gap-1 text-xs text-midnight-green hover:text-midnight-green/80 underline"
                         >
                           <Info className="w-3 h-3" />
-                          Voir tous les détails sur l&apos;utilisation de vos données
+                          {showDetails ? 'Masquer' : 'Voir tous'} les détails sur l&apos;utilisation de vos données
                         </button>
                       </div>
+
+                      {/* Détails intégrés avec animation */}
+                      <AnimatePresence>
+                        {showDetails && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="mt-3 space-y-3 p-3 bg-white/50 rounded-lg border border-midnight-green/20">
+                              {/* Échange de valeur transparent */}
+                              <div className="space-y-2">
+                                <h5 className="font-semibold text-xs text-midnight-green flex items-center gap-1">
+                                  <CheckCircle className="w-3 h-3" />
+                                  Échange de valeur transparent
+                                </h5>
+                                <div className="grid grid-cols-2 gap-2 text-xs text-midnight-green/70">
+                                  <div>
+                                    <p className="font-medium mb-1">Votre contribution:</p>
+                                    <ul className="space-y-0.5">
+                                      <li>• Email et résultats</li>
+                                      <li>• Profil anonymisé</li>
+                                    </ul>
+                                  </div>
+                                  <div>
+                                    <p className="font-medium mb-1">Vous recevez:</p>
+                                    <ul className="space-y-0.5">
+                                      <li>• Rapport permanent</li>
+                                      <li>• Communications ciblées</li>
+                                      <li>• Analyses prioritaires</li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Qui peut vous contacter */}
+                              <div className="space-y-2">
+                                <h5 className="font-semibold text-xs text-midnight-green flex items-center gap-1">
+                                  <Mail className="w-3 h-3" />
+                                  Qui vous contactera
+                                </h5>
+                                <ul className="space-y-0.5 text-xs text-midnight-green/70">
+                                  <li>• <strong>Partis alignés:</strong> {'>'}70% avec vos résultats</li>
+                                  <li>• <strong>Médias:</strong> spécialisés en politique municipale</li>
+                                  <li>• <strong>Organisations:</strong> pertinentes à vos priorités</li>
+                                </ul>
+                              </div>
+
+                              {/* Protection des données */}
+                              <div className="space-y-2">
+                                <h5 className="font-semibold text-xs text-midnight-green flex items-center gap-1">
+                                  <Shield className="w-3 h-3" />
+                                  Protection de vos données
+                                </h5>
+                                <p className="text-xs text-midnight-green/70">
+                                  Vos données sont conservées 2 ans, chiffrées et conformes à la Loi 25.
+                                  Vous pouvez retirer votre consentement à tout moment via <Link href="/preferences" className="underline">vos préférences</Link>.
+                                </p>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </motion.div>
                   </motion.div>
                 )}
@@ -566,14 +762,21 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 type="button"
                 onClick={handleConsentConfirmation}
                 className={`rounded-xl px-8 py-3 ${
-                  !emailConsent || !email
+                  emailConsent && (!email || emailError)
                     ? "bg-gray-300 text-gray-500 cursor-not-allowed hover:bg-gray-300"
                     : "bg-midnight-green hover:bg-midnight-green/90 text-white"
                 }`}
-                disabled={isSaving || !emailConsent || !email}
+                disabled={isSaving || (emailConsent && (!email || !!emailError))}
               >
                 {isSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-                Accepter et commencer
+                {showSuccess ? (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    Sauvegardé !
+                  </>
+                ) : (
+                  "Accepter et commencer"
+                )}
               </Button>
             </DialogFooter>
 
@@ -656,145 +859,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       targetPath={detectedMunicipality?.id ? `/${detectedMunicipality.id}/test-politique-municipal` : "/test-politique-municipal"}
     />
 
-    {/* Modal d'information détaillée pour transparence complète */}
-    <AnimatePresence>
-      {showDetailsModal && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[10000] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setShowDetailsModal(false)}
-        >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-2xl max-h-[80vh] overflow-auto"
-          >
-            <Card className="p-6 shadow-2xl bg-white">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-2">
-                  <Info className="w-5 h-5 text-midnight-green" />
-                  <h3 className="text-xl font-semibold">Qu&apos;est-ce que cela implique exactement ?</h3>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowDetailsModal(false)}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                {/* Échange de valeur transparent */}
-                <div className="p-4 bg-azure-web/50 rounded-lg border border-midnight-green/30">
-                  <h4 className="font-semibold text-midnight-green mb-2 flex items-center gap-2">
-                    <CheckCircle className="w-4 h-4" />
-                    Échange de valeur transparent
-                  </h4>
-                  <div className="grid md:grid-cols-2 gap-4 text-sm text-midnight-green/80">
-                    <div>
-                      <p className="font-medium mb-1">Votre contribution :</p>
-                      <ul className="space-y-1">
-                        <li>• Accès à votre email et résultats politiques</li>
-                        <li>• Profil démographique anonymisé</li>
-                      </ul>
-                    </div>
-                    <div>
-                      <p className="font-medium mb-1">Ce que vous recevez :</p>
-                      <ul className="space-y-1">
-                        <li>• Rapport politique personnalisé permanent</li>
-                        <li>• Communications ultra-ciblées (3-4 par an)</li>
-                        <li>• Accès prioritaire aux analyses municipales</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Qui peut vous contacter */}
-                <div className="p-4 bg-azure-web/40 rounded-lg border border-midnight-green/25">
-                  <h4 className="font-semibold text-midnight-green mb-2 flex items-center gap-2">
-                    <Mail className="w-4 h-4" />
-                    Qui vous contactera
-                  </h4>
-                  <ul className="space-y-1 text-sm text-midnight-green/80">
-                    <li>• <strong>Partis politiques municipaux :</strong> seulement ceux alignés &gt;70% avec vos résultats</li>
-                    <li>• <strong>Médias locaux :</strong> spécialisés en politique municipale de Québec</li>
-                    <li>• <strong>Organisations civiques :</strong> pertinentes à vos enjeux prioritaires</li>
-                    <li>• <strong>Notre équipe :</strong> analyses et conseils politiques personnalisés</li>
-                  </ul>
-                </div>
-
-                {/* Comment ça marche */}
-                <div className="p-4 bg-azure-web/35 rounded-lg border border-midnight-green/25">
-                  <h4 className="font-semibold text-midnight-green mb-2 flex items-center gap-2">
-                    <Shield className="w-4 h-4" />
-                    Comment ça marche
-                  </h4>
-                  <div className="text-sm text-midnight-green/80 space-y-2">
-                    <p>
-                      <strong>Ciblage intelligent :</strong> Nous partageons votre profil avec des organisations
-                      sélectionnées qui correspondent à vos intérêts politiques. C&apos;est du ciblage personnalisé,
-                      pas du spam générique.
-                    </p>
-                    <div className="p-2 bg-midnight-green/10 rounded">
-                      <p className="font-medium">Fréquence des communications :</p>
-                      <ul className="mt-1">
-                        <li>• <strong>Temps normal :</strong> 3-4 envois par an maximum</li>
-                        <li>• <strong>Périodes électorales :</strong> fréquence plus élevée (campagnes actives)</li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Protection des données */}
-                <div className="p-4 bg-azure-web/30 rounded-lg border border-midnight-green/20">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Shield className="w-4 h-4 text-midnight-green" />
-                    <h4 className="font-semibold text-midnight-green">Protection de vos données</h4>
-                  </div>
-                  <p className="text-sm text-midnight-green/80 mb-3">
-                    Vos données sont protégées selon les standards RGPD et Loi 25 du Québec.
-                    Elles ne sont partagées qu&apos;avec des partenaires approuvés et seulement
-                    selon vos consentements explicites.
-                  </p>
-                  <div className="bg-midnight-green/10 p-2 rounded text-xs text-midnight-green/70">
-                    <p className="font-medium mb-1">Vos droits :</p>
-                    <ul>
-                      <li>• Désinscription en 1 clic à tout moment</li>
-                      <li>• Modification de vos préférences</li>
-                      <li>• Suppression complète de vos données</li>
-                    </ul>
-                  </div>
-                </div>
-
-                {/* Footer avec action */}
-                <div className="flex items-center justify-between pt-4 border-t">
-                  <a
-                    href="/politique-confidentialite"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-sm text-midnight-green hover:text-midnight-green/80 underline"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    Lire notre politique complète
-                  </a>
-                  <Button
-                    onClick={() => setShowDetailsModal(false)}
-                    className="bg-midnight-green hover:bg-midnight-green/90 text-white"
-                  >
-                    J&apos;ai compris
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
     </>
   )
 } 

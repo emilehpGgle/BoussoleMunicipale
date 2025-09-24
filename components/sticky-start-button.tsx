@@ -4,7 +4,7 @@ import { useState, useEffect, lazy, Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Play, X } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { RainbowButton } from "@/components/ui/rainbow-button"
+import { PrimaryButton } from "@/components/ui/primary-button"
 import { useUserResponses } from '@/hooks/useUserResponses'
 import { useSession } from '@/hooks/useSession'
 import { boussoleQuestions } from '@/lib/boussole-data'
@@ -68,13 +68,14 @@ export default function StickyStartButton() {
       {!isMinimized ? (
         <div className="flex flex-col items-end gap-2">
           {/* Bouton principal avec effet rainbow */}
-          <RainbowButton 
-            className="text-white rounded-full px-6 py-3 text-sm font-semibold flex items-center gap-2"
+          <PrimaryButton
+            className="rounded-full flex items-center gap-2"
+            size="md"
             onClick={handleStartQuestionnaire}
           >
             <Play className="w-4 h-4" />
             Commencer
-          </RainbowButton>
+          </PrimaryButton>
           
           {/* Bouton pour minimiser */}
           <Button
@@ -88,13 +89,14 @@ export default function StickyStartButton() {
         </div>
       ) : (
         /* Version minimisée - avec effet rainbow */
-        <RainbowButton
+        <PrimaryButton
           onClick={handleStartQuestionnaire}
-          className="text-white rounded-full px-4 py-3 text-sm font-semibold flex items-center gap-2"
+          className="rounded-full flex items-center gap-2"
+          size="md"
         >
           <Play className="w-4 h-4" />
           Commencer
-        </RainbowButton>
+        </PrimaryButton>
       )}
       <Suspense fallback={<div />}> 
         <ContinueOrRestartModal

@@ -180,7 +180,7 @@ export function CookieConsentBanner() {
                         <div>
                           <p className="text-sm font-medium">Essentiel (obligatoire)</p>
                           <p className="text-xs text-muted-foreground">
-                            Analyser l&apos;utilisation et améliorer le service
+                            Supabase (authentification), Google Analytics (IP anonymisée)
                           </p>
                         </div>
                       </div>
@@ -190,18 +190,21 @@ export function CookieConsentBanner() {
                         <div>
                           <p className="text-sm font-medium">Marketing (optionnel)</p>
                           <p className="text-xs text-muted-foreground">
-                            Personnaliser les offres et communications
+                            Communications ciblées, partenaires politiques alignés
                           </p>
                         </div>
                       </div>
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                      En continuant, vous acceptez notre{' '}
+                      Données conservées 2 ans, conformes à la Loi 25. Consultez notre{' '}
                       <Link href="/confidentialite" className="text-midnight-green hover:underline">
-                        politique de confidentialité
+                        politique complète
                       </Link>
-                      . Vous pouvez modifier vos préférences à tout moment.
+                      {' '}et gérez vos préférences via{' '}
+                      <Link href="/preferences" className="text-midnight-green hover:underline">
+                        votre compte
+                      </Link>.
                     </p>
                   </div>
                 </div>
