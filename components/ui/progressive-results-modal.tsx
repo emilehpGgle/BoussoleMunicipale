@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
-import { X, Share2, Trophy, Medal, Award, ChevronRight, ArrowRight } from 'lucide-react';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { X, Share2, Trophy, ArrowRight, Compass } from 'lucide-react';
 import { PartyScore, CalculatedResults } from '@/hooks/useResults';
 import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types';
 import { type Party } from '@/lib/boussole-data';
@@ -15,13 +16,15 @@ import Image from 'next/image';
 import ShareModal from '@/components/share-modal';
 import {
   type PoliticalPosition,
-  calculateUserPoliticalPosition,
   getPoliticalPositionDescription,
   axisConfiguration,
   type UserAnswers,
   calculateMapBounds,
   normalizePositionForDisplay
 } from '@/lib/political-map-calculator';
+import {
+  calculateUserPoliticalPosition
+} from '@/lib/political-calculator-db';
 import { transformAllPartyPositionsToUserAnswers } from '@/lib/supabase-transform';
 import { useParties } from '@/hooks/useParties';
 import { usePartyPositions } from '@/hooks/usePartyPositions';
@@ -49,11 +52,9 @@ interface ProgressiveResultsModalProps {
   municipality: string;
 }
 
-type ModalStep = 'champion' | 'podium' | 'compass';
-
-// Composant LogoContainer identique à celui des résultats
+// Composant LogoContainer avec palette cohérente
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <div className={`bg-white rounded-xl p-2 flex items-center justify-center ${className || ""}`}>
+  <div className={`bg-white rounded-xl p-2 shadow-md border border-azure-web flex items-center justify-center ${className || ""}`}>
     {children}
   </div>
 );
@@ -103,7 +104,7 @@ const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number 
         />
       )}
       {imageError && (
-        <div className="w-full h-full bg-midnight-green/5 border border-midnight-green/20 rounded-lg flex items-center justify-center">
+        <div className="w-full h-full bg-midnight-green/10 border border-midnight-green/30 rounded-lg flex items-center justify-center">
           <div className="text-center">
             <div className="text-lg font-bold text-midnight-green mb-1">
               {party.shortName || party.name.substring(0, 3).toUpperCase()}
@@ -118,9 +119,9 @@ const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number 
   );
 };
 
-// Composant Confetti avec animation
+// Composant Confetti avec couleurs de la palette
 const ConfettiParticle: React.FC<{ index: number }> = ({ index }) => {
-  const colors = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7'];
+  const colors = ['#04454A', '#EAFCFC', '#FCF7F3', '#0891b2', '#10b981', '#f59e0b']; // Palette cohérente
   const color = colors[index % colors.length];
 
   return (
@@ -136,7 +137,7 @@ const ConfettiParticle: React.FC<{ index: number }> = ({ index }) => {
       animate={{
         x: (Math.random() - 0.5) * 400,
         y: Math.random() * -300 - 100,
-        rotate: Math.random() * 720,
+        rotate: Math.random() * 180,
         opacity: 0
       }}
       transition={{
@@ -160,7 +161,7 @@ const ConfettiExplosion: React.FC<{ trigger: boolean }> = ({ trigger }) => {
   );
 };
 
-// Composant MiniCompass simplifié
+// Composant MiniCompass avec palette cohérente
 const MiniCompass: React.FC<{
   userAnswers: UserAnswers;
   municipality: string;
@@ -170,16 +171,37 @@ const MiniCompass: React.FC<{
   const { positionsByParty, isLoading: positionsLoading } = usePartyPositions(municipality);
 
   // Calcul des positions
-  const userPosition = calculateUserPoliticalPosition(userAnswers);
+  const [userPosition, setUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 });
+  const [partyPositions, setPartyPositions] = useState<Record<string, PoliticalPosition>>({});
 
-  const partyPositions = positionsByParty ? (() => {
+  useEffect(() => {
+    calculateUserPoliticalPosition(userAnswers, municipality)
+      .then(position => setUserPosition(position))
+      .catch(err => console.error('Erreur calcul position utilisateur:', err));
+  }, [userAnswers, municipality]);
+
+  useEffect(() => {
+    if (!positionsByParty) {
+      setPartyPositions({});
+      return;
+    }
+
     const partyAnswers = transformAllPartyPositionsToUserAnswers(positionsByParty);
-    const positions: Record<string, PoliticalPosition> = {};
-    Object.entries(partyAnswers).forEach(([partyId, answers]) => {
-      positions[partyId] = calculateUserPoliticalPosition(answers);
-    });
-    return positions;
-  })() : {};
+    const calculateAllPositions = async () => {
+      const positions: Record<string, PoliticalPosition> = {};
+      for (const [partyId, answers] of Object.entries(partyAnswers)) {
+        try {
+          positions[partyId] = await calculateUserPoliticalPosition(answers, municipality);
+        } catch (err) {
+          console.error(`Erreur calcul position pour ${partyId}:`, err);
+          positions[partyId] = { x: 0, y: 0 };
+        }
+      }
+      setPartyPositions(positions);
+    };
+
+    calculateAllPositions();
+  }, [positionsByParty, municipality]);
 
   const allPositions = [userPosition, ...Object.values(partyPositions)];
   const mapBounds = calculateMapBounds(allPositions, 30);
@@ -195,8 +217,8 @@ const MiniCompass: React.FC<{
 
   if (partiesLoading || positionsLoading) {
     return (
-      <div className="flex items-center justify-center h-48 bg-muted/10 rounded-lg">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+      <div className="flex items-center justify-center h-48 bg-azure-web/20 rounded-lg border border-midnight-green/10">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-midnight-green"></div>
       </div>
     );
   }
@@ -205,7 +227,7 @@ const MiniCompass: React.FC<{
   const svgHeight = 250;
 
   return (
-    <div className="bg-gradient-to-br from-muted/20 to-muted/40 rounded-xl p-4 border">
+    <div className="bg-gradient-to-br from-azure-web/30 to-isabelline/20 rounded-xl p-4 border border-midnight-green/20 shadow-soft">
       <svg
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         className="w-full h-auto"
@@ -214,30 +236,30 @@ const MiniCompass: React.FC<{
         {/* Grille de fond */}
         <defs>
           <pattern id="mini-grid" width="20" height="20" patternUnits="userSpaceOnUse">
-            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="hsl(var(--muted-foreground))" strokeWidth="0.3" opacity="0.2"/>
+            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#04454A" strokeWidth="0.3" opacity="0.15"/>
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#mini-grid)" />
 
-        {/* Axes principaux */}
-        <line x1={30} y1={svgHeight/2} x2={svgWidth-30} y2={svgHeight/2} stroke="hsl(var(--border))" strokeWidth="1.5"/>
-        <line x1={svgWidth/2} y1={30} x2={svgWidth/2} y2={svgHeight-30} stroke="hsl(var(--border))" strokeWidth="1.5"/>
+        {/* Axes principaux avec couleurs de la palette */}
+        <line x1={30} y1={svgHeight/2} x2={svgWidth-30} y2={svgHeight/2} stroke="#04454A" strokeWidth="2" opacity="0.6"/>
+        <line x1={svgWidth/2} y1={30} x2={svgWidth/2} y2={svgHeight-30} stroke="#04454A" strokeWidth="2" opacity="0.6"/>
 
-        {/* Labels des axes */}
-        <text x={40} y={svgHeight/2 - 8} fontSize="10" fill="hsl(var(--muted-foreground))" className="font-medium">
+        {/* Labels des axes avec couleurs cohérentes */}
+        <text x={40} y={svgHeight/2 - 8} fontSize="10" fill="#04454A" className="font-medium">
           {axisConfiguration.economic.leftLabel}
         </text>
-        <text x={svgWidth-30} y={svgHeight/2 - 8} fontSize="10" fill="hsl(var(--muted-foreground))" textAnchor="end" className="font-medium">
+        <text x={svgWidth-30} y={svgHeight/2 - 8} fontSize="10" fill="#04454A" textAnchor="end" className="font-medium">
           {axisConfiguration.economic.rightLabel}
         </text>
-        <text x={svgWidth/2 + 8} y={40} fontSize="10" fill="hsl(var(--muted-foreground))" className="font-medium">
+        <text x={svgWidth/2 + 8} y={40} fontSize="10" fill="#04454A" className="font-medium">
           {axisConfiguration.social.rightLabel}
         </text>
-        <text x={svgWidth/2 + 8} y={svgHeight-40} fontSize="10" fill="hsl(var(--muted-foreground))" className="font-medium">
+        <text x={svgWidth/2 + 8} y={svgHeight-40} fontSize="10" fill="#04454A" className="font-medium">
           {axisConfiguration.social.leftLabel}
         </text>
 
-        {/* Quadrants colorés */}
+        {/* Quadrants colorés avec palette cohérente */}
         <rect x={30} y={30} width={(svgWidth-60)/2} height={(svgHeight-60)/2} fill="#10b981" opacity="0.12"/>
         <rect x={svgWidth/2} y={30} width={(svgWidth-60)/2} height={(svgHeight-60)/2} fill="#0891b2" opacity="0.12"/>
         <rect x={30} y={svgHeight/2} width={(svgWidth-60)/2} height={(svgHeight-60)/2} fill="#f59e0b" opacity="0.10"/>
@@ -251,13 +273,13 @@ const MiniCompass: React.FC<{
           const isTopThree = topParties.some(tp => tp.party.id === party.id);
           const topThreeIndex = topParties.findIndex(tp => tp.party.id === party.id);
 
-          let strokeColor = "#1e40af";
+          let strokeColor = "#04454A";
           let strokeWidth = 1.5;
 
           if (isTopThree) {
-            if (topThreeIndex === 0) { strokeColor = "#FFD700"; strokeWidth = 3; } // Or
-            else if (topThreeIndex === 1) { strokeColor = "#C0C0C0"; strokeWidth = 2.5; } // Argent
-            else if (topThreeIndex === 2) { strokeColor = "#CD7F32"; strokeWidth = 2.5; } // Bronze
+            if (topThreeIndex === 0) { strokeColor = "#04454A"; strokeWidth = 3; } // Midnight green pour champion
+            else if (topThreeIndex === 1) { strokeColor = "#0891b2"; strokeWidth = 2.5; } // Teal pour argent
+            else if (topThreeIndex === 2) { strokeColor = "#FCF7F3"; strokeWidth = 2.5; } // Isabelline pour bronze
           }
 
           return (
@@ -276,7 +298,7 @@ const MiniCompass: React.FC<{
                 y={coords.y + 3}
                 textAnchor="middle"
                 fontSize="7"
-                fill="hsl(var(--foreground))"
+                fill="#04454A"
                 className="font-bold pointer-events-none"
               >
                 {party.shortName?.substring(0, 3) || party.name.substring(0, 3)}
@@ -285,7 +307,7 @@ const MiniCompass: React.FC<{
           );
         })}
 
-        {/* Position de l'utilisateur */}
+        {/* Position de l'utilisateur avec couleur cohérente */}
         {(() => {
           const userCoords = toSVGCoords(userPosition, svgWidth, svgHeight);
           return (
@@ -295,17 +317,21 @@ const MiniCompass: React.FC<{
                 cy={userCoords.y}
                 r={18}
                 fill="none"
-                stroke="#1e40af"
+                stroke="#04454A"
                 strokeWidth="2"
                 strokeDasharray="4,2"
                 opacity="0.6"
               >
-                <animateTransform
-                  attributeName="transform"
-                  type="rotate"
-                  from={`0 ${userCoords.x} ${userCoords.y}`}
-                  to={`360 ${userCoords.x} ${userCoords.y}`}
-                  dur="4s"
+                <animate
+                  attributeName="r"
+                  values="18;22;18"
+                  dur="3s"
+                  repeatCount="indefinite"
+                />
+                <animate
+                  attributeName="opacity"
+                  values="0.6;0.3;0.6"
+                  dur="3s"
                   repeatCount="indefinite"
                 />
               </circle>
@@ -313,7 +339,7 @@ const MiniCompass: React.FC<{
                 cx={userCoords.x}
                 cy={userCoords.y}
                 r={8}
-                fill="#1e40af"
+                fill="#04454A"
                 stroke="white"
                 strokeWidth="2"
                 className="drop-shadow-md"
@@ -323,7 +349,7 @@ const MiniCompass: React.FC<{
                 y={userCoords.y - 25}
                 textAnchor="middle"
                 fontSize="11"
-                fill="hsl(var(--primary))"
+                fill="#04454A"
                 className="font-bold"
               >
                 Vous
@@ -340,7 +366,7 @@ export function ProgressiveResultsModal({
   isOpen,
   onClose,
   topMatch,
-  onViewPartyProfile,
+  onViewPartyProfile: _onViewPartyProfile,
   results,
   userAnswers,
   userImportance,
@@ -348,15 +374,15 @@ export function ProgressiveResultsModal({
   topParties,
   municipality
 }: ProgressiveResultsModalProps) {
-  const [currentStep, setCurrentStep] = useState<ModalStep>('champion');
   const [showContent, setShowContent] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [carouselApi, setCarouselApi] = useState<ReturnType<typeof import('embla-carousel-react').default>[1] | null>(null);
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   // Reset state when modal opens/closes
   useEffect(() => {
     if (isOpen && topMatch) {
-      setCurrentStep('champion');
       setTimeout(() => {
         setShowContent(true);
         setShowConfetti(true);
@@ -364,9 +390,24 @@ export function ProgressiveResultsModal({
     } else {
       setShowContent(false);
       setShowConfetti(false);
-      setCurrentStep('champion');
+      setCurrentSlide(0);
     }
   }, [isOpen, topMatch]);
+
+  // Update carousel state
+  useEffect(() => {
+    if (!carouselApi) return;
+
+    const handleSelect = () => {
+      setCurrentSlide(carouselApi.selectedScrollSnap());
+    };
+
+    carouselApi.on('select', handleSelect);
+
+    return () => {
+      carouselApi.off('select', handleSelect);
+    };
+  }, [carouselApi]);
 
   if (!topMatch || !topParties.length) return null;
 
@@ -377,364 +418,375 @@ export function ProgressiveResultsModal({
   const politicalPosition = results?.politicalPosition ? { x: results.politicalPosition.x, y: results.politicalPosition.y } : undefined;
   const positionDescription = results?.politicalPosition ? getPoliticalPositionDescription(results.politicalPosition) : '';
 
-  const handleNext = () => {
-    if (currentStep === 'champion') {
-      setCurrentStep('podium');
-    } else if (currentStep === 'podium') {
-      setCurrentStep('compass');
-    }
-  };
+  // Composant pour une carte de parti avec badge de rang
+  const PartyCard: React.FC<{
+    party: Party;
+    score: number;
+    rank: number;
+    isChampion?: boolean;
+    delay?: number;
+  }> = ({ party, score, rank, isChampion = false, delay = 0 }) => {
+    const getBadgeConfig = (rank: number) => {
+      switch (rank) {
+        case 1:
+          return {
+            emoji: '🥇',
+            bgClass: 'bg-gradient-to-r from-midnight-green to-teal-main-600',
+            borderClass: 'border-midnight-green',
+            textClass: 'text-white',
+            glowClass: 'shadow-primary-glow'
+          };
+        case 2:
+          return {
+            emoji: '🥈',
+            bgClass: 'bg-gradient-to-r from-teal-main-400 to-teal-main-500',
+            borderClass: 'border-teal-main-400',
+            textClass: 'text-white',
+            glowClass: 'shadow-soft'
+          };
+        case 3:
+          return {
+            emoji: '🥉',
+            bgClass: 'bg-gradient-to-r from-teal-main-200 to-isabelline',
+            borderClass: 'border-teal-main-200',
+            textClass: 'text-midnight-green',
+            glowClass: 'shadow-soft'
+          };
+        default:
+          return {
+            emoji: `${rank}`,
+            bgClass: 'bg-azure-web',
+            borderClass: 'border-midnight-green/20',
+            textClass: 'text-midnight-green',
+            glowClass: 'shadow-soft'
+          };
+      }
+    };
 
-  const renderChampionStep = () => (
-    <motion.div
-      key="champion"
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.5 }}
-      className="text-center p-6"
-    >
-      {/* Confetti */}
-      <ConfettiExplosion trigger={showConfetti} />
+    const badgeConfig = getBadgeConfig(rank);
 
-      {/* En-tête dramatique */}
+    return (
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : -20 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-        className="mb-6"
+        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+        animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8, y: showContent ? 0 : 20 }}
+        transition={{ duration: 0.6, delay }}
+        className="relative m-2"
       >
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <Trophy className="h-6 w-6 text-yellow-500 animate-pulse" />
-          <Badge variant="secondary" className="bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-800 border-2 border-yellow-400 text-sm px-3 py-1 font-bold">
-            🏆 Votre champion !
-          </Badge>
-          <Trophy className="h-6 w-6 text-yellow-500 animate-pulse" />
-        </div>
-        <DialogTitle className="text-2xl font-bold text-foreground mb-2">
-          Votre meilleur match politique
-        </DialogTitle>
-        <p className="text-muted-foreground text-sm">
-          Basé sur votre positionnement et vos priorités
-        </p>
-      </motion.div>
+        {/* Badge de rang en haut à droite */}
+        <motion.div
+          className={`absolute -top-2 -right-2 z-20 w-12 h-12 rounded-full ${badgeConfig.bgClass} ${badgeConfig.borderClass} border-2 flex items-center justify-center ${badgeConfig.glowClass}`}
+          whileHover={{
+            scale: 1.1,
+            y: -2,
+            transition: { type: "spring", stiffness: 400, damping: 17 }
+          }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.4, delay: delay + 0.3 }}
+        >
+          <span className={`text-lg font-bold ${badgeConfig.textClass}`}>
+            {badgeConfig.emoji}
+          </span>
+        </motion.div>
 
-      {/* Carte du champion */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8 }}
-        transition={{ duration: 0.6, delay: 0.4 }}
-      >
-        <Card className="p-6 flex flex-col items-center text-center border-4 border-gradient-to-r from-yellow-400 to-yellow-600 shadow-xl rounded-2xl bg-gradient-to-br from-yellow-50 to-white relative overflow-hidden">
-          {/* Effet brillant */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-shimmer"></div>
+        <Card className={`p-6 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-2xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
+          {/* Effet brillant pour le champion */}
+          {isChampion && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-shimmer"></div>
+          )}
 
-          {/* Logo avec effet doré */}
+          {/* Confetti pour le champion */}
+          {isChampion && <ConfettiExplosion trigger={showConfetti} />}
+
+          {/* Logo avec effet spécial pour le champion */}
           <div className="relative mb-4">
-            <div className="absolute -inset-2 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-400 rounded-full opacity-75 blur-sm animate-pulse"></div>
+            {isChampion && (
+              <div className="absolute -inset-2 bg-gradient-to-r from-midnight-green via-teal-main-500 to-midnight-green rounded-full opacity-75 blur-sm animate-pulse"></div>
+            )}
             <PartyLogo
-              party={champion.party}
-              size={{ width: 192, height: 192 }}
-              className="w-36 h-36 sm:w-44 sm:h-44 relative z-10"
+              party={party}
+              size={{ width: isChampion ? 192 : 160, height: isChampion ? 192 : 160 }}
+              className={`${isChampion ? 'w-36 h-36 sm:w-44 sm:h-44' : 'w-32 h-32 sm:w-36 sm:h-36'} relative z-10`}
             />
           </div>
 
           {/* Nom du parti */}
           <div className="min-h-[4rem] flex flex-col justify-center mb-4">
-            <h3 className="text-xl font-bold text-foreground leading-tight mb-1">
-              {champion.party.shortName || champion.party.name}
+            <h3 className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-foreground leading-tight mb-1`}>
+              {party.shortName || party.name}
             </h3>
             <p className="text-sm text-muted-foreground leading-tight">
-              {champion.party.name}
+              {party.name}
             </p>
           </div>
 
           {/* Score avec animation */}
-          <div className="w-full bg-muted rounded-full h-6 mb-3 overflow-hidden relative">
+          <div className="w-full bg-muted rounded-full h-6 mb-3 overflow-hidden relative border border-midnight-green/20">
             <motion.div
-              className="bg-gradient-to-r from-yellow-400 to-yellow-600 h-6 rounded-full"
+              className={`${badgeConfig.bgClass} h-6 rounded-full`}
               initial={{ width: "0%" }}
-              animate={{ width: showContent ? `${champion.score}%` : "0%" }}
-              transition={{ duration: 1.2, delay: 0.8, ease: "easeOut" }}
+              animate={{ width: showContent ? `${score}%` : "0%" }}
+              transition={{ duration: 1.2, delay: delay + 0.5, ease: "easeOut" }}
             />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
           </div>
 
           <motion.p
-            className="text-2xl font-bold text-yellow-700 mb-6"
+            className={`${isChampion ? 'text-2xl' : 'text-xl'} font-bold text-midnight-green mb-4`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8 }}
-            transition={{ duration: 0.5, delay: 1.2 }}
+            transition={{ duration: 0.5, delay: delay + 0.8 }}
           >
-            🥇 {champion.score}% d&apos;affinité
+            {score}% d&apos;affinité
           </motion.p>
 
-          {/* Bouton suivant */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-            transition={{ duration: 0.4, delay: 1.5 }}
-          >
-            <Button
-              onClick={handleNext}
-              className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white font-semibold px-6 py-2 rounded-lg transition-all duration-200"
+          {isChampion && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+              transition={{ duration: 0.4, delay: delay + 1.2 }}
             >
-              Voir le podium complet <ChevronRight className="ml-2 h-4 w-4" />
-            </Button>
-          </motion.div>
+              <Button
+                asChild
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transition-all duration-200"
+              >
+                <Link href={`/${municipality}/parti/${party.id}`}>
+                  Voir la fiche détaillée
+                </Link>
+              </Button>
+            </motion.div>
+          )}
         </Card>
       </motion.div>
-    </motion.div>
-  );
+    );
+  };
 
-  const renderPodiumStep = () => (
+  // Composant pour la slide de la carte politique
+  const CompassSlide: React.FC = () => (
     <motion.div
-      key="podium"
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.5 }}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.6, delay: 0.2 }}
       className="p-6"
     >
-      {/* En-tête */}
       <div className="text-center mb-6">
-        <DialogTitle className="text-xl font-bold text-foreground mb-2">
-          🏆 Votre Top 3 - Podium des partis
-        </DialogTitle>
-        <p className="text-muted-foreground text-sm">
-          Vos trois meilleures correspondances politiques
-        </p>
-      </div>
-
-      {/* Champion en haut */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.2 }}
-        className="mb-4"
-      >
-        <Card className="p-4 border-2 border-yellow-400 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-xl">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center justify-center w-8 h-8 bg-yellow-500 text-white rounded-full font-bold">1</div>
-            <PartyLogo party={champion.party} size={{ width: 48, height: 48 }} className="w-12 h-12 flex-shrink-0" />
-            <div className="flex-1 min-w-0">
-              <h4 className="font-semibold text-sm truncate">{champion.party.shortName || champion.party.name}</h4>
-              <p className="text-xs text-muted-foreground truncate">{champion.party.name}</p>
-            </div>
-            <div className="text-right flex-shrink-0">
-              <p className="font-bold text-yellow-700">{champion.score}%</p>
-              <Trophy className="h-4 w-4 text-yellow-500 mx-auto" />
-            </div>
-          </div>
-        </Card>
-      </motion.div>
-
-      {/* Challengers côte à côte */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-        {/* Deuxième place */}
-        {challenger1 && (
+        <div className="flex items-center justify-center gap-2 mb-3">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.4 }}
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatDelay: 3,
+              ease: "easeInOut"
+            }}
           >
-            <Card className="p-3 border-2 border-gray-400 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-7 h-7 bg-gray-500 text-white rounded-full font-bold text-sm">2</div>
-                <PartyLogo party={challenger1.party} size={{ width: 40, height: 40 }} className="w-10 h-10 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-xs truncate">{challenger1.party.shortName || challenger1.party.name}</h4>
-                  <p className="text-xs text-muted-foreground truncate">{challenger1.party.name}</p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-gray-700 text-sm">{challenger1.score}%</p>
-                  <Medal className="h-3 w-3 text-gray-500 mx-auto" />
-                </div>
-              </div>
-            </Card>
+            <Compass className="h-6 w-6 text-midnight-green" />
           </motion.div>
-        )}
-
-        {/* Troisième place */}
-        {challenger2 && (
+          <Badge className="bg-midnight-green text-white text-sm px-3 py-1 font-bold">
+            🧭 Votre position politique
+          </Badge>
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.4, delay: 0.6 }}
+            animate={{ rotate: [0, -5, 5, 0] }}
+            transition={{
+              duration: 2,
+              repeat: Infinity,
+              repeatDelay: 3,
+              ease: "easeInOut",
+              delay: 0.5
+            }}
           >
-            <Card className="p-3 border-2 border-orange-400 bg-gradient-to-r from-orange-50 to-orange-100 rounded-xl">
-              <div className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-7 h-7 bg-orange-600 text-white rounded-full font-bold text-sm">3</div>
-                <PartyLogo party={challenger2.party} size={{ width: 40, height: 40 }} className="w-10 h-10 flex-shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-xs truncate">{challenger2.party.shortName || challenger2.party.name}</h4>
-                  <p className="text-xs text-muted-foreground truncate">{challenger2.party.name}</p>
-                </div>
-                <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-orange-700 text-sm">{challenger2.score}%</p>
-                  <Award className="h-3 w-3 text-orange-600 mx-auto" />
-                </div>
-              </div>
-            </Card>
+            <Compass className="h-6 w-6 text-midnight-green" />
           </motion.div>
-        )}
-      </div>
-
-      {/* Bouton suivant */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.8 }}
-        className="text-center"
-      >
-        <Button
-          onClick={handleNext}
-          className="bg-primary hover:bg-primary/90 font-semibold px-6 py-2 rounded-lg transition-all duration-200"
-        >
-          Voir votre position politique <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
-      </motion.div>
-    </motion.div>
-  );
-
-  const renderCompassStep = () => (
-    <motion.div
-      key="compass"
-      initial={{ opacity: 0, x: 100 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -100 }}
-      transition={{ duration: 0.5 }}
-      className="p-6"
-    >
-      {/* En-tête */}
-      <div className="text-center mb-4">
+        </div>
         <DialogTitle className="text-xl font-bold text-foreground mb-2">
-          🧭 Votre position politique
-        </DialogTitle>
-        <p className="text-muted-foreground text-sm mb-3">
           Positionnement dans le paysage municipal
+        </DialogTitle>
+        <p className="text-muted-foreground text-sm mb-4">
+          Voici où vous vous situez par rapport aux partis
         </p>
 
-        {/* Badges de position */}
+        {/* Badges de position avec palette cohérente */}
         <div className="flex items-center justify-center gap-2 flex-wrap mb-4">
-          <Badge variant="secondary" className="text-xs px-2 py-1">
+          <Badge variant="secondary" className="text-xs px-2 py-1 bg-azure-web text-midnight-green border-midnight-green/20">
             Économique: {(results?.politicalPosition?.x || 0) > 0 ? 'Libre marché' : 'Interventionnisme'}
             ({Math.abs(results?.politicalPosition?.x || 0).toFixed(1)})
           </Badge>
-          <Badge variant="secondary" className="text-xs px-2 py-1">
+          <Badge variant="secondary" className="text-xs px-2 py-1 bg-azure-web text-midnight-green border-midnight-green/20">
             Social: {(results?.politicalPosition?.y || 0) > 0 ? 'Progressiste' : 'Conservateur'}
             ({Math.abs(results?.politicalPosition?.y || 0).toFixed(1)})
           </Badge>
           {positionDescription && (
-            <Badge variant="outline" className="text-xs px-2 py-1 border-midnight-green text-midnight-green">
+            <Badge variant="outline" className="text-xs px-2 py-1 border-midnight-green text-midnight-green bg-isabelline">
               {positionDescription}
             </Badge>
           )}
         </div>
       </div>
 
-      {/* Mini Compass */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="mb-6"
-      >
+      {/* Mini Compass avec couleurs harmonisées */}
+      <div className="mb-6">
         <MiniCompass
           userAnswers={userAnswers as UserAnswers}
           municipality={municipality}
           topParties={topParties}
         />
-      </motion.div>
+      </div>
 
-      {/* Légende */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.4 }}
-        className="text-center text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 mb-6"
-      >
+      {/* Légende avec design cohérent */}
+      <div className="text-center text-xs text-muted-foreground bg-azure-web/50 rounded-lg p-3 mb-6 border border-midnight-green/10">
         <p><strong>Légende:</strong> Bordures dorées 🥇, argentées 🥈 et bronze 🥉 = votre top 3</p>
-      </motion.div>
-
-      {/* Actions finales */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, delay: 0.6 }}
-        className="space-y-3"
-      >
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Button
-            asChild
-            variant="outline"
-            className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10"
-            onClick={onViewPartyProfile}
-          >
-            <Link href={`/${municipality}/parti/${champion.party.id}`}>
-              Fiche du champion
-            </Link>
-          </Button>
-          <Button
-            variant="outline"
-            className="rounded-lg"
-            onClick={() => setIsShareModalOpen(true)}
-          >
-            <Share2 className="mr-2 h-4 w-4" />
-            Partager
-          </Button>
-        </div>
-
-        <Button
-          variant="default"
-          onClick={onClose}
-          className="w-full rounded-lg font-semibold"
-        >
-          <ArrowRight className="mr-2 h-4 w-4" />
-          Voir l&apos;analyse complète
-        </Button>
-      </motion.div>
+      </div>
     </motion.div>
   );
 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={() => {}}>
-        <DialogContent className="max-w-md sm:max-w-lg p-0 bg-white border border-border/50 overflow-hidden max-h-[95vh] overflow-y-auto">
+        <DialogContent className="max-w-2xl sm:max-w-3xl lg:max-w-4xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 overflow-hidden max-h-[90vh]">
           {/* Bouton fermer */}
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="absolute top-2 right-2 z-50 hover:bg-gray-100 rounded-full h-8 w-8"
+            className="absolute top-2 right-2 z-50 hover:bg-midnight-green/10 rounded-full h-8 w-8 text-midnight-green"
           >
             <X className="h-4 w-4" />
           </Button>
 
-          {/* Indicateur d'étape */}
-          <div className="flex justify-center gap-2 p-3 border-b bg-gray-50">
-            {(['champion', 'podium', 'compass'] as ModalStep[]).map((step, index) => (
+          {/* En-tête du modal */}
+          <div className="text-center p-4 border-b border-midnight-green/10 bg-gradient-to-r from-azure-web/50 to-isabelline/30">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Trophy className="h-5 w-5 text-midnight-green" />
+              <Badge className="bg-midnight-green text-white text-sm px-3 py-1 font-bold">
+                🏆 Vos résultats politiques
+              </Badge>
+              <Trophy className="h-5 w-5 text-midnight-green" />
+            </div>
+            <DialogTitle className="text-lg font-bold text-midnight-green">
+              Découvrez vos affinités et votre positionnement
+            </DialogTitle>
+          </div>
+
+          {/* Indicateur de slide */}
+          <div className="flex justify-center gap-2 p-3 border-b bg-azure-web/20">
+            {Array.from({ length: 4 }, (_, index) => (
               <div
-                key={step}
+                key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  currentStep === step
-                    ? 'bg-primary w-6'
-                    : index < (['champion', 'podium', 'compass'] as ModalStep[]).indexOf(currentStep)
-                    ? 'bg-primary/60'
-                    : 'bg-muted'
+                  currentSlide === index
+                    ? 'bg-midnight-green w-6'
+                    : index < currentSlide
+                    ? 'bg-midnight-green/60'
+                    : 'bg-midnight-green/20'
                 }`}
               />
             ))}
           </div>
 
-          {/* Contenu avec transitions */}
-          <div className="relative min-h-[400px]">
-            <AnimatePresence mode="wait">
-              {currentStep === 'champion' && renderChampionStep()}
-              {currentStep === 'podium' && renderPodiumStep()}
-              {currentStep === 'compass' && renderCompassStep()}
-            </AnimatePresence>
+          {/* Carousel des résultats */}
+          <div className="relative min-h-fit">
+            <Carousel
+              setApi={setCarouselApi}
+              className="w-full"
+              opts={{
+                align: 'start',
+                loop: false,
+              }}
+            >
+              <CarouselContent>
+                {/* Slide 1: Champion */}
+                <CarouselItem>
+                  <div className="px-8 py-6 text-center flex items-center justify-center min-h-[400px]">
+                    <div className="w-full max-w-md">
+                      <PartyCard
+                        party={champion.party}
+                        score={champion.score}
+                        rank={1}
+                        isChampion={true}
+                        delay={0.2}
+                      />
+                    </div>
+                  </div>
+                </CarouselItem>
+
+                {/* Slide 2: Deuxième place */}
+                {challenger1 && (
+                  <CarouselItem>
+                    <div className="px-8 py-6 text-center flex items-center justify-center min-h-[400px]">
+                      <div className="w-full max-w-md">
+                        <PartyCard
+                          party={challenger1.party}
+                          score={challenger1.score}
+                          rank={2}
+                          delay={0.1}
+                        />
+                      </div>
+                    </div>
+                  </CarouselItem>
+                )}
+
+                {/* Slide 3: Troisième place */}
+                {challenger2 && (
+                  <CarouselItem>
+                    <div className="px-8 py-6 text-center flex items-center justify-center min-h-[400px]">
+                      <div className="w-full max-w-md">
+                        <PartyCard
+                          party={challenger2.party}
+                          score={challenger2.score}
+                          rank={3}
+                          delay={0.1}
+                        />
+                      </div>
+                    </div>
+                  </CarouselItem>
+                )}
+
+                {/* Slide 4: Carte politique */}
+                <CarouselItem>
+                  <CompassSlide />
+                </CarouselItem>
+              </CarouselContent>
+
+              <CarouselPrevious className="left-2 bg-midnight-green/90 text-white border-midnight-green hover:bg-midnight-green" />
+              <CarouselNext className="right-2 bg-midnight-green/90 text-white border-midnight-green hover:bg-midnight-green" />
+            </Carousel>
           </div>
+
+          {/* Actions finales */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+            transition={{ duration: 0.4, delay: 0.5 }}
+            className="p-4 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-3"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Button
+                asChild
+                variant="outline"
+                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium"
+              >
+                <Link href={`/${municipality}/parti/${champion.party.id}`}>
+                  Fiche du champion
+                </Link>
+              </Button>
+              <Button
+                variant="outline"
+                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium"
+                onClick={() => setIsShareModalOpen(true)}
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                Partager
+              </Button>
+            </div>
+
+            <Button
+              onClick={onClose}
+              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg font-semibold shadow-lg transition-all duration-200"
+            >
+              <ArrowRight className="mr-2 h-4 w-4" />
+              Voir l&apos;analyse complète
+            </Button>
+          </motion.div>
         </DialogContent>
       </Dialog>
 

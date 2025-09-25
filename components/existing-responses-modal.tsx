@@ -68,8 +68,8 @@ export default function ContinueOrRestartModal({
 
   const handleContinueQuestionnaire = () => {
     onClose()
-    // Aller au test politique pour continuer
-    router.push("/test-politique-municipal")
+    // TEMPORAIRE : Redirection vers page maintenance pendant améliorations
+    router.push("/quebec/maintenance")
   }
 
   const handleViewResults = () => {

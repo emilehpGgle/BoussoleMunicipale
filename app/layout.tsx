@@ -375,11 +375,13 @@ export default function RootLayout({
         }} />
         
         
-        {/* Resource hints optimisés pour performance - Google Fonts gérés par next/font */}
-        
-        {/* Preload du CSS critique pour éviter le FOUC - Next.js gère automatiquement */}
-        
-        {/* Preconnect analytics - non-blocking */}
+        {/* Resource hints optimisés pour performance */}
+        {/* Preload ressources critiques pour réduire LCP */}
+        <link rel="preload" href="/logo-main.svg?v=2025" as="image" type="image/svg+xml" />
+        <link rel="preload" href="/Image_parc_crisp.webp?v=2025" as="image" />
+        <link rel="preload" href="/favicon-32x32.png?v=2025" as="image" />
+
+        {/* Preconnect analytics et services externes - non-blocking */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
         <link rel="preconnect" href="https://www.google-analytics.com" crossOrigin="" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />

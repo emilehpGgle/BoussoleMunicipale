@@ -18,12 +18,14 @@ import {
 } from "@/lib/boussole-data"
 import { useQuestions } from "@/hooks/useQuestions"
 import { useParties } from "@/hooks/useParties"
+import { usePartyPositions } from "@/hooks/usePartyPositions"
 import {
   calculatePoliticalDistance,
-  calculateUserPoliticalPosition,
   calculatePriorityCompatibility,
-  partyPositions,
 } from "@/lib/political-map-calculator"
+import {
+  calculateUserPoliticalPosition,
+} from "@/lib/political-calculator-db"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
@@ -34,6 +36,7 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 import { motion } from 'framer-motion'
 import { ScrollReveal, AnimatedCard, AnimatedCounter } from "@/components/ui/animation-utils"
+import { transformAllPartyPositionsToUserAnswers } from "@/lib/supabase-transform"
 
 const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
 
@@ -118,6 +121,7 @@ export default function ResultsPage() {
   // ✅ Charger les questions et partis depuis Supabase
   const { questions, isLoading: questionsLoading, error: questionsError } = useQuestions(municipality)
   const { parties: partiesData, isLoading: partiesLoading, error: partiesError } = useParties(municipality, true) // includePositions=true pour avoir les positions
+  const { positionsByParty, isLoading: positionsLoading, error: positionsError } = usePartyPositions(municipality)
 
   // ✅ Attendre que la session soit prête avant de charger les données
   const {
@@ -126,6 +130,16 @@ export default function ResultsPage() {
     isLoading: responsesLoading,
     error: responsesError
   } = useUserResponses(municipality)
+
+  console.log('🔍 [HOOK DEBUG] useUserResponses result:', {
+    userAnswers: userAnswers,
+    userAnswersKeys: userAnswers ? Object.keys(userAnswers) : 'undefined',
+    userImportance: userImportance,
+    responsesLoading: responsesLoading,
+    responsesError: responsesError,
+    municipality: municipality
+  })
+
   const {
     results,
     isLoading: resultsLoading,
@@ -136,56 +150,122 @@ export default function ResultsPage() {
   } = useResults(municipality)
   const { priorities: userPriorities } = usePriorities(municipality)
 
+  console.log('🔍 [HOOK DEBUG] Other hooks:', {
+    userPriorities: userPriorities,
+    resultsLoading: resultsLoading,
+    isCalculating: isCalculating,
+    hasResults: hasResults
+  })
 
-  // ✅ État consolidé de chargement - inclure le chargement de session, questions et partis
-  const isLoading = sessionLoading || responsesLoading || resultsLoading || questionsLoading || partiesLoading
-  const globalError = responsesError || resultsError || questionsError || partiesError
 
+  // ✅ État pour la gestion async des scores calculés
+  const [calculatedScores, setCalculatedScores] = useState<CalculatedPartyScore[]>([])
+  const [scoresLoading, setScoresLoading] = useState(false)
+  const [scoresError, setScoresError] = useState<string | null>(null)
 
-  // ✅ Calculer les scores en utilisant TOUJOURS la même logique que la carte politique
-  const calculatedScores = useMemo(() => {
-    // Vérifier que nous avons toutes les données nécessaires
-    if (!userAnswers || Object.keys(userAnswers).length === 0 || !partiesData || partiesData.length === 0 || !questions || questions.length === 0) {
-      console.log('🚫 [ResultsPage] Données manquantes:', {
+  // ✅ État consolidé de chargement - inclure le chargement des scores
+  const isLoading = sessionLoading || responsesLoading || resultsLoading || questionsLoading || partiesLoading || positionsLoading || scoresLoading
+  const globalError = responsesError || resultsError || questionsError || partiesError || positionsError || scoresError
+
+  // ✅ Calculer les scores de façon asynchrone avec useEffect
+  useEffect(() => {
+    const calculateScoresAsync = async () => {
+      try {
+        setScoresLoading(true)
+        setScoresError(null)
+
+        console.log('🔍 [DEBUG] === DÉBUT DEBUG CALCULATEDSCORES ===')
+
+        // DEBUG: Vérifier les données reçues des hooks
+        console.log('🔍 [DEBUG] Données reçues des hooks:', {
+      userAnswers: userAnswers,
+      userAnswersKeys: userAnswers ? Object.keys(userAnswers) : 'undefined',
+      userAnswersType: typeof userAnswers,
+      partiesData: partiesData?.map(p => ({ id: p.id, name: p.name })),
+      questions: questions?.map(q => ({ id: q.id, text: q.text.substring(0, 50) + '...' })),
+      positionsByParty: positionsByParty ? Object.keys(positionsByParty) : 'undefined',
+      municipality: municipality
+    })
+
+    // Vérifier que nous avons toutes les données nécessaires (inclure positionsByParty !)
+    if (!userAnswers || Object.keys(userAnswers).length === 0 ||
+        !partiesData || partiesData.length === 0 ||
+        !questions || questions.length === 0 ||
+        !positionsByParty || Object.keys(positionsByParty).length === 0) {
+      console.log('🚫 [DEBUG] Données manquantes - Détail:', {
         userAnswers: !!userAnswers,
         userAnswersKeys: userAnswers ? Object.keys(userAnswers).length : 0,
+        userAnswersContent: userAnswers,
         partiesData: partiesData?.length || 0,
-        questions: questions?.length || 0
+        questions: questions?.length || 0,
+        positionsByParty: positionsByParty ? Object.keys(positionsByParty).length : 0,
+        positionsByPartyContent: positionsByParty
       })
-      return []
+      setCalculatedScores([])
+        setScoresLoading(false)
+        return
     }
+
+    console.log('✅ [DEBUG] Toutes les données sont présentes, début des calculs')
 
     // IMPORTANTE: Utiliser TOUJOURS la même logique que dans useResults et la carte politique
     // pour garantir la cohérence des résultats
-    
+
     // Calculer la position politique de l'utilisateur (même logique que la carte)
-    const userPosition = calculateUserPoliticalPosition(userAnswers)
+    console.log('🔍 [DEBUG] Calcul position utilisateur avec userAnswers:', userAnswers)
+    const userPosition = await calculateUserPoliticalPosition(userAnswers, municipality)
+    console.log('🔍 [DEBUG] Position utilisateur calculée:', userPosition)
+
+    // ✅ Transformer les positions depuis Supabase (même logique que l'API /api/results/calculate)
+    console.log('🔍 [DEBUG] Transformation positions Supabase:', positionsByParty)
+    const partyAnswers = positionsByParty ? transformAllPartyPositionsToUserAnswers(positionsByParty) : {}
+    console.log('🔍 [DEBUG] Résultat transformation partyAnswers:', partyAnswers)
+
+        // ✅ Calculer les positions politiques dynamiquement pour chaque parti
+        const dynamicPartyPositions: Record<string, { x: number; y: number }> = {}
+        console.log('🔍 [DEBUG] Calcul positions politiques pour chaque parti...')
+        for (const [partyId, answers] of Object.entries(partyAnswers)) {
+          console.log(`🔍 [DEBUG] Parti ${partyId} - answers:`, answers)
+          const position = await calculateUserPoliticalPosition(answers, municipality)
+          dynamicPartyPositions[partyId] = position
+          console.log(`🔍 [DEBUG] Parti ${partyId} - position calculée:`, position)
+        }
+    console.log('🔍 [DEBUG] Toutes les positions dynamiques:', dynamicPartyPositions)
 
     // Les priorités sont maintenant récupérées via le hook usePriorities
+    console.log('🔍 [DEBUG] userPriorities:', userPriorities)
 
-    const newCalculatedScores = partiesData.map((party) => {
-      // Utiliser la position politique du parti (partyPositions provient de political-map-calculator)
-      const partyPosition = partyPositions[party.id]
+    const newCalculatedScores = partiesData.map((party, index) => {
+      console.log(`🔍 [DEBUG] === CALCUL PARTI ${index + 1}/${partiesData.length}: ${party.name} (${party.id}) ===`)
+
+      // ✅ Utiliser les positions dynamiques calculées depuis Supabase (multi-municipalités)
+      const partyPosition = dynamicPartyPositions[party.id]
+      console.log(`🔍 [DEBUG] Position du parti ${party.id}:`, partyPosition)
       let politicalScore = 0
 
       if (partyPosition) {
         // MÊME calcul que dans useResults.ts et la carte politique
         const distance = calculatePoliticalDistance(userPosition, partyPosition)
+        console.log(`🔍 [DEBUG] Distance calculée entre utilisateur et ${party.id}:`, distance)
         // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
         const maxDistance = 283
         const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
+        console.log(`🔍 [DEBUG] Compatibility calculé pour ${party.id}:`, compatibility, '(distance:', distance, ', maxDistance:', maxDistance, ')')
         politicalScore = compatibility
       } else {
         // Si pas de position politique définie pour ce parti, score de 0
         politicalScore = 0
-        console.warn(`Pas de position politique définie pour le parti: ${party.id}`)
+        console.warn(`🔍 [DEBUG] Pas de position politique définie pour le parti: ${party.id}`)
       }
 
       // Calculer le score des priorités
+      console.log(`🔍 [DEBUG] Calcul priorités pour ${party.id}: userPriorities=`, userPriorities, ', party.priorities=', party.priorities)
       const priorityScore = calculatePriorityCompatibility(userPriorities, party.priorities || [])
+      console.log(`🔍 [DEBUG] Priority score calculé pour ${party.id}:`, priorityScore)
 
       // Score final pondéré : 70% position politique, 30% priorités
       const finalScore = (politicalScore * 0.7) + (priorityScore * 0.3)
+      console.log(`🔍 [DEBUG] Score final pour ${party.id}:`, finalScore, '(political:', politicalScore, '* 0.7 =', politicalScore * 0.7, ', priority:', priorityScore, '* 0.3 =', priorityScore * 0.3, ')')
 
       // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
       const scoreDetails: CalculatedPartyScore["details"] = questions.map((question) => {
@@ -233,8 +313,36 @@ export default function ResultsPage() {
 
     // Trier par score décroissant
     newCalculatedScores.sort((a, b) => b.score - a.score)
-    return newCalculatedScores
-  }, [userAnswers, userImportance, userPriorities, partiesData, questions])
+
+    console.log('🔍 [DEBUG] === RÉSULTATS FINAUX ===')
+    console.log('🔍 [DEBUG] newCalculatedScores:', newCalculatedScores.map(s => ({
+      partyId: s.party.id,
+      partyName: s.party.name,
+      finalScore: s.score,
+      rawScore: s.rawScore
+    })))
+        console.log('🔍 [DEBUG] === FIN DEBUG CALCULATEDSCORES ===')
+
+        setCalculatedScores(newCalculatedScores)
+      } catch (error) {
+        console.error('🔍 [ERROR] Erreur lors du calcul des scores:', error)
+        setScoresError(error instanceof Error ? error.message : 'Erreur lors du calcul des scores')
+        setCalculatedScores([])
+      } finally {
+        setScoresLoading(false)
+      }
+    }
+
+    // Déclencher le calcul si toutes les données sont disponibles
+    if (!sessionLoading && !responsesLoading && !questionsLoading && !partiesLoading && !positionsLoading &&
+        userAnswers && Object.keys(userAnswers).length > 0 &&
+        partiesData && partiesData.length > 0 &&
+        questions && questions.length > 0 &&
+        positionsByParty && Object.keys(positionsByParty).length > 0 &&
+        municipality) {
+      calculateScoresAsync()
+    }
+  }, [userAnswers, userImportance, userPriorities, partiesData, questions, positionsByParty, municipality, sessionLoading, responsesLoading, questionsLoading, partiesLoading, positionsLoading])
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
@@ -390,7 +498,7 @@ export default function ResultsPage() {
       const img = new window.Image()
       img.onload = () => setImageLoading(false)
       img.onerror = () => {
-        console.warn(`⚠️ Préchargement échoué pour ${party.name}: ${party.logoUrl}`)
+        // console.warn(`⚠️ Préchargement échoué pour ${party.name}: ${party.logoUrl}`)  // DEBUG: Supprimé logs non-pertinents
         setImageError(true)
         setImageLoading(false)
       }
@@ -418,7 +526,7 @@ export default function ResultsPage() {
             }}
             onLoad={() => setImageLoading(false)}
             onError={() => {
-              console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)
+              // console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)  // DEBUG: Supprimé logs non-pertinents
               setImageError(true)
               setImageLoading(false)
             }}

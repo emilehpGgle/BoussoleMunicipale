@@ -26,7 +26,7 @@ INSERT INTO public.parties (
     'Action Gatineau',
     'AG',
     'Maude Marquis-Bissonnette',
-    '/logos/action-gatineau.png',
+    '/logos/Action_Gatineau.png',
     'https://actiongatineau.org',
     'Centre-gauche',
     'Orientation générale : Centre-gauche social-démocrate.
@@ -43,7 +43,7 @@ Réserves : Projets coûteux sans considération capacité de payer, Approche pa
     'Équipe Mario Aubé',
     'ÉMA',
     'Mario Aubé',
-    '/logos/equipe-mario-aube.png',
+    '/logos/Equipe_Mario_Aube.png',
     'https://equipemarioaube.ca',
     'Big tent, conservatisme fiscal',
     'Orientation générale : Big tent avec conservatisme fiscal et localisme.

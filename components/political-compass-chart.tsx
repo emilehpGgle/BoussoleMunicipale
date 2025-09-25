@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Info, Maximize2, X } from "lucide-react"
 import {
   type PoliticalPosition,
-  calculateUserPoliticalPosition,
   getPoliticalPositionDescription,
   calculatePoliticalDistance,
   axisConfiguration,
@@ -17,6 +16,9 @@ import {
   normalizePositionForDisplay,
   calculateExactCompatibility
 } from '@/lib/political-map-calculator'
+import {
+  calculateUserPoliticalPosition
+} from '@/lib/political-calculator-db'
 import { transformAllPartyPositionsToUserAnswers } from '@/lib/supabase-transform'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
@@ -41,25 +43,42 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
   const { positionsByParty, isLoading: positionsLoading, error: positionsError } = usePartyPositions(municipality)
 
   // Calcul des positions originales (sans compression)
-  const userPosition = useMemo(() => {
-    return calculateUserPoliticalPosition(userAnswers)
-  }, [userAnswers])
+  const [userPosition, setUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 })
+
+  useEffect(() => {
+    calculateUserPoliticalPosition(userAnswers, municipality)
+      .then(position => setUserPosition(position))
+      .catch(err => console.error('Erreur calcul position utilisateur:', err))
+  }, [userAnswers, municipality])
 
   // Calcul des positions des partis depuis les données Supabase
-  const partyPositions = useMemo(() => {
-    if (!positionsByParty) return {}
+  const [partyPositions, setPartyPositions] = useState<Record<string, PoliticalPosition>>({})
+
+  useEffect(() => {
+    if (!positionsByParty) {
+      setPartyPositions({})
+      return
+    }
 
     // Transformer les données Supabase vers le format UserAnswers
     const partyAnswers = transformAllPartyPositionsToUserAnswers(positionsByParty)
 
     // Calculer les positions politiques pour chaque parti
-    const positions: Record<string, PoliticalPosition> = {}
-    Object.entries(partyAnswers).forEach(([partyId, answers]) => {
-      positions[partyId] = calculateUserPoliticalPosition(answers)
-    })
+    const calculateAllPositions = async () => {
+      const positions: Record<string, PoliticalPosition> = {}
+      for (const [partyId, answers] of Object.entries(partyAnswers)) {
+        try {
+          positions[partyId] = await calculateUserPoliticalPosition(answers, municipality)
+        } catch (err) {
+          console.error(`Erreur calcul position pour ${partyId}:`, err)
+          positions[partyId] = { x: 0, y: 0 }
+        }
+      }
+      setPartyPositions(positions)
+    }
 
-    return positions
-  }, [positionsByParty])
+    calculateAllPositions()
+  }, [positionsByParty, municipality])
 
   // Description de la position politique
   const positionDescription = useMemo(() => {

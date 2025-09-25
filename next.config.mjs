@@ -10,8 +10,10 @@ const nextConfig = {
     ignoreBuildErrors: process.env.NODE_ENV === 'development',
   },
   experimental: {
-    // CSS Chunking optimisé pour réduire le blocking CSS
-    cssChunking: true, // Active le chunking pour séparer CSS critique/non-critique
+    // CSS Performance Optimizations
+    cssChunking: 'strict', // Améliore l'ordre d'import pour chunking optimal
+    inlineCss: true, // Inline CSS critique dans <head> pour réduire render blocking
+    // useLightningcss: true, // Disabled - conflicts with PostCSS plugins
   },
   images: {
     // Configuration optimisée pour la qualité d'images

@@ -15,7 +15,11 @@
       "mcp__cloudflare-playwright-mcp__browser_press_key",
       "mcp__exa__web_search_exa",
       "mcp__exa__deep_researcher_check",
-      "mcp__exa__deep_researcher_start"
+      "mcp__exa__deep_researcher_start",
+      "WebFetch(domain:fr.wikipedia.org)",
+      "WebFetch(domain:partilaval.com)",
+      "mcp__exa__get_code_context_exa",
+      "WebFetch(domain:mclmedialaval.com)"
     ],
     "deny": []
   },
