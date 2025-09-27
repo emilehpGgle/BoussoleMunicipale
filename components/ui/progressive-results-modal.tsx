@@ -739,7 +739,7 @@ export function ProgressiveResultsModal({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 0.5 }}
-            className="p-1 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-1">
+            className="p-1 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-1"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
               <Button
