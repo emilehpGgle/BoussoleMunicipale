@@ -428,7 +428,6 @@ export function ProgressiveResultsModal({
   const thirdParty = topParties[2];
 
   const politicalPosition = results?.politicalPosition ? { x: results.politicalPosition.x, y: results.politicalPosition.y } : undefined;
-  const positionDescription = results?.politicalPosition ? getPoliticalPositionDescription(results.politicalPosition) : '';
 
   // Composant pour une carte de parti avec badge de rang
   const PartyCard: React.FC<{
@@ -771,7 +770,7 @@ export function ProgressiveResultsModal({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 0.5 }}
-            className="p-1 border-t border-midnight-green/20 bg-azure-web/60 space-y-1">
+            className="p-1 border-t border-midnight-green/20 bg-azure-web/60 space-y-1"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
               <Button
