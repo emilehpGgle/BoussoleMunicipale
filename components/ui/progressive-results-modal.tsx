@@ -489,12 +489,12 @@ export function ProgressiveResultsModal({
           </span>
         </motion.div>
 
-        <Card className={`p-4 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-2xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
+        <Card className={`p-2 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
           {/* Confetti pour le premier parti */}
           {isChampion && <ConfettiExplosion trigger={showConfetti} />}
 
           {/* Logo */}
-          <div className="relative mb-1">
+          <div className="relative mb-0.5">
             <PartyLogo
               party={party}
               size={{ width: isChampion ? 120 : 100, height: isChampion ? 120 : 100 }}
@@ -503,7 +503,7 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Nom du parti */}
-          <div className="min-h-[2.5rem] flex flex-col justify-center mb-2">
+          <div className="min-h-[2rem] flex flex-col justify-center mb-1">
             <h3 className={`${isChampion ? 'text-lg' : 'text-base'} font-bold text-foreground leading-tight mb-0.5`}>
               {party.shortName || party.name}
             </h3>
@@ -513,9 +513,9 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Score avec animation */}
-          <div className="w-full bg-muted rounded-full h-5 mb-2 overflow-hidden relative border border-midnight-green/20">
+          <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden relative border border-midnight-green/20">
             <motion.div
-              className={`${badgeConfig.bgClass} h-5 rounded-full`}
+              className={`${badgeConfig.bgClass} h-4 rounded-full`}
               initial={{ width: "0%" }}
               animate={{ width: showContent ? `${score}%` : "0%" }}
               transition={{ duration: 1.2, delay: delay + 0.5, ease: "easeOut" }}
@@ -524,7 +524,7 @@ export function ProgressiveResultsModal({
           </div>
 
           <motion.p
-            className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-midnight-green mb-3`}
+            className={`${isChampion ? 'text-lg' : 'text-base'} font-bold text-midnight-green mb-1`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8 }}
             transition={{ duration: 0.5, delay: delay + 0.8 }}
@@ -540,7 +540,7 @@ export function ProgressiveResultsModal({
             >
               <Button
                 asChild
-                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-4 py-1.5 rounded-lg shadow-lg transition-all duration-200 text-sm"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-3 py-1 rounded-lg shadow-lg transition-all duration-200 text-xs"
               >
                 <Link href={`/${municipality}/parti/${party.id}`}>
                   Voir la fiche détaillée
@@ -634,7 +634,7 @@ export function ProgressiveResultsModal({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-lg sm:max-w-2xl lg:max-w-3xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 h-fit">
+        <DialogContent className="max-w-lg sm:max-w-xl lg:max-w-2xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 h-fit max-h-[60vh]">
           {/* Bouton fermer */}
           <Button
             variant="ghost"
@@ -646,7 +646,7 @@ export function ProgressiveResultsModal({
           </Button>
 
           {/* En-tête du modal */}
-          <div className="text-center p-4 border-b border-midnight-green/10 bg-gradient-to-r from-azure-web/50 to-isabelline/30">
+          <div className="text-center p-2 border-b border-midnight-green/10 bg-gradient-to-r from-azure-web/50 to-isabelline/30">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Trophy className="h-5 w-5 text-midnight-green" />
               <Badge className="bg-midnight-green text-white text-sm px-3 py-1 font-bold">
@@ -660,7 +660,7 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Indicateur de slide */}
-          <div className="flex justify-center gap-3 p-3 border-b bg-azure-web/20">
+          <div className="flex justify-center gap-2 p-2 border-b bg-azure-web/20">
             {Array.from({ length: 4 }, (_, index) => (
               <button
                 key={index}
@@ -690,7 +690,7 @@ export function ProgressiveResultsModal({
               <CarouselContent className="h-fit">
                 {/* Slide 1: Premier parti */}
                 <CarouselItem className="h-fit">
-                  <div className="px-4 py-2 text-center flex items-start justify-center h-fit">
+                  <div className="px-2 py-1 text-center flex items-start justify-center h-fit">
                     <div className="w-full max-w-sm h-fit">
                       <PartyCard
                         party={topParty.party}
@@ -706,7 +706,7 @@ export function ProgressiveResultsModal({
                 {/* Slide 2: Deuxième place */}
                 {secondParty && (
                   <CarouselItem className="h-fit">
-                    <div className="px-4 py-2 text-center flex items-start justify-center h-fit">
+                    <div className="px-2 py-1 text-center flex items-start justify-center h-fit">
                       <div className="w-full max-w-sm h-fit">
                         <PartyCard
                           party={secondParty.party}
@@ -722,7 +722,7 @@ export function ProgressiveResultsModal({
                 {/* Slide 3: Troisième place */}
                 {thirdParty && (
                   <CarouselItem className="h-fit">
-                    <div className="px-4 py-2 text-center flex items-start justify-center h-fit">
+                    <div className="px-2 py-1 text-center flex items-start justify-center h-fit">
                       <div className="w-full max-w-sm h-fit">
                         <PartyCard
                           party={thirdParty.party}
@@ -751,13 +751,13 @@ export function ProgressiveResultsModal({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 0.5 }}
-            className="p-2 sm:p-3 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-2"
+            className="p-1 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-1">
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
               <Button
                 asChild
                 variant="outline"
-                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium"
+                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-1"
               >
                 <Link href={`/${municipality}/parti/${topParty.party.id}`}>
                   Fiche détaillée
@@ -765,7 +765,7 @@ export function ProgressiveResultsModal({
               </Button>
               <Button
                 variant="outline"
-                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium"
+                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-1"
                 onClick={() => setIsShareModalOpen(true)}
               >
                 <Share2 className="mr-2 h-4 w-4" />
@@ -775,7 +775,7 @@ export function ProgressiveResultsModal({
 
             <Button
               onClick={onClose}
-              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg font-semibold shadow-lg transition-all duration-200"
+              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg font-semibold shadow-lg transition-all duration-200 text-sm py-1"
             >
               <ArrowRight className="mr-2 h-4 w-4" />
               Voir l&apos;analyse complète
