@@ -489,22 +489,22 @@ export function ProgressiveResultsModal({
           </span>
         </motion.div>
 
-        <Card className={`p-2 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
+        <Card className={`p-4 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl min-w-[280px]`}>
           {/* Confetti pour le premier parti */}
           {isChampion && <ConfettiExplosion trigger={showConfetti} />}
 
           {/* Logo */}
-          <div className="relative mb-0.5">
+          <div className="relative mb-2">
             <PartyLogo
               party={party}
-              size={{ width: isChampion ? 120 : 100, height: isChampion ? 120 : 100 }}
-              className={`${isChampion ? 'w-24 h-24 sm:w-28 sm:h-28' : 'w-20 h-20 sm:w-24 sm:h-24'} relative z-10`}
+              size={{ width: isChampion ? 140 : 120, height: isChampion ? 140 : 120 }}
+              className={`${isChampion ? 'w-28 h-28 sm:w-32 sm:h-32' : 'w-24 h-24 sm:w-28 sm:h-28'} relative z-10`}
             />
           </div>
 
           {/* Nom du parti */}
-          <div className="min-h-[2rem] flex flex-col justify-center mb-1">
-            <h3 className={`${isChampion ? 'text-lg' : 'text-base'} font-bold text-foreground leading-tight mb-0.5`}>
+          <div className="min-h-[3rem] flex flex-col justify-center mb-3">
+            <h3 className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-foreground leading-tight mb-1`}>
               {party.shortName || party.name}
             </h3>
             <p className="text-sm text-muted-foreground leading-tight">
@@ -513,9 +513,9 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Score avec animation */}
-          <div className="w-full bg-muted rounded-full h-4 mb-1 overflow-hidden relative border border-midnight-green/20">
+          <div className="w-full bg-muted rounded-full h-5 mb-3 overflow-hidden relative border border-midnight-green/20">
             <motion.div
-              className={`${badgeConfig.bgClass} h-4 rounded-full`}
+              className={`${badgeConfig.bgClass} h-5 rounded-full`}
               initial={{ width: "0%" }}
               animate={{ width: showContent ? `${score}%` : "0%" }}
               transition={{ duration: 1.2, delay: delay + 0.5, ease: "easeOut" }}
@@ -524,7 +524,7 @@ export function ProgressiveResultsModal({
           </div>
 
           <motion.p
-            className={`${isChampion ? 'text-lg' : 'text-base'} font-bold text-midnight-green mb-1`}
+            className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-midnight-green mb-4`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8 }}
             transition={{ duration: 0.5, delay: delay + 0.8 }}
@@ -540,7 +540,7 @@ export function ProgressiveResultsModal({
             >
               <Button
                 asChild
-                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-3 py-1 rounded-lg shadow-lg transition-all duration-200 text-xs"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-all duration-200 text-sm"
               >
                 <Link href={`/${municipality}/parti/${party.id}`}>
                   Voir la fiche détaillée
@@ -689,54 +689,42 @@ export function ProgressiveResultsModal({
             >
               <CarouselContent className="h-fit">
                 {/* Slide 1: Premier parti */}
-                <CarouselItem className="h-fit">
-                  <div className="px-2 py-1 text-center flex items-start justify-center h-fit">
-                    <div className="w-full max-w-sm h-fit">
-                      <PartyCard
-                        party={topParty.party}
-                        score={topParty.score}
-                        rank={1}
-                        isChampion={true}
-                        delay={0.2}
-                      />
-                    </div>
-                  </div>
+                <CarouselItem className="h-fit flex justify-center p-1">
+                  <PartyCard
+                    party={topParty.party}
+                    score={topParty.score}
+                    rank={1}
+                    isChampion={true}
+                    delay={0.2}
+                  />
                 </CarouselItem>
 
                 {/* Slide 2: Deuxième place */}
                 {secondParty && (
-                  <CarouselItem className="h-fit">
-                    <div className="px-2 py-1 text-center flex items-start justify-center h-fit">
-                      <div className="w-full max-w-sm h-fit">
-                        <PartyCard
-                          party={secondParty.party}
-                          score={secondParty.score}
-                          rank={2}
-                          delay={0.1}
-                        />
-                      </div>
-                    </div>
+                  <CarouselItem className="h-fit flex justify-center p-1">
+                    <PartyCard
+                      party={secondParty.party}
+                      score={secondParty.score}
+                      rank={2}
+                      delay={0.1}
+                    />
                   </CarouselItem>
                 )}
 
                 {/* Slide 3: Troisième place */}
                 {thirdParty && (
-                  <CarouselItem className="h-fit">
-                    <div className="px-2 py-1 text-center flex items-start justify-center h-fit">
-                      <div className="w-full max-w-sm h-fit">
-                        <PartyCard
-                          party={thirdParty.party}
-                          score={thirdParty.score}
-                          rank={3}
-                          delay={0.1}
-                        />
-                      </div>
-                    </div>
+                  <CarouselItem className="h-fit flex justify-center p-1">
+                    <PartyCard
+                      party={thirdParty.party}
+                      score={thirdParty.score}
+                      rank={3}
+                      delay={0.1}
+                    />
                   </CarouselItem>
                 )}
 
                 {/* Slide 4: Carte politique */}
-                <CarouselItem className="h-fit">
+                <CarouselItem className="h-fit p-1">
                   <CompassSlide />
                 </CarouselItem>
               </CarouselContent>

@@ -274,7 +274,7 @@ const createSummary = (orientation?: string, forces?: string[], reserves?: strin
 
 export const partiesData: Party[] = [
   {
-    id: "alliance_citoyenne",
+    id: "alliance-citoyenne-quebec",
     name: "Alliance citoyenne de Québec",
     shortName: "ACQ",
     leader: "Alain Giasson",
@@ -379,7 +379,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "equipe_priorite_quebec",
+    id: "equipe-priorite-quebec",
     name: "Équipe priorité Québec",
     shortName: "EPQ",
     leader: "Stevens Mélançon",
@@ -485,7 +485,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "leadership_quebec",
+    id: "leadership-quebec",
     name: "Leadership Québec - Équipe Sam Hamad",
     shortName: "LQ",
     leader: "Sam Hamad",
@@ -632,7 +632,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "quebec_dabord",
+    id: "quebec-dabord",
     name: "Québec d'abord",
     shortName: "QD",
     leader: "Claude Villeneuve",
@@ -779,7 +779,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "quebec_forte_et_fiere",
+    id: "quebec-forte-et-fiere",
     name: "Québec forte et fière",
     shortName: "QFF",
     leader: "Bruno Marchand",
@@ -926,7 +926,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "respect_citoyens",
+    id: "respect-citoyens",
     name: "Respect citoyens",
     shortName: "RC",
     leader: "Stéphane Lachance",
@@ -1073,7 +1073,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "transition_quebec",
+    id: "transition-quebec",
     name: "Transition Québec",
     shortName: "TQ",
     leader: "Jackie Smith",

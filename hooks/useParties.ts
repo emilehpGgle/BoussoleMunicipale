@@ -61,7 +61,7 @@ export function useParties(municipality?: string, includePositions = false) {
     // Récupérer les URLs hardcodées depuis boussole-data.ts
     const hardcodedParty = partiesData.find(p => p.id === dbParty.id)
 
-    return {
+    const finalParty = {
       id: dbParty.id,
       name: dbParty.name,
       shortName: dbParty.short_name || undefined,
@@ -83,6 +83,8 @@ export function useParties(municipality?: string, includePositions = false) {
         quote: pos.quote || undefined,
       }))
     }
+
+    return finalParty
   }
 
   /**

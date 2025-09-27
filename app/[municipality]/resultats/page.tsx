@@ -466,10 +466,15 @@ export default function ResultsPage() {
 
     // Préchargement des logos pour éviter les problèmes de chargement
     useEffect(() => {
+      if (!party.logoUrl) {
+        setImageError(true)
+        setImageLoading(false)
+        return
+      }
+
       const img = new window.Image()
       img.onload = () => setImageLoading(false)
       img.onerror = () => {
-        // console.warn(`⚠️ Préchargement échoué pour ${party.name}: ${party.logoUrl}`)  // DEBUG: Supprimé logs non-pertinents
         setImageError(true)
         setImageLoading(false)
       }
@@ -497,7 +502,6 @@ export default function ResultsPage() {
             }}
             onLoad={() => setImageLoading(false)}
             onError={() => {
-              // console.warn(`⚠️ Erreur de chargement du logo pour ${party.name}: ${party.logoUrl}`)  // DEBUG: Supprimé logs non-pertinents
               setImageError(true)
               setImageLoading(false)
             }}
