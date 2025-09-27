@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { calculateUserPoliticalPosition, calculatePoliticalDistance, type UserAnswers } from '@/lib/political-map-calculator'
+import { calculatePoliticalDistance, type UserAnswers } from '@/lib/political-map-calculator'
+import { calculateUserPoliticalPosition } from '@/lib/political-calculator-db'
 
 // Types pour les requêtes de calcul
 interface CalculateRequest {
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
       userAnswers[questionId] = answer as 'FA' | 'PA' | 'N' | 'PD' | 'FD' | 'IDK'
     })
 
-    const politicalPosition = calculateUserPoliticalPosition(userAnswers)
+    const politicalPosition = await calculateUserPoliticalPosition(userAnswers, municipality)
 
     // Récupérer les positions des partis depuis l'API party-positions
     const positionsRes = await fetch(`${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/api/party-positions?municipality=${municipality}`)
@@ -79,13 +80,25 @@ export async function POST(request: NextRequest) {
 
     // Utiliser positionsByParty si disponible, sinon créer le groupement manuellement
     const groupedPositions = positionsData.positionsByParty || createGroupedPositions(positionsData.positions)
+    
+    // DEBUG: Vérifier ce qu'on reçoit
+    console.log('🔍 [CALCULATE DEBUG] positionsData.positionsByParty:', !!positionsData.positionsByParty)
+    console.log('🔍 [CALCULATE DEBUG] groupedPositions keys:', Object.keys(groupedPositions))
+    console.log('🔍 [CALCULATE DEBUG] Premier parti exemple:', Object.keys(groupedPositions)[0], '→', groupedPositions[Object.keys(groupedPositions)[0]]?.length, 'positions')
+    
     const partyAnswers = transformAllPartyPositionsToUserAnswers(groupedPositions)
+    
+    // DEBUG: Vérifier la transformation
+    console.log('🔍 [CALCULATE DEBUG] partyAnswers keys:', Object.keys(partyAnswers))
+    console.log('🔍 [CALCULATE DEBUG] Premier parti transformé:', Object.keys(partyAnswers)[0], '→', Object.keys(partyAnswers[Object.keys(partyAnswers)[0]] || {}).length, 'réponses')
 
     // Calculer les positions politiques de chaque parti
     const partyPositions: Record<string, { x: number; y: number }> = {}
-    Object.entries(partyAnswers).forEach(([partyId, answers]) => {
-      partyPositions[partyId] = calculateUserPoliticalPosition(answers)
-    })
+    for (const [partyId, answers] of Object.entries(partyAnswers)) {
+      const position = await calculateUserPoliticalPosition(answers, municipality)
+      partyPositions[partyId] = position
+      console.log('🔍 [CALCULATE DEBUG] Position politique', partyId, '→', position, 'avec', Object.keys(answers).length, 'réponses')
+    }
 
     // Calculer les scores de compatibilité avec la VRAIE logique de production
     const partyScores: PartyScore[] = partiesData.parties.map((party: { id: string, name: string, color?: string }) => {

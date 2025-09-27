@@ -205,7 +205,7 @@ export async function GET(request: NextRequest) {
 
     const response = NextResponse.json({
       positions: sortedPositions,
-      positionsByParty: Object.keys(positionsByParty).length > 1 ? positionsByParty : undefined,
+      positionsByParty: positionsByParty, // Toujours retourner positionsByParty
       count: sortedPositions.length,
       filters: { municipality, partyId },
       stats: {

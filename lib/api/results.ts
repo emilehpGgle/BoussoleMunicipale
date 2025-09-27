@@ -94,7 +94,7 @@ export class ResultsAPI {
       results_data: resultsData as Json, // Cast vers Json pour la compatibilité avec Supabase
       political_position: resultsData.calculatedResults.politicalPosition || null,
       completion_status: completionStatus,
-      ...(municipalityId && { municipality_id: municipalityId }),
+      municipality_id: municipalityId || 'quebec', // Fallback par défaut
     }
 
     const { data, error } = await this.supabase

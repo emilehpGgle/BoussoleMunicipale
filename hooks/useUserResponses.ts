@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useSession } from './useSession'
 import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types'
+import { getPriorityQuestionId } from '@/lib/utils/question-id'
 
 // Interface pour les réponses Supabase
 interface SupabaseResponseRow {
@@ -41,26 +42,23 @@ export function useUserResponses(municipalityId?: string) {
     lastSaved: null
   })
 
-  // Logs de développement optimisés - seulement lors des changements pertinents
+  // Logs de développement réduits - seulement lors des changements majeurs
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && sessionToken && isSessionValid && !isInitializing) {
-      console.log('🔄 [useUserResponses] Session prête:', {
-        hasToken: !!sessionToken,
-        responseCount: Object.keys(state.responses.agreement).length
+    if (process.env.NODE_ENV === 'development' && Object.keys(state.responses.agreement).length > 0) {
+      console.log('📊 [useUserResponses] Réponses chargées:', {
+        agreement: Object.keys(state.responses.agreement).length,
+        priorities: Object.keys(state.responses.priorities).length
       })
     }
-  }, [sessionToken, isSessionValid, isInitializing, Object.keys(state.responses.agreement).length])
+  }, [Object.keys(state.responses.agreement).length, Object.keys(state.responses.priorities).length])
 
   // Charger les réponses depuis Supabase uniquement
   const loadResponses = useCallback(async () => {
     try {
-      console.log('📥 [useUserResponses] Début chargement réponses')
       setState(prev => ({ ...prev, isLoading: true, error: null }))
 
       // Session obligatoire pour charger les données
-      // Mais être plus tolérant pendant l'initialisation de la session
       if (!sessionToken || !isSessionValid) {
-        console.log('⚠️ [useUserResponses] Session non disponible - état par défaut')
         setState(prev => ({
           ...prev,
           responses: {
@@ -69,13 +67,10 @@ export function useUserResponses(municipalityId?: string) {
             priorities: {}
           },
           isLoading: false,
-          // Ne pas afficher d'erreur si la session est en train de s'initialiser
           error: null
         }))
         return
       }
-
-      console.log('🔍 [useUserResponses] Requête API avec token:', sessionToken.substring(0, 8) + '...')
 
       // Charger depuis Supabase avec municipalityId optionnel
       const url = municipalityId
@@ -90,18 +85,8 @@ export function useUserResponses(municipalityId?: string) {
         }
       })
 
-      console.log('📡 [useUserResponses] Réponse API:', {
-        status: response.status,
-        ok: response.ok
-      })
-      
       if (response.ok) {
         const data = await response.json()
-        console.log('📊 [useUserResponses] Données reçues:', {
-          success: data.success,
-          responseCount: data.responses?.length || 0,
-          hasResponses: !!data?.responses
-        })
         
         if (data.success && Array.isArray(data.responses)) {
           // Convertir les réponses au format attendu
@@ -122,11 +107,13 @@ export function useUserResponses(municipalityId?: string) {
             }
           })
 
-          console.log('✅ [useUserResponses] Réponses formatées:', {
-            agreement: Object.keys(formattedResponses.agreement).length,
-            importanceDirect: Object.keys(formattedResponses.importanceDirect).length,
-            priorities: Object.keys(formattedResponses.priorities).length
-          })
+          if (process.env.NODE_ENV === 'development') {
+            console.log('✅ [useUserResponses] Chargement terminé:', {
+              agreement: Object.keys(formattedResponses.agreement).length,
+              priorities: Object.keys(formattedResponses.priorities).length,
+              total: Object.keys(formattedResponses.agreement).length + Object.keys(formattedResponses.priorities).length
+            })
+          }
 
           setState(prev => ({
             ...prev,
@@ -297,10 +284,11 @@ export function useUserResponses(municipalityId?: string) {
 
     // Calculer le total de QUESTIONS répondues (pas de réponses individuelles)
     // Chaque question a un ID unique, donc on compte les questions distinctes
+    const priorityQuestionId = municipalityId ? getPriorityQuestionId(municipalityId) : 'q21_enjeux_prioritaires'
     const answeredQuestionIds = new Set([
       ...Object.keys(state.responses.agreement),
       ...Object.keys(state.responses.importanceDirect),
-      ...(prioritiesCount > 0 ? ['q21_enjeux_prioritaires'] : [])
+      ...(prioritiesCount > 0 ? [priorityQuestionId] : [])
     ])
     
     return {
@@ -310,7 +298,7 @@ export function useUserResponses(municipalityId?: string) {
       total: answeredQuestionIds.size, // Nombre de questions distinctes répondues
       totalResponses: agreementCount + importanceDirectCount + prioritiesCount
     }
-  }, [state.responses])
+  }, [state.responses, municipalityId])
 
   // Vérifier si une question a été répondue
   const hasResponse = useCallback((questionId: string, responseType?: 'agreement' | 'importance_direct' | 'priority_ranking') => {

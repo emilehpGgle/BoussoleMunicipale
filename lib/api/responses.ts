@@ -36,7 +36,7 @@ export class ResponsesAPI {
       response_type: responseType,
       ...(responseType === 'agreement' && { agreement_value: value as AgreementOptionKey }),
       ...(responseType === 'importance_direct' && { importance_direct_value: value as ImportanceDirectOptionKey }),
-      ...(municipalityId && { municipality_id: municipalityId }),
+      municipality_id: municipalityId || 'quebec', // Fallback par défaut
     }
 
     const { data, error } = await this.supabase
@@ -110,7 +110,7 @@ export class ResponsesAPI {
       question_id: questionId,
       response_type: 'priority_ranking' as const,
       priority_data: priorityData,
-      ...(municipalityId && { municipality_id: municipalityId }),
+      municipality_id: municipalityId || 'quebec', // Fallback par défaut
     }
 
     // Utiliser upsert avec la clé primaire pour éviter les doublons

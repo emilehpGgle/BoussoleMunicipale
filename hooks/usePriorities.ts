@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useSession } from './useSession'
+import { getPriorityQuestionId } from '@/lib/utils/question-id'
 
 interface PrioritiesState {
   priorities: Record<string, number> // { "item": rank }
@@ -61,8 +62,9 @@ export function usePriorities(municipalityId?: string) {
         const data = await response.json()
         if (data.success && data.responses) {
           // ✅ Filtrer les réponses de priorité pour la question q21_enjeux_prioritaires
+          const priorityQuestionId = municipalityId ? getPriorityQuestionId(municipalityId) : 'q21_enjeux_prioritaires'
           const priorityResponses = data.responses.filter(
-            (r: any) => r.response_type === 'priority_ranking' && r.question_id === 'q21_enjeux_prioritaires'
+            (r: any) => r.response_type === 'priority_ranking' && r.question_id === priorityQuestionId
           )
           
           // ✅ Extraire les priorités (question q21_enjeux_prioritaires)
@@ -108,8 +110,10 @@ export function usePriorities(municipalityId?: string) {
         priorities: priorityData
       }))
 
+      const priorityQuestionId = municipalityId ? getPriorityQuestionId(municipalityId) : 'q21_enjeux_prioritaires'
+
       const requestBody = {
-        questionId: 'q21_enjeux_prioritaires',
+        questionId: priorityQuestionId,
         responseType: 'priority_ranking',
         priorityData,
         municipalityId

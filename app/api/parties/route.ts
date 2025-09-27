@@ -45,7 +45,15 @@ export async function GET(request: NextRequest) {
     const municipality = searchParams.get('municipality')
     const includePositions = searchParams.get('include_positions') === 'true'
 
+    console.log('[🔍 API PARTIES DIAGNOSTIC] ===================')
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Nouvelle requête API')
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Municipality demandée:', municipality)
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Include positions:', includePositions)
+    console.log('[🔍 API PARTIES DIAGNOSTIC] URL complète:', request.url)
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Timestamp:', new Date().toISOString())
+
     if (!municipality) {
+      console.log('[🔍 API PARTIES DIAGNOSTIC] ❌ Municipality manquante')
       return NextResponse.json(
         { error: 'Parameter municipality is required' },
         { status: 400 }
@@ -53,6 +61,24 @@ export async function GET(request: NextRequest) {
     }
 
     const supabase = createClient()
+    console.log('[🔍 API PARTIES DIAGNOSTIC] ✅ Client Supabase créé')
+
+    // NOUVEAU: Vérifier d'abord si la municipalité existe dans la table municipalities
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Vérification existence municipalité...')
+    const { data: municipalityCheck, error: municipalityError } = await supabase
+      .from('municipalities')
+      .select('id, name, is_active')
+      .eq('id', municipality)
+      .single()
+
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Résultat check municipality:', {
+      data: municipalityCheck,
+      error: municipalityError,
+      hasData: !!municipalityCheck,
+      isActive: municipalityCheck?.is_active
+    })
+
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Début requête parties pour municipality:', municipality, 'includePositions:', includePositions)
 
     // Récupérer les partis pour la municipalité donnée (optimisé pour performance)
     const { data: parties, error: partiesError } = await supabase
@@ -73,8 +99,20 @@ export async function GET(request: NextRequest) {
       .eq('municipality_id', municipality)
       .order('name', { ascending: true })
 
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Query parties terminée')
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Parties Error:', partiesError)
+    console.log('[🔍 API PARTIES DIAGNOSTIC] Parties Data:', {
+      hasData: !!parties,
+      count: parties?.length || 0,
+      firstParty: parties?.[0] ? {
+        id: parties[0].id,
+        name: parties[0].name,
+        municipality_id: parties[0].municipality_id
+      } : null
+    })
+
     if (partiesError) {
-      console.error('[API Parties] Erreur Supabase (partis):', partiesError)
+      console.error('[🔍 API PARTIES DIAGNOSTIC] ❌ Erreur Supabase (partis):', partiesError)
       return NextResponse.json(
         { error: 'Failed to fetch parties', details: partiesError.message },
         { status: 500 }
@@ -82,17 +120,45 @@ export async function GET(request: NextRequest) {
     }
 
     if (!parties || parties.length === 0) {
+      console.log('[🔍 API PARTIES DIAGNOSTIC] ❌ Aucun parti trouvé pour:', municipality)
+
+      // NOUVEAU: Log de toutes les municipalités disponibles pour debug
+      console.log('[🔍 API PARTIES DIAGNOSTIC] Récupération de toutes les municipalités pour comparaison...')
+      const { data: allMunicipalities } = await supabase
+        .from('municipalities')
+        .select('id, name')
+        .order('id')
+
+      console.log('[🔍 API PARTIES DIAGNOSTIC] Municipalités disponibles en base:', allMunicipalities)
+
+      // Log de tous les partis pour debug
+      const { data: allParties } = await supabase
+        .from('parties')
+        .select('id, name, municipality_id')
+        .order('municipality_id')
+
+      console.log('[🔍 API PARTIES DIAGNOSTIC] Tous les partis en base:', allParties)
+
       return NextResponse.json(
         {
           error: 'No parties found for this municipality',
           municipality,
-          suggestions: ['quebec', 'montreal', 'laval', 'gatineau', 'longueuil', 'levis']
+          suggestions: ['quebec', 'montreal', 'laval', 'gatineau', 'longueuil', 'levis'],
+          debug: {
+            availableMunicipalities: allMunicipalities?.map(m => m.id) || [],
+            totalPartiesInDB: allParties?.length || 0,
+            partiesByMunicipality: allParties?.reduce((acc, party) => {
+              acc[party.municipality_id] = (acc[party.municipality_id] || 0) + 1
+              return acc
+            }, {} as Record<string, number>) || {}
+          }
         },
         { status: 404 }
       )
     }
 
     // Transformer les données pour correspondre au format attendu
+    console.log('[DEBUG API PARTIES] Début transformation. Partis récupérés:', parties?.length)
     const formattedParties = parties.map(p => ({
       id: p.id,
       name: p.name,
@@ -104,9 +170,11 @@ export async function GET(request: NextRequest) {
       mainIdeasSummary: p.main_ideas_summary,
       strengths: p.strengths || [],
       reserves: p.reserves || [],
+      priorities: [], // TODO: Sera rempli quand la colonne priorities sera ajoutée dans Supabase
       municipalityId: p.municipality_id,
       positions: [] as ApiPartyPosition[] // Sera rempli si includePositions = true
     }))
+    console.log('[DEBUG API PARTIES] Transformation terminée. Priorities temporairement vides en attendant migration DB')
 
     // Si demandé, récupérer les positions pour chaque parti
     if (includePositions) {

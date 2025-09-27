@@ -8,7 +8,7 @@ import { ArrowRight, Users, Calendar, MapPin, Award, History } from "lucide-reac
 import { Party } from "@/lib/boussole-data"
 import { Breadcrumbs } from "@/components/breadcrumbs"
 
-// Fonction pour récupérer les partis par municipalité
+// Fonction pour récupérer les partis par municipalité avec gestion gracieuse des erreurs
 async function getPartiesByMunicipality(municipality: string): Promise<Party[]> {
   try {
     const baseUrl = process.env.VERCEL_URL
@@ -17,20 +17,57 @@ async function getPartiesByMunicipality(municipality: string): Promise<Party[]> 
         ? 'http://localhost:3000'
         : 'https://boussolemunicipale.com'
 
+    console.log(`[📡 LEADERS PAGE] Récupération partis pour ${municipality}`)
+    console.log(`[📡 LEADERS PAGE] Base URL: ${baseUrl}`)
+
     const response = await fetch(
       `${baseUrl}/api/parties?municipality=${encodeURIComponent(municipality)}`,
-      { next: { revalidate: 3600 } } // Cache avec revalidation toutes les heures
+      {
+        next: { revalidate: 3600 }, // Cache avec revalidation toutes les heures
+        headers: {
+          'User-Agent': 'NextJS-Build-Leaders-Page'
+        }
+      }
     )
 
+    console.log(`[📡 LEADERS PAGE] Response status: ${response.status} pour ${municipality}`)
+
     if (!response.ok) {
-      console.error(`Failed to fetch parties for ${municipality}:`, response.status)
-      return []
+      if (response.status === 404) {
+        console.warn(`[📡 LEADERS PAGE] ⚠️ Aucun parti trouvé pour ${municipality} (404) - Génération avec données vides`)
+
+        // Pour debug : essayer de récupérer les détails de l'erreur
+        try {
+          const errorData = await response.json()
+          if (errorData.debug) {
+            console.log(`[📡 LEADERS PAGE] Debug info:`, {
+              municipality,
+              availableMunicipalities: errorData.debug.availableMunicipalities,
+              totalPartiesInDB: errorData.debug.totalPartiesInDB
+            })
+          }
+        } catch (_e) {
+          console.log(`[📡 LEADERS PAGE] Impossible de parser les détails d'erreur pour ${municipality}`)
+        }
+
+        return [] // Retourner tableau vide au lieu de faire échouer le build
+      }
+
+      console.error(`[📡 LEADERS PAGE] ❌ Erreur ${response.status} pour ${municipality}`)
+      return [] // Graceful degradation pour toutes les autres erreurs
     }
 
     const data = await response.json()
+    const partiesCount = data.parties?.length || 0
+    console.log(`[📡 LEADERS PAGE] ✅ ${partiesCount} partis récupérés pour ${municipality}`)
+
     return data.parties || []
+
   } catch (error) {
-    console.error(`Error fetching parties for ${municipality}:`, error)
+    console.error(`[📡 LEADERS PAGE] ❌ Erreur de connexion pour ${municipality}:`, error)
+
+    // En cas d'erreur réseau pendant le build, continuer avec un tableau vide
+    console.warn(`[📡 LEADERS PAGE] ⚠️ Graceful degradation: données vides pour ${municipality}`)
     return []
   }
 }
@@ -69,19 +106,19 @@ function generateSlug(leaderName: string): string {
 const currentLeaderDescriptions: Record<string, Record<string, string>> = {
   quebec: {
     "bruno-marchand": "Maire sortant de Québec depuis 2021, ancien président-directeur général de Centraide Québec, Bruno Marchand mise sur la continuité et l'amélioration des services municipaux pour les élections 2025.",
-    "sam-hamad": "Homme d'affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique pour Leadership Québec.",
-    "stevens-melancon": "Leader intérimaire d'Équipe priorité Québec depuis mars 2025 et conseiller municipal, Stevens Mélançon apporte 34 ans d'expérience en éducation avec une approche collaborative axée sur les priorités environnementales et citoyennes.",
-    "claude-villeneuve": "Chef de Québec d'abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
+    "sam-hamad": "Homme d&apos;affaires et ancien ministre provincial, Sam Hamad apporte une expertise en développement économique avec une approche centriste et pragmatique pour Leadership Québec.",
+    "stevens-melancon": "Leader intérimaire d&apos;Équipe priorité Québec depuis mars 2025 et conseiller municipal, Stevens Mélançon apporte 34 ans d&apos;expérience en éducation avec une approche collaborative axée sur les priorités environnementales et citoyennes.",
+    "claude-villeneuve": "Chef de Québec d&apos;abord, Claude Villeneuve défend les intérêts des citoyens avec une vision axée sur la responsabilité fiscale et les valeurs traditionnelles.",
     "stephane-lachance": "Chef de Respect citoyens depuis mars 2025, Stéphane Lachance est co-fondateur du mouvement 'Tramway, non merci' et prône une approche participative de la gouvernance municipale.",
-    "alain-giasson": "Chef de l'Alliance citoyenne de Québec depuis 2017, Alain Giasson représente une alternative politique municipale axée sur la responsabilité fiscale et les enjeux d'infrastructure.",
+    "alain-giasson": "Chef de l&apos;Alliance citoyenne de Québec depuis 2017, Alain Giasson représente une alternative politique municipale axée sur la responsabilité fiscale et les enjeux d&apos;infrastructure.",
     "jackie-smith": "Cheffe de Transition Québec depuis 2019 et conseillère municipale de Limoilou, Jackie Smith est une militante écologiste proposant une transition environnementale ambitieuse pour la ville."
   },
   montreal: {
     "luc-rabouin": "Chef de Projet Montréal depuis mars 2025, président du comité exécutif et maire d'arrondissement du Plateau-Mont-Royal depuis 2019, Luc Rabouin apporte une expertise en développement économique communautaire et démocratie participative avec une vision de continuité écologique et sociale.",
     "soraya-martinez-ferrada": "Ancienne ministre fédérale du Tourisme et députée de Hochelaga, ex-conseillère municipale de Montréal (2005-2009), Soraya Martinez Ferrada combine expérience gouvernementale et vision municipale avec une approche axée sur la gestion efficace et l'inclusion.",
-    "gilbert-thibodeau": "Chef d'Action Montréal depuis 2022 et candidat à la mairie en 2017 et 2021, Gilbert Thibodeau apporte une expertise en finance et gestion d'entreprise avec une vision conservatrice axée sur la responsabilité fiscale et la sécurité publique.",
+    "gilbert-thibodeau": "Chef d&apos;Action Montréal depuis 2022 et candidat à la mairie en 2017 et 2021, Gilbert Thibodeau apporte une expertise en finance et gestion d&apos;entreprise avec une vision conservatrice axée sur la responsabilité fiscale et la sécurité publique.",
     "jean-francois-kacou": "Chef et fondateur de Futur Montréal depuis 2025, ancien directeur général de Percé et expert en développement économique, Jean-François Kacou représente la première candidature afro-canadienne à la mairie avec une vision centriste axée sur l'inclusion, l'équité et le pragmatisme.",
-    "craig-sauve": "Conseiller municipal depuis 2013 et fondateur de Transition Montréal en juillet 2025, ancien membre de Projet Montréal, Craig Sauvé propose une alternative progressiste axée sur l'itinérance, la crise du logement et l'équité fiscale avec des solutions innovantes."
+    "craig-sauve": "Conseiller municipal depuis 2013 et fondateur de Transition Montréal en juillet 2025, ancien membre de Projet Montréal, Craig Sauvé propose une alternative progressiste axée sur l&apos;itinérance, la crise du logement et l&apos;équité fiscale avec des solutions innovantes."
   },
   levis: {
     "isabelle-demers": "Chef de Lévis Force 10 et candidate à la mairie de Lévis en 2025, Isabelle Demers apporte une riche expérience municipale comme conseillère (2001-2009, 2017-présent) et présidente du comité des finances depuis 2021. Bachelière en science politique et communication de l'Université Laval, elle est reconnue pour son engagement auprès des jeunes et des organismes lévisiens.",
@@ -90,16 +127,16 @@ const currentLeaderDescriptions: Record<string, Record<string, string>> = {
   },
   laval: {
     "stephane-boyer": "Maire sortant de Laval depuis 2021 et chef du Mouvement lavallois, Stéphane Boyer sollicite un deuxième mandat en 2025. Élu à 33 ans comme le plus jeune maire de l'histoire de Laval, il est diplômé en communication et en droit, ancien travailleur en aide internationale (Afrique du Sud, Mexique) et ancien conseiller (2013-2017). Reconnu personnalité de la relève municipale par l'UMQ (2016) et désigné l'un des 50 leaders mondiaux de demain par le gouvernement français.",
-    "claude-larochelle": "Chef de Parti Laval depuis sa fondation en 2016 et conseiller municipal depuis 2017, Claude Larochelle est le principal opposant au maire Boyer pour les élections 2025. Ingénieur de formation, il dirige l'opposition municipale avec une approche pragmatique axée sur la gestion responsable des finances et l'efficacité administrative. Soutenu par d'anciens élus d'expérience dont Francine Charbonneau (ex-ministre) et Louise Lortie (ex-présidente Commission scolaire).",
-    "frederic-mayer": "Candidat d'Action Laval à la mairie en 2025, Frédéric Mayer est docteur en administration et professeur réputé dans le milieu politique. Il représente le principal groupe d'opposition avec Achille Cifelli comme chef intérimaire et 3 conseillers municipaux élus. Motivé par les défis de gestion financière et les infrastructures, il propose une alternative axée sur la gouvernance efficace et la proximité citoyenne."
+    "claude-larochelle": "Chef de Parti Laval depuis sa fondation en 2016 et conseiller municipal depuis 2017, Claude Larochelle est le principal opposant au maire Boyer pour les élections 2025. Ingénieur de formation, il dirige l&apos;opposition municipale avec une approche pragmatique axée sur la gestion responsable des finances et l&apos;efficacité administrative. Soutenu par d&apos;anciens élus d&apos;expérience dont Francine Charbonneau (ex-ministre) et Louise Lortie (ex-présidente Commission scolaire).",
+    "frederic-mayer": "Candidat d&apos;Action Laval à la mairie en 2025, Frédéric Mayer est docteur en administration et professeur réputé dans le milieu politique. Il représente le principal groupe d&apos;opposition avec Achille Cifelli comme chef intérimaire et 3 conseillers municipaux élus. Motivé par les défis de gestion financière et les infrastructures, il propose une alternative axée sur la gouvernance efficace et la proximité citoyenne."
   },
   gatineau: {
-    "maude-marquis-bissonnette": "Mairesse sortante de Gatineau depuis 2024 et cheffe d'Action Gatineau, Maude Marquis-Bissonnette a été élue lors d'une élection partielle avec près de 42% des voix après la démission de France Bélisle. En une année au pouvoir, elle s'est concentrée sur les logements sociaux et abordables, l'amélioration des transports et la mobilité, le renforcement des services municipaux et la consolidation des infrastructures essentielles avec une approche collaborative et inclusive.",
-    "mario-aube": "Conseiller municipal sortant du district de Masson-Angers et chef d'Équipe Mario Aubé depuis janvier 2025, Mario Aubé représente l'opposition principale avec une approche axée sur le localisme et le conservatisme fiscal. Fondateur de son parti en 2025, il propose un renouveau politique centré sur la gestion responsable, les services de base et la transparence budgétaire. Il a 2 sièges au conseil municipal et refuse par principe le système de colistier."
+    "maude-marquis-bissonnette": "Mairesse sortante de Gatineau depuis 2024 et cheffe d&apos;Action Gatineau, Maude Marquis-Bissonnette a été élue lors d&apos;une élection partielle avec près de 42% des voix après la démission de France Bélisle. En une année au pouvoir, elle s&apos;est concentrée sur les logements sociaux et abordables, l&apos;amélioration des transports et la mobilité, le renforcement des services municipaux et la consolidation des infrastructures essentielles avec une approche collaborative et inclusive.",
+    "mario-aube": "Conseiller municipal sortant du district de Masson-Angers et chef d&apos;Équipe Mario Aubé depuis janvier 2025, Mario Aubé représente l&apos;opposition principale avec une approche axée sur le localisme et le conservatisme fiscal. Fondateur de son parti en 2025, il propose un renouveau politique centré sur la gestion responsable, les services de base et la transparence budgétaire. Il a 2 sièges au conseil municipal et refuse par principe le système de colistier."
   },
   longueuil: {
-    "catherine-fournier": "Mairesse sortante de Longueuil depuis novembre 2021 et cheffe de Coalition Longueuil, Catherine Fournier sollicite un deuxième mandat après avoir été élue avec plus de 60% des voix en 2021. Économiste de formation et ancienne députée provinciale de Marie-Victorin (2016-2021), elle est devenue la plus jeune femme de l'histoire du Québec à siéger à l'Assemblée nationale. Reconnue pour son approche non-partisane et collaborative, elle a co-organisé le Sommet national sur l'habitation en 2022.",
-    "susan-rasmussen": "Conseillère d'arrondissement sortante à Greenfield Park et fondatrice d'Option Alliance en juin 2025, Susan Rasmussen dirige le principal parti d'opposition avec des candidats dans 8 des 18 districts de Longueuil. Son nouveau parti, officiellement reconnu par Élections Québec, mise sur la justice sociale, la participation citoyenne et le développement durable avec une approche axée sur la représentation des districts électoraux et la liberté d'expression de chaque élu."
+    "catherine-fournier": "Mairesse sortante de Longueuil depuis novembre 2021 et cheffe de Coalition Longueuil, Catherine Fournier sollicite un deuxième mandat après avoir été élue avec plus de 60% des voix en 2021. Économiste de formation et ancienne députée provinciale de Marie-Victorin (2016-2021), elle est devenue la plus jeune femme de l&apos;histoire du Québec à siéger à l&apos;Assemblée nationale. Reconnue pour son approche non-partisane et collaborative, elle a co-organisé le Sommet national sur l&apos;habitation en 2022.",
+    "susan-rasmussen": "Conseillère d&apos;arrondissement sortante à Greenfield Park et fondatrice d&apos;Option Alliance en juin 2025, Susan Rasmussen dirige le principal parti d&apos;opposition avec des candidats dans 8 des 18 districts de Longueuil. Son nouveau parti, officiellement reconnu par Élections Québec, mise sur la justice sociale, la participation citoyenne et le développement durable avec une approche axée sur la représentation des districts électoraux et la liberté d&apos;expression de chaque élu."
   }
 }
 
@@ -293,8 +330,28 @@ export default async function LeadersPage({ params }: LeadersPageProps) {
             <h2 className="text-3xl font-bold">Leaders Actuels - Élections 2025</h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {partiesData.map((party) => {
+          {partiesData.length === 0 ? (
+            // Affichage quand aucun parti n'est trouvé
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-8 text-center border border-blue-200">
+              <Users className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">
+                Données en cours de préparation pour {municipalityDisplay}
+              </h3>
+              <p className="text-gray-600 mb-4 max-w-2xl mx-auto">
+                Les informations sur les candidats et partis politiques pour {municipalityDisplay}
+                sont actuellement en cours d&apos;intégration dans notre système.
+                Cette section sera mise à jour dès que les données seront disponibles.
+              </p>
+              <div className="bg-white rounded-md p-4 inline-block border border-blue-100">
+                <p className="text-sm text-blue-600 font-medium">
+                  💡 En attendant, vous pouvez consulter les leaders des autres municipalités disponibles
+                </p>
+              </div>
+            </div>
+          ) : (
+            // Affichage normal avec les partis
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {partiesData.map((party) => {
               const slug = generateSlug(party.leader)
               const description = currentLeaderDescriptions[municipality]?.[slug] || "Candidat aux élections municipales 2025."
 
@@ -347,7 +404,8 @@ export default async function LeadersPage({ params }: LeadersPageProps) {
                 </Card>
               )
             })}
-          </div>
+            </div>
+          )}
         </section>
 
         {/* Section Leaders Marquants - Only for Quebec */}

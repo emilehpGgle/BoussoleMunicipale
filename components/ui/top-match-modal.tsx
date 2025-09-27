@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Sparkles, X, Share2 } from 'lucide-react';
 import { PartyScore, CalculatedResults } from '@/hooks/useResults';
 import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/types';
-import { partiesData, type Party } from '@/lib/boussole-data';
+import type { Party } from '@/lib/boussole-data';
 import Link from 'next/link';
 import Image from 'next/image';
 import ShareModal from '@/components/share-modal';
@@ -133,7 +133,9 @@ export function TopMatchModal({
 
   if (!topMatch) return null;
 
-  const party = partiesData.find(p => p.id === topMatch.partyId);
+  // Trouver le parti dans les scores calculés (qui contiennent déjà les objets Party)
+  const partyScore = calculatedScores.find(score => score.party.id === topMatch.partyId);
+  const party = partyScore?.party;
   if (!party) return null;
 
   const politicalPosition = results?.politicalPosition ? { x: results.politicalPosition.x, y: results.politicalPosition.y } : undefined

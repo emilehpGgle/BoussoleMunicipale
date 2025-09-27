@@ -1,6 +1,30 @@
 import { NextRequest } from 'next/server'
 import { SessionsAPI } from './sessions'
 
+// Helper function to extract municipality from request body
+function _extractMunicipalityFromBody(_request: NextRequest): string | null {
+  try {
+    // Note: Dans Next.js, on ne peut pas lire le body ici car il est déjà consommé
+    // Cette fonction est un placeholder pour une logique future si nécessaire
+    return null
+  } catch {
+    return null
+  }
+}
+
+// Helper function to map municipality to unique test session ID suffix
+function getMunicipalityId(municipality: string): string {
+  const municipalityMap: Record<string, string> = {
+    'quebec': '1',
+    'montreal': '2', 
+    'laval': '3',
+    'gatineau': '4',
+    'longueuil': '5',
+    'levis': '6'
+  }
+  return municipalityMap[municipality] || '1' // Default to quebec
+}
+
 // Helper function to extract sessionToken from Authorization header
 export function extractSessionToken(request: NextRequest): string | null {
   const authHeader = request.headers.get('authorization')
@@ -19,12 +43,15 @@ export function isTestMode(request: NextRequest): boolean {
 export async function validateSessionWithTestBypass(request: NextRequest) {
   // Check if we're in test mode
   if (isTestMode(request)) {
-    // Return fixed TEST session for all tests (exists in Supabase)
+    // Générer un session_id unique par municipalité pour éviter les collisions de données
+    const municipality = request.headers.get('x-test-municipality') || 'quebec'
+    const testSessionId = `00000000-0000-0000-0000-00000000000${getMunicipalityId(municipality)}`
+    
     return {
       session: {
-        id: '00000000-0000-0000-0000-000000000001',
+        id: testSessionId,
         token: 'TEST_TOKEN_STATIC',
-        userId: '00000000-0000-0000-0000-000000000001',
+        userId: testSessionId,
         createdAt: '2025-01-01T00:00:00.000Z',
         lastActivity: new Date().toISOString()
       },

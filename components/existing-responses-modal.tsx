@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { RotateCcw, Play, FileText, BarChart3 } from "lucide-react"
 import { useUserResponses } from "@/hooks/useUserResponses"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { boussoleQuestions } from "@/lib/boussole-data"
 
 interface ContinueOrRestartModalProps {
@@ -29,6 +29,8 @@ export default function ContinueOrRestartModal({
   const [isClearing, setIsClearing] = useState(false)
   const { clearAllResponses, getResponseCounts, responses } = useUserResponses()
   const router = useRouter()
+  const params = useParams()
+  const municipality = params.municipality as string
   
   const responseCounts = getResponseCounts
   const hasResponses = responseCounts.total > 0
@@ -68,13 +70,12 @@ export default function ContinueOrRestartModal({
 
   const handleContinueQuestionnaire = () => {
     onClose()
-    // TEMPORAIRE : Redirection vers page maintenance pendant améliorations
-    router.push("/quebec/maintenance")
+    router.push(`/${municipality}/test-politique-municipal`)
   }
 
   const handleViewResults = () => {
     onClose()
-    router.push("/resultats")
+    router.push(`/${municipality}/resultats`)
   }
 
   const handleRestartFromScratch = async () => {
@@ -94,9 +95,9 @@ export default function ContinueOrRestartModal({
           router.push("/")
         }
         
-        // Puis déclencher l'événement pour ouvrir le modal de code postal
+        // Puis déclencher l'événement pour ouvrir le modal de code postal FORCEMENT
         setTimeout(() => {
-          const event = new CustomEvent('openPostalCodeModal')
+          const event = new CustomEvent('openPostalCodeModalForced')
           window.dispatchEvent(event)
         }, 150) // Petit délai pour que la redirection se fasse d'abord
         
@@ -104,10 +105,10 @@ export default function ContinueOrRestartModal({
       
     } catch (error) {
       console.error("Erreur lors de l'effacement des réponses:", error)
-      // En cas d'erreur, fermer quand même le modal et déclencher le modal postal
+      // En cas d'erreur, fermer quand même le modal et déclencher le modal postal FORCEMENT
       onClose()
       setTimeout(() => {
-        const event = new CustomEvent('openPostalCodeModal')
+        const event = new CustomEvent('openPostalCodeModalForced')
         window.dispatchEvent(event)
       }, 100)
     } finally {
