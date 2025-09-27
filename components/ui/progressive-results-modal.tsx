@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 // Dialog remplacé par modal custom pour containment
 import { Button } from '@/components/ui/button';
@@ -161,13 +161,13 @@ const ConfettiExplosion: React.FC<{ trigger: boolean }> = ({ trigger }) => {
   );
 };
 
-// Composant MiniCompass avec palette cohérente
+// Composant MiniCompass avec palette cohérente - mémorisé pour performance
 const MiniCompass: React.FC<{
   userAnswers: UserAnswers;
   municipality: string;
   topParties: Array<{ party: Party; score: number; }>;
   onUserPositionChange?: (position: PoliticalPosition) => void;
-}> = ({ userAnswers, municipality, topParties, onUserPositionChange }) => {
+}> = memo(function MiniCompass({ userAnswers, municipality, topParties, onUserPositionChange }) {
   const { parties, loading: partiesLoading } = useParties(municipality);
   const { positionsByParty, isLoading: positionsLoading } = usePartyPositions(municipality);
 
@@ -372,7 +372,7 @@ const MiniCompass: React.FC<{
       </svg>
     </div>
   );
-};
+});
 
 export function ProgressiveResultsModal({
   isOpen,
@@ -392,51 +392,84 @@ export function ProgressiveResultsModal({
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof import('embla-carousel-react').default>[1] | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Reset state when modal opens/closes
+  // Reset state when modal opens/closes - stabilisé
   useEffect(() => {
     if (isOpen && topMatch) {
-      setTimeout(() => {
+      // Reset d'abord tout l'état
+      setCurrentSlide(0);
+      setShowContent(false);
+      setShowConfetti(false);
+
+      // Puis animer avec délai
+      const timer = setTimeout(() => {
         setShowContent(true);
         setShowConfetti(true);
       }, 300);
+
+      return () => clearTimeout(timer);
     } else {
+      // Nettoyage immédiat à la fermeture
       setShowContent(false);
       setShowConfetti(false);
       setCurrentSlide(0);
     }
   }, [isOpen, topMatch]);
 
-  // Update carousel state
+  // Update carousel state - sécurisé contre les crashes
   useEffect(() => {
-    if (!carouselApi) return;
+    if (!carouselApi || !isOpen) return;
 
     const handleSelect = () => {
-      setCurrentSlide(carouselApi.selectedScrollSnap());
+      try {
+        const selectedIndex = carouselApi.selectedScrollSnap();
+        if (typeof selectedIndex === 'number' && selectedIndex >= 0) {
+          setCurrentSlide(selectedIndex);
+        }
+      } catch (_error) {
+        console.warn('Erreur carousel select:', _error);
+        // Fallback silencieux
+      }
     };
 
-    carouselApi.on('select', handleSelect);
+    // Sécuriser l'événement
+    try {
+      carouselApi.on('select', handleSelect);
+      // Initialiser le slide courant
+      handleSelect();
+    } catch (_error) {
+      console.warn('Erreur initialisation carousel:', _error);
+    }
 
     return () => {
-      carouselApi.off('select', handleSelect);
+      try {
+        carouselApi.off('select', handleSelect);
+      } catch (_error) {
+        // Nettoyage silencieux
+      }
     };
-  }, [carouselApi]);
+  }, [carouselApi, isOpen]);
+
+  // Mémorisation des partis pour éviter les re-calculs (doit être avant tout return conditionnel)
+  const { topParty, secondParty, thirdParty } = useMemo(() => ({
+    topParty: topParties[0],
+    secondParty: topParties[1],
+    thirdParty: topParties[2]
+  }), [topParties]);
+
+  const politicalPosition = useMemo(() =>
+    results?.politicalPosition ? { x: results.politicalPosition.x, y: results.politicalPosition.y } : undefined
+  , [results?.politicalPosition]);
 
   if (!topMatch || !topParties.length) return null;
 
-  const topParty = topParties[0];
-  const secondParty = topParties[1];
-  const thirdParty = topParties[2];
-
-  const politicalPosition = results?.politicalPosition ? { x: results.politicalPosition.x, y: results.politicalPosition.y } : undefined;
-
-  // Composant pour une carte de parti avec badge de rang
+  // Composant pour une carte de parti avec badge de rang - mémorisé
   const PartyCard: React.FC<{
     party: Party;
     score: number;
     rank: number;
     isChampion?: boolean;
     delay?: number;
-  }> = ({ party, score, rank, isChampion = false, delay = 0 }) => {
+  }> = memo(function PartyCard({ party, score, rank, isChampion = false, delay = 0 }) {
     const getBadgeConfig = (rank: number) => {
       switch (rank) {
         case 1:
@@ -562,16 +595,16 @@ export function ProgressiveResultsModal({
         </Card>
       </motion.div>
     );
-  };
+  });
 
-  // Composant pour la slide de la carte politique
-  const CompassSlide: React.FC = () => {
+  // Composant pour la slide de la carte politique - mémorisé
+  const CompassSlide: React.FC = memo(function CompassSlide() {
     // État pour la position utilisateur calculée dynamiquement
     const [dynamicUserPosition, setDynamicUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 });
 
-    const handleUserPositionChange = (position: PoliticalPosition) => {
+    const handleUserPositionChange = useCallback((position: PoliticalPosition) => {
       setDynamicUserPosition(position);
-    };
+    }, []);
 
     return (
     <motion.div
@@ -650,20 +683,23 @@ export function ProgressiveResultsModal({
       </div>
     </motion.div>
     );
-  };
+  });
 
   if (!isOpen) return null;
 
   return (
     <>
-      {/* Overlay de fond */}
+      {/* Overlay de fond avec centrage corrigé */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4"
+        className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-2 sm:p-4"
         onClick={onClose}
       >
-        {/* Modal container */}
+        {/* Modal container avec layout stabilisé et responsivité améliorée */}
         <div
-          className="relative max-w-lg lg:max-w-xl w-full bg-white border-2 border-midnight-green rounded-lg shadow-xl max-h-[80vh] overflow-y-auto"
+          className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl
+                     bg-white border-2 border-midnight-green rounded-lg shadow-xl
+                     max-h-[96vh] sm:max-h-[92vh] md:max-h-[88vh] flex flex-col
+                     mx-auto my-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Bouton fermer */}
@@ -676,8 +712,8 @@ export function ProgressiveResultsModal({
             <X className="h-4 w-4" />
           </Button>
 
-          {/* En-tête du modal */}
-          <div className="text-center p-2 border-b border-midnight-green/20 bg-azure-web">
+          {/* En-tête du modal - fixe */}
+          <div className="text-center p-2 border-b border-midnight-green/20 bg-azure-web flex-shrink-0">
             <div className="flex items-center justify-center gap-2 mb-2">
               <Trophy className="h-5 w-5 text-midnight-green" />
               <Badge className="bg-midnight-green text-white text-sm px-3 py-1 font-bold">
@@ -690,13 +726,22 @@ export function ProgressiveResultsModal({
             </h2>
           </div>
 
-          {/* Indicateur de slide */}
-          <div className="flex justify-center gap-2 p-2 border-b bg-azure-web/80">
+          {/* Indicateur de slide - fixe avec navigation sécurisée */}
+          <div className="flex justify-center gap-2 p-2 border-b bg-azure-web/80 flex-shrink-0">
             {Array.from({ length: 4 }, (_, index) => (
               <button
                 key={index}
-                onClick={() => carouselApi?.scrollTo(index)}
-                className={`rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${
+                onClick={() => {
+                  try {
+                    if (carouselApi && typeof carouselApi.scrollTo === 'function') {
+                      carouselApi.scrollTo(index);
+                    }
+                  } catch (error) {
+                    console.warn('Erreur navigation carousel:', error);
+                  }
+                }}
+                disabled={!carouselApi}
+                className={`rounded-full transition-all duration-300 hover:scale-110 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
                   currentSlide === index
                     ? 'bg-midnight-green w-8 h-3 shadow-md'
                     : index < currentSlide
@@ -708,19 +753,21 @@ export function ProgressiveResultsModal({
             ))}
           </div>
 
-          {/* Carousel des résultats */}
-          <div className="relative overflow-hidden min-h-[400px]">
+          {/* Carousel des résultats - scrollable avec responsivité */}
+          <div className="relative flex-1 overflow-hidden min-h-[350px] sm:min-h-[400px] md:min-h-[450px]">
             <Carousel
               setApi={setCarouselApi}
-              className="w-full min-h-[400px]"
+              className="w-full min-h-[350px] sm:min-h-[400px] md:min-h-[450px]"
               opts={{
-                align: 'start',
+                align: 'center',
                 loop: false,
+                skipSnaps: false,
+                dragFree: false,
               }}
             >
-              <CarouselContent className="min-h-[400px]">
+              <CarouselContent className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] -ml-2 md:-ml-4">
                 {/* Slide 1: Premier parti */}
-                <CarouselItem className="min-h-[400px] flex justify-center p-0">
+                <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] flex justify-center pl-2 md:pl-4 pr-1">
                   <PartyCard
                     party={topParty.party}
                     score={topParty.score}
@@ -732,7 +779,7 @@ export function ProgressiveResultsModal({
 
                 {/* Slide 2: Deuxième place */}
                 {secondParty && (
-                  <CarouselItem className="min-h-[400px] flex justify-center p-0">
+                  <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] flex justify-center pl-2 md:pl-4 pr-1">
                     <PartyCard
                       party={secondParty.party}
                       score={secondParty.score}
@@ -744,7 +791,7 @@ export function ProgressiveResultsModal({
 
                 {/* Slide 3: Troisième place */}
                 {thirdParty && (
-                  <CarouselItem className="min-h-[400px] flex justify-center p-0">
+                  <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] flex justify-center pl-2 md:pl-4 pr-1">
                     <PartyCard
                       party={thirdParty.party}
                       score={thirdParty.score}
@@ -755,49 +802,51 @@ export function ProgressiveResultsModal({
                 )}
 
                 {/* Slide 4: Carte politique */}
-                <CarouselItem className="min-h-[400px] p-0">
+                <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] pl-2 md:pl-4 pr-1">
                   <CompassSlide />
                 </CarouselItem>
               </CarouselContent>
 
-              <CarouselPrevious className="left-2 sm:left-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-12 w-12 shadow-lg transition-all duration-200" />
-              <CarouselNext className="right-2 sm:right-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-12 w-12 shadow-lg transition-all duration-200" />
+              <CarouselPrevious className="left-1 sm:left-2 md:left-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-10 w-10 sm:h-12 sm:w-12 shadow-lg transition-all duration-200" />
+              <CarouselNext className="right-1 sm:right-2 md:right-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-10 w-10 sm:h-12 sm:w-12 shadow-lg transition-all duration-200" />
             </Carousel>
           </div>
 
-          {/* Actions finales */}
+          {/* Actions finales - fixe */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 0.5 }}
-            className="p-1 border-t border-midnight-green/20 bg-azure-web/60 space-y-1"
+            className="p-1 border-t border-midnight-green/20 bg-azure-web/60 space-y-1 flex-shrink-0"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <Button
                 asChild
                 variant="outline"
-                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-1"
+                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-2 px-3"
               >
                 <Link href={`/${municipality}/parti/${topParty.party.id}`}>
-                  Fiche détaillée
+                  <span className="hidden sm:inline">Fiche détaillée</span>
+                  <span className="sm:hidden">Détails</span>
                 </Link>
               </Button>
               <Button
                 variant="outline"
-                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-1"
+                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-2 px-3"
                 onClick={() => setIsShareModalOpen(true)}
               >
-                <Share2 className="mr-2 h-4 w-4" />
+                <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
                 Partager
               </Button>
             </div>
 
             <Button
               onClick={onClose}
-              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg font-semibold shadow-lg transition-all duration-200 text-sm py-1"
+              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg font-semibold shadow-lg transition-all duration-200 text-sm py-2 px-4"
             >
               <ArrowRight className="mr-2 h-4 w-4" />
-              Voir l&apos;analyse complète
+              <span className="hidden sm:inline">Voir l&apos;analyse complète</span>
+              <span className="sm:hidden">Analyse complète</span>
             </Button>
           </motion.div>
         </div>
