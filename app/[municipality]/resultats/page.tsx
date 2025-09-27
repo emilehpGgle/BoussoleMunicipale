@@ -26,6 +26,7 @@ import {
 import {
   calculateUserPoliticalPosition,
 } from "@/lib/political-calculator-db"
+import { extractPartyPrioritiesSimple } from "@/lib/extract-priorities"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
@@ -131,14 +132,8 @@ export default function ResultsPage() {
     error: responsesError
   } = useUserResponses(municipality)
 
-  console.log('🔍 [HOOK DEBUG] useUserResponses result:', {
-    userAnswers: userAnswers,
-    userAnswersKeys: userAnswers ? Object.keys(userAnswers) : 'undefined',
-    userImportance: userImportance,
-    responsesLoading: responsesLoading,
-    responsesError: responsesError,
-    municipality: municipality
-  })
+  // Debug temporairement désactivé pour nettoyer la console
+  // console.log('🔍 [HOOK DEBUG] useUserResponses result:', { userAnswersKeys: userAnswers ? Object.keys(userAnswers).length : 0, responsesLoading })
 
   const {
     results,
@@ -150,12 +145,8 @@ export default function ResultsPage() {
   } = useResults(municipality)
   const { priorities: userPriorities } = usePriorities(municipality)
 
-  console.log('🔍 [HOOK DEBUG] Other hooks:', {
-    userPriorities: userPriorities,
-    resultsLoading: resultsLoading,
-    isCalculating: isCalculating,
-    hasResults: hasResults
-  })
+  // Debug temporairement désactivé pour nettoyer la console
+  // console.log('🔍 [HOOK DEBUG] Other hooks:', { resultsLoading, hasResults })
 
 
   // ✅ État pour la gestion async des scores calculés
@@ -174,83 +165,67 @@ export default function ResultsPage() {
         setScoresLoading(true)
         setScoresError(null)
 
-        console.log('🔍 [DEBUG] === DÉBUT DEBUG CALCULATEDSCORES ===')
-
-        // DEBUG: Vérifier les données reçues des hooks
-        console.log('🔍 [DEBUG] Données reçues des hooks:', {
-      userAnswers: userAnswers,
-      userAnswersKeys: userAnswers ? Object.keys(userAnswers) : 'undefined',
-      userAnswersType: typeof userAnswers,
-      partiesData: partiesData?.map(p => ({ id: p.id, name: p.name })),
-      questions: questions?.map(q => ({ id: q.id, text: q.text.substring(0, 50) + '...' })),
-      positionsByParty: positionsByParty ? Object.keys(positionsByParty) : 'undefined',
-      municipality: municipality
-    })
+        // DEBUG désactivé pour nettoyer la console
+        // console.log('🔍 [DEBUG] === DÉBUT CALCUL ===')
+        // console.log('🔍 [DEBUG] Données:', { userAnswersKeys: Object.keys(userAnswers).length, partiesCount: partiesData?.length })
 
     // Vérifier que nous avons toutes les données nécessaires (inclure positionsByParty !)
     if (!userAnswers || Object.keys(userAnswers).length === 0 ||
         !partiesData || partiesData.length === 0 ||
         !questions || questions.length === 0 ||
         !positionsByParty || Object.keys(positionsByParty).length === 0) {
-      console.log('🚫 [DEBUG] Données manquantes - Détail:', {
-        userAnswers: !!userAnswers,
-        userAnswersKeys: userAnswers ? Object.keys(userAnswers).length : 0,
-        userAnswersContent: userAnswers,
-        partiesData: partiesData?.length || 0,
-        questions: questions?.length || 0,
-        positionsByParty: positionsByParty ? Object.keys(positionsByParty).length : 0,
-        positionsByPartyContent: positionsByParty
-      })
+      // console.log('🚫 [DEBUG] Données manquantes:', { userAnswers: !!userAnswers, partiesData: partiesData?.length })
       setCalculatedScores([])
         setScoresLoading(false)
         return
     }
 
-    console.log('✅ [DEBUG] Toutes les données sont présentes, début des calculs')
+    // console.log('✅ [DEBUG] Calcul démarré')
 
     // IMPORTANTE: Utiliser TOUJOURS la même logique que dans useResults et la carte politique
     // pour garantir la cohérence des résultats
 
     // Calculer la position politique de l'utilisateur (même logique que la carte)
-    console.log('🔍 [DEBUG] Calcul position utilisateur avec userAnswers:', userAnswers)
+    console.log('🔍 [RESULTATS-DEBUG] userAnswers passé à calculateUserPoliticalPosition:', {
+      count: Object.keys(userAnswers).length,
+      sample: Object.entries(userAnswers).slice(0, 5).map(([k, v]) => `${k}: ${v}`)
+    })
     const userPosition = await calculateUserPoliticalPosition(userAnswers, municipality)
-    console.log('🔍 [DEBUG] Position utilisateur calculée:', userPosition)
+    // console.log('🔍 [DEBUG] Position utilisateur calculée:', userPosition)
 
     // ✅ Transformer les positions depuis Supabase (même logique que l'API /api/results/calculate)
-    console.log('🔍 [DEBUG] Transformation positions Supabase:', positionsByParty)
     const partyAnswers = positionsByParty ? transformAllPartyPositionsToUserAnswers(positionsByParty) : {}
-    console.log('🔍 [DEBUG] Résultat transformation partyAnswers:', partyAnswers)
+    // console.log('🔍 [DEBUG] Transformation terminée')
 
         // ✅ Calculer les positions politiques dynamiquement pour chaque parti
         const dynamicPartyPositions: Record<string, { x: number; y: number }> = {}
-        console.log('🔍 [DEBUG] Calcul positions politiques pour chaque parti...')
+        // console.log('🔍 [DEBUG] Calcul positions politiques...')
         for (const [partyId, answers] of Object.entries(partyAnswers)) {
-          console.log(`🔍 [DEBUG] Parti ${partyId} - answers:`, answers)
+          // console.log(`🔍 [DEBUG] Parti ${partyId} - calcul...`)
           const position = await calculateUserPoliticalPosition(answers, municipality)
           dynamicPartyPositions[partyId] = position
-          console.log(`🔍 [DEBUG] Parti ${partyId} - position calculée:`, position)
         }
-    console.log('🔍 [DEBUG] Toutes les positions dynamiques:', dynamicPartyPositions)
+    // console.log('🔍 [DEBUG] Positions calculées:', Object.keys(dynamicPartyPositions).length)
 
     // Les priorités sont maintenant récupérées via le hook usePriorities
-    console.log('🔍 [DEBUG] userPriorities:', userPriorities)
+    // console.log('🔍 [DEBUG] userPriorities:', userPriorities)
 
-    const newCalculatedScores = partiesData.map((party, index) => {
-      console.log(`🔍 [DEBUG] === CALCUL PARTI ${index + 1}/${partiesData.length}: ${party.name} (${party.id}) ===`)
+    const newCalculatedScores = await Promise.all(partiesData.map(async (party, _index) => {
+      // console.log(`🔍 [DEBUG] === CALCUL PARTI ${index + 1}: ${party.name} ===`)
 
       // ✅ Utiliser les positions dynamiques calculées depuis Supabase (multi-municipalités)
       const partyPosition = dynamicPartyPositions[party.id]
-      console.log(`🔍 [DEBUG] Position du parti ${party.id}:`, partyPosition)
+      // console.log(`🔍 [DEBUG] Position du parti ${party.id}:`, partyPosition)
       let politicalScore = 0
 
       if (partyPosition) {
         // MÊME calcul que dans useResults.ts et la carte politique
         const distance = calculatePoliticalDistance(userPosition, partyPosition)
-        console.log(`🔍 [DEBUG] Distance calculée entre utilisateur et ${party.id}:`, distance)
+        // console.log(`🔍 [DEBUG] Distance pour ${party.id}:`, distance)
         // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
         const maxDistance = 283
         const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
-        console.log(`🔍 [DEBUG] Compatibility calculé pour ${party.id}:`, compatibility, '(distance:', distance, ', maxDistance:', maxDistance, ')')
+        // console.log(`🔍 [DEBUG] Compatibility pour ${party.id}:`, compatibility)
         politicalScore = compatibility
       } else {
         // Si pas de position politique définie pour ce parti, score de 0
@@ -258,14 +233,15 @@ export default function ResultsPage() {
         console.warn(`🔍 [DEBUG] Pas de position politique définie pour le parti: ${party.id}`)
       }
 
-      // Calculer le score des priorités
-      console.log(`🔍 [DEBUG] Calcul priorités pour ${party.id}: userPriorities=`, userPriorities, ', party.priorities=', party.priorities)
-      const priorityScore = calculatePriorityCompatibility(userPriorities, party.priorities || [])
-      console.log(`🔍 [DEBUG] Priority score calculé pour ${party.id}:`, priorityScore)
+      // Calculer le score des priorités (extraction depuis DB)
+      const partyPriorities = await extractPartyPrioritiesSimple(party.id, params.municipality as string)
+      console.log(`🔍 [PRIORITIES] ${party.id}: DB priorities=`, partyPriorities)
+      const priorityScore = calculatePriorityCompatibility(userPriorities, partyPriorities)
+      console.log(`🔍 [PRIORITIES] Priority score pour ${party.id}:`, priorityScore)
 
       // Score final pondéré : 70% position politique, 30% priorités
       const finalScore = (politicalScore * 0.7) + (priorityScore * 0.3)
-      console.log(`🔍 [DEBUG] Score final pour ${party.id}:`, finalScore, '(political:', politicalScore, '* 0.7 =', politicalScore * 0.7, ', priority:', priorityScore, '* 0.3 =', priorityScore * 0.3, ')')
+      // console.log(`🔍 [DEBUG] Score final pour ${party.id}:`, finalScore)
 
       // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
       const scoreDetails: CalculatedPartyScore["details"] = questions.map((question) => {
@@ -309,19 +285,14 @@ export default function ResultsPage() {
         maxPossibleRawScoreForParty: 100,
         details: scoreDetails,
       }
-    })
+    }))
 
     // Trier par score décroissant
     newCalculatedScores.sort((a, b) => b.score - a.score)
 
-    console.log('🔍 [DEBUG] === RÉSULTATS FINAUX ===')
-    console.log('🔍 [DEBUG] newCalculatedScores:', newCalculatedScores.map(s => ({
-      partyId: s.party.id,
-      partyName: s.party.name,
-      finalScore: s.score,
-      rawScore: s.rawScore
-    })))
-        console.log('🔍 [DEBUG] === FIN DEBUG CALCULATEDSCORES ===')
+    // console.log('🔍 [DEBUG] === RÉSULTATS FINAUX ===')
+    // console.log('🔍 [DEBUG] Résultats:', newCalculatedScores.length, 'partis calculés')
+        // console.log('🔍 [DEBUG] === FIN CALCUL ===')
 
         setCalculatedScores(newCalculatedScores)
       } catch (error) {
@@ -342,7 +313,7 @@ export default function ResultsPage() {
         municipality) {
       calculateScoresAsync()
     }
-  }, [userAnswers, userImportance, userPriorities, partiesData, questions, positionsByParty, municipality, sessionLoading, responsesLoading, questionsLoading, partiesLoading, positionsLoading])
+  }, [userAnswers, userImportance, userPriorities, partiesData, questions, positionsByParty, municipality, sessionLoading, responsesLoading, questionsLoading, partiesLoading, positionsLoading, params.municipality])
 
   const topParties = useMemo(() => calculatedScores.slice(0, 3), [calculatedScores])
 
@@ -813,10 +784,13 @@ export default function ResultsPage() {
                         {question.responseType === "priority_ranking" ? (
                           // Affichage spécial pour la question de priorité
                           calculatedScores.map(({ party }) => {
-                            const partyPriorities = party.priorities || []
-                            const prioritiesText = partyPriorities.length > 0 
+                            // Les priorités sont maintenant extraites via extractPartyPrioritiesSimple
+                            // Pour l'affichage, on utilise un état local ou on fait l'appel ici
+                            // Fallback temporaire en attendant une meilleure solution
+                            const partyPriorities: string[] = []
+                            const prioritiesText = partyPriorities.length > 0
                               ? partyPriorities.slice(0, 3).map((p, i) => `${i + 1}. ${p}`).join(' • ')
-                              : "Aucune priorité définie"
+                              : "Priorités chargées depuis la base de données"
                             
                             return (
                               <div

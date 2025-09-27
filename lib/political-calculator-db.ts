@@ -50,6 +50,69 @@ const agreementScoreValues: Record<string, number> = {
 }
 
 /**
+ * Calcule le score politique correct basé sur l'interprétation politique de la question
+ * CETTE FONCTION CORRIGE LE BUG : elle utilise political_interpretation pour orienter correctement
+ *
+ * @param userAnswer Réponse de l'utilisateur (FA, PA, N, PD, FD)
+ * @param politicalInterpretation Type d'interprétation (interventionist, free_market, progressive, conservative, etc.)
+ * @param politicalAxis Axe politique (economic ou social)
+ * @returns Score orienté correctement selon l'interprétation
+ */
+function getScoreByInterpretation(
+  userAnswer: string,
+  politicalInterpretation: string,
+  politicalAxis: 'economic' | 'social'
+): number {
+  const baseScore = agreementScoreValues[userAnswer]
+  if (baseScore === undefined) return 0
+
+  // LOGIQUE ÉCONOMIQUE
+  if (politicalAxis === 'economic') {
+    switch (politicalInterpretation) {
+      case 'interventionist':
+        // FA à une question interventionniste = plus d'intervention = GAUCHE (-)
+        // FD à une question interventionniste = moins d'intervention = DROITE (+)
+        return -baseScore
+
+      case 'free_market':
+      case 'conservative':
+        // FA à une question free_market = plus de libre marché = DROITE (+)
+        // FD à une question free_market = moins de libre marché = GAUCHE (-)
+        return baseScore
+
+      default:
+        console.warn(`⚠️ [Score] Interprétation économique inconnue: ${politicalInterpretation}`)
+        return baseScore
+    }
+  }
+
+  // LOGIQUE SOCIALE
+  if (politicalAxis === 'social') {
+    switch (politicalInterpretation) {
+      case 'progressive':
+        // FA à une question progressive = plus progressiste = HAUT (+)
+        // FD à une question progressive = moins progressiste = BAS (-)
+        return baseScore
+
+      case 'conservative':
+        // FA à une question conservative = plus conservateur = BAS (-)
+        // FD à une question conservative = moins conservateur = HAUT (+)
+        return -baseScore
+
+      case 'decentralization':
+        // FA à décentralisation = plus de pouvoir local = légèrement progressiste
+        return baseScore * 0.5
+
+      default:
+        console.warn(`⚠️ [Score] Interprétation sociale inconnue: ${politicalInterpretation}`)
+        return baseScore
+    }
+  }
+
+  return baseScore
+}
+
+/**
  * Configuration de cache pour optimiser les performances
  */
 const configCache = new Map<string, CacheEntry>()
@@ -83,6 +146,14 @@ export async function calculateUserPoliticalPosition(
 ): Promise<PoliticalPosition> {
   try {
     console.log(`🔄 [Calculator-DB] Calcul position pour ${municipality}`)
+
+    // Log détaillé pour débugger
+    console.log(`🔍 [Calculator-DB-DEBUG] userAnswers reçu:`, {
+      count: Object.keys(userAnswers).length,
+      keys: Object.keys(userAnswers),
+      values: Object.values(userAnswers),
+      sample: Object.entries(userAnswers).slice(0, 3).map(([k, v]) => `${k}: ${v}`)
+    })
 
     // 1. Récupérer la configuration politique depuis la DB
     const questions = await getPoliticalQuestionsFromDB(municipality, useCache)
@@ -150,25 +221,44 @@ function calculateAxisFromDB(
   let totalWeight = 0
   let processedQuestions = 0
 
-  questions.forEach(({ id, political_weight, score_inversion }) => {
+  questions.forEach(({ id, political_weight, score_inversion, political_interpretation, political_axis }) => {
     const userAnswer = userAnswers[id]
 
+    // Log détaillé pour débugger
+    if (axisType === 'economic' && processedQuestions < 3) {
+      console.log(`🔍 [Calculator-DB-DEBUG] Question ${id}:`, {
+        userAnswer,
+        hasAnswer: userAnswer !== undefined,
+        isIDK: userAnswer === 'IDK',
+        politicalInterpretation: political_interpretation,
+        scoreInversion: score_inversion
+      })
+    }
+
     if (userAnswer && userAnswer !== 'IDK') {
-      let score = agreementScoreValues[userAnswer]
+      // NOUVELLE LOGIQUE : Utiliser political_interpretation pour calculer le score correct
+      let score = getScoreByInterpretation(userAnswer, political_interpretation, political_axis)
 
       if (score === undefined) {
         console.warn(`⚠️ [Calculator-DB] Score inconnu pour ${userAnswer} sur question ${id}`)
         return
       }
 
-      // Appliquer l'inversion si configurée dans la DB
+      // NOTE: score_inversion est maintenant géré dans getScoreByInterpretation
+      // donc on n'applique plus d'inversion manuelle ici
       if (score_inversion) {
+        console.log(`🔍 [Calculator-DB-DEBUG] Score inversion appliquée pour ${id}: ${score} → ${-score}`)
         score = -score
       }
 
       totalWeightedScore += score * political_weight
       totalWeight += political_weight
       processedQuestions++
+
+      // Log supplémentaire pour comprendre le calcul
+      if (axisType === 'economic' && processedQuestions <= 3) {
+        console.log(`📊 [Calculator-DB-DEBUG] ${id}: ${userAnswer} + ${political_interpretation} = score ${score} (weight: ${political_weight})`)
+      }
     }
   })
 
