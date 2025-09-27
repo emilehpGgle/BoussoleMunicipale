@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useEffect, useState } from "react"
-import { useParams, useRouter, useSearchParams } from "next/navigation"
+import { useParams, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -16,10 +16,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { partiesData, boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
-import type { Party, Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
+import { boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
+import type { Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { usePriorities } from "@/hooks/usePriorities"
+import { useParty } from "@/hooks/useParties"
 import type { AgreementOptionKey } from "@/lib/supabase/types"
 
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
@@ -89,10 +90,12 @@ const getComparisonText = (userPosition: AgreementOptionKey, partyPosition: stri
 
 export default function PartyDetailPage() {
   const params = useParams()
-  const router = useRouter()
   const searchParams = useSearchParams()
   const municipality = params.municipality as string
-  const [party, setParty] = useState<Party | null>(null)
+  const partyId = Array.isArray(params.id) ? params.id[0] : params.id as string
+
+  // Utiliser le hook useParty pour charger les données depuis l'API
+  const { party, loading, error, notFound } = useParty(municipality, partyId)
   const [partyQuestionsMap, setPartyQuestionsMap] = useState<Map<string, PartyPosition>>(new Map())
 
   // Récupération des réponses de l'utilisateur
@@ -104,28 +107,53 @@ export default function PartyDetailPage() {
   const shareId = searchParams.get('shareId')
   const isFromSharePage = source === 'partage' && shareId
 
+  // Créer la map des positions quand le parti est chargé
   useEffect(() => {
-    if (params.id) {
-      const partyId = Array.isArray(params.id) ? params.id[0] : params.id
-      const foundParty = partiesData.find((p) => p.id === partyId)
-      if (foundParty) {
-        setParty(foundParty)
-        const qMap = new Map<string, PartyPosition>()
-        foundParty.positions.forEach((pos) => qMap.set(pos.questionId, pos))
-        setPartyQuestionsMap(qMap)
-      } else {
-        console.error(`Party with id "${partyId}" not found.`)
-        // router.push('/404'); // Consider redirecting to a 404 page
-      }
+    if (party && party.positions) {
+      const qMap = new Map<string, PartyPosition>()
+      party.positions.forEach((pos) => qMap.set(pos.questionId, pos))
+      setPartyQuestionsMap(qMap)
     }
-  }, [params.id, router])
+  }, [party])
 
-  if (!party) {
+  // État de chargement
+  if (loading) {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p>Chargement des informations du parti...</p>
         <Button asChild className="mt-4">
-          <Link href={isFromSharePage ? `/partage/${shareId}` : "/resultats"}>
+          <Link href={isFromSharePage ? `/partage/${shareId}` : `/${municipality}/resultats`}>
+            Retour {isFromSharePage ? 'au partage' : 'aux résultats'}
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  // État d'erreur
+  if (error || notFound) {
+    return (
+      <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
+        <h1 className="text-2xl font-bold text-red-600 mb-4">Parti non trouvé</h1>
+        <p className="text-muted-foreground mb-4">
+          {error || `Le parti "${partyId}" n'a pas été trouvé dans ${municipality}.`}
+        </p>
+        <Button asChild className="mt-4">
+          <Link href={isFromSharePage ? `/partage/${shareId}` : `/${municipality}/resultats`}>
+            Retour {isFromSharePage ? 'au partage' : 'aux résultats'}
+          </Link>
+        </Button>
+      </div>
+    )
+  }
+
+  // Aucun parti trouvé
+  if (!party) {
+    return (
+      <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
+        <p>Aucune information disponible pour ce parti.</p>
+        <Button asChild className="mt-4">
+          <Link href={isFromSharePage ? `/partage/${shareId}` : `/${municipality}/resultats`}>
             Retour {isFromSharePage ? 'au partage' : 'aux résultats'}
           </Link>
         </Button>
@@ -140,7 +168,7 @@ export default function PartyDetailPage() {
     <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8">
       <div>
         <Button asChild variant="outline" className="mb-8 flex items-center gap-2">
-          <Link href={isFromSharePage ? `/partage/${shareId}` : "/resultats"}>
+          <Link href={isFromSharePage ? `/partage/${shareId}` : `/${municipality}/resultats`}>
             <ArrowLeft className="h-4 w-4" />
             Retour {isFromSharePage ? 'au partage' : 'aux résultats'}
           </Link>

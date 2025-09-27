@@ -54,7 +54,7 @@ interface ProgressiveResultsModalProps {
 
 // Composant LogoContainer avec palette cohérente
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-  <div className={`bg-white rounded-xl p-2 shadow-md border border-azure-web flex items-center justify-center ${className || ""}`}>
+  <div className={`bg-white rounded-xl p-1 shadow-md border border-azure-web flex items-center justify-center ${className || ""}`}>
     {children}
   </div>
 );
@@ -167,7 +167,7 @@ const MiniCompass: React.FC<{
   municipality: string;
   topParties: Array<{ party: Party; score: number; }>;
 }> = ({ userAnswers, municipality, topParties }) => {
-  const { parties, isLoading: partiesLoading } = useParties(municipality);
+  const { parties, loading: partiesLoading } = useParties(municipality);
   const { positionsByParty, isLoading: positionsLoading } = usePartyPositions(municipality);
 
   // Calcul des positions
@@ -411,9 +411,9 @@ export function ProgressiveResultsModal({
 
   if (!topMatch || !topParties.length) return null;
 
-  const champion = topParties[0];
-  const challenger1 = topParties[1];
-  const challenger2 = topParties[2];
+  const topParty = topParties[0];
+  const secondParty = topParties[1];
+  const thirdParty = topParties[2];
 
   const politicalPosition = results?.politicalPosition ? { x: results.politicalPosition.x, y: results.politicalPosition.y } : undefined;
   const positionDescription = results?.politicalPosition ? getPoliticalPositionDescription(results.politicalPosition) : '';
@@ -434,7 +434,7 @@ export function ProgressiveResultsModal({
             bgClass: 'bg-gradient-to-r from-midnight-green to-teal-main-600',
             borderClass: 'border-midnight-green',
             textClass: 'text-white',
-            glowClass: 'shadow-primary-glow'
+            glowClass: 'shadow-md'
           };
         case 2:
           return {
@@ -442,7 +442,7 @@ export function ProgressiveResultsModal({
             bgClass: 'bg-gradient-to-r from-teal-main-400 to-teal-main-500',
             borderClass: 'border-teal-main-400',
             textClass: 'text-white',
-            glowClass: 'shadow-soft'
+            glowClass: 'shadow-md'
           };
         case 3:
           return {
@@ -450,7 +450,7 @@ export function ProgressiveResultsModal({
             bgClass: 'bg-gradient-to-r from-teal-main-200 to-isabelline',
             borderClass: 'border-teal-main-200',
             textClass: 'text-midnight-green',
-            glowClass: 'shadow-soft'
+            glowClass: 'shadow-md'
           };
         default:
           return {
@@ -458,7 +458,7 @@ export function ProgressiveResultsModal({
             bgClass: 'bg-azure-web',
             borderClass: 'border-midnight-green/20',
             textClass: 'text-midnight-green',
-            glowClass: 'shadow-soft'
+            glowClass: 'shadow-md'
           };
       }
     };
@@ -490,28 +490,20 @@ export function ProgressiveResultsModal({
         </motion.div>
 
         <Card className={`p-6 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-2xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
-          {/* Effet brillant pour le champion */}
-          {isChampion && (
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-shimmer"></div>
-          )}
-
-          {/* Confetti pour le champion */}
+          {/* Confetti pour le premier parti */}
           {isChampion && <ConfettiExplosion trigger={showConfetti} />}
 
-          {/* Logo avec effet spécial pour le champion */}
-          <div className="relative mb-4">
-            {isChampion && (
-              <div className="absolute -inset-2 bg-gradient-to-r from-midnight-green via-teal-main-500 to-midnight-green rounded-full opacity-75 blur-sm animate-pulse"></div>
-            )}
+          {/* Logo */}
+          <div className="relative mb-2">
             <PartyLogo
               party={party}
-              size={{ width: isChampion ? 192 : 160, height: isChampion ? 192 : 160 }}
-              className={`${isChampion ? 'w-36 h-36 sm:w-44 sm:h-44' : 'w-32 h-32 sm:w-36 sm:h-36'} relative z-10`}
+              size={{ width: isChampion ? 120 : 100, height: isChampion ? 120 : 100 }}
+              className={`${isChampion ? 'w-24 h-24 sm:w-28 sm:h-28' : 'w-20 h-20 sm:w-24 sm:h-24'} relative z-10`}
             />
           </div>
 
           {/* Nom du parti */}
-          <div className="min-h-[4rem] flex flex-col justify-center mb-4">
+          <div className="min-h-[3rem] flex flex-col justify-center mb-3">
             <h3 className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-foreground leading-tight mb-1`}>
               {party.shortName || party.name}
             </h3>
@@ -521,18 +513,18 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Score avec animation */}
-          <div className="w-full bg-muted rounded-full h-6 mb-3 overflow-hidden relative border border-midnight-green/20">
+          <div className="w-full bg-muted rounded-full h-5 mb-2 overflow-hidden relative border border-midnight-green/20">
             <motion.div
-              className={`${badgeConfig.bgClass} h-6 rounded-full`}
+              className={`${badgeConfig.bgClass} h-5 rounded-full`}
               initial={{ width: "0%" }}
               animate={{ width: showContent ? `${score}%` : "0%" }}
               transition={{ duration: 1.2, delay: delay + 0.5, ease: "easeOut" }}
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
           </div>
 
           <motion.p
-            className={`${isChampion ? 'text-2xl' : 'text-xl'} font-bold text-midnight-green mb-4`}
+            className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-midnight-green mb-3`}
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8 }}
             transition={{ duration: 0.5, delay: delay + 0.8 }}
@@ -548,7 +540,7 @@ export function ProgressiveResultsModal({
             >
               <Button
                 asChild
-                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-6 py-2 rounded-lg shadow-lg transition-all duration-200"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-4 py-1.5 rounded-lg shadow-lg transition-all duration-200 text-sm"
               >
                 <Link href={`/${municipality}/parti/${party.id}`}>
                   Voir la fiche détaillée
@@ -567,10 +559,10 @@ export function ProgressiveResultsModal({
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, delay: 0.2 }}
-      className="p-6"
+      className="px-4 py-3"
     >
-      <div className="text-center mb-6">
-        <div className="flex items-center justify-center gap-2 mb-3">
+      <div className="text-center mb-4">
+        <div className="flex items-center justify-center gap-2 mb-2">
           <motion.div
             animate={{ rotate: [0, 5, -5, 0] }}
             transition={{
@@ -601,18 +593,18 @@ export function ProgressiveResultsModal({
         <DialogTitle className="text-xl font-bold text-foreground mb-2">
           Positionnement dans le paysage municipal
         </DialogTitle>
-        <p className="text-muted-foreground text-sm mb-4">
+        <p className="text-muted-foreground text-sm mb-3">
           Voici où vous vous situez par rapport aux partis
         </p>
 
         {/* Badges de position avec palette cohérente */}
-        <div className="flex items-center justify-center gap-2 flex-wrap mb-4">
-          <Badge variant="secondary" className="text-xs px-2 py-1 bg-azure-web text-midnight-green border-midnight-green/20">
-            Économique: {(results?.politicalPosition?.x || 0) > 0 ? 'Libre marché' : 'Interventionnisme'}
+        <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap mb-3">
+          <Badge variant="secondary" className="text-xs px-1 py-1 sm:px-2 bg-azure-web text-midnight-green border-midnight-green/20">
+            Éco: {(results?.politicalPosition?.x || 0) > 0 ? 'Marché' : 'Interv.'}
             ({Math.abs(results?.politicalPosition?.x || 0).toFixed(1)})
           </Badge>
-          <Badge variant="secondary" className="text-xs px-2 py-1 bg-azure-web text-midnight-green border-midnight-green/20">
-            Social: {(results?.politicalPosition?.y || 0) > 0 ? 'Progressiste' : 'Conservateur'}
+          <Badge variant="secondary" className="text-xs px-1 py-1 sm:px-2 bg-azure-web text-midnight-green border-midnight-green/20">
+            Social: {(results?.politicalPosition?.y || 0) > 0 ? 'Prog.' : 'Cons.'}
             ({Math.abs(results?.politicalPosition?.y || 0).toFixed(1)})
           </Badge>
           {positionDescription && (
@@ -624,7 +616,7 @@ export function ProgressiveResultsModal({
       </div>
 
       {/* Mini Compass avec couleurs harmonisées */}
-      <div className="mb-6">
+      <div className="mb-4">
         <MiniCompass
           userAnswers={userAnswers as UserAnswers}
           municipality={municipality}
@@ -633,7 +625,7 @@ export function ProgressiveResultsModal({
       </div>
 
       {/* Légende avec design cohérent */}
-      <div className="text-center text-xs text-muted-foreground bg-azure-web/50 rounded-lg p-3 mb-6 border border-midnight-green/10">
+      <div className="text-center text-xs text-muted-foreground bg-azure-web/50 rounded-lg p-2 mb-4 border border-midnight-green/10">
         <p><strong>Légende:</strong> Bordures dorées 🥇, argentées 🥈 et bronze 🥉 = votre top 3</p>
       </div>
     </motion.div>
@@ -641,8 +633,8 @@ export function ProgressiveResultsModal({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={() => {}}>
-        <DialogContent className="max-w-2xl sm:max-w-3xl lg:max-w-4xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 overflow-hidden max-h-[90vh]">
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="max-w-lg sm:max-w-2xl lg:max-w-3xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 overflow-y-auto max-h-[70vh]">
           {/* Bouton fermer */}
           <Button
             variant="ghost"
@@ -668,23 +660,25 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Indicateur de slide */}
-          <div className="flex justify-center gap-2 p-3 border-b bg-azure-web/20">
+          <div className="flex justify-center gap-3 p-3 border-b bg-azure-web/20">
             {Array.from({ length: 4 }, (_, index) => (
-              <div
+              <button
                 key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                onClick={() => carouselApi?.scrollTo(index)}
+                className={`rounded-full transition-all duration-300 hover:scale-110 cursor-pointer ${
                   currentSlide === index
-                    ? 'bg-midnight-green w-6'
+                    ? 'bg-midnight-green w-8 h-3 shadow-md'
                     : index < currentSlide
-                    ? 'bg-midnight-green/60'
-                    : 'bg-midnight-green/20'
+                    ? 'bg-midnight-green/70 w-3 h-3 hover:bg-midnight-green/80'
+                    : 'bg-midnight-green/30 w-3 h-3 hover:bg-midnight-green/50'
                 }`}
+                aria-label={`Aller à la slide ${index + 1}`}
               />
             ))}
           </div>
 
           {/* Carousel des résultats */}
-          <div className="relative min-h-fit">
+          <div className="relative overflow-hidden">
             <Carousel
               setApi={setCarouselApi}
               className="w-full"
@@ -694,13 +688,13 @@ export function ProgressiveResultsModal({
               }}
             >
               <CarouselContent>
-                {/* Slide 1: Champion */}
+                {/* Slide 1: Premier parti */}
                 <CarouselItem>
-                  <div className="px-8 py-6 text-center flex items-center justify-center min-h-[400px]">
-                    <div className="w-full max-w-md">
+                  <div className="px-4 py-3 text-center flex items-center justify-center min-h-[280px]">
+                    <div className="w-full max-w-sm">
                       <PartyCard
-                        party={champion.party}
-                        score={champion.score}
+                        party={topParty.party}
+                        score={topParty.score}
                         rank={1}
                         isChampion={true}
                         delay={0.2}
@@ -710,13 +704,13 @@ export function ProgressiveResultsModal({
                 </CarouselItem>
 
                 {/* Slide 2: Deuxième place */}
-                {challenger1 && (
+                {secondParty && (
                   <CarouselItem>
-                    <div className="px-8 py-6 text-center flex items-center justify-center min-h-[400px]">
-                      <div className="w-full max-w-md">
+                    <div className="px-4 py-3 text-center flex items-center justify-center min-h-[280px]">
+                      <div className="w-full max-w-sm">
                         <PartyCard
-                          party={challenger1.party}
-                          score={challenger1.score}
+                          party={secondParty.party}
+                          score={secondParty.score}
                           rank={2}
                           delay={0.1}
                         />
@@ -726,13 +720,13 @@ export function ProgressiveResultsModal({
                 )}
 
                 {/* Slide 3: Troisième place */}
-                {challenger2 && (
+                {thirdParty && (
                   <CarouselItem>
-                    <div className="px-8 py-6 text-center flex items-center justify-center min-h-[400px]">
-                      <div className="w-full max-w-md">
+                    <div className="px-4 py-3 text-center flex items-center justify-center min-h-[280px]">
+                      <div className="w-full max-w-sm">
                         <PartyCard
-                          party={challenger2.party}
-                          score={challenger2.score}
+                          party={thirdParty.party}
+                          score={thirdParty.score}
                           rank={3}
                           delay={0.1}
                         />
@@ -747,8 +741,8 @@ export function ProgressiveResultsModal({
                 </CarouselItem>
               </CarouselContent>
 
-              <CarouselPrevious className="left-2 bg-midnight-green/90 text-white border-midnight-green hover:bg-midnight-green" />
-              <CarouselNext className="right-2 bg-midnight-green/90 text-white border-midnight-green hover:bg-midnight-green" />
+              <CarouselPrevious className="left-2 sm:left-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-12 w-12 shadow-lg transition-all duration-200" />
+              <CarouselNext className="right-2 sm:right-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-12 w-12 shadow-lg transition-all duration-200" />
             </Carousel>
           </div>
 
@@ -757,7 +751,7 @@ export function ProgressiveResultsModal({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 0.5 }}
-            className="p-4 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-3"
+            className="p-2 sm:p-3 border-t border-midnight-green/10 bg-gradient-to-r from-azure-web/20 to-isabelline/20 space-y-2"
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Button
@@ -765,8 +759,8 @@ export function ProgressiveResultsModal({
                 variant="outline"
                 className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium"
               >
-                <Link href={`/${municipality}/parti/${champion.party.id}`}>
-                  Fiche du champion
+                <Link href={`/${municipality}/parti/${topParty.party.id}`}>
+                  Fiche détaillée
                 </Link>
               </Button>
               <Button

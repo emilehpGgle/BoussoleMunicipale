@@ -121,7 +121,7 @@ export default function ResultsPage() {
 
   // ✅ Charger les questions et partis depuis Supabase
   const { questions, isLoading: questionsLoading, error: questionsError } = useQuestions(municipality)
-  const { parties: partiesData, isLoading: partiesLoading, error: partiesError } = useParties(municipality, true) // includePositions=true pour avoir les positions
+  const { parties: partiesData, loading: partiesLoading, error: partiesError } = useParties(municipality, true) // includePositions=true pour avoir les positions
   const { positionsByParty, isLoading: positionsLoading, error: positionsError } = usePartyPositions(municipality)
 
   // ✅ Attendre que la session soit prête avant de charger les données

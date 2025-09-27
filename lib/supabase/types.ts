@@ -268,6 +268,7 @@ export interface Database {
           profile_data: Json
           created_at: string
           updated_at: string
+          municipality_id: string | null
         }
         Insert: {
           id?: string
@@ -275,6 +276,7 @@ export interface Database {
           profile_data: Json
           created_at?: string
           updated_at?: string
+          municipality_id?: string | null
         }
         Update: {
           id?: string
@@ -282,6 +284,7 @@ export interface Database {
           profile_data?: Json
           created_at?: string
           updated_at?: string
+          municipality_id?: string | null
         }
       }
       user_results: {

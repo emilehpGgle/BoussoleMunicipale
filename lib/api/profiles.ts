@@ -37,7 +37,7 @@ export class ProfilesAPI {
     const profile: UserProfileInsert = {
       session_id: sessionId,
       profile_data: profileData,
-      ...(municipalityId && { municipality_id: municipalityId }),
+      municipality_id: municipalityId || 'quebec', // Fallback par défaut
     }
 
     const { data, error } = await this.supabase

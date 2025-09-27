@@ -236,6 +236,12 @@ function calculateAxisFromDB(
     }
 
     if (userAnswer && userAnswer !== 'IDK') {
+      // Vérification défensive pour éviter l'erreur TypeScript avec les questions neutres
+      if (political_axis === 'neutral') {
+        console.warn(`⚠️ [Calculator-DB] Question neutre ignorée: ${id}`)
+        return
+      }
+
       // NOUVELLE LOGIQUE : Utiliser political_interpretation pour calculer le score correct
       let score = getScoreByInterpretation(userAnswer, political_interpretation, political_axis)
 

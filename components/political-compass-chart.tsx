@@ -39,7 +39,7 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
   const { priorities: userPriorities } = usePriorities()
 
   // Hooks Supabase pour récupérer les données dynamiques
-  const { parties, isLoading: partiesLoading, error: partiesError } = useParties(municipality)
+  const { parties, loading: partiesLoading, error: partiesError } = useParties(municipality)
   const { positionsByParty, isLoading: positionsLoading, error: positionsError } = usePartyPositions(municipality)
 
   // Calcul des positions originales (sans compression)

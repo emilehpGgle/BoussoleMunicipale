@@ -1,7 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useSession } from './useSession'
 import { useUserResponses } from './useUserResponses'
+import { useParties } from './useParties'
+import { usePartyPositions } from './usePartyPositions'
 import { ImportanceOptionKey } from '@/lib/supabase/types'
+import { transformAllPartyPositionsToUserAnswers } from '@/lib/supabase-transform'
 
 // Types pour les résultats
 export interface PartyScore {
@@ -35,6 +38,8 @@ interface ResultsState {
 export function useResults(municipalityId?: string) {
   const { sessionToken, isSessionValid, isInitializing } = useSession()
   const { responses, getResponseCounts } = useUserResponses(municipalityId)
+  const { parties, loading: partiesLoading } = useParties(municipalityId || '', false)
+  const { positionsByParty, isLoading: positionsLoading } = usePartyPositions(municipalityId || '')
   
   const [state, setState] = useState<ResultsState>({
     results: null,
@@ -121,35 +126,82 @@ export function useResults(municipalityId?: string) {
     try {
       setState(prev => ({ ...prev, isCalculating: true, error: null }))
 
+      // Vérifier que toutes les données sont chargées
+      if (partiesLoading || positionsLoading) {
+        throw new Error('Données des partis encore en chargement')
+      }
+
       // Vérifier qu'on a suffisamment de réponses pour calculer les résultats
-      const counts = getResponseCounts
+      const counts = getResponseCounts // getResponseCounts est déjà un objet mémoïsé, pas une fonction
+
+      console.log('🔍 [useResults] Vérification réponses:', {
+        counts,
+        responsesAgreement: Object.keys(responses.agreement).length,
+        responsesPriorities: Object.keys(responses.priorities).length,
+        municipalityId
+      })
+
       if (counts.total === 0) {
         throw new Error('Aucune réponse disponible pour calculer les résultats')
       }
+
+      console.log('🧮 [useResults] Calcul démarré:', {
+        municipality: municipalityId,
+        counts: counts,
+        hasAgreement: Object.keys(responses.agreement).length > 0,
+        partiesLoading,
+        positionsLoading
+      })
 
       // Calcul du pourcentage de complétion
       const primaryResponsesCount = counts.agreement
       const maxExpectedResponses = TOTAL_QUESTIONS
       const completionPercentage = Math.min(100, Math.round((primaryResponsesCount / maxExpectedResponses) * 100))
 
+      // Vérifier qu'on a les données des partis
+      if (!parties || parties.length === 0) {
+        throw new Error(`Aucun parti trouvé pour ${municipalityId}`)
+      }
+      if (!positionsByParty || Object.keys(positionsByParty).length === 0) {
+        throw new Error(`Aucune position de parti trouvée pour ${municipalityId}`)
+      }
+
+      console.log('📊 [useResults] Données des partis:', {
+        partiesCount: parties.length,
+        positionsCount: Object.keys(positionsByParty).length,
+        parties: parties.map(p => p.id)
+      })
+
       // Algorithme de calcul basé sur les réponses utilisateur
-      const { calculateUserPoliticalPosition, partyAnswers, calculatePoliticalDistance } = await import('../lib/political-map-calculator')
-      
+      const { calculateUserPoliticalPosition, calculatePoliticalDistance } = await import('../lib/political-map-calculator')
+
       // Convertir les réponses au format attendu par l'algorithme
       const userAnswers = responses.agreement
-      
+
       // Calculer la position politique de l'utilisateur
       const politicalPosition = calculateUserPoliticalPosition(userAnswers)
-      
+
+      console.log('🎯 [useResults] Position utilisateur calculée:', politicalPosition)
+
+      // Transformer les positions Supabase vers le format du calculateur
+      const partyAnswersFromSupabase = transformAllPartyPositionsToUserAnswers(positionsByParty)
+
+      console.log('🔄 [useResults] Positions partis transformées:', {
+        originalCount: Object.keys(positionsByParty).length,
+        transformedCount: Object.keys(partyAnswersFromSupabase).length
+      })
+
       // Calculer les positions des partis
       const partyPositions: Record<string, { x: number; y: number }> = {}
-      Object.entries(partyAnswers).forEach(([partyId, answers]) => {
+      Object.entries(partyAnswersFromSupabase).forEach(([partyId, answers]) => {
         partyPositions[partyId] = calculateUserPoliticalPosition(answers)
       })
       
       // NOTE: useResults.ts garde sa logique existante simple
       // Les priorités seront gérées au niveau des composants qui affichent les résultats
       
+      console.log('📍 [useResults] Positions calculées pour tous les partis:', partyPositions)
+
       // Calculer les scores de compatibilité avec le système unifié 70/30
       const partyScores: Record<string, number> = {}
       const partyDistances: { partyId: string; distance: number; score: number }[] = []
@@ -206,7 +258,7 @@ export function useResults(municipalityId?: string) {
       }))
       return null
     }
-  }, [getResponseCounts, responses])
+  }, [getResponseCounts, responses, parties, positionsByParty, partiesLoading, positionsLoading, municipalityId])
 
   // Sauvegarder les résultats (Supabase uniquement)
   const saveResults = useCallback(async (resultsData: CalculatedResults) => {
@@ -356,7 +408,7 @@ export function useResults(municipalityId?: string) {
   return {
     // État
     results: state.results,
-    isLoading: state.isLoading,
+    isLoading: state.isLoading || partiesLoading || positionsLoading,
     isCalculating: state.isCalculating,
     isSaving: state.isSaving,
     error: state.error,
