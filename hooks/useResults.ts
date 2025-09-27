@@ -173,15 +173,28 @@ export function useResults(municipalityId?: string) {
       })
 
       // Algorithme de calcul basé sur les réponses utilisateur
-      const { calculateUserPoliticalPosition, calculatePoliticalDistance } = await import('../lib/political-map-calculator')
+      const { calculateUserPoliticalPosition } = await import('../lib/political-calculator-db')
+      const { calculatePoliticalDistance } = await import('../lib/political-map-calculator')
 
       // Convertir les réponses au format attendu par l'algorithme
       const userAnswers = responses.agreement
 
-      // Calculer la position politique de l'utilisateur
-      const politicalPosition = calculateUserPoliticalPosition(userAnswers)
+      // Calculer la position politique de l'utilisateur avec le nouveau système DB
+      const municipality = municipalityId || 'quebec' // Fallback par défaut
+      console.log('🔍 [useResults] Avant calcul position utilisateur:', {
+        userAnswersCount: Object.keys(userAnswers).length,
+        municipality,
+        sample: Object.entries(userAnswers).slice(0, 3)
+      })
 
-      console.log('🎯 [useResults] Position utilisateur calculée:', politicalPosition)
+      const politicalPosition = await calculateUserPoliticalPosition(userAnswers, municipality)
+
+      console.log('🎯 [useResults] Position utilisateur calculée:', {
+        position: politicalPosition,
+        isValid: politicalPosition && typeof politicalPosition.x === 'number' && typeof politicalPosition.y === 'number',
+        x: politicalPosition?.x,
+        y: politicalPosition?.y
+      })
 
       // Transformer les positions Supabase vers le format du calculateur
       const partyAnswersFromSupabase = transformAllPartyPositionsToUserAnswers(positionsByParty)
@@ -193,14 +206,20 @@ export function useResults(municipalityId?: string) {
 
       // Calculer les positions des partis
       const partyPositions: Record<string, { x: number; y: number }> = {}
-      Object.entries(partyAnswersFromSupabase).forEach(([partyId, answers]) => {
-        partyPositions[partyId] = calculateUserPoliticalPosition(answers)
-      })
+      for (const [partyId, answers] of Object.entries(partyAnswersFromSupabase)) {
+        partyPositions[partyId] = await calculateUserPoliticalPosition(answers, municipality)
+      }
       
       // NOTE: useResults.ts garde sa logique existante simple
       // Les priorités seront gérées au niveau des composants qui affichent les résultats
       
-      console.log('📍 [useResults] Positions calculées pour tous les partis:', partyPositions)
+      console.log('📍 [useResults] Positions calculées pour tous les partis:', {
+        count: Object.keys(partyPositions).length,
+        positions: partyPositions,
+        valid: Object.entries(partyPositions).every(([id, pos]) =>
+          pos && typeof pos.x === 'number' && typeof pos.y === 'number'
+        )
+      })
 
       // Calculer les scores de compatibilité avec le système unifié 70/30
       const partyScores: Record<string, number> = {}
@@ -238,6 +257,12 @@ export function useResults(municipalityId?: string) {
         answeredQuestions: counts.total,
         calculatedAt: new Date().toISOString()
       }
+
+      console.log('💾 [useResults] Résultats finaux à sauvegarder:', {
+        politicalPosition: calculatedResults.politicalPosition,
+        topPartiesCount: topMatches.length,
+        completionPercentage: calculatedResults.completionPercentage
+      })
 
       // Mettre à jour l'état local
       setState(prev => ({
