@@ -166,7 +166,8 @@ const MiniCompass: React.FC<{
   userAnswers: UserAnswers;
   municipality: string;
   topParties: Array<{ party: Party; score: number; }>;
-}> = ({ userAnswers, municipality, topParties }) => {
+  onUserPositionChange?: (position: PoliticalPosition) => void;
+}> = ({ userAnswers, municipality, topParties, onUserPositionChange }) => {
   const { parties, loading: partiesLoading } = useParties(municipality);
   const { positionsByParty, isLoading: positionsLoading } = usePartyPositions(municipality);
 
@@ -175,10 +176,21 @@ const MiniCompass: React.FC<{
   const [partyPositions, setPartyPositions] = useState<Record<string, PoliticalPosition>>({});
 
   useEffect(() => {
+    // Debug: Vérifier les données d'entrée comme sur la page principale
+    console.log('🔍 [MODAL-DEBUG] userAnswers passé à calculateUserPoliticalPosition:', {
+      count: Object.keys(userAnswers).length,
+      sample: Object.entries(userAnswers).slice(0, 5).map(([k, v]) => `${k}: ${v}`)
+    });
+
     calculateUserPoliticalPosition(userAnswers, municipality)
-      .then(position => setUserPosition(position))
+      .then(position => {
+        console.log('🔍 [MODAL-DEBUG] Position utilisateur calculée:', position);
+        setUserPosition(position);
+        // Notifier le parent de la nouvelle position
+        onUserPositionChange?.(position);
+      })
       .catch(err => console.error('Erreur calcul position utilisateur:', err));
-  }, [userAnswers, municipality]);
+  }, [userAnswers, municipality, onUserPositionChange]);
 
   useEffect(() => {
     if (!positionsByParty) {
@@ -554,7 +566,15 @@ export function ProgressiveResultsModal({
   };
 
   // Composant pour la slide de la carte politique
-  const CompassSlide: React.FC = () => (
+  const CompassSlide: React.FC = () => {
+    // État pour la position utilisateur calculée dynamiquement
+    const [dynamicUserPosition, setDynamicUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 });
+
+    const handleUserPositionChange = (position: PoliticalPosition) => {
+      setDynamicUserPosition(position);
+    };
+
+    return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
@@ -600,18 +620,18 @@ export function ProgressiveResultsModal({
         {/* Badges de position avec palette cohérente */}
         <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap mb-2">
           <Badge variant="secondary" className="text-xs px-1 py-1 sm:px-2 bg-azure-web text-midnight-green border-midnight-green/20">
-            Éco: {(results?.politicalPosition?.x || 0) > 0 ? 'Marché' : 'Interv.'}
-            ({Math.abs(results?.politicalPosition?.x || 0).toFixed(1)})
+            Éco: {(dynamicUserPosition.x || 0) > 0 ? 'Marché' : 'Interv.'}
+            ({Math.abs(dynamicUserPosition.x || 0).toFixed(1)})
           </Badge>
           <Badge variant="secondary" className="text-xs px-1 py-1 sm:px-2 bg-azure-web text-midnight-green border-midnight-green/20">
-            Social: {(results?.politicalPosition?.y || 0) > 0 ? 'Prog.' : 'Cons.'}
-            ({Math.abs(results?.politicalPosition?.y || 0).toFixed(1)})
+            Social: {(dynamicUserPosition.y || 0) > 0 ? 'Prog.' : 'Cons.'}
+            ({Math.abs(dynamicUserPosition.y || 0).toFixed(1)})
           </Badge>
-          {positionDescription && (
+          {dynamicUserPosition.x !== 0 || dynamicUserPosition.y !== 0 ? (
             <Badge variant="outline" className="text-xs px-2 py-1 border-midnight-green text-midnight-green bg-isabelline">
-              {positionDescription}
+              {getPoliticalPositionDescription(dynamicUserPosition)}
             </Badge>
-          )}
+          ) : null}
         </div>
       </div>
 
@@ -621,6 +641,7 @@ export function ProgressiveResultsModal({
           userAnswers={userAnswers as UserAnswers}
           municipality={municipality}
           topParties={topParties}
+          onUserPositionChange={handleUserPositionChange}
         />
       </div>
 
@@ -629,7 +650,8 @@ export function ProgressiveResultsModal({
         <p><strong>Légende:</strong> Bordures dorées 🥇, argentées 🥈 et bronze 🥉 = votre top 3</p>
       </div>
     </motion.div>
-  );
+    );
+  };
 
   if (!isOpen) return null;
 
