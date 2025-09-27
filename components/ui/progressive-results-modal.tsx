@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+// Dialog remplacé par modal custom pour containment
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
@@ -590,9 +590,9 @@ export function ProgressiveResultsModal({
             <Compass className="h-6 w-6 text-midnight-green" />
           </motion.div>
         </div>
-        <DialogTitle className="text-xl font-bold text-foreground mb-2">
+        <h3 className="text-xl font-bold text-foreground mb-2">
           Positionnement dans le paysage municipal
-        </DialogTitle>
+        </h3>
         <p className="text-muted-foreground text-sm mb-3">
           Voici où vous vous situez par rapport aux partis
         </p>
@@ -631,10 +631,20 @@ export function ProgressiveResultsModal({
     </motion.div>
   );
 
+  if (!isOpen) return null;
+
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-lg sm:max-w-xl lg:max-w-2xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 h-fit max-h-[60vh]">
+      {/* Overlay de fond */}
+      <div
+        className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        {/* Modal container */}
+        <div
+          className="relative max-w-sm sm:max-w-md w-full bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 rounded-lg shadow-xl max-h-[85vh] overflow-y-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Bouton fermer */}
           <Button
             variant="ghost"
@@ -654,9 +664,9 @@ export function ProgressiveResultsModal({
               </Badge>
               <Trophy className="h-5 w-5 text-midnight-green" />
             </div>
-            <DialogTitle className="text-lg font-bold text-midnight-green">
+            <h2 className="text-lg font-bold text-midnight-green">
               Découvrez vos affinités et votre positionnement
-            </DialogTitle>
+            </h2>
           </div>
 
           {/* Indicateur de slide */}
@@ -769,8 +779,8 @@ export function ProgressiveResultsModal({
               Voir l&apos;analyse complète
             </Button>
           </motion.div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      </div>
 
       {/* Modal de partage */}
       <ShareModal
