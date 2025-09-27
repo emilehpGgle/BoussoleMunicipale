@@ -36,6 +36,7 @@ export default function TestAdminPage() {
   const [calculTest, setCalculTest] = useState<TestResult>({ status: 'idle' })
   const [performanceTest, setPerformanceTest] = useState<TestResult>({ status: 'idle' })
   const [productionValidationTest, setProductionValidationTest] = useState<TestResult>({ status: 'idle' })
+  const [prioritiesTest, setPrioritiesTest] = useState<TestResult>({ status: 'idle' })
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     database: true,
@@ -46,6 +47,7 @@ export default function TestAdminPage() {
     calcul: false,
     performance: false,
     productionValidation: false,
+    priorities: false,
     routing: false
   })
 
@@ -327,7 +329,8 @@ export default function TestAdminPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-Test-Mode': 'true'
+          'X-Test-Mode': 'true',
+          'X-Test-Municipality': municipality
         },
         body: JSON.stringify({ profileData, municipalityId: municipality })
       })
@@ -354,7 +357,8 @@ export default function TestAdminPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Test-Mode': 'true'
+            'X-Test-Mode': 'true',
+            'X-Test-Municipality': municipality
           },
           body: JSON.stringify({
             ...response,
@@ -406,7 +410,8 @@ export default function TestAdminPage() {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Test-Mode': 'true'
+            'X-Test-Mode': 'true',
+            'X-Test-Municipality': municipality
           },
           body: JSON.stringify({
             resultsData: {
@@ -440,14 +445,16 @@ export default function TestAdminPage() {
         .from('user_profiles')
         .select('*')
         .eq('session_id', testUserId)
-        .single()
+        .eq('municipality_id', municipality)
+        .maybeSingle() // Utiliser maybeSingle au lieu de single pour éviter les erreurs 406
 
       // Vérifier aussi les résultats sauvés avec municipality_id
       const { data: savedResults } = await supabase
         .from('user_results')
         .select('*')
         .eq('session_id', testUserId)
-        .single()
+        .eq('municipality_id', municipality)
+        .maybeSingle() // Utiliser maybeSingle au lieu de single pour éviter les erreurs 406
 
       results.persistence_verified = !!savedProfile && !!savedResults
       results.municipality_saved = savedProfile?.municipality_id === municipality && savedResults?.municipality_id === municipality
@@ -534,6 +541,120 @@ export default function TestAdminPage() {
       setCalculTest({
         status: 'error',
         error: error instanceof Error ? error.message : 'Erreur calcul test'
+      })
+    }
+  }
+
+  const testPriorities = async () => {
+    setPrioritiesTest({ status: 'loading' })
+    try {
+      const results: Record<string, unknown> = {}
+      const _municipality = 'montreal'
+      const municipalityPrefix = 'mtl' // Préfixe pour Montréal
+
+      console.log('🔍 [Priorities Test] Début test priorités partis')
+
+      // Test 1: Récupération directe depuis Supabase
+      // Note: utilise le préfixe dans question_id car municipality_id n'existe pas dans party_positions
+      const supabase = createClient()
+      const { data: partyPositions, error } = await supabase
+        .from('party_positions')
+        .select('party_id, question_id, position, note, priority_list')
+        .ilike('question_id', `${municipalityPrefix}%enjeux_prioritaires%`)
+
+      if (error) throw error
+
+      results.raw_supabase_count = partyPositions?.length || 0
+      results.raw_data_sample = partyPositions?.slice(0, 2) || []
+
+      // Test 2: Fonctions de parsing des priorités
+      const parsePrioritiesFromNote = (noteText: string): Record<string, number> => {
+        if (!noteText) return {}
+        const priorityMatch = noteText.match(/Priorités?\s*:\s*(.+)/i)
+        if (!priorityMatch) return {}
+        const prioritiesText = priorityMatch[1]
+        const priorityItems = prioritiesText.split(',').map(item => item.trim()).filter(item => item.length > 0)
+        const priorities: Record<string, number> = {}
+        priorityItems.forEach((item, index) => {
+          const normalizedItem = item.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
+          priorities[normalizedItem] = index + 1
+        })
+        return priorities
+      }
+
+      const parsePrioritiesFromJSON = (priorityList: unknown): Record<string, number> => {
+        try {
+          const parsed = typeof priorityList === 'string' ? JSON.parse(priorityList) : priorityList
+          if (parsed && typeof parsed === 'object') {
+            const priorities: Record<string, number> = {}
+            Object.entries(parsed).forEach(([key, value]) => {
+              const normalizedKey = key.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '')
+              priorities[normalizedKey] = Number(value) || 0
+            })
+            return priorities
+          }
+        } catch (error) {
+          console.warn('Erreur parsing JSON:', error)
+        }
+        return {}
+      }
+
+      // Test 3: Parser toutes les priorités (priority_list d'abord, puis note)
+      const prioritiesByParty: Record<string, Record<string, number>> = {}
+      partyPositions?.forEach(position => {
+        let priorities: Record<string, number> = {}
+
+        // Essayer priority_list (format JSON) en premier
+        if (position.priority_list) {
+          priorities = parsePrioritiesFromJSON(position.priority_list)
+        }
+
+        // Si priority_list vide, essayer note (format texte)
+        if (Object.keys(priorities).length === 0 && position.note) {
+          priorities = parsePrioritiesFromNote(position.note)
+        }
+
+        // Ajouter si des priorités ont été trouvées
+        if (Object.keys(priorities).length > 0) {
+          prioritiesByParty[position.party_id] = priorities
+        }
+      })
+
+      results.parties_with_priorities = Object.keys(prioritiesByParty).length
+      results.priorities_by_party = prioritiesByParty
+      results.parties_list = Object.keys(prioritiesByParty)
+
+      // Test 4: Validation que ça matche avec le hook
+      results.hook_would_work = Object.keys(prioritiesByParty).length > 0
+
+      // Test 5: Détail du parsing pour debug
+      results.parsing_details = partyPositions?.map(pos => {
+        const jsonPriorities = pos.priority_list ? parsePrioritiesFromJSON(pos.priority_list) : {}
+        const notePriorities = pos.note ? parsePrioritiesFromNote(pos.note) : {}
+        const finalPriorities = Object.keys(jsonPriorities).length > 0 ? jsonPriorities : notePriorities
+
+        return {
+          party_id: pos.party_id,
+          priority_list_raw: pos.priority_list,
+          note_raw: pos.note,
+          parsed_from_json: jsonPriorities,
+          parsed_from_note: notePriorities,
+          final_priorities: finalPriorities,
+          has_priorities: Object.keys(finalPriorities).length > 0,
+          source_used: Object.keys(jsonPriorities).length > 0 ? 'priority_list' : 'note'
+        }
+      }) || []
+
+      console.log('🔍 [Priorities Test] Résultats:', results)
+
+      setPrioritiesTest({
+        status: 'success',
+        data: results
+      })
+    } catch (error) {
+      setPrioritiesTest({
+        status: 'error',
+        error: error instanceof Error ? error.message : 'Erreur test priorités'
       })
     }
   }
@@ -1032,6 +1153,41 @@ export default function TestAdminPage() {
         </Collapsible>
       </Card>
 
+      {/* Tests Priorités Partis */}
+      <Card>
+        <Collapsible open={openSections.priorities} onOpenChange={() => toggleSection('priorities')}>
+          <CollapsibleTrigger asChild>
+            <CardHeader className="cursor-pointer hover:bg-gray-50">
+              <CardTitle className="flex items-center justify-between">
+                <span>🎯 Tests Priorités Partis (CRITIQUE)</span>
+                {openSections.priorities ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+              </CardTitle>
+            </CardHeader>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <CardContent className="space-y-4">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <Button
+                    onClick={testPriorities}
+                    disabled={prioritiesTest.status === 'loading'}
+                    size="sm"
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    🔥 Tester Priorités Partis RAW (Montréal)
+                  </Button>
+                  <StatusIcon status={prioritiesTest.status} />
+                </div>
+                <p className="text-sm text-gray-600 mb-2">
+                  <strong>CRITIQUE:</strong> Test direct parsing priorités depuis colonne &apos;note&apos;. Doit montrer 5/5 partis avec priorités.
+                </p>
+                <ResultDisplay result={prioritiesTest} />
+              </div>
+            </CardContent>
+          </CollapsibleContent>
+        </Collapsible>
+      </Card>
+
       {/* Tests Performance */}
       <Card>
         <Collapsible open={openSections.performance} onOpenChange={() => toggleSection('performance')}>
@@ -1199,6 +1355,7 @@ export default function TestAdminPage() {
                 testHooks()
                 testFlow()
                 testCalcul()
+                testPriorities()
                 testPerformance()
                 testProductionValidation()
               }}
@@ -1218,6 +1375,7 @@ export default function TestAdminPage() {
                 setHooksTest({ status: 'idle' })
                 setFlowTest({ status: 'idle' })
                 setCalculTest({ status: 'idle' })
+                setPrioritiesTest({ status: 'idle' })
                 setPerformanceTest({ status: 'idle' })
                 setProductionValidationTest({ status: 'idle' })
               }}

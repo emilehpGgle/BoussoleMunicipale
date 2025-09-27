@@ -63,3 +63,5 @@ where
   (response_type = 'priority_ranking'::text);
 
 create index IF not exists idx_user_responses_municipality on public.user_responses using btree (municipality_id) TABLESPACE pg_default;
+
+create index IF not exists idx_user_responses_session_municipality on public.user_responses using btree (session_id, municipality_id) TABLESPACE pg_default;

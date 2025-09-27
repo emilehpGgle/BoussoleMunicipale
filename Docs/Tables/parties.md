@@ -17,3 +17,5 @@ create table public.parties (
 ) TABLESPACE pg_default;
 
 create index IF not exists idx_parties_municipality on public.parties using btree (municipality_id) TABLESPACE pg_default;
+
+create index IF not exists idx_parties_municipality_perf on public.parties using btree (municipality_id) TABLESPACE pg_default;

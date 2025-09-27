@@ -72,9 +72,9 @@ export default function SiteHeader() {
     const handleOpenModal = () => {
       // Quand on vient de la page d'accueil, vérifier s'il y a des réponses existantes
       const responseCounts = getResponseCounts
-      
+
       console.log('📊 [handleOpenModal] Response counts from home page:', responseCounts)
-      
+
       if (responseCounts && responseCounts.total > 0) {
         // Il y a des réponses, ouvrir le modal de choix
         console.log('🔄 [handleOpenModal] Réponses trouvées - ouvrir modal continuation')
@@ -86,10 +86,18 @@ export default function SiteHeader() {
       }
     }
 
+    const handleOpenModalForced = () => {
+      // Pour le "Recommencer à zéro" - toujours ouvrir le modal postal sans vérification
+      console.log('🚀 [handleOpenModalForced] Ouverture forcée du modal code postal (recommencer à zéro)')
+      openPostalModal()
+    }
+
     window.addEventListener('openPostalCodeModal', handleOpenModal)
-    
+    window.addEventListener('openPostalCodeModalForced', handleOpenModalForced)
+
     return () => {
       window.removeEventListener('openPostalCodeModal', handleOpenModal)
+      window.removeEventListener('openPostalCodeModalForced', handleOpenModalForced)
     }
   }, [getResponseCounts])
 

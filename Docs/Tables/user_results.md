@@ -18,3 +18,5 @@ create table public.user_results (
 ) TABLESPACE pg_default;
 
 create index IF not exists idx_user_results_municipality on public.user_results using btree (municipality_id) TABLESPACE pg_default;
+
+create index IF not exists idx_user_results_session_municipality on public.user_results using btree (session_id, municipality_id) TABLESPACE pg_default;
