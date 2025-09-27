@@ -26,6 +26,31 @@ import { usePriorities } from '@/hooks/usePriorities'
 import { useParties } from '@/hooks/useParties'
 import { usePartyPositions } from '@/hooks/usePartyPositions'
 
+/**
+ * Génère les initiales d'un nom de parti
+ * @param name - Nom complet du parti
+ * @returns Initiales en majuscules (ex: "Respect citoyens" → "RC")
+ */
+const generatePartyInitials = (name: string): string => {
+  // Mots à ignorer lors de la génération d'initiales
+  const stopWords = ['de', 'du', 'la', 'le', 'des', 'et', 'pour', 'avec', 'sans']
+
+  return name
+    .split(' ')
+    .filter(word => word.length > 0 && !stopWords.includes(word.toLowerCase()))
+    .map(word => word.charAt(0).toUpperCase())
+    .join('')
+}
+
+/**
+ * Obtient les initiales d'un parti (utilise shortName en priorité, sinon génère depuis le nom)
+ * @param party - Objet parti avec name et shortName optionnel
+ * @returns Initiales à afficher
+ */
+const getPartyInitials = (party: { name: string; shortName?: string }): string => {
+  return party.shortName || generatePartyInitials(party.name)
+}
+
 interface PoliticalCompassChartProps {
   userAnswers: UserAnswers
   municipality: string
@@ -248,16 +273,16 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
               className="transition-all duration-200 drop-shadow-md"
             />
             
-            {/* Logo du parti (approximation avec initiales) */}
-            <text 
-              x={coords.x} 
-              y={coords.y + (isFullscreenMode ? 6 : 4)} 
-              textAnchor="middle" 
-              fontSize={isFullscreenMode ? (isHovered ? "12" : "9") : (isHovered ? "8" : "6")} 
+            {/* Logo du parti (initiales) */}
+            <text
+              x={coords.x}
+              y={coords.y + (isFullscreenMode ? 6 : 4)}
+              textAnchor="middle"
+              fontSize={isFullscreenMode ? (isHovered ? "12" : "9") : (isHovered ? "8" : "6")}
               fill="hsl(var(--foreground))"
               className="font-bold transition-all duration-200 pointer-events-none"
             >
-              {party.shortName?.substring(0, 3) || party.name.substring(0, 3)}
+              {getPartyInitials(party)}
             </text>
             
             {/* Label du parti */}

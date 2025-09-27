@@ -634,7 +634,7 @@ export function ProgressiveResultsModal({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-lg sm:max-w-2xl lg:max-w-3xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 overflow-y-auto max-h-[70vh]">
+        <DialogContent className="max-w-lg sm:max-w-2xl lg:max-w-3xl p-0 bg-gradient-to-br from-azure-web/30 to-white border border-midnight-green/20 h-fit">
           {/* Bouton fermer */}
           <Button
             variant="ghost"
@@ -678,20 +678,20 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Carousel des résultats */}
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-hidden h-fit">
             <Carousel
               setApi={setCarouselApi}
-              className="w-full"
+              className="w-full h-fit">
               opts={{
                 align: 'start',
                 loop: false,
               }}
             >
-              <CarouselContent>
+              <CarouselContent className="h-fit">
                 {/* Slide 1: Premier parti */}
-                <CarouselItem>
-                  <div className="px-4 py-2 text-center flex items-start justify-center">
-                    <div className="w-full max-w-sm">
+                <CarouselItem className="h-fit">
+                  <div className="px-4 py-2 text-center flex items-start justify-center h-fit">
+                    <div className="w-full max-w-sm h-fit">
                       <PartyCard
                         party={topParty.party}
                         score={topParty.score}
@@ -705,9 +705,9 @@ export function ProgressiveResultsModal({
 
                 {/* Slide 2: Deuxième place */}
                 {secondParty && (
-                  <CarouselItem>
-                    <div className="px-4 py-2 text-center flex items-start justify-center">
-                      <div className="w-full max-w-sm">
+                  <CarouselItem className="h-fit">
+                    <div className="px-4 py-2 text-center flex items-start justify-center h-fit">
+                      <div className="w-full max-w-sm h-fit">
                         <PartyCard
                           party={secondParty.party}
                           score={secondParty.score}
@@ -721,9 +721,9 @@ export function ProgressiveResultsModal({
 
                 {/* Slide 3: Troisième place */}
                 {thirdParty && (
-                  <CarouselItem>
-                    <div className="px-4 py-2 text-center flex items-start justify-center">
-                      <div className="w-full max-w-sm">
+                  <CarouselItem className="h-fit">
+                    <div className="px-4 py-2 text-center flex items-start justify-center h-fit">
+                      <div className="w-full max-w-sm h-fit">
                         <PartyCard
                           party={thirdParty.party}
                           score={thirdParty.score}
@@ -736,7 +736,7 @@ export function ProgressiveResultsModal({
                 )}
 
                 {/* Slide 4: Carte politique */}
-                <CarouselItem>
+                <CarouselItem className="h-fit">
                   <CompassSlide />
                 </CarouselItem>
               </CarouselContent>
