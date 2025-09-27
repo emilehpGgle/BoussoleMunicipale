@@ -681,7 +681,7 @@ export function ProgressiveResultsModal({
           <div className="relative overflow-hidden h-fit">
             <Carousel
               setApi={setCarouselApi}
-              className="w-full h-fit">
+              className="w-full h-fit"
               opts={{
                 align: 'start',
                 loop: false,
