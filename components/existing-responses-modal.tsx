@@ -70,12 +70,22 @@ export default function ContinueOrRestartModal({
 
   const handleContinueQuestionnaire = () => {
     onClose()
-    router.push(`/${municipality}/test-politique-municipal`)
+    // Si municipality est undefined (ex: depuis page d'accueil), utiliser la route legacy
+    if (!municipality || municipality === 'undefined') {
+      router.push('/test-politique-municipal')
+    } else {
+      router.push(`/${municipality}/test-politique-municipal`)
+    }
   }
 
   const handleViewResults = () => {
     onClose()
-    router.push(`/${municipality}/resultats`)
+    // Si municipality est undefined (ex: depuis page d'accueil), utiliser la route legacy
+    if (!municipality || municipality === 'undefined') {
+      router.push('/resultats')
+    } else {
+      router.push(`/${municipality}/resultats`)
+    }
   }
 
   const handleRestartFromScratch = async () => {

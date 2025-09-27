@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { Party } from '@/lib/boussole-data'
+import { partiesData } from '@/lib/boussole-data'
 import { extractPartyPrioritiesSimple } from '@/lib/extract-priorities'
 
 /**
@@ -55,15 +56,18 @@ export function useParties(municipality?: string, includePositions = false) {
    */
   const transformDatabasePartyToParty = async (dbParty: DatabaseParty, positions: DatabasePartyPosition[] = []): Promise<Party> => {
     // Extraire les priorités du parti depuis la base de données
-    const priorities = await extractPartyPrioritiesSimple(dbParty.id, dbParty.municipality_id)
+    const priorities = await extractPartyPrioritiesSimple(dbParty.id, (dbParty as any).municipalityId || dbParty.municipality_id)
+
+    // Récupérer les URLs hardcodées depuis boussole-data.ts
+    const hardcodedParty = partiesData.find(p => p.id === dbParty.id)
 
     return {
       id: dbParty.id,
       name: dbParty.name,
       shortName: dbParty.short_name || undefined,
       leader: dbParty.leader,
-      logoUrl: dbParty.logo_url,
-      leaderPhotoUrl: dbParty.leader_photo_url || undefined,
+      logoUrl: hardcodedParty?.logoUrl || dbParty.logo_url, // Utiliser URL hardcodée en priorité
+      leaderPhotoUrl: hardcodedParty?.leaderPhotoUrl || dbParty.leader_photo_url || undefined, // Utiliser URL hardcodée en priorité
       color: dbParty.color || '#0066CC', // Couleur par défaut
       websiteUrl: dbParty.website_url || undefined,
       orientation: dbParty.orientation || undefined,
@@ -229,15 +233,18 @@ export function useParty(municipality: string, partyId: string) {
    */
   const transformDatabasePartyToParty = async (dbParty: any, positions: any[] = []): Promise<Party> => {
     // Extraire les priorités du parti depuis la base de données
-    const priorities = await extractPartyPrioritiesSimple(dbParty.id, dbParty.municipality_id)
+    const priorities = await extractPartyPrioritiesSimple(dbParty.id, dbParty.municipalityId || dbParty.municipality_id)
+
+    // Récupérer les URLs hardcodées depuis boussole-data.ts
+    const hardcodedParty = partiesData.find(p => p.id === dbParty.id)
 
     return {
       id: dbParty.id,
       name: dbParty.name,
       shortName: dbParty.short_name || undefined,
       leader: dbParty.leader,
-      logoUrl: dbParty.logo_url,
-      leaderPhotoUrl: dbParty.leader_photo_url || undefined,
+      logoUrl: hardcodedParty?.logoUrl || dbParty.logo_url, // Utiliser URL hardcodée en priorité
+      leaderPhotoUrl: hardcodedParty?.leaderPhotoUrl || dbParty.leader_photo_url || undefined, // Utiliser URL hardcodée en priorité
       color: dbParty.color || '#0066CC',
       websiteUrl: dbParty.website_url || undefined,
       orientation: dbParty.orientation || undefined,

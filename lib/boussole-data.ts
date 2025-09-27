@@ -384,7 +384,7 @@ export const partiesData: Party[] = [
     shortName: "EPQ",
     leader: "Stevens Mélançon",
     logoUrl: "/logos/equipe-priorite-quebec-new.png",
-    leaderPhotoUrl: "/Leaders/Stevens_Melancons.jpg", // Updated
+    leaderPhotoUrl: "/Leaders/Stevens_Melancons.jpg",
     color: "#004b87",
     websiteUrl: "https://equipeprioritequebec.ca/",
     orientation: "Centre pragmatique, opposition constructive",
@@ -637,7 +637,7 @@ export const partiesData: Party[] = [
     shortName: "QD",
     leader: "Claude Villeneuve",
     logoUrl: "/logos/quebec-dabord-new.png",
-    leaderPhotoUrl: "/Leaders/Claude_Villeneuve.jpg", // Updated
+    leaderPhotoUrl: "/Leaders/Claude_Villeneuve.jpg",
     color: "#00aef0",
     websiteUrl: "https://quebecdabord.com/",
     orientation: "Centre, pragmatique",
@@ -784,7 +784,7 @@ export const partiesData: Party[] = [
     shortName: "QFF",
     leader: "Bruno Marchand",
     logoUrl: "/logos/quebec-forte-et-fiere-new.png",
-    leaderPhotoUrl: "/Leaders/Bruno_Marchand.jpg", // Updated
+    leaderPhotoUrl: "/Leaders/Bruno_Marchand.jpg",
     color: "#FDB813",
     websiteUrl: "https://quebecforteetfiere.org/",
     orientation: "Centre-gauche, progressiste",
@@ -1078,7 +1078,7 @@ export const partiesData: Party[] = [
     shortName: "TQ",
     leader: "Jackie Smith",
     logoUrl: "/logos/transition-quebec-new.png",
-    leaderPhotoUrl: "/Leaders/Jackie_Smith.jpg", // Updated
+    leaderPhotoUrl: "/Leaders/Jackie_Smith.jpg",
     color: "#00965e",
     websiteUrl: "https://transitionqc.org/",
     orientation: "Écologiste progressiste, gauche municipale",
