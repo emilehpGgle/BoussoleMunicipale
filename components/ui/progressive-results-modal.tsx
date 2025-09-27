@@ -489,12 +489,12 @@ export function ProgressiveResultsModal({
           </span>
         </motion.div>
 
-        <Card className={`p-6 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-2xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
+        <Card className={`p-4 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-2xl bg-gradient-to-br from-azure-web/30 to-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl`}>
           {/* Confetti pour le premier parti */}
           {isChampion && <ConfettiExplosion trigger={showConfetti} />}
 
           {/* Logo */}
-          <div className="relative mb-2">
+          <div className="relative mb-1">
             <PartyLogo
               party={party}
               size={{ width: isChampion ? 120 : 100, height: isChampion ? 120 : 100 }}
@@ -503,8 +503,8 @@ export function ProgressiveResultsModal({
           </div>
 
           {/* Nom du parti */}
-          <div className="min-h-[3rem] flex flex-col justify-center mb-3">
-            <h3 className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-foreground leading-tight mb-1`}>
+          <div className="min-h-[2.5rem] flex flex-col justify-center mb-2">
+            <h3 className={`${isChampion ? 'text-lg' : 'text-base'} font-bold text-foreground leading-tight mb-0.5`}>
               {party.shortName || party.name}
             </h3>
             <p className="text-sm text-muted-foreground leading-tight">
@@ -690,7 +690,7 @@ export function ProgressiveResultsModal({
               <CarouselContent>
                 {/* Slide 1: Premier parti */}
                 <CarouselItem>
-                  <div className="px-4 py-3 text-center flex items-center justify-center min-h-[280px]">
+                  <div className="px-4 py-2 text-center flex items-start justify-center">
                     <div className="w-full max-w-sm">
                       <PartyCard
                         party={topParty.party}
@@ -706,7 +706,7 @@ export function ProgressiveResultsModal({
                 {/* Slide 2: Deuxième place */}
                 {secondParty && (
                   <CarouselItem>
-                    <div className="px-4 py-3 text-center flex items-center justify-center min-h-[280px]">
+                    <div className="px-4 py-2 text-center flex items-start justify-center">
                       <div className="w-full max-w-sm">
                         <PartyCard
                           party={secondParty.party}
@@ -722,7 +722,7 @@ export function ProgressiveResultsModal({
                 {/* Slide 3: Troisième place */}
                 {thirdParty && (
                   <CarouselItem>
-                    <div className="px-4 py-3 text-center flex items-center justify-center min-h-[280px]">
+                    <div className="px-4 py-2 text-center flex items-start justify-center">
                       <div className="w-full max-w-sm">
                         <PartyCard
                           party={thirdParty.party}

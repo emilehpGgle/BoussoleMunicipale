@@ -21,6 +21,7 @@ import type { Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { usePriorities } from "@/hooks/usePriorities"
 import { useParty } from "@/hooks/useParties"
+import { getPartyLogo, getLeaderPhoto } from "@/lib/party-assets"
 import type { AgreementOptionKey } from "@/lib/supabase/types"
 
 const LogoContainer: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
@@ -181,16 +182,16 @@ export default function PartyDetailPage() {
             <div className="flex flex-col gap-4 flex-shrink-0">
               <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
                 <Image
-                  src={party.logoUrl || "/placeholder.svg?width=128&height=128&query=Logo+non+disponible"}
+                  src={getPartyLogo(party.id)}
                   alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
                   fill
                   style={{ objectFit: "contain" }}
                 />
               </LogoContainer>
-              {party.leaderPhotoUrl && (
+              {getLeaderPhoto(party.leader) && (
                 <div className="w-24 h-24 sm:w-32 sm:h-32 relative bg-white rounded-xl shadow-sm overflow-hidden">
                   <Image
-                    src={party.leaderPhotoUrl}
+                    src={getLeaderPhoto(party.leader)!}
                     alt={`Photo de ${party.leader} - Chef de ${party.name}`}
                     fill
                     style={{ objectFit: "cover" }}

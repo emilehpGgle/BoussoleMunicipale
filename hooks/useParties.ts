@@ -203,11 +203,17 @@ export function useParty(municipality: string, partyId: string) {
         throw new Error(`Parti "${partyId}" non trouvé dans ${municipality}`)
       }
 
+      // Debug: vérifier les positions reçues de l'API
+      console.log('🔍 [useParty] dbParty.positions reçues:', dbParty.positions?.length || 0)
+      console.log('🔍 [useParty] Première position:', dbParty.positions?.[0])
+
       // Transformer la donnée en format Party
+      // Note: dbParty.positions vient de l'API et est déjà au bon format
       const transformedParty = await transformDatabasePartyToParty(dbParty, dbParty.positions || [])
       setParty(transformedParty)
 
       console.log(`✅ [useParty] Parti ${partyId} chargé avec ${transformedParty.positions.length} positions`)
+      console.log('🔍 [useParty] Première position transformée:', transformedParty.positions?.[0])
 
     } catch (err) {
       console.error('❌ [useParty] Erreur:', err)
