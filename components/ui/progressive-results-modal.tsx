@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { X, Share2 } from 'lucide-react';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -14,6 +14,7 @@ import { AgreementOptionKey, ImportanceDirectOptionKey } from '@/lib/supabase/ty
 import { type Party } from '@/lib/boussole-data';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import ShareModal from '@/components/share-modal';
 import {
   Carousel,
@@ -22,6 +23,16 @@ import {
   CarouselNavigation,
   CarouselIndicator,
 } from '@/components/ui/carousel';
+import {
+  type PoliticalPosition,
+  axisConfiguration,
+  calculateMapBounds,
+  normalizePositionForDisplay
+} from '@/lib/political-map-calculator';
+import { calculateUserPoliticalPosition } from '@/lib/political-calculator-db';
+import { transformAllPartyPositionsToUserAnswers } from '@/lib/supabase-transform';
+import { useParties } from '@/hooks/useParties';
+import { usePartyPositions } from '@/hooks/usePartyPositions';
 
 interface ProgressiveResultsModalProps {
   isOpen: boolean;
@@ -138,11 +149,93 @@ export function ProgressiveResultsModal({
   municipality
 }: ProgressiveResultsModalProps) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [hoveredParty, setHoveredParty] = useState<string | null>(null);
+  const router = useRouter();
+
+  // États pour la boussole politique
+  const [userPosition, setUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 });
+  const [partyPositions, setPartyPositions] = useState<Record<string, PoliticalPosition>>({});
+
+  // Hooks pour données des partis
+  const { parties } = useParties(municipality);
+  const { positionsByParty } = usePartyPositions(municipality);
+
+  // Calculer la position de l'utilisateur
+  useEffect(() => {
+    calculateUserPoliticalPosition(userAnswers, municipality)
+      .then(position => setUserPosition(position))
+      .catch(err => console.error('Erreur calcul position utilisateur:', err))
+  }, [userAnswers, municipality]);
+
+  // Calculer les positions des partis
+  useEffect(() => {
+    if (!positionsByParty) {
+      setPartyPositions({});
+      return;
+    }
+
+    const partyAnswers = transformAllPartyPositionsToUserAnswers(positionsByParty);
+    const calculateAllPositions = async () => {
+      const positions: Record<string, PoliticalPosition> = {};
+      for (const [partyId, answers] of Object.entries(partyAnswers)) {
+        try {
+          positions[partyId] = await calculateUserPoliticalPosition(answers, municipality);
+        } catch (err) {
+          console.error(`Erreur calcul position pour ${partyId}:`, err);
+          positions[partyId] = { x: 0, y: 0 };
+        }
+      }
+      setPartyPositions(positions);
+    };
+
+    calculateAllPositions();
+  }, [positionsByParty, municipality]);
 
   if (!isOpen || !topMatch || !topParties.length) return null;
 
   // Prendre les top 3 partis
   const top3Parties = topParties.slice(0, 3);
+
+  // Calculs pour la boussole politique
+  const mapBounds = useMemo(() => {
+    const allPositions = [userPosition, ...Object.values(partyPositions)];
+    return calculateMapBounds(allPositions, 30);
+  }, [userPosition, partyPositions]);
+
+  // Fonction pour convertir les coordonnées politiques en coordonnées SVG
+  const toSVGCoords = (position: PoliticalPosition, width: number, height: number) => {
+    const padding = 40;
+    const canvasSize = Math.min(width, height) - 2 * padding;
+
+    const normalized = normalizePositionForDisplay(position, mapBounds, canvasSize);
+
+    const x = normalized.x + padding + (width - canvasSize - 2 * padding) / 2;
+    const y = height - (normalized.y + padding + (height - canvasSize - 2 * padding) / 2);
+
+    return { x, y };
+  };
+
+  // Calcul des données des partis pour la carte
+  const partyMapData = useMemo(() => {
+    if (!parties || Object.keys(partyPositions).length === 0) return [];
+
+    return Object.entries(partyPositions).map(([partyId, position]) => {
+      const party = parties.find(p => p.id === partyId);
+      return party ? { party, position, partyId } : null;
+    }).filter(item => item !== null);
+  }, [parties, partyPositions]);
+
+  // Obtient les initiales d'un parti
+  const getPartyInitials = (party: { name: string; shortName?: string }): string => {
+    if (party.shortName) return party.shortName;
+
+    const stopWords = ['de', 'du', 'la', 'le', 'des', 'et', 'pour', 'avec', 'sans'];
+    return party.name
+      .split(' ')
+      .filter(word => word.length > 0 && !stopWords.includes(word.toLowerCase()))
+      .map(word => word.charAt(0).toUpperCase())
+      .join('');
+  };
 
 
   return (
@@ -254,6 +347,241 @@ export function ProgressiveResultsModal({
                     </div>
                   </CarouselItem>
                 ))}
+
+                {/* Page boussole politique */}
+                <CarouselItem key="political-compass" className="pl-0">
+                  <div className="flex flex-col items-center justify-center py-2 px-2 space-y-2 h-full">
+                    {/* Titre minimal */}
+                    <div className="text-center">
+                      <h3 className="text-xl font-bold text-[#04454A]">
+                        Votre Position Politique
+                      </h3>
+                    </div>
+
+                    {/* Carte politique simplifiée */}
+                    <div className="w-full flex-1 flex items-center justify-center min-h-0">
+                      <svg
+                        viewBox="0 0 400 300"
+                        className="w-full h-full max-w-full max-h-full"
+                        style={{ aspectRatio: '400/300' }}
+                      >
+                        {/* Grille de fond */}
+                        <defs>
+                          <pattern id="grid-modal" width="30" height="30" patternUnits="userSpaceOnUse">
+                            <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#e2e8f0" strokeWidth="0.5" opacity="0.3"/>
+                          </pattern>
+                        </defs>
+                        <rect width="100%" height="100%" fill="url(#grid-modal)" />
+
+                        {/* Axes principaux */}
+                        <line x1={30} y1={150} x2={370} y2={150} stroke="#94a3b8" strokeWidth="2"/>
+                        <line x1={200} y1={30} x2={200} y2={270} stroke="#94a3b8" strokeWidth="2"/>
+
+                        {/* Labels des axes */}
+                        <text x={35} y={145} fontSize="9" fill="#64748b" className="font-medium">
+                          {axisConfiguration.economic.leftLabel.split(' ')[0]}
+                        </text>
+                        <text x={365} y={145} fontSize="9" fill="#64748b" textAnchor="end" className="font-medium">
+                          {axisConfiguration.economic.rightLabel.split(' ')[0]}
+                        </text>
+                        <text x={205} y={40} fontSize="9" fill="#64748b" className="font-medium">
+                          {axisConfiguration.social.rightLabel}
+                        </text>
+                        <text x={205} y={265} fontSize="9" fill="#64748b" className="font-medium">
+                          {axisConfiguration.social.leftLabel}
+                        </text>
+
+                        {/* Quadrants colorés */}
+                        <rect x={30} y={30} width={170} height={120} fill="#10b981" opacity="0.1"/>
+                        <rect x={200} y={30} width={170} height={120} fill="#0891b2" opacity="0.1"/>
+                        <rect x={30} y={150} width={170} height={120} fill="#f59e0b" opacity="0.1"/>
+                        <rect x={200} y={150} width={170} height={120} fill="#8b5cf6" opacity="0.1"/>
+
+                        {/* Partis politiques - non-survolés (arrière-plan) */}
+                        {partyMapData.filter(({ partyId }) => partyId !== hoveredParty).map(({ party, position, partyId }) => {
+                          const coords = toSVGCoords(position, 400, 300);
+
+                          return (
+                            <g
+                              key={partyId}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => router.push(`/${municipality}/parti/${partyId}`)}
+                              onMouseEnter={() => setHoveredParty(partyId)}
+                              onMouseLeave={() => setHoveredParty(null)}
+                              onTouchStart={() => setHoveredParty(partyId)}
+                              onTouchEnd={() => setHoveredParty(null)}
+                            >
+                              <circle
+                                cx={coords.x}
+                                cy={coords.y}
+                                r={8}
+                                fill="white"
+                                stroke="#1e40af"
+                                strokeWidth={1.5}
+                                className="drop-shadow-sm transition-all duration-200"
+                              />
+                              <text
+                                x={coords.x}
+                                y={coords.y + 3}
+                                textAnchor="middle"
+                                fontSize="6"
+                                fill="#0f172a"
+                                className="font-bold transition-all duration-200 pointer-events-none"
+                              >
+                                {getPartyInitials(party)}
+                              </text>
+                            </g>
+                          );
+                        })}
+
+                        {/* Cercles de l'utilisateur (au-dessus des partis normaux) */}
+                        {(() => {
+                          const userCoords = toSVGCoords(userPosition, 400, 300);
+                          return (
+                            <g>
+                              {/* Cercle extérieur animé */}
+                              <circle
+                                cx={userCoords.x}
+                                cy={userCoords.y}
+                                r={15}
+                                fill="none"
+                                stroke="#1e40af"
+                                strokeWidth="2"
+                                strokeDasharray="6,3"
+                                opacity="0.8"
+                              >
+                                <animateTransform
+                                  attributeName="transform"
+                                  attributeType="XML"
+                                  type="rotate"
+                                  from={`0 ${userCoords.x} ${userCoords.y}`}
+                                  to={`360 ${userCoords.x} ${userCoords.y}`}
+                                  dur="8s"
+                                  repeatCount="indefinite"
+                                />
+                              </circle>
+
+                              {/* Point principal de l'utilisateur */}
+                              <circle
+                                cx={userCoords.x}
+                                cy={userCoords.y}
+                                r={6}
+                                fill="#1e40af"
+                                stroke="white"
+                                strokeWidth="2"
+                                className="drop-shadow-lg"
+                              />
+                            </g>
+                          );
+                        })()}
+
+                        {/* Parti survolé (premier plan absolu) */}
+                        {hoveredParty && (() => {
+                          const hoveredData = partyMapData.find(({ partyId }) => partyId === hoveredParty);
+                          if (!hoveredData) return null;
+
+                          const coords = toSVGCoords(hoveredData.position, 400, 300);
+
+                          return (
+                            <g
+                              key={`${hoveredParty}-hovered`}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => router.push(`/${municipality}/parti/${hoveredParty}`)}
+                              onMouseEnter={() => setHoveredParty(hoveredParty)}
+                              onMouseLeave={() => setHoveredParty(null)}
+                              onTouchStart={() => setHoveredParty(hoveredParty)}
+                              onTouchEnd={() => setHoveredParty(null)}
+                            >
+                              <circle
+                                cx={coords.x}
+                                cy={coords.y}
+                                r={12}
+                                fill="white"
+                                stroke="#1e40af"
+                                strokeWidth={2}
+                                className="drop-shadow-lg transition-all duration-200"
+                              />
+                              <text
+                                x={coords.x}
+                                y={coords.y + 3}
+                                textAnchor="middle"
+                                fontSize="7"
+                                fill="#0f172a"
+                                className="font-bold transition-all duration-200 pointer-events-none"
+                              >
+                                {getPartyInitials(hoveredData.party)}
+                              </text>
+                            </g>
+                          );
+                        })()}
+
+                        {/* Tous les labels (premier plan absolu) */}
+                        <g className="all-labels">
+                          {/* Label utilisateur (toujours visible) */}
+                          {(() => {
+                            const userCoords = toSVGCoords(userPosition, 400, 300);
+                            return (
+                              <text
+                                x={userCoords.x}
+                                y={userCoords.y - 22}
+                                textAnchor="middle"
+                                fontSize="8"
+                                fill="#1e40af"
+                                className="font-bold"
+                              >
+                                Vous
+                              </text>
+                            );
+                          })()}
+
+                          {/* Labels de hover des partis */}
+                          {hoveredParty && (() => {
+                            const hoveredData = partyMapData.find(({ partyId }) => partyId === hoveredParty);
+                            if (!hoveredData) return null;
+
+                            const coords = toSVGCoords(hoveredData.position, 400, 300);
+                            const partyName = hoveredData.party.shortName || hoveredData.party.name;
+
+                            // Calcul approximatif de la largeur du texte (8px par caractère pour fontSize 10)
+                            const textWidth = partyName.length * 7;
+                            const rectWidth = textWidth + 12; // Padding de 6px de chaque côté
+                            const rectHeight = 18;
+
+                            return (
+                              <g className="label-with-background">
+                                {/* Rectangle background */}
+                                <rect
+                                  x={coords.x - rectWidth/2}
+                                  y={coords.y - 32}
+                                  width={rectWidth}
+                                  height={rectHeight}
+                                  fill="white"
+                                  opacity="0.95"
+                                  rx="4"
+                                  ry="4"
+                                  stroke="#e2e8f0"
+                                  strokeWidth="0.5"
+                                  className="drop-shadow-sm"
+                                />
+                                {/* Texte par-dessus */}
+                                <text
+                                  x={coords.x}
+                                  y={coords.y - 20}
+                                  textAnchor="middle"
+                                  fontSize="10"
+                                  fill="#0f172a"
+                                  className="font-medium pointer-events-none"
+                                >
+                                  {partyName}
+                                </text>
+                              </g>
+                            );
+                          })()}
+                        </g>
+                      </svg>
+                    </div>
+                  </div>
+                </CarouselItem>
               </CarouselContent>
 
               {/* Navigation du carousel - pattern par défaut */}
