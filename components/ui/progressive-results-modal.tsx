@@ -471,7 +471,7 @@ export function ProgressiveResultsModal({
                 </Button>
               </div>
             </div>
-            <p className="text-sm text-[#222222]/70 mt-1 text-center">Découvrez vos affinités avec les partis</p>
+            <p className="text-sm text-[#222222]/70 mt-1 text-center">Découvrez vos similarités politiques avec les partis</p>
           </motion.div>
 
           {/* Carousel pour les top 3 partis - sans padding horizontal */}
@@ -531,14 +531,14 @@ export function ProgressiveResultsModal({
                               suffix="%"
                             />
                           </div>
-                          <div className="text-sm text-[#222222]/60">d&apos;affinité politique</div>
+                          <div className="text-sm text-[#222222]/60">de similarité politique</div>
                         </div>
 
                         {/* Breakdown détaillé et concis */}
                         {compatibilityDetails[party.party.id] && (
                           <div className="text-center text-xs text-[#222222]/70 bg-[#EAFCFC]/30 rounded-md px-2 py-1 space-y-0.5">
                             <div className="font-medium">
-                              ({compatibilityDetails[party.party.id].politicalScore}% questions × 70%) + ({compatibilityDetails[party.party.id].priorityMatches}/{compatibilityDetails[party.party.id].totalPriorities} priorités × 30%)
+                              ({compatibilityDetails[party.party.id].politicalScore}% position politique × 70%) + ({compatibilityDetails[party.party.id].priorityMatches}/{compatibilityDetails[party.party.id].totalPriorities} priorités × 30%)
                             </div>
                             {compatibilityDetails[party.party.id].sharedPriorities.length > 0 && (
                               <div className="text-[#04454A]/80 font-medium">

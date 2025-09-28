@@ -20,8 +20,6 @@ import { useQuestions } from "@/hooks/useQuestions"
 import { useParties } from "@/hooks/useParties"
 import { usePartyPositions } from "@/hooks/usePartyPositions"
 import {
-  calculatePoliticalDistance,
-  calculatePriorityCompatibility,
   calculateExactCompatibility,
 } from "@/lib/political-map-calculator"
 import {

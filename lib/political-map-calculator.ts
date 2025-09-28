@@ -234,12 +234,14 @@ export function calculateExactCompatibilityWithDetails(
   userPriorities: Record<string, number>,
   partyPriorities: string[]
 ): CompatibilityDetails {
+
   // 1. Calcul du score politique (exactement comme dans resultats/page.tsx)
   const distance = calculatePoliticalDistance(userPosition, partyPosition)
   // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
   const maxDistance = 283
   const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
   const politicalScore = compatibility
+
 
   // 2. Calcul du score des priorités avec détails
   const priorityScore = calculatePriorityCompatibility(userPriorities, partyPriorities)
@@ -261,18 +263,18 @@ export function calculateExactCompatibilityWithDetails(
 
   // 5. Génération du texte narratif
   const generateNarrative = () => {
-    // Texte d'accord politique
+    // Texte de similarité politique (position globale, pas accord direct)
     let agreementText = ""
     if (politicalScore >= 90) {
-      agreementText = `Vous êtes très alignés avec ce parti sur ${politicalScore}% des enjeux municipaux`
+      agreementText = `Votre position politique est très similaire à celle de ce parti (${politicalScore}%)`
     } else if (politicalScore >= 75) {
-      agreementText = `Vous êtes d'accord avec ce parti sur ${politicalScore}% des enjeux municipaux`
+      agreementText = `Votre position politique est proche de celle de ce parti (${politicalScore}%)`
     } else if (politicalScore >= 60) {
-      agreementText = `Vous partagez ${politicalScore}% des positions de ce parti`
+      agreementText = `Votre position politique rejoint celle de ce parti à ${politicalScore}%`
     } else if (politicalScore >= 40) {
-      agreementText = `Vous avez ${politicalScore}% d'opinions communes avec ce parti`
+      agreementText = `Votre position politique converge partiellement avec ce parti (${politicalScore}%)`
     } else {
-      agreementText = `Vous avez des divergences importantes avec ce parti (${politicalScore}% d'accord)`
+      agreementText = `Votre position politique diverge significativement de ce parti (${politicalScore}%)`
     }
 
     // Texte des priorités

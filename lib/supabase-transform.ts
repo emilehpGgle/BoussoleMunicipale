@@ -67,7 +67,10 @@ export function transformAllPartyPositionsToUserAnswers(
   const allPartyAnswers: Record<string, UserAnswers> = {}
 
   Object.entries(positionsByParty).forEach(([partyId, positions]) => {
-    allPartyAnswers[partyId] = transformPartyPositionsToUserAnswers(positions)
+    const transformed = transformPartyPositionsToUserAnswers(positions)
+
+
+    allPartyAnswers[partyId] = transformed
   })
 
   return allPartyAnswers
