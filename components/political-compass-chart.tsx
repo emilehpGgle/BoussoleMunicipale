@@ -25,6 +25,7 @@ import { useRouter } from 'next/navigation'
 import { usePriorities } from '@/hooks/usePriorities'
 import { useParties } from '@/hooks/useParties'
 import { usePartyPositions } from '@/hooks/usePartyPositions'
+import { extractPartyPrioritiesSimple } from '@/lib/extract-priorities'
 
 /**
  * Génère les initiales d'un nom de parti
@@ -110,34 +111,62 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
     return getPoliticalPositionDescription(userPosition)
   }, [userPosition])
 
+  // État pour stocker les distances calculées de manière asynchrone
+  const [partyDistances, setPartyDistances] = useState<Array<{
+    party: { id: string; name: string; shortName?: string; logoUrl?: string; priorities?: string[] };
+    position: PoliticalPosition;
+    distance: number;
+    compatibility: number;
+    partyId: string;
+  }>>([])
+
   // Calcul des distances avec les partis (utilisant les positions originales et le calcul unifié)
-  const partyDistances = useMemo(() => {
-    if (!parties || Object.keys(partyPositions).length === 0) return []
+  useEffect(() => {
+    const calculateDistances = async () => {
+      if (!parties || Object.keys(partyPositions).length === 0) {
+        setPartyDistances([])
+        return
+      }
 
-    return Object.entries(partyPositions).map(([partyId, position]) => {
-      const party = parties.find(p => p.id === partyId)
-      if (!party) return null
+      const distances = await Promise.all(
+        Object.entries(partyPositions).map(async ([partyId, position]) => {
+          const party = parties.find(p => p.id === partyId)
+          if (!party) return null
 
-      const distance = calculatePoliticalDistance(userPosition, position)
+          const distance = calculatePoliticalDistance(userPosition, position)
 
-      // Utiliser le calcul exact identique à resultats/page.tsx
-      const partyPriorities = party.priorities || []
-      const compatibility = calculateExactCompatibility(
-        userPosition,
-        position,
-        userPriorities || {},
-        partyPriorities
+          // ✅ CORRECTION: Utiliser exactement la même méthode que resultats/page.tsx
+          const partyPriorities = await extractPartyPrioritiesSimple(partyId, municipality)
+          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: DB priorities=`, partyPriorities)
+
+          const compatibility = calculateExactCompatibility(
+            userPosition,
+            position,
+            userPriorities || {},
+            partyPriorities
+          )
+
+          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: Final compatibility=${compatibility}%`)
+
+          return {
+            party,
+            position,
+            distance,
+            compatibility,
+            partyId
+          }
+        })
       )
 
-      return {
-        party,
-        position,
-        distance,
-        compatibility,
-        partyId
-      }
-    }).filter(item => item !== null).sort((a, b) => b.compatibility - a.compatibility) // Trier par compatibilité décroissante
-  }, [userPosition, partyPositions, userPriorities, parties])
+      const filteredDistances = distances
+        .filter(item => item !== null)
+        .sort((a, b) => b.compatibility - a.compatibility) // Trier par compatibilité décroissante
+
+      setPartyDistances(filteredDistances)
+    }
+
+    calculateDistances()
+  }, [userPosition, partyPositions, userPriorities, parties, municipality])
 
   // Calcul des limites de la carte pour l'affichage adaptatif
   const mapBounds = useMemo(() => {

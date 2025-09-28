@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { X, Share2 } from 'lucide-react';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -16,12 +17,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import ShareModal from '@/components/share-modal';
+import { AnimatedCounter } from './animated-counter';
+import { HeaderStars } from './header-stars';
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselNavigation,
-  CarouselIndicator,
 } from '@/components/ui/carousel';
 import {
   type PoliticalPosition,
@@ -136,6 +138,139 @@ const RankMedal: React.FC<{ rank: number }> = ({ rank }) => {
   return null;
 };
 
+// Variants d'animation pour le modal
+const modalVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    scale: 0.95,
+    y: 10,
+  },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "backOut",
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+  exit: {
+    opacity: 0,
+    scale: 0.95,
+    y: 10,
+    transition: {
+      duration: 0.3,
+      ease: "easeIn",
+    },
+  },
+};
+
+const overlayVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.3, ease: "easeOut" },
+  },
+  exit: {
+    opacity: 0,
+    transition: { duration: 0.2, ease: "easeIn" },
+  },
+};
+
+const contentVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: "easeOut",
+    },
+  },
+};
+
+// Variants pour la révélation progressive des éléments du carousel
+const logoVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8, y: 20 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: {
+      duration: 0.4,
+      ease: "backOut",
+      delay: 0.3,
+    },
+  },
+};
+
+const medalVariants: Variants = {
+  hidden: { opacity: 0, scale: 0, rotate: -180 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      duration: 0.5,
+      ease: "backOut",
+      delay: 0.5,
+    },
+  },
+};
+
+const titleVariants: Variants = {
+  hidden: { opacity: 0, y: 15 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: "easeOut",
+      delay: 0.7,
+    },
+  },
+};
+
+const scoreVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: {
+      duration: 0.4,
+      ease: "backOut",
+      delay: 0.9,
+    },
+  },
+};
+
+const progressVariants: Variants = {
+  hidden: { scaleX: 0 },
+  visible: {
+    scaleX: 1,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+      delay: 1.1,
+    },
+  },
+};
+
+const descriptionVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.3,
+      ease: "easeOut",
+      delay: 1.3,
+    },
+  },
+};
+
 export function ProgressiveResultsModal({
   isOpen,
   onClose,
@@ -191,16 +326,22 @@ export function ProgressiveResultsModal({
     calculateAllPositions();
   }, [positionsByParty, municipality]);
 
-  if (!isOpen || !topMatch || !topParties.length) return null;
-
-  // Prendre les top 3 partis
-  const top3Parties = topParties.slice(0, 3);
-
+  // ✅ CORRECTION: Déplacer tous les hooks avant le early return
   // Calculs pour la boussole politique
   const mapBounds = useMemo(() => {
     const allPositions = [userPosition, ...Object.values(partyPositions)];
     return calculateMapBounds(allPositions, 30);
   }, [userPosition, partyPositions]);
+
+  // Calcul des données des partis pour la carte
+  const partyMapData = useMemo(() => {
+    if (!parties || Object.keys(partyPositions).length === 0) return [];
+
+    return Object.entries(partyPositions).map(([partyId, position]) => {
+      const party = parties.find(p => p.id === partyId);
+      return party ? { party, position, partyId } : null;
+    }).filter(item => item !== null);
+  }, [parties, partyPositions]);
 
   // Fonction pour convertir les coordonnées politiques en coordonnées SVG
   const toSVGCoords = (position: PoliticalPosition, width: number, height: number) => {
@@ -215,15 +356,10 @@ export function ProgressiveResultsModal({
     return { x, y };
   };
 
-  // Calcul des données des partis pour la carte
-  const partyMapData = useMemo(() => {
-    if (!parties || Object.keys(partyPositions).length === 0) return [];
+  if (!isOpen || !topMatch || !topParties.length) return null;
 
-    return Object.entries(partyPositions).map(([partyId, position]) => {
-      const party = parties.find(p => p.id === partyId);
-      return party ? { party, position, partyId } : null;
-    }).filter(item => item !== null);
-  }, [parties, partyPositions]);
+  // Prendre les top 3 partis
+  const top3Parties = topParties.slice(0, 3);
 
   // Obtient les initiales d'un parti
   const getPartyInitials = (party: { name: string; shortName?: string }): string => {
@@ -240,22 +376,38 @@ export function ProgressiveResultsModal({
 
   return (
     <>
-      {/* Overlay avec z-index élevé */}
-      <div
-        className="fixed inset-0 bg-[#222222]/70 z-[9999] flex items-center justify-center p-6"
-        onClick={onClose}
-      >
-        {/* Modal monolithique adapté à l'écran - hauteur drastiquement réduite */}
-        <div
-          className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] sm:max-h-[80vh] min-h-[400px] sm:min-h-[450px] flex flex-col relative overflow-visible"
-          onClick={(e) => e.stopPropagation()}
-        >
+      <AnimatePresence mode="wait">
+        {isOpen && (
+          <>
+            {/* Overlay animé avec z-index élevé */}
+          <motion.div
+            className="fixed inset-0 bg-[#222222]/70 z-[9999] flex items-center justify-center p-6"
+            onClick={onClose}
+            variants={overlayVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            {/* Modal monolithique adapté à l'écran avec animations */}
+            <motion.div
+              className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[80vh] sm:max-h-[80vh] min-h-[400px] sm:min-h-[450px] flex flex-col relative overflow-visible"
+              onClick={(e) => e.stopPropagation()}
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
           {/* Header unifié avec titre centré */}
-          <div className="p-4 border-b border-[#EAFCFC]/50 flex-shrink-0">
+          <motion.div
+            className="p-4 border-b border-[#EAFCFC]/50 flex-shrink-0"
+            variants={contentVariants}
+          >
             <div className="relative flex items-center">
-              {/* Titre centré */}
-              <div className="flex-1 text-center">
+              {/* Titre centré avec étoiles */}
+              <div className="flex-1 flex items-center justify-center gap-3">
+                <HeaderStars show={topMatch !== null} position="left" />
                 <h2 className="text-xl font-bold text-[#04454A]">Vos Résultats Politiques</h2>
+                <HeaderStars show={topMatch !== null} position="right" />
               </div>
               {/* Boutons à droite */}
               <div className="absolute right-0 flex items-center space-x-2">
@@ -263,7 +415,7 @@ export function ProgressiveResultsModal({
                   variant="ghost"
                   size="icon"
                   onClick={() => setIsShareModalOpen(true)}
-                  className="h-8 w-8 hover:bg-[#EAFCFC] transition-colors"
+                  className="h-8 w-8 hover:bg-[#EAFCFC] transition-all duration-200 hover:scale-110"
                 >
                   <Share2 className="h-4 w-4 text-[#04454A]" />
                 </Button>
@@ -271,41 +423,51 @@ export function ProgressiveResultsModal({
                   variant="ghost"
                   size="icon"
                   onClick={onClose}
-                  className="h-8 w-8 hover:bg-[#EAFCFC] transition-colors"
+                  className="h-8 w-8 hover:bg-[#EAFCFC] transition-all duration-200 hover:scale-110"
                 >
                   <X className="h-4 w-4 text-[#04454A]" />
                 </Button>
               </div>
             </div>
             <p className="text-sm text-[#222222]/70 mt-1 text-center">Découvrez vos affinités avec les partis</p>
-          </div>
+          </motion.div>
 
           {/* Carousel pour les top 3 partis - sans padding horizontal */}
-          <div className="flex-1 relative min-h-0 p-1">
+          <motion.div
+            className="flex-1 relative min-h-0 p-1"
+            variants={contentVariants}
+          >
             <Carousel key={`carousel-${top3Parties.length}`} className="w-full h-full relative" initialIndex={0}>
               <CarouselContent className="ml-0">
                 {top3Parties.map((party, index) => (
                   <CarouselItem key={party.party.id} className="pl-0">
-                    <div className="flex flex-col items-center justify-center py-1 px-1 space-y-1 h-full">
+                    <motion.div
+                      className="flex flex-col items-center justify-center py-1 px-1 space-y-1 h-full"
+                      initial="hidden"
+                      animate="visible"
+                    >
                       {/* Logo du parti cliquable avec médaille badge */}
                       <div className="flex justify-center">
                         <Link href={`/${municipality}/parti/${party.party.id}`}>
-                          <div className="relative inline-block">
+                          <motion.div className="relative inline-block" variants={logoVariants}>
                             <PartyLogo
                               party={party.party}
                               size={{ width: 180, height: 180 }}
-                              className="w-40 h-40 cursor-pointer hover:scale-105 transition-transform"
+                              className="w-40 h-40 cursor-pointer hover:scale-105 transition-all duration-300 hover:shadow-lg hover:drop-shadow-xl"
                             />
                             {/* Médaille badge superposée */}
-                            <div className="absolute -top-1 -right-1 z-10">
+                            <motion.div
+                              className="absolute -top-1 -right-1 z-10"
+                              variants={medalVariants}
+                            >
                               <RankMedal rank={index + 1} />
-                            </div>
-                          </div>
+                            </motion.div>
+                          </motion.div>
                         </Link>
                       </div>
 
                       {/* Nom du parti */}
-                      <div className="text-center">
+                      <motion.div className="text-center" variants={titleVariants}>
                         <h3 className="text-xl font-bold text-[#04454A] mb-1">
                           {party.party.name}
                         </h3>
@@ -314,52 +476,80 @@ export function ProgressiveResultsModal({
                             Meilleur match
                           </span>
                         )}
-                      </div>
+                      </motion.div>
 
                       {/* Score avec animation */}
-                      <div className="w-full max-w-xs space-y-2">
+                      <motion.div className="w-full max-w-xs space-y-2" variants={scoreVariants}>
                         <div className="text-center">
                           <div className="text-3xl font-bold text-[#04454A] mb-1">
-                            {party.score}%
+                            <AnimatedCounter
+                              value={party.score}
+                              duration={0.8}
+                              delay={0.9}
+                              suffix="%"
+                            />
                           </div>
                           <div className="text-sm text-[#222222]/60">d&apos;affinité politique</div>
                         </div>
 
                         {/* Barre de progression */}
-                        <div className="w-full bg-[#EAFCFC] rounded-full h-3 overflow-hidden">
-                          <div
-                            className="bg-gradient-to-r from-[#04454A] to-[#04454A]/70 h-3 rounded-full transition-all duration-700 ease-out"
+                        <div className="w-full bg-[#EAFCFC] rounded-full h-3 overflow-hidden shadow-inner">
+                          <motion.div
+                            className="bg-gradient-to-r from-[#04454A] to-[#04454A]/70 h-3 rounded-full origin-left relative"
                             style={{ width: `${party.score}%` }}
-                          />
+                            variants={progressVariants}
+                          >
+                            {/* Effet de brillance subtil */}
+                            <motion.div
+                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent rounded-full"
+                              initial={{ x: '-100%' }}
+                              animate={{ x: '100%' }}
+                              transition={{
+                                duration: 1.5,
+                                delay: 1.5,
+                                ease: "easeInOut",
+                              }}
+                            />
+                          </motion.div>
                         </div>
-                      </div>
+                      </motion.div>
 
                       {/* Description du match */}
-                      <p className="text-center text-sm text-[#222222]/70 px-2">
+                      <motion.p
+                        className="text-center text-sm text-[#222222]/70 px-2"
+                        variants={descriptionVariants}
+                      >
                         {index === 0
                           ? `Vos opinions s'alignent fortement avec celles de ${party.party.name}.`
                           : index === 1
                           ? `${party.party.name} partage plusieurs de vos priorités.`
                           : `Une bonne compatibilité existe avec ${party.party.name}.`
                         }
-                      </p>
+                      </motion.p>
 
-                    </div>
+                    </motion.div>
                   </CarouselItem>
                 ))}
 
                 {/* Page boussole politique */}
                 <CarouselItem key="political-compass" className="pl-0">
-                  <div className="flex flex-col items-center justify-center py-2 px-2 space-y-2 h-full">
+                  <motion.div
+                    className="flex flex-col items-center justify-center py-2 px-2 space-y-2 h-full"
+                    initial="hidden"
+                    animate="visible"
+                  >
                     {/* Titre minimal */}
-                    <div className="text-center">
+                    <motion.div className="text-center" variants={titleVariants}>
                       <h3 className="text-xl font-bold text-[#04454A]">
                         Votre Position Politique
                       </h3>
-                    </div>
+                    </motion.div>
 
                     {/* Carte politique simplifiée */}
-                    <div className="w-full flex-1 flex items-center justify-center min-h-0">
+                    <motion.div
+                      className="w-full flex-1 flex items-center justify-center min-h-0"
+                      variants={logoVariants}
+                    >
                       <svg
                         viewBox="0 0 400 300"
                         className="w-full h-full max-w-full max-h-full"
@@ -579,31 +769,37 @@ export function ProgressiveResultsModal({
                           })()}
                         </g>
                       </svg>
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                 </CarouselItem>
               </CarouselContent>
 
               {/* Navigation du carousel - pattern par défaut */}
               <CarouselNavigation
                 alwaysShow
-                classNameButton="bg-white/90 hover:bg-white border-2 border-[#04454A]/20 shadow-lg backdrop-blur-sm"
+                classNameButton="bg-white/90 hover:bg-white border-2 border-[#04454A]/20 shadow-lg backdrop-blur-sm transition-all duration-200 hover:scale-110 hover:shadow-xl"
               />
 
             </Carousel>
-          </div>
+          </motion.div>
 
           {/* Actions simplifiées */}
-          <div className="p-4 border-t border-[#EAFCFC]/50 flex-shrink-0">
+          <motion.div
+            className="p-4 border-t border-[#EAFCFC]/50 flex-shrink-0"
+            variants={contentVariants}
+          >
             <Button
               onClick={onClose}
-              className="w-full bg-[#04454A] hover:bg-[#04454A]/90 text-white py-2 text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg"
+              className="w-full bg-[#04454A] hover:bg-[#04454A]/90 text-white py-2 text-sm font-semibold shadow-md transition-all duration-200 hover:shadow-lg hover:scale-[1.02] active:scale-[0.98]"
             >
               Voir l&apos;analyse complète
             </Button>
-          </div>
-        </div>
-      </div>
+          </motion.div>
+            </motion.div>
+          </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Modal de partage */}
       <ShareModal
