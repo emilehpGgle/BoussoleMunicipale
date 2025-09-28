@@ -53,8 +53,20 @@ export async function extractPartyPriorities(
 }
 
 /**
+ * Convertit un objet de classement en tableau trié par rang
+ * @param rankingObject - Objet avec priorités comme clés et rangs comme valeurs
+ * @returns Array de priorités triées par rang
+ */
+function convertRankingObjectToArray(rankingObject: Record<string, number>): string[] {
+  return Object.entries(rankingObject)
+    .sort(([, rankA], [, rankB]) => rankA - rankB) // Trier par rang croissant (1, 2, 3...)
+    .map(([priority]) => priority)
+}
+
+/**
  * Version simplifiée qui extrait directement depuis party_positions
  * en assumant qu'il n'y a qu'une seule question de type priority_ranking par municipalité
+ * Gère les deux formats: arrays JSON et objets de classement
  * @param partyId - L'ID du parti
  * @param municipalityId - L'ID de la municipalité
  * @returns Promise<string[]> - Tableau des priorités ou tableau vide
@@ -91,15 +103,35 @@ export async function extractPartyPrioritiesSimple(
     console.log(`✅ [PRIORITIES-DEBUG] Données trouvées pour ${partyId}:`, {
       hasPriorityList: !!data?.priority_list,
       isArray: Array.isArray(data?.priority_list),
+      isObject: typeof data?.priority_list === 'object' && data?.priority_list !== null && !Array.isArray(data?.priority_list),
       priorityList: data?.priority_list
     })
 
-    if (!data?.priority_list || !Array.isArray(data.priority_list)) {
-      console.warn(`⚠️ [PRIORITIES-DEBUG] priority_list invalide pour ${partyId}`)
+    if (!data?.priority_list) {
+      console.warn(`⚠️ [PRIORITIES-DEBUG] priority_list manquant pour ${partyId}`)
       return []
     }
 
-    return data.priority_list as string[]
+    // 🔧 CORRECTION: Gérer les deux formats de données
+    if (Array.isArray(data.priority_list)) {
+      // Format array: ["Priority1", "Priority2", "Priority3"]
+      console.log(`✅ [PRIORITIES-DEBUG] Format array détecté pour ${partyId}`)
+      return data.priority_list as string[]
+    }
+    else if (typeof data.priority_list === 'object' && data.priority_list !== null) {
+      // Format objet de classement: {Priority1: 1, Priority2: 3, Priority3: 2}
+      console.log(`✅ [PRIORITIES-DEBUG] Format objet de classement détecté pour ${partyId}`)
+      const convertedArray = convertRankingObjectToArray(data.priority_list as Record<string, number>)
+      console.log(`🔄 [PRIORITIES-DEBUG] Conversion pour ${partyId}:`, {
+        original: data.priority_list,
+        converted: convertedArray
+      })
+      return convertedArray
+    }
+    else {
+      console.warn(`⚠️ [PRIORITIES-DEBUG] Format priority_list invalide pour ${partyId}:`, typeof data.priority_list)
+      return []
+    }
 
   } catch (error) {
     console.error(`Erreur extraction priorités ${partyId}:`, error)

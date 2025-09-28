@@ -29,12 +29,16 @@ import {
   type PoliticalPosition,
   axisConfiguration,
   calculateMapBounds,
-  normalizePositionForDisplay
+  normalizePositionForDisplay,
+  calculateExactCompatibilityWithDetails,
+  type CompatibilityDetails
 } from '@/lib/political-map-calculator';
 import { calculateUserPoliticalPosition } from '@/lib/political-calculator-db';
 import { transformAllPartyPositionsToUserAnswers } from '@/lib/supabase-transform';
 import { useParties } from '@/hooks/useParties';
 import { usePartyPositions } from '@/hooks/usePartyPositions';
+import { extractPartyPrioritiesSimple } from '@/lib/extract-priorities';
+import { usePriorities } from '@/hooks/usePriorities';
 
 interface ProgressiveResultsModalProps {
   isOpen: boolean;
@@ -291,9 +295,13 @@ export function ProgressiveResultsModal({
   const [userPosition, setUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 });
   const [partyPositions, setPartyPositions] = useState<Record<string, PoliticalPosition>>({});
 
+  // État pour les détails de compatibilité avec breakdown
+  const [compatibilityDetails, setCompatibilityDetails] = useState<Record<string, CompatibilityDetails>>({});
+
   // Hooks pour données des partis
   const { parties } = useParties(municipality);
   const { positionsByParty } = usePartyPositions(municipality);
+  const { priorities: userPriorities } = usePriorities(municipality);
 
   // Calculer la position de l'utilisateur
   useEffect(() => {
@@ -325,6 +333,40 @@ export function ProgressiveResultsModal({
 
     calculateAllPositions();
   }, [positionsByParty, municipality]);
+
+  // Calculer les détails de compatibilité pour chaque parti
+  useEffect(() => {
+    const calculateCompatibilityDetails = async () => {
+      if (!userPosition || Object.keys(partyPositions).length === 0 || !parties) {
+        setCompatibilityDetails({});
+        return;
+      }
+
+      const details: Record<string, CompatibilityDetails> = {};
+
+      for (const party of topParties) {
+        const partyPosition = partyPositions[party.party.id];
+        if (partyPosition) {
+          try {
+            const partyPriorities = await extractPartyPrioritiesSimple(party.party.id, municipality);
+            const compatibilityDetail = calculateExactCompatibilityWithDetails(
+              userPosition,
+              partyPosition,
+              userPriorities || {},
+              partyPriorities
+            );
+            details[party.party.id] = compatibilityDetail;
+          } catch (error) {
+            console.error(`Erreur calcul détails pour ${party.party.id}:`, error);
+          }
+        }
+      }
+
+      setCompatibilityDetails(details);
+    };
+
+    calculateCompatibilityDetails();
+  }, [userPosition, partyPositions, parties, topParties, municipality, userPriorities]);
 
   // ✅ CORRECTION: Déplacer tous les hooks avant le early return
   // Calculs pour la boussole politique
@@ -491,6 +533,20 @@ export function ProgressiveResultsModal({
                           </div>
                           <div className="text-sm text-[#222222]/60">d&apos;affinité politique</div>
                         </div>
+
+                        {/* Breakdown détaillé et concis */}
+                        {compatibilityDetails[party.party.id] && (
+                          <div className="text-center text-xs text-[#222222]/70 bg-[#EAFCFC]/30 rounded-md px-2 py-1 space-y-0.5">
+                            <div className="font-medium">
+                              ({compatibilityDetails[party.party.id].politicalScore}% questions × 70%) + ({compatibilityDetails[party.party.id].priorityMatches}/{compatibilityDetails[party.party.id].totalPriorities} priorités × 30%)
+                            </div>
+                            {compatibilityDetails[party.party.id].sharedPriorities.length > 0 && (
+                              <div className="text-[#04454A]/80 font-medium">
+                                Priorité commune : {compatibilityDetails[party.party.id].sharedPriorities[0]}
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         {/* Barre de progression */}
                         <div className="w-full bg-[#EAFCFC] rounded-full h-3 overflow-hidden shadow-inner">

@@ -22,6 +22,7 @@ import { usePartyPositions } from "@/hooks/usePartyPositions"
 import {
   calculatePoliticalDistance,
   calculatePriorityCompatibility,
+  calculateExactCompatibility,
 } from "@/lib/political-map-calculator"
 import {
   calculateUserPoliticalPosition,
@@ -213,35 +214,28 @@ export default function ResultsPage() {
     const newCalculatedScores = await Promise.all(partiesData.map(async (party, _index) => {
       // console.log(`🔍 [DEBUG] === CALCUL PARTI ${index + 1}: ${party.name} ===`)
 
-      // ✅ Utiliser les positions dynamiques calculées depuis Supabase (multi-municipalités)
+      // ✅ UTILISER LA FONCTION UNIFIÉE pour garantir la cohérence parfaite
       const partyPosition = dynamicPartyPositions[party.id]
-      // console.log(`🔍 [DEBUG] Position du parti ${party.id}:`, partyPosition)
-      let politicalScore = 0
+      let finalScore = 0
 
       if (partyPosition) {
-        // MÊME calcul que dans useResults.ts et la carte politique
-        const distance = calculatePoliticalDistance(userPosition, partyPosition)
-        // console.log(`🔍 [DEBUG] Distance pour ${party.id}:`, distance)
-        // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
-        const maxDistance = 283
-        const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
-        // console.log(`🔍 [DEBUG] Compatibility pour ${party.id}:`, compatibility)
-        politicalScore = compatibility
+        // Récupération des priorités du parti
+        const partyPriorities = await extractPartyPrioritiesSimple(party.id, params.municipality as string)
+        console.log(`🔍 [RESULTATS-DEBUG] ${party.id}: DB priorities=`, partyPriorities)
+
+        // ✅ UTILISATION DE LA FONCTION UNIFIÉE - garantit 100% de cohérence avec la carte
+        finalScore = calculateExactCompatibility(
+          userPosition,
+          partyPosition,
+          userPriorities || {},
+          partyPriorities
+        )
+        console.log(`🔍 [RESULTATS-DEBUG] ${party.id}: Final score (unified)=${finalScore}`)
       } else {
         // Si pas de position politique définie pour ce parti, score de 0
-        politicalScore = 0
-        console.warn(`🔍 [DEBUG] Pas de position politique définie pour le parti: ${party.id}`)
+        finalScore = 0
+        console.warn(`🔍 [RESULTATS-DEBUG] Pas de position politique définie pour le parti: ${party.id}`)
       }
-
-      // Calculer le score des priorités (extraction depuis DB)
-      const partyPriorities = await extractPartyPrioritiesSimple(party.id, params.municipality as string)
-      console.log(`🔍 [PRIORITIES] ${party.id}: DB priorities=`, partyPriorities)
-      const priorityScore = calculatePriorityCompatibility(userPriorities, partyPriorities)
-      console.log(`🔍 [PRIORITIES] Priority score pour ${party.id}:`, priorityScore)
-
-      // Score final pondéré : 70% position politique, 30% priorités
-      const finalScore = (politicalScore * 0.7) + (priorityScore * 0.3)
-      // console.log(`🔍 [DEBUG] Score final pour ${party.id}:`, finalScore)
 
       // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
       const scoreDetails: CalculatedPartyScore["details"] = questions.map((question) => {
@@ -280,7 +274,7 @@ export default function ResultsPage() {
 
       return {
         party,
-        score: Math.round(finalScore),
+        score: finalScore, // Déjà arrondi par calculateExactCompatibility
         rawScore: finalScore,
         maxPossibleRawScoreForParty: 100,
         details: scoreDetails,

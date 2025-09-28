@@ -181,6 +181,23 @@ export function calculatePriorityCompatibility(
 }
 
 /**
+ * Interface pour les détails de compatibilité narratifs
+ */
+export interface CompatibilityDetails {
+  finalScore: number
+  politicalScore: number
+  priorityScore: number
+  priorityMatches: number
+  totalPriorities: number
+  sharedPriorities: string[]
+  narrative: {
+    agreement: string
+    priorities: string
+    summary: string
+  }
+}
+
+/**
  * CALCUL UNIFIÉ EXACT - Version de référence basée sur resultats/page.tsx
  * Assure la cohérence parfaite entre l'affichage de la carte et les pourcentages d'affinité
  * IMPORTANT: Cette fonction utilise exactement la même logique que dans resultats/page.tsx
@@ -197,14 +214,109 @@ export function calculateExactCompatibility(
   const maxDistance = 283
   const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
   const politicalScore = compatibility
-  
-  // 2. Calcul du score des priorités 
+
+  // 2. Calcul du score des priorités
   const priorityScore = calculatePriorityCompatibility(userPriorities, partyPriorities)
-  
+
   // 3. Score final pondéré : 70% position politique, 30% priorités
   const finalScore = (politicalScore * 0.7) + (priorityScore * 0.3)
-  
+
   return Math.round(finalScore)
+}
+
+/**
+ * CALCUL UNIFIÉ AVEC DÉTAILS NARRATIFS
+ * Version complète qui retourne le score ET les détails pour affichage narratif
+ */
+export function calculateExactCompatibilityWithDetails(
+  userPosition: PoliticalPosition,
+  partyPosition: PoliticalPosition,
+  userPriorities: Record<string, number>,
+  partyPriorities: string[]
+): CompatibilityDetails {
+  // 1. Calcul du score politique (exactement comme dans resultats/page.tsx)
+  const distance = calculatePoliticalDistance(userPosition, partyPosition)
+  // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
+  const maxDistance = 283
+  const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
+  const politicalScore = compatibility
+
+  // 2. Calcul du score des priorités avec détails
+  const priorityScore = calculatePriorityCompatibility(userPriorities, partyPriorities)
+
+  // 3. Analyse des priorités partagées
+  const userPriorityList = Object.entries(userPriorities || {})
+    .sort(([,a], [,b]) => a - b) // Trier par rang (1, 2, 3)
+    .map(([priority]) => priority)
+
+  const sharedPriorities = userPriorityList.filter(userPriority =>
+    partyPriorities.includes(userPriority)
+  )
+
+  const priorityMatches = sharedPriorities.length
+  const totalPriorities = Math.max(userPriorityList.length, partyPriorities.length, 3) // Minimum 3
+
+  // 4. Score final pondéré : 70% position politique, 30% priorités
+  const finalScore = (politicalScore * 0.7) + (priorityScore * 0.3)
+
+  // 5. Génération du texte narratif
+  const generateNarrative = () => {
+    // Texte d'accord politique
+    let agreementText = ""
+    if (politicalScore >= 90) {
+      agreementText = `Vous êtes très alignés avec ce parti sur ${politicalScore}% des enjeux municipaux`
+    } else if (politicalScore >= 75) {
+      agreementText = `Vous êtes d'accord avec ce parti sur ${politicalScore}% des enjeux municipaux`
+    } else if (politicalScore >= 60) {
+      agreementText = `Vous partagez ${politicalScore}% des positions de ce parti`
+    } else if (politicalScore >= 40) {
+      agreementText = `Vous avez ${politicalScore}% d'opinions communes avec ce parti`
+    } else {
+      agreementText = `Vous avez des divergences importantes avec ce parti (${politicalScore}% d'accord)`
+    }
+
+    // Texte des priorités
+    let prioritiesText = ""
+    if (priorityMatches === 0) {
+      prioritiesText = `Vous n'avez aucune priorité municipale en commun`
+    } else if (priorityMatches === 1) {
+      const sharedPriority = sharedPriorities[0]
+      prioritiesText = `Vous partagez 1 priorité sur ${totalPriorities} : "${sharedPriority}"`
+    } else if (priorityMatches === 2) {
+      prioritiesText = `Vous partagez 2 priorités sur ${totalPriorities} avec eux`
+    } else {
+      prioritiesText = `Vous partagez ${priorityMatches} priorités sur ${totalPriorities} avec eux`
+    }
+
+    // Texte de résumé
+    let summaryText = ""
+    const roundedScore = Math.round(finalScore)
+    if (roundedScore >= 80) {
+      summaryText = `C'est pourquoi vous avez une excellente compatibilité de ${roundedScore}%`
+    } else if (roundedScore >= 65) {
+      summaryText = `C'est pourquoi votre compatibilité globale est de ${roundedScore}%`
+    } else if (roundedScore >= 50) {
+      summaryText = `Votre compatibilité modérée est de ${roundedScore}%`
+    } else {
+      summaryText = `Votre compatibilité limitée est de ${roundedScore}%`
+    }
+
+    return {
+      agreement: agreementText,
+      priorities: prioritiesText,
+      summary: summaryText
+    }
+  }
+
+  return {
+    finalScore: Math.round(finalScore),
+    politicalScore,
+    priorityScore,
+    priorityMatches,
+    totalPriorities,
+    sharedPriorities,
+    narrative: generateNarrative()
+  }
 }
 
 // ============================================================================

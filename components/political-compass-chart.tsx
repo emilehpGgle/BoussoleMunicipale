@@ -14,7 +14,8 @@ import {
   type UserAnswers,
   calculateMapBounds,
   normalizePositionForDisplay,
-  calculateExactCompatibility
+  calculateExactCompatibilityWithDetails,
+  type CompatibilityDetails
 } from '@/lib/political-map-calculator'
 import {
   calculateUserPoliticalPosition
@@ -111,13 +112,14 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
     return getPoliticalPositionDescription(userPosition)
   }, [userPosition])
 
-  // État pour stocker les distances calculées de manière asynchrone
+  // État pour stocker les distances calculées de manière asynchrone avec détails narratifs
   const [partyDistances, setPartyDistances] = useState<Array<{
     party: { id: string; name: string; shortName?: string; logoUrl?: string; priorities?: string[] };
     position: PoliticalPosition;
     distance: number;
     compatibility: number;
     partyId: string;
+    details?: CompatibilityDetails;
   }>>([])
 
   // Calcul des distances avec les partis (utilisant les positions originales et le calcul unifié)
@@ -135,25 +137,27 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
 
           const distance = calculatePoliticalDistance(userPosition, position)
 
-          // ✅ CORRECTION: Utiliser exactement la même méthode que resultats/page.tsx
+          // ✅ UTILISATION DE LA FONCTION UNIFIÉE AVEC DÉTAILS NARRATIFS
           const partyPriorities = await extractPartyPrioritiesSimple(partyId, municipality)
           console.log(`🔍 [COMPASS-DEBUG] ${partyId}: DB priorities=`, partyPriorities)
 
-          const compatibility = calculateExactCompatibility(
+          const compatibilityDetails = calculateExactCompatibilityWithDetails(
             userPosition,
             position,
             userPriorities || {},
             partyPriorities
           )
 
-          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: Final compatibility=${compatibility}%`)
+          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: Final compatibility=${compatibilityDetails.finalScore}%`)
+          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: Details=`, compatibilityDetails.narrative)
 
           return {
             party,
             position,
             distance,
-            compatibility,
-            partyId
+            compatibility: compatibilityDetails.finalScore,
+            partyId,
+            details: compatibilityDetails
           }
         })
       )
@@ -585,29 +589,48 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
             </div>
           </div>
 
-          {/* Parti le plus proche */}
-          {partyDistances.length > 0 && (
+          {/* Parti le plus proche avec détails narratifs */}
+          {partyDistances.length > 0 && partyDistances[0].details && (
             <div className="bg-teal-50 rounded-lg p-4 border border-teal-200">
-              <h4 className="font-semibold text-black mb-2">Parti le plus compatible :</h4>
-              <div className="flex items-center gap-3">
-                {partyDistances[0].party?.logoUrl && (
-                  <div className="bg-white rounded-lg p-2 shadow-sm">
-                    <Image
-                      src={partyDistances[0].party.logoUrl}
-                      alt={`Logo ${partyDistances[0].party.name}`}
-                      width={32}
-                      height={32}
-                      style={{ objectFit: "contain" }}
-                    />
+              <h4 className="font-semibold text-black mb-3">🎯 Parti le plus compatible :</h4>
+              <div className="space-y-3">
+                {/* En-tête avec logo et nom */}
+                <div className="flex items-center gap-3">
+                  {partyDistances[0].party?.logoUrl && (
+                    <div className="bg-white rounded-lg p-2 shadow-sm">
+                      <Image
+                        src={partyDistances[0].party.logoUrl}
+                        alt={`Logo ${partyDistances[0].party.name}`}
+                        width={32}
+                        height={32}
+                        style={{ objectFit: "contain" }}
+                      />
+                    </div>
+                  )}
+                  <div>
+                    <p className="font-medium text-black text-lg">
+                      {partyDistances[0].party?.name}
+                    </p>
+                    <p className="text-md font-semibold text-teal-700">
+                      Compatibilité : {partyDistances[0].compatibility}%
+                    </p>
                   </div>
-                )}
-                <div>
-                  <p className="font-medium text-black">
-                    {partyDistances[0].party?.name}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    Compatibilité : {partyDistances[0].compatibility}% (70% politique + 30% priorités)
-                  </p>
+                </div>
+
+                {/* Détails narratifs */}
+                <div className="bg-white/60 rounded-md p-3 space-y-2 text-sm">
+                  <div className="flex items-start gap-2">
+                    <span className="text-green-600 font-medium">✅</span>
+                    <span className="text-gray-800">{partyDistances[0].details.narrative.agreement}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-blue-600 font-medium">🤝</span>
+                    <span className="text-gray-800">{partyDistances[0].details.narrative.priorities}</span>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <span className="text-purple-600 font-medium">💡</span>
+                    <span className="text-gray-800">{partyDistances[0].details.narrative.summary}</span>
+                  </div>
                 </div>
               </div>
             </div>
