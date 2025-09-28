@@ -246,13 +246,12 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
         opacity="0.12"
       />
 
-      {/* Partis politiques */}
-      {partyDistances.map(({ party, position, partyId }) => {
+      {/* Partis politiques - non-survolés (arrière-plan) */}
+      {partyDistances.filter(({ partyId }) => partyId !== hoveredParty).map(({ party, position, partyId }) => {
         if (!party) return null
         const coords = toSVGCoords(position, width, height)
-        const isHovered = hoveredParty === partyId
-        const radius = isFullscreenMode ? (isHovered ? 25 : 18) : (isHovered ? 18 : 12)
-        
+        const radius = isFullscreenMode ? 18 : 12
+
         return (
           <g key={partyId}
             style={{ cursor: 'pointer' }}
@@ -269,45 +268,31 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
               r={radius}
               fill="white"
               stroke="#1e40af"
-              strokeWidth={isHovered ? 3 : 2}
+              strokeWidth={2}
               className="transition-all duration-200 drop-shadow-md"
             />
-            
+
             {/* Logo du parti (initiales) */}
             <text
               x={coords.x}
               y={coords.y + (isFullscreenMode ? 6 : 4)}
               textAnchor="middle"
-              fontSize={isFullscreenMode ? (isHovered ? "12" : "9") : (isHovered ? "8" : "6")}
+              fontSize={isFullscreenMode ? "9" : "6"}
               fill="hsl(var(--foreground))"
               className="font-bold transition-all duration-200 pointer-events-none"
             >
               {getPartyInitials(party)}
             </text>
-            
-            {/* Label du parti */}
-            {isHovered && (
-              <text 
-                x={coords.x} 
-                y={coords.y - (isFullscreenMode ? 35 : 25)} 
-                textAnchor="middle" 
-                fontSize={isFullscreenMode ? "14" : "11"} 
-                fill="hsl(var(--foreground))"
-                className="font-medium bg-background"
-              >
-                {party.shortName || party.name}
-              </text>
-            )}
           </g>
         )
       })}
 
-      {/* Position de l'utilisateur */}
+      {/* Cercles de l'utilisateur (au-dessus des partis normaux) */}
       {(() => {
         const userCoords = toSVGCoords(userPosition, width, height)
         const userRadius = isFullscreenMode ? 15 : 10
         const animationRadius = isFullscreenMode ? 32 : 22
-        
+
         return (
           <g>
             {/* Cercle extérieur animé */}
@@ -331,7 +316,7 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
                 repeatCount="indefinite"
               />
             </circle>
-            
+
             {/* Point principal de l'utilisateur */}
             <circle
               cx={userCoords.x}
@@ -342,21 +327,118 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
               strokeWidth="4"
               className="drop-shadow-lg"
             />
-            
-            {/* Label utilisateur */}
-            <text 
-              x={userCoords.x} 
-              y={userCoords.y - (isFullscreenMode ? 45 : 30)} 
-              textAnchor="middle" 
-              fontSize={isFullscreenMode ? "16" : "12"} 
+          </g>
+        )
+      })()}
+
+      {/* Parti survolé (premier plan absolu) */}
+      {hoveredParty && (() => {
+        const hoveredData = partyDistances.find(({ partyId }) => partyId === hoveredParty)
+        if (!hoveredData || !hoveredData.party) return null
+
+        const coords = toSVGCoords(hoveredData.position, width, height)
+        const radius = isFullscreenMode ? 25 : 18
+
+        return (
+          <g key={`${hoveredParty}-hovered`}
+            style={{ cursor: 'pointer' }}
+            onClick={() => router.push(`/${municipality}/parti/${hoveredParty}`)}
+            onMouseEnter={() => setHoveredParty(hoveredParty)}
+            onMouseLeave={() => setHoveredParty(null)}
+            onTouchStart={() => setHoveredParty(hoveredParty)}
+            onTouchEnd={() => setHoveredParty(null)}
+          >
+            {/* Cercle du parti survolé */}
+            <circle
+              cx={coords.x}
+              cy={coords.y}
+              r={radius}
+              fill="white"
+              stroke="#1e40af"
+              strokeWidth={3}
+              className="transition-all duration-200 drop-shadow-lg"
+            />
+
+            {/* Logo du parti survolé (initiales) */}
+            <text
+              x={coords.x}
+              y={coords.y + (isFullscreenMode ? 6 : 4)}
+              textAnchor="middle"
+              fontSize={isFullscreenMode ? "12" : "8"}
+              fill="hsl(var(--foreground))"
+              className="font-bold transition-all duration-200 pointer-events-none"
+            >
+              {getPartyInitials(hoveredData.party)}
+            </text>
+          </g>
+        )
+      })()}
+
+      {/* Tous les labels (premier plan absolu) */}
+      <g className="all-labels">
+        {/* Label utilisateur (toujours visible) */}
+        {(() => {
+          const userCoords = toSVGCoords(userPosition, width, height)
+          return (
+            <text
+              x={userCoords.x}
+              y={userCoords.y - (isFullscreenMode ? 45 : 30)}
+              textAnchor="middle"
+              fontSize={isFullscreenMode ? "16" : "12"}
               fill="hsl(var(--primary))"
               className="font-bold"
             >
               Vous
             </text>
-          </g>
-        )
-      })()}
+          )
+        })()}
+
+        {/* Labels de hover des partis avec background */}
+        {hoveredParty && (() => {
+          const hoveredData = partyDistances.find(({ partyId }) => partyId === hoveredParty)
+          if (!hoveredData || !hoveredData.party) return null
+
+          const coords = toSVGCoords(hoveredData.position, width, height)
+          const partyName = hoveredData.party.shortName || hoveredData.party.name
+
+          // Calcul de la largeur du texte basé sur la taille de police
+          const fontSize = isFullscreenMode ? 14 : 11
+          const charWidth = fontSize * 0.6 // Approximation : 60% de la fontSize
+          const textWidth = partyName.length * charWidth
+          const rectWidth = textWidth + (isFullscreenMode ? 16 : 12) // Padding adaptatif
+          const rectHeight = isFullscreenMode ? 24 : 18
+
+          return (
+            <g className="label-with-background">
+              {/* Rectangle background */}
+              <rect
+                x={coords.x - rectWidth/2}
+                y={coords.y - (isFullscreenMode ? 45 : 32)}
+                width={rectWidth}
+                height={rectHeight}
+                fill="white"
+                opacity="0.95"
+                rx={isFullscreenMode ? "6" : "4"}
+                ry={isFullscreenMode ? "6" : "4"}
+                stroke="hsl(var(--border))"
+                strokeWidth="0.5"
+                className="drop-shadow-sm"
+              />
+              {/* Texte par-dessus */}
+              <text
+                x={coords.x}
+                y={coords.y - (isFullscreenMode ? 35 : 25)}
+                textAnchor="middle"
+                fontSize={isFullscreenMode ? "14" : "11"}
+                fill="hsl(var(--foreground))"
+                className="font-medium pointer-events-none"
+              >
+                {partyName}
+              </text>
+            </g>
+          )
+        })()}
+      </g>
     </svg>
   )
 
