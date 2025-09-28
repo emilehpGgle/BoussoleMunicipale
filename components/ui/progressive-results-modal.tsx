@@ -4,8 +4,6 @@ import { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { motion } from 'framer-motion';
 // Dialog remplacé par modal custom pour containment
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { X, Share2, Trophy, ArrowRight, Compass } from 'lucide-react';
 import { PartyScore, CalculatedResults } from '@/hooks/useResults';
@@ -119,47 +117,6 @@ const PartyLogo: React.FC<{ party: Party; size: { width: number; height: number 
   );
 };
 
-// Composant Confetti avec couleurs de la palette
-const ConfettiParticle: React.FC<{ index: number }> = ({ index }) => {
-  const colors = ['#04454A', '#EAFCFC', '#FCF7F3', '#0891b2', '#10b981', '#f59e0b']; // Palette cohérente
-  const color = colors[index % colors.length];
-
-  return (
-    <motion.div
-      className="absolute w-2 h-2 rounded"
-      style={{ backgroundColor: color }}
-      initial={{
-        x: 0,
-        y: 0,
-        rotate: 0,
-        opacity: 1
-      }}
-      animate={{
-        x: (Math.random() - 0.5) * 400,
-        y: Math.random() * -300 - 100,
-        rotate: Math.random() * 180,
-        opacity: 0
-      }}
-      transition={{
-        duration: 2,
-        ease: "easeOut",
-        delay: index * 0.05
-      }}
-    />
-  );
-};
-
-const ConfettiExplosion: React.FC<{ trigger: boolean }> = ({ trigger }) => {
-  if (!trigger) return null;
-
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {Array.from({ length: 30 }, (_, i) => (
-        <ConfettiParticle key={i} index={i} />
-      ))}
-    </div>
-  );
-};
 
 // Composant MiniCompass avec palette cohérente - mémorisé pour performance
 const MiniCompass: React.FC<{
@@ -387,7 +344,6 @@ export function ProgressiveResultsModal({
   municipality
 }: ProgressiveResultsModalProps) {
   const [showContent, setShowContent] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [carouselApi, setCarouselApi] = useState<ReturnType<typeof import('embla-carousel-react').default>[1] | null>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -398,19 +354,16 @@ export function ProgressiveResultsModal({
       // Reset d'abord tout l'état
       setCurrentSlide(0);
       setShowContent(false);
-      setShowConfetti(false);
 
       // Puis animer avec délai
       const timer = setTimeout(() => {
         setShowContent(true);
-        setShowConfetti(true);
       }, 300);
 
       return () => clearTimeout(timer);
     } else {
       // Nettoyage immédiat à la fermeture
       setShowContent(false);
-      setShowConfetti(false);
       setCurrentSlide(0);
     }
   }, [isOpen, topMatch]);
@@ -462,7 +415,7 @@ export function ProgressiveResultsModal({
 
   if (!topMatch || !topParties.length) return null;
 
-  // Composant pour une carte de parti avec badge de rang - mémorisé
+  // Composant carte de parti - design professionnel et moderne
   const PartyCard: React.FC<{
     party: Party;
     score: number;
@@ -470,134 +423,129 @@ export function ProgressiveResultsModal({
     isChampion?: boolean;
     delay?: number;
   }> = memo(function PartyCard({ party, score, rank, isChampion = false, delay = 0 }) {
-    const getBadgeConfig = (rank: number) => {
+    const getRankConfig = (rank: number) => {
       switch (rank) {
         case 1:
           return {
-            emoji: '🥇',
-            bgClass: 'bg-gradient-to-r from-midnight-green to-teal-main-600',
-            borderClass: 'border-midnight-green',
-            textClass: 'text-white',
-            glowClass: 'shadow-md'
+            rankLabel: '1er',
+            bgColor: 'bg-gradient-to-br from-amber-50 to-yellow-50',
+            borderColor: 'border-amber-200',
+            accentColor: 'bg-amber-500',
+            textColor: 'text-amber-700',
+            ringColor: 'ring-amber-200'
           };
         case 2:
           return {
-            emoji: '🥈',
-            bgClass: 'bg-gradient-to-r from-teal-main-400 to-teal-main-500',
-            borderClass: 'border-teal-main-400',
-            textClass: 'text-white',
-            glowClass: 'shadow-md'
+            rankLabel: '2e',
+            bgColor: 'bg-gradient-to-br from-slate-50 to-gray-50',
+            borderColor: 'border-slate-200',
+            accentColor: 'bg-slate-500',
+            textColor: 'text-slate-700',
+            ringColor: 'ring-slate-200'
           };
         case 3:
           return {
-            emoji: '🥉',
-            bgClass: 'bg-gradient-to-r from-teal-main-200 to-isabelline',
-            borderClass: 'border-teal-main-200',
-            textClass: 'text-midnight-green',
-            glowClass: 'shadow-md'
+            rankLabel: '3e',
+            bgColor: 'bg-gradient-to-br from-orange-50 to-amber-50',
+            borderColor: 'border-orange-200',
+            accentColor: 'bg-orange-500',
+            textColor: 'text-orange-700',
+            ringColor: 'ring-orange-200'
           };
         default:
           return {
-            emoji: `${rank}`,
-            bgClass: 'bg-azure-web',
-            borderClass: 'border-midnight-green/20',
-            textClass: 'text-midnight-green',
-            glowClass: 'shadow-md'
+            rankLabel: `${rank}e`,
+            bgColor: 'bg-white',
+            borderColor: 'border-gray-200',
+            accentColor: 'bg-gray-500',
+            textColor: 'text-gray-700',
+            ringColor: 'ring-gray-200'
           };
       }
     };
 
-    const badgeConfig = getBadgeConfig(rank);
+    const rankConfig = getRankConfig(rank);
 
     return (
       <motion.div
-        initial={{ opacity: 0, scale: 0.8, y: 20 }}
-        animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8, y: showContent ? 0 : 20 }}
-        transition={{ duration: 0.6, delay }}
-        className="relative m-0.5"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
+        transition={{ duration: 0.5, delay }}
+        className="w-full max-w-md mx-auto px-6 py-8"
       >
-        {/* Badge de rang en haut à droite */}
-        <motion.div
-          className={`absolute -top-2 -right-2 z-20 w-12 h-12 rounded-full ${badgeConfig.bgClass} ${badgeConfig.borderClass} border-2 flex items-center justify-center ${badgeConfig.glowClass}`}
-          whileHover={{
-            scale: 1.1,
-            y: -2,
-            transition: { type: "spring", stiffness: 400, damping: 17 }
-          }}
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.4, delay: delay + 0.3 }}
-        >
-          <span className={`text-lg font-bold ${badgeConfig.textClass}`}>
-            {badgeConfig.emoji}
-          </span>
-        </motion.div>
+        {/* Container principal avec design moderne */}
+        <div className={`${rankConfig.bgColor} ${rankConfig.borderColor} border-2 rounded-3xl p-8 relative shadow-lg hover:shadow-xl transition-all duration-300 ${isChampion ? rankConfig.ringColor + ' ring-4' : ''}`}>
 
-        <Card className={`p-3 flex flex-col items-center text-center border-2 ${badgeConfig.borderClass} shadow-xl rounded-xl bg-white relative overflow-hidden transition-all duration-300 hover:shadow-2xl min-w-[300px]`}>
-          {/* Confetti pour le premier parti */}
-          {isChampion && <ConfettiExplosion trigger={showConfetti} />}
+          {/* Badge de rang moderne */}
+          <div className="absolute -top-3 -right-3">
+            <div className={`${rankConfig.accentColor} text-white w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg font-bold text-lg transform rotate-12`}>
+              {rankConfig.rankLabel}
+            </div>
+          </div>
 
-          {/* Logo */}
-          <div className="relative mb-2">
-            <PartyLogo
-              party={party}
-              size={{ width: isChampion ? 180 : 150, height: isChampion ? 180 : 150 }}
-              className={`${isChampion ? 'w-36 h-36 sm:w-40 sm:h-40' : 'w-32 h-32 sm:w-36 sm:h-36'} relative z-10`}
-            />
+          {/* Logo avec container moderne */}
+          <div className="flex justify-center mb-6">
+            <div className="bg-white rounded-2xl p-4 shadow-md border border-gray-100">
+              <PartyLogo
+                party={party}
+                size={{ width: 120, height: 120 }}
+                className="w-30 h-30"
+              />
+            </div>
           </div>
 
           {/* Nom du parti */}
-          <div className="min-h-[3rem] flex flex-col justify-center mb-2">
-            <h3 className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-foreground leading-tight mb-1`}>
+          <div className="text-center mb-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">
               {party.shortName || party.name}
             </h3>
-            <p className="text-sm text-muted-foreground leading-tight">
-              {party.name}
-            </p>
+            {party.shortName && (
+              <p className="text-sm text-gray-600">
+                {party.name}
+              </p>
+            )}
           </div>
 
-          {/* Score avec animation */}
-          <div className="w-full bg-muted rounded-full h-5 mb-2 overflow-hidden relative border border-midnight-green/20">
-            <motion.div
-              className={`${badgeConfig.bgClass} h-5 rounded-full`}
-              initial={{ width: "0%" }}
-              animate={{ width: showContent ? `${score}%` : "0%" }}
-              transition={{ duration: 1.2, delay: delay + 0.5, ease: "easeOut" }}
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+          {/* Score avec design moderne */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium text-gray-700">Affinité politique</span>
+              <span className={`text-lg font-bold ${rankConfig.textColor}`}>{score}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+              <motion.div
+                className={`${rankConfig.accentColor} h-3 rounded-full shadow-sm`}
+                initial={{ width: "0%" }}
+                animate={{ width: showContent ? `${score}%` : "0%" }}
+                transition={{ duration: 1, delay: delay + 0.3, ease: "easeOut" }}
+              />
+            </div>
           </div>
 
-          <motion.p
-            className={`${isChampion ? 'text-xl' : 'text-lg'} font-bold text-midnight-green mb-2`}
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: showContent ? 1 : 0, scale: showContent ? 1 : 0.8 }}
-            transition={{ duration: 0.5, delay: delay + 0.8 }}
-          >
-            {score}% d&apos;affinité
-          </motion.p>
-
+          {/* Action pour le champion */}
           {isChampion && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
-              transition={{ duration: 0.4, delay: delay + 1.2 }}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 10 }}
+              transition={{ duration: 0.4, delay: delay + 0.8 }}
+              className="text-center"
             >
               <Button
                 asChild
-                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-4 py-2 rounded-lg shadow-lg transition-all duration-200 text-sm"
+                className="bg-midnight-green hover:bg-midnight-green/90 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-200"
               >
                 <Link href={`/${municipality}/parti/${party.id}`}>
-                  Voir la fiche détaillée
+                  Voir la fiche complète
                 </Link>
               </Button>
             </motion.div>
           )}
-        </Card>
+        </div>
       </motion.div>
     );
   });
 
-  // Composant pour la slide de la carte politique - mémorisé
+  // Composant pour la slide de la carte politique - design moderne
   const CompassSlide: React.FC = memo(function CompassSlide() {
     // État pour la position utilisateur calculée dynamiquement
     const [dynamicUserPosition, setDynamicUserPosition] = useState<PoliticalPosition>({ x: 0, y: 0 });
@@ -607,81 +555,80 @@ export function ProgressiveResultsModal({
     }, []);
 
     return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, delay: 0.2 }}
-      className="px-4 py-1"
-    >
-      <div className="text-center mb-2">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <motion.div
-            animate={{ rotate: [0, 5, -5, 0] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatDelay: 3,
-              ease: "easeInOut"
-            }}
-          >
-            <Compass className="h-6 w-6 text-midnight-green" />
-          </motion.div>
-          <Badge className="bg-midnight-green text-white text-sm px-3 py-1 font-bold">
-            🧭 Votre position politique
-          </Badge>
-          <motion.div
-            animate={{ rotate: [0, -5, 5, 0] }}
-            transition={{
-              duration: 2,
-              repeat: Infinity,
-              repeatDelay: 3,
-              ease: "easeInOut",
-              delay: 0.5
-            }}
-          >
-            <Compass className="h-6 w-6 text-midnight-green" />
-          </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="w-full max-w-md mx-auto px-6 py-8"
+      >
+        {/* En-tête moderne */}
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center mb-4">
+            <div className="bg-midnight-green/10 p-3 rounded-full">
+              <Compass className="h-6 w-6 text-midnight-green" />
+            </div>
+          </div>
+          <h3 className="text-xl font-bold text-gray-900 mb-2">
+            Votre Position Politique
+          </h3>
+          <p className="text-gray-600 text-sm">
+            Positionnement sur la boussole municipale
+          </p>
         </div>
-        <h3 className="text-lg font-bold text-foreground mb-1">
-          Positionnement dans le paysage municipal
-        </h3>
-        <p className="text-muted-foreground text-sm mb-2">
-          Voici où vous vous situez par rapport aux partis
-        </p>
 
-        {/* Badges de position avec palette cohérente */}
-        <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap mb-2">
-          <Badge variant="secondary" className="text-xs px-1 py-1 sm:px-2 bg-azure-web text-midnight-green border-midnight-green/20">
-            Éco: {(dynamicUserPosition.x || 0) > 0 ? 'Marché' : 'Interv.'}
-            ({Math.abs(dynamicUserPosition.x || 0).toFixed(1)})
-          </Badge>
-          <Badge variant="secondary" className="text-xs px-1 py-1 sm:px-2 bg-azure-web text-midnight-green border-midnight-green/20">
-            Social: {(dynamicUserPosition.y || 0) > 0 ? 'Prog.' : 'Cons.'}
-            ({Math.abs(dynamicUserPosition.y || 0).toFixed(1)})
-          </Badge>
-          {dynamicUserPosition.x !== 0 || dynamicUserPosition.y !== 0 ? (
-            <Badge variant="outline" className="text-xs px-2 py-1 border-midnight-green text-midnight-green bg-isabelline">
-              {getPoliticalPositionDescription(dynamicUserPosition)}
-            </Badge>
-          ) : null}
+        {/* Indicateurs de position modernes */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100">
+            <div className="text-xs font-medium text-gray-600 mb-1">Économique</div>
+            <div className="text-lg font-bold text-gray-900">
+              {(dynamicUserPosition.x || 0) > 0 ? 'Marché' : 'Interv.'}
+            </div>
+            <div className="text-xs text-gray-500">
+              {Math.abs(dynamicUserPosition.x || 0).toFixed(1)}
+            </div>
+          </div>
+          <div className="bg-gray-50 rounded-2xl p-4 text-center border border-gray-100">
+            <div className="text-xs font-medium text-gray-600 mb-1">Social</div>
+            <div className="text-lg font-bold text-gray-900">
+              {(dynamicUserPosition.y || 0) > 0 ? 'Progressiste' : 'Conservateur'}
+            </div>
+            <div className="text-xs text-gray-500">
+              {Math.abs(dynamicUserPosition.y || 0).toFixed(1)}
+            </div>
+          </div>
         </div>
-      </div>
 
-      {/* Mini Compass avec couleurs harmonisées */}
-      <div className="mb-1">
-        <MiniCompass
-          userAnswers={userAnswers as UserAnswers}
-          municipality={municipality}
-          topParties={topParties}
-          onUserPositionChange={handleUserPositionChange}
-        />
-      </div>
+        {/* Description de position */}
+        {(dynamicUserPosition.x !== 0 || dynamicUserPosition.y !== 0) && (
+          <div className="text-center mb-6">
+            <div className="bg-midnight-green/5 border border-midnight-green/20 rounded-2xl px-4 py-3">
+              <div className="text-sm font-medium text-midnight-green">
+                {getPoliticalPositionDescription(dynamicUserPosition)}
+              </div>
+            </div>
+          </div>
+        )}
 
-      {/* Légende avec design cohérent */}
-      <div className="text-center text-xs text-muted-foreground bg-azure-web rounded-lg p-1 mb-1 border border-midnight-green/20">
-        <p><strong>Légende:</strong> Bordures dorées 🥇, argentées 🥈 et bronze 🥉 = votre top 3</p>
-      </div>
-    </motion.div>
+        {/* Mini Compass avec design moderne */}
+        <div className="mb-6">
+          <MiniCompass
+            userAnswers={userAnswers as UserAnswers}
+            municipality={municipality}
+            topParties={topParties}
+            onUserPositionChange={handleUserPositionChange}
+          />
+        </div>
+
+        {/* Légende moderne */}
+        <div className="text-center">
+          <div className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+            <div className="text-xs font-medium text-gray-600 mb-2">Légende</div>
+            <div className="text-xs text-gray-500">
+              Les bordures colorées indiquent votre top 3 des affinités politiques
+            </div>
+          </div>
+        </div>
+      </motion.div>
     );
   });
 
@@ -689,45 +636,45 @@ export function ProgressiveResultsModal({
 
   return (
     <>
-      {/* Overlay de fond avec centrage corrigé */}
+      {/* Overlay avec centrage CSS Grid moderne */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 flex items-center justify-center p-2 sm:p-4"
+        className="fixed inset-0 bg-black/60 z-50 grid place-items-center p-4 overflow-y-auto"
         onClick={onClose}
       >
-        {/* Modal container avec layout stabilisé et responsivité améliorée */}
+        {/* Modal container - design professionnel */}
         <div
-          className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl
-                     bg-white border-2 border-midnight-green rounded-lg shadow-xl
-                     max-h-[96vh] sm:max-h-[92vh] md:max-h-[88vh] flex flex-col
-                     mx-auto my-auto"
+          className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl
+                     min-h-[600px] max-h-[85vh] flex flex-col
+                     border border-gray-200/50 overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Bouton fermer */}
+          {/* Bouton fermer - design moderne */}
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="absolute top-2 right-2 z-50 hover:bg-midnight-green/10 rounded-full h-8 w-8 text-midnight-green"
+            className="absolute top-4 right-4 z-50 hover:bg-gray-100 rounded-full h-10 w-10 text-gray-600 hover:text-gray-900 transition-colors"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </Button>
 
-          {/* En-tête du modal - fixe */}
-          <div className="text-center p-2 border-b border-midnight-green/20 bg-azure-web flex-shrink-0">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <Trophy className="h-5 w-5 text-midnight-green" />
-              <Badge className="bg-midnight-green text-white text-sm px-3 py-1 font-bold">
-                🏆 Vos résultats politiques
-              </Badge>
-              <Trophy className="h-5 w-5 text-midnight-green" />
+          {/* En-tête professionnel */}
+          <div className="text-center px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50 flex-shrink-0">
+            <div className="flex items-center justify-center mb-3">
+              <div className="bg-midnight-green/10 p-3 rounded-full">
+                <Trophy className="h-6 w-6 text-midnight-green" />
+              </div>
             </div>
-            <h2 className="text-lg font-bold text-midnight-green">
-              Découvrez vos affinités et votre positionnement
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              Vos Résultats Politiques
             </h2>
+            <p className="text-gray-600 text-sm">
+              Découvrez vos affinités et votre positionnement politique
+            </p>
           </div>
 
-          {/* Indicateur de slide - fixe avec navigation sécurisée */}
-          <div className="flex justify-center gap-2 p-2 border-b bg-azure-web/80 flex-shrink-0">
+          {/* Navigation moderne et discrète */}
+          <div className="flex justify-center gap-3 py-4 border-b border-gray-100 flex-shrink-0">
             {Array.from({ length: 4 }, (_, index) => (
               <button
                 key={index}
@@ -741,23 +688,21 @@ export function ProgressiveResultsModal({
                   }
                 }}
                 disabled={!carouselApi}
-                className={`rounded-full transition-all duration-300 hover:scale-110 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 ${
+                className={`transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50 ${
                   currentSlide === index
-                    ? 'bg-midnight-green w-8 h-3 shadow-md'
-                    : index < currentSlide
-                    ? 'bg-midnight-green/70 w-3 h-3 hover:bg-midnight-green/80'
-                    : 'bg-midnight-green/30 w-3 h-3 hover:bg-midnight-green/50'
+                    ? 'bg-midnight-green w-8 h-2 rounded-full shadow-sm'
+                    : 'bg-gray-300 hover:bg-gray-400 w-2 h-2 rounded-full'
                 }`}
                 aria-label={`Aller à la slide ${index + 1}`}
               />
             ))}
           </div>
 
-          {/* Carousel des résultats - scrollable avec responsivité */}
-          <div className="relative flex-1 overflow-hidden min-h-[350px] sm:min-h-[400px] md:min-h-[450px]">
+          {/* Contenu principal */}
+          <div className="relative flex-1 overflow-hidden">
             <Carousel
               setApi={setCarouselApi}
-              className="w-full min-h-[350px] sm:min-h-[400px] md:min-h-[450px]"
+              className="w-full h-full"
               opts={{
                 align: 'center',
                 loop: false,
@@ -765,9 +710,9 @@ export function ProgressiveResultsModal({
                 dragFree: false,
               }}
             >
-              <CarouselContent className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] -ml-2 md:-ml-4">
+              <CarouselContent className="h-full ml-0">
                 {/* Slide 1: Premier parti */}
-                <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] flex justify-center pl-2 md:pl-4 pr-1">
+                <CarouselItem className="flex items-center justify-center py-4">
                   <PartyCard
                     party={topParty.party}
                     score={topParty.score}
@@ -779,7 +724,7 @@ export function ProgressiveResultsModal({
 
                 {/* Slide 2: Deuxième place */}
                 {secondParty && (
-                  <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] flex justify-center pl-2 md:pl-4 pr-1">
+                  <CarouselItem className="flex items-center justify-center py-4">
                     <PartyCard
                       party={secondParty.party}
                       score={secondParty.score}
@@ -791,7 +736,7 @@ export function ProgressiveResultsModal({
 
                 {/* Slide 3: Troisième place */}
                 {thirdParty && (
-                  <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] flex justify-center pl-2 md:pl-4 pr-1">
+                  <CarouselItem className="flex items-center justify-center py-4">
                     <PartyCard
                       party={thirdParty.party}
                       score={thirdParty.score}
@@ -802,51 +747,49 @@ export function ProgressiveResultsModal({
                 )}
 
                 {/* Slide 4: Carte politique */}
-                <CarouselItem className="min-h-[350px] sm:min-h-[400px] md:min-h-[450px] pl-2 md:pl-4 pr-1">
+                <CarouselItem className="flex items-center justify-center py-4">
                   <CompassSlide />
                 </CarouselItem>
               </CarouselContent>
 
-              <CarouselPrevious className="left-1 sm:left-2 md:left-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-10 w-10 sm:h-12 sm:w-12 shadow-lg transition-all duration-200" />
-              <CarouselNext className="right-1 sm:right-2 md:right-3 bg-midnight-green text-white border-2 border-midnight-green hover:bg-midnight-green/90 hover:border-midnight-green/90 hover:scale-105 h-10 w-10 sm:h-12 sm:w-12 shadow-lg transition-all duration-200" />
+              <CarouselPrevious className="left-4 bg-white/90 backdrop-blur-sm text-gray-700 border border-gray-200 hover:bg-white hover:scale-105 h-10 w-10 shadow-lg transition-all duration-200" />
+              <CarouselNext className="right-4 bg-white/90 backdrop-blur-sm text-gray-700 border border-gray-200 hover:bg-white hover:scale-105 h-10 w-10 shadow-lg transition-all duration-200" />
             </Carousel>
           </div>
 
-          {/* Actions finales - fixe */}
+          {/* Actions finales modernisées */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: showContent ? 1 : 0, y: showContent ? 0 : 20 }}
             transition={{ duration: 0.4, delay: 0.5 }}
-            className="p-1 border-t border-midnight-green/20 bg-azure-web/60 space-y-1 flex-shrink-0"
+            className="px-8 py-6 border-t border-gray-100 bg-gray-50/50 space-y-4 flex-shrink-0"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <Button
                 asChild
                 variant="outline"
-                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-2 px-3"
+                className="rounded-xl border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium py-3"
               >
                 <Link href={`/${municipality}/parti/${topParty.party.id}`}>
-                  <span className="hidden sm:inline">Fiche détaillée</span>
-                  <span className="sm:hidden">Détails</span>
+                  Fiche détaillée
                 </Link>
               </Button>
               <Button
                 variant="outline"
-                className="rounded-lg border-midnight-green text-midnight-green hover:bg-midnight-green/10 font-medium text-sm py-2 px-3"
+                className="rounded-xl border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-medium py-3"
                 onClick={() => setIsShareModalOpen(true)}
               >
-                <Share2 className="mr-1 sm:mr-2 h-4 w-4" />
+                <Share2 className="mr-2 h-4 w-4" />
                 Partager
               </Button>
             </div>
 
             <Button
               onClick={onClose}
-              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-lg font-semibold shadow-lg transition-all duration-200 text-sm py-2 px-4"
+              className="w-full bg-midnight-green hover:bg-midnight-green/90 text-white rounded-xl font-semibold shadow-lg transition-all duration-200 py-3"
             >
-              <ArrowRight className="mr-2 h-4 w-4" />
-              <span className="hidden sm:inline">Voir l&apos;analyse complète</span>
-              <span className="sm:hidden">Analyse complète</span>
+              <ArrowRight className="mr-2 h-5 w-5" />
+              Voir l&apos;analyse complète
             </Button>
           </motion.div>
         </div>
