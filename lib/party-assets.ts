@@ -14,7 +14,7 @@ export const PARTY_LOGOS: Record<string, string> = {
   'quebec_forte_et_fiere': '/logos/quebec-forte-et-fiere-new.png',
   'respect_citoyens': '/logos/respect-citoyens-new.jpg',
   'transition_quebec': '/logos/transition-quebec-new.png',
-  'parti_du_monde': '/logos/parti-du-monde.png',
+  'parti_du_monde_quebec': '/logos/parti-du-monde.png',
 
   // Montréal
   'projet_montreal': '/logos/projet-montreal.png',

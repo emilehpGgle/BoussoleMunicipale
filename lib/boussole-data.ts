@@ -1220,7 +1220,7 @@ export const partiesData: Party[] = [
     ],
   },
   {
-    id: "parti-du-monde",
+    id: "parti-du-monde-quebec",
     name: "Parti du Monde",
     shortName: "PDM",
     leader: "Anne Guérette",
