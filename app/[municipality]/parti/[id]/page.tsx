@@ -43,30 +43,28 @@ function generateSlug(leaderName: string): string {
 }
 
 // Fonction pour obtenir l'icône de comparaison
-
-// Fonction pour obtenir l'icône de comparaison
 const getComparisonIcon = (userPosition: AgreementOptionKey, partyPosition: string) => {
   // Convertir les positions en valeurs numériques pour comparer
   const positionValues: Record<string, number> = {
     'FD': -2, // Fortement en désaccord
-    'PD': -1, // Plutôt en désaccord  
+    'PD': -1, // Plutôt en désaccord
     'N': 0,   // Neutre
     'PA': 1,  // Plutôt d'accord
     'FA': 2   // Fortement d'accord
   }
-  
+
   const userValue = positionValues[userPosition] || 0
   const partyValue = positionValues[partyPosition] || 0
-  
+
   // Calcul de la différence
   const difference = Math.abs(userValue - partyValue)
-  
+
   if (difference === 0) {
-    return <CheckCircle className="h-5 w-5 text-green-600" />
+    return <CheckCircle className="h-6 w-6 text-green-700" />
   } else if (difference === 1) {
-    return <MinusCircle className="h-5 w-5 text-yellow-600" />
+    return <MinusCircle className="h-6 w-6 text-yellow-600" />
   } else {
-    return <XCircle className="h-5 w-5 text-red-600" />
+    return <XCircle className="h-6 w-6 text-red-700" />
   }
 }
 
@@ -179,7 +177,8 @@ export default function PartyDetailPage() {
       <Card className="shadow-soft rounded-2xl overflow-hidden">
         <CardHeader className="bg-muted/30 p-6">
           <div className="flex flex-col sm:flex-row items-start gap-6">
-            <div className="flex flex-col gap-4 flex-shrink-0">
+            {/* Logo et Photo côte à côte */}
+            <div className="flex gap-4 flex-shrink-0">
               <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
                 <Image
                   src={getPartyLogo(party.id)}
@@ -231,14 +230,6 @@ export default function PartyDetailPage() {
                     </a>
                   </Button>
                 )}
-                {party.leader && (
-                  <Button asChild variant="ghost" size="sm" className="flex items-center gap-1.5">
-                    <Link href={`/leaders/${generateSlug(party.leader)}`}>
-                      <User className="h-3.5 w-3.5" />
-                      Profil du leader
-                    </Link>
-                  </Button>
-                )}
               </div>
             </div>
           </div>
@@ -273,34 +264,6 @@ export default function PartyDetailPage() {
         </CardContent>
       </Card>
 
-      {/* Appel à l'action avec contexte élections 2025 */}
-      <Card className="bg-primary/5 border-primary/20">
-        <CardContent className="text-center py-6">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Calendar className="h-5 w-5 text-primary" />
-            <span className="text-sm font-medium text-primary">Élections Municipales 2025</span>
-          </div>
-          <h3 className="text-xl font-bold mb-3">
-            Découvrez vos affinités politiques
-          </h3>
-          <p className="text-muted-foreground mb-4 max-w-lg mx-auto">
-            Comparez vos positions avec celles de {party.name} et {party.leader} sur les enjeux municipaux qui vous concernent.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-              <Link href={`/${municipality}/test-politique-municipal`}>
-                Faire le questionnaire politique
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/leaders">
-                Voir tous les leaders
-              </Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
       <Card className="shadow-soft rounded-2xl">
         <CardHeader>
           <CardTitle className="text-2xl">Positions détaillées sur les enjeux</CardTitle>
@@ -311,30 +274,36 @@ export default function PartyDetailPage() {
             }
           </CardDescription>
           {hasUserResponses && (
-            <div className="flex items-center gap-4 text-xs text-muted-foreground mt-2">
-              <div className="flex items-center gap-1">
-                <CheckCircle className="h-3 w-3 text-green-600" />
-                <span>Position identique</span>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground mt-3 bg-muted/20 p-3 rounded-lg">
+              <span className="font-medium text-foreground">Légende :</span>
+              <div className="flex items-center gap-1.5">
+                <CheckCircle className="h-4 w-4 text-green-700" />
+                <span>Identique</span>
               </div>
-              <div className="flex items-center gap-1">
-                <MinusCircle className="h-3 w-3 text-yellow-600" />
-                <span>Position similaire</span>
+              <div className="flex items-center gap-1.5">
+                <MinusCircle className="h-4 w-4 text-yellow-600" />
+                <span>Similaire</span>
               </div>
-              <div className="flex items-center gap-1">
-                <XCircle className="h-3 w-3 text-red-600" />
-                <span>Position différente</span>
+              <div className="flex items-center gap-1.5">
+                <XCircle className="h-4 w-4 text-red-700" />
+                <span>Différente</span>
               </div>
             </div>
           )}
         </CardHeader>
         <CardContent className="space-y-6">
           {boussoleQuestions.map((question: BoussoleQuestion, index: number) => {
+            // Afficher séparateur de catégorie si nouvelle catégorie
+            const isFirstQuestionOfCategory =
+              index === 0 ||
+              (index > 0 && boussoleQuestions[index - 1].category !== question.category)
+
             // Gestion spéciale pour la question de priorités (Q21)
             if (question.responseType === "priority_ranking") {
               // Pour la Q21, afficher les priorités au lieu des positions d'accord/désaccord
               const hasUserPriorities = userPriorities && Object.keys(userPriorities).length > 0
               const partyPriorities = party.priorities || []
-              
+
               // Formater les priorités utilisateur
               let userPrioritiesText = "Aucune priorité sélectionnée"
               if (hasUserPriorities) {
@@ -343,14 +312,24 @@ export default function PartyDetailPage() {
                   .map(([priority, rank]) => `${rank}. ${priority}`)
                 userPrioritiesText = sortedPriorities.join(' • ')
               }
-              
+
               // Formater les priorités du parti
-              const partyPrioritiesText = partyPriorities.length > 0 
+              const partyPrioritiesText = partyPriorities.length > 0
                 ? partyPriorities.slice(0, 3).map((p, i) => `${i + 1}. ${p}`).join(' • ')
                 : "Aucune priorité définie"
 
               return (
-                <Card key={question.id} className="bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+                <div key={question.id}>
+                  {isFirstQuestionOfCategory && (
+                    <div className="flex items-center gap-3 mb-4 mt-2">
+                      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1"></div>
+                      <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide px-3">
+                        {question.category}
+                      </h3>
+                      <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1"></div>
+                    </div>
+                  )}
+                  <Card className="bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
                   <CardHeader className="pb-4">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-xs font-medium text-muted-foreground">Question {index + 1}</p>
@@ -378,13 +357,14 @@ export default function PartyDetailPage() {
                     )}
                   </CardContent>
                 </Card>
+                </div>
               )
             }
-            
+
             // Logique normale pour les autres questions (Q1-Q20)
             const partyPos = partyQuestionsMap.get(question.id)
             const userPos = userResponses.agreement[question.id]
-            
+
             const partyPositionLabel =
               partyPos?.position && partyPos.position !== "?"
                 ? getAgreementLabel(question, partyPos.position)
@@ -393,7 +373,17 @@ export default function PartyDetailPage() {
                   : "Non spécifiée"
 
             return (
-              <Card key={question.id} className="bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
+              <div key={question.id}>
+                {isFirstQuestionOfCategory && (
+                  <div className="flex items-center gap-3 mb-4 mt-2">
+                    <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1"></div>
+                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide px-3">
+                      {question.category}
+                    </h3>
+                    <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent flex-1"></div>
+                  </div>
+                )}
+                <Card className="bg-white border border-border/50 rounded-xl overflow-hidden hover:shadow-md transition-shadow duration-200">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-xs font-medium text-muted-foreground">Question {index + 1}</p>
@@ -414,16 +404,8 @@ export default function PartyDetailPage() {
                            <div className="flex items-center justify-between">
                             <p className="text-sm font-semibold text-foreground">Position du parti</p>
                             <div className="flex items-center gap-2">
-                               <TooltipProvider>
-                                <Tooltip>
-                                  <TooltipTrigger>
-                                    {getComparisonIcon(userPos, partyPos.position)}
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>{getComparisonText(userPos, partyPos.position)}</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
+                              <span className="text-xs text-muted-foreground">{getComparisonText(userPos, partyPos.position)}</span>
+                              {getComparisonIcon(userPos, partyPos.position)}
                             </div>
                            </div>
                            <p className="text-foreground font-medium text-blue-700">{partyPositionLabel}</p>
@@ -472,8 +454,37 @@ export default function PartyDetailPage() {
                   )}
                 </CardContent>
               </Card>
+              </div>
             )
           })}
+        </CardContent>
+      </Card>
+
+      {/* Appel à l'action avec contexte élections 2025 - Déplacé en fin de page */}
+      <Card className="bg-primary/5 border-primary/20">
+        <CardContent className="text-center py-8">
+          <div className="flex items-center justify-center gap-2 mb-3">
+            <Calendar className="h-5 w-5 text-primary" />
+            <span className="text-sm font-medium text-primary">Élections Municipales 2025</span>
+          </div>
+          <h3 className="text-2xl font-bold mb-4">
+            Découvrez vos affinités politiques
+          </h3>
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+            Vous avez consulté les positions de {party.name}. Faites le questionnaire complet pour comparer vos réponses avec celles de tous les partis et leaders municipaux.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+              <Link href={`/${municipality}/test-politique-municipal`}>
+                Faire le questionnaire politique
+              </Link>
+            </Button>
+            <Button asChild variant="outline" size="lg">
+              <Link href={`/${municipality}/leaders`}>
+                Voir tous les leaders
+              </Link>
+            </Button>
+          </div>
         </CardContent>
       </Card>
     </div>
