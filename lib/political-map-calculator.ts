@@ -1,4 +1,4 @@
-import { type AgreementOptionKey } from './boussole-data'
+import { type AgreementOptionKey, type Question } from './boussole-data'
 
 // Définition des axes politiques
 export interface PoliticalPosition {
@@ -234,14 +234,12 @@ export function calculateExactCompatibilityWithDetails(
   userPriorities: Record<string, number>,
   partyPriorities: string[]
 ): CompatibilityDetails {
-
   // 1. Calcul du score politique (exactement comme dans resultats/page.tsx)
   const distance = calculatePoliticalDistance(userPosition, partyPosition)
   // Distance maximale théorique = sqrt(200^2 + 200^2) ≈ 283
   const maxDistance = 283
   const compatibility = Math.max(0, Math.round(100 - (distance / maxDistance) * 100))
   const politicalScore = compatibility
-
 
   // 2. Calcul du score des priorités avec détails
   const priorityScore = calculatePriorityCompatibility(userPriorities, partyPriorities)
@@ -557,4 +555,397 @@ export function calculatePartyPositions(): Record<string, PoliticalPosition> {
 /**
  * Positions calculées des partis (remplace les positions arbitraires)
  */
-export const partyPositions = calculatePartyPositions() 
+export const partyPositions = calculatePartyPositions()
+
+// ============================================================================
+// 🎯 NOUVEAU SYSTÈME D'AFFINITÉ DIRECTE QUESTION PAR QUESTION
+// ============================================================================
+
+/**
+ * Mapping des catégories de questions DB vers les priorités utilisateur
+ */
+const categoryToPriorityMapping: Record<string, string | null> = {
+  "Transport et mobilité": "Transport et mobilité",
+  "Logement et aménagement urbain": "Logement abordable",
+  "Environnement et développement durable": "Environnement et espaces verts",
+  "Finances municipales": "Gestion des finances municipales",
+  "Services municipaux": "Services municipaux",
+  "Sécurité publique": "Sécurité publique",
+  "Développement économique": "Développement économique et social",
+  "Gouvernance et participation": "Gouvernance et participation citoyenne",
+  "Patrimoine et développement": "Patrimoine et développement",
+  "Services sociaux": "Services municipaux", // Regroupé avec services municipaux
+  "Équilibre développement/qualité de vie": "Développement économique et social",
+  "Gestion des priorités": "Gestion des finances municipales",
+
+  // Enjeux spécifiques municipaux (1 question chacun)
+  "Projet tramway": "Projet tramway",
+  "Troisième lien": "Troisième lien",
+
+  // Catégorie spéciale - exclue du calcul d'affinité
+  "Enjeux prioritaires": null
+}
+
+/**
+ * Interface pour les détails d'affinité directe
+ */
+export interface DirectCompatibilityDetails {
+  finalScore: number
+  totalQuestions: number
+  agreementsByCategory: Record<string, { agreed: number; total: number; percentage: number }>
+  priorityWeights: Record<string, number>
+  sharedPriorities: string[]
+  weightedContributions: Record<string, number>
+  narrative: {
+    mainScore: string
+    priorityAnalysis: string
+    categoryBreakdown: string
+    summary: string
+  }
+}
+
+/**
+ * Extrait le nom de la priorité spécifique d'une question "Enjeu spécifique"
+ * en cherchant dans les priority_options de la municipalité
+ */
+function extractSpecificPriorityName(
+  question: Question,
+  allQuestions: Question[]
+): string | null {
+  // Trouver la question de priorités pour cette municipalité
+  const priorityQuestion = allQuestions.find(q =>
+    q.category === "Enjeux prioritaires" ||
+    q.responseType === "priority_ranking"
+  )
+
+  if (!priorityQuestion?.priorityOptions) {
+    return null
+  }
+
+  // Parser les options de priorité
+  let priorityOptions: string[] = []
+  try {
+    priorityOptions = typeof priorityQuestion.priorityOptions === 'string'
+      ? JSON.parse(priorityQuestion.priorityOptions)
+      : priorityQuestion.priorityOptions
+  } catch (error) {
+    console.warn('Erreur parsing priorityOptions:', error)
+    return null
+  }
+
+  // Mapping basé sur l'ID de la question pour identifier l'enjeu spécifique
+  const specificMappings: Record<string, string[]> = {
+    // Québec
+    'qc_q_01_tramway': ['Projet tramway', 'Tramway'],
+    'qc_spec_troisieme_lien': ['Troisième lien', '3e lien', 'Troisieme lien'],
+
+    // Montréal
+    'mtl_spec_rem': ['Extension du métro et REM', 'Métro et REM', 'REM'],
+    'mtl_spec_arrondissements': ['Coordination des arrondissements', 'Arrondissements', 'Autonomie arrondissements'],
+    'mtl_spec_festivals': ['Gestion des festivals et événements', 'Festivals', 'Événements'],
+  }
+
+  // Chercher l'enjeu correspondant dans les options
+  const possibleNames = specificMappings[question.id] || []
+  for (const possibleName of possibleNames) {
+    const found = priorityOptions.find(option =>
+      option.toLowerCase().includes(possibleName.toLowerCase()) ||
+      possibleName.toLowerCase().includes(option.toLowerCase())
+    )
+    if (found) {
+      return found
+    }
+  }
+
+  return null
+}
+
+/**
+ * Calcule le poids d'une question selon les priorités utilisateur
+ * Inclut un bonus de rareté pour les enjeux avec peu de questions
+ * Gère spécialement les catégories "Enjeu spécifique X"
+ */
+function calculateQuestionWeight(
+  question: Question,
+  userPriorities: Record<string, number>,
+  questionsPerCategory: Record<string, number>,
+  allQuestions: Question[]
+): number {
+  // 🎯 GESTION SPÉCIALE : Enjeux spécifiques municipaux
+  if (question.category && question.category.startsWith("Enjeu spécifique")) {
+    // Extraire le nom exact de la priorité spécifique
+    const specificPriorityName = extractSpecificPriorityName(question, allQuestions)
+
+    if (specificPriorityName) {
+      // Vérifier si l'utilisateur a sélectionné cette priorité
+      const priorityRank = userPriorities[specificPriorityName]
+
+      if (priorityRank) {
+        // Multiplicateurs de base selon le rang de priorité
+        const baseMultipliers: Record<number, number> = {
+          1: 2.0,   // 1ère priorité
+          2: 1.75,  // 2ème priorité
+          3: 1.5    // 3ème priorité
+        }
+
+        const baseMultiplier = baseMultipliers[priorityRank] || 1.0
+        // Bonus de rareté automatique pour tous les enjeux spécifiques
+        const scarcityBonus = 1.5
+
+        return baseMultiplier * scarcityBonus
+      } else {
+        // L'utilisateur n'a pas sélectionné cette priorité spécifique
+        // Mais on applique quand même le bonus de rareté
+        return 1.0 * 1.5
+      }
+    }
+
+    // Fallback si on n'arrive pas à extraire le nom
+    return 1.0 * 1.5
+  }
+
+  // 📝 GESTION NORMALE : Catégories standards
+  const mappedPriority = categoryToPriorityMapping[question.category]
+
+  if (!mappedPriority) {
+    return 1.0 // Poids de base pour catégories non-mappées
+  }
+
+  // Vérifier si c'est une priorité utilisateur
+  const priorityRank = userPriorities[mappedPriority]
+  if (!priorityRank) {
+    return 1.0 // Poids de base si pas une priorité
+  }
+
+  // Multiplicateurs de base selon le rang de priorité
+  const baseMultipliers: Record<number, number> = {
+    1: 2.0,   // 1ère priorité
+    2: 1.75,  // 2ème priorité
+    3: 1.5    // 3ème priorité
+  }
+
+  const baseMultiplier = baseMultipliers[priorityRank] || 1.0
+
+  // Bonus de rareté pour enjeux avec peu de questions (pas pour les spécifiques)
+  const questionsInCategory = questionsPerCategory[mappedPriority] || 1
+  const scarcityBonus = questionsInCategory === 1 ? 1.5 : 1.0
+
+  return baseMultiplier * scarcityBonus
+}
+
+/**
+ * Groupe les questions par priorité mappée et compte les questions par catégorie
+ */
+function analyzeQuestionDistribution(questions: Question[]): {
+  questionsPerCategory: Record<string, number>
+  questionsByPriority: Record<string, Question[]>
+} {
+  const questionsPerCategory: Record<string, number> = {}
+  const _questionsByPriority: Record<string, Question[]> = {}
+
+  // Filtrer les questions normales (exclure enjeux prioritaires)
+  const normalQuestions = questions.filter(q =>
+    q.category !== "Enjeux prioritaires" &&
+    q.responseType !== "priority_ranking"
+  )
+
+  normalQuestions.forEach(question => {
+    const mappedPriority = categoryToPriorityMapping[question.category]
+
+    if (mappedPriority) {
+      // Compter les questions par priorité
+      questionsPerCategory[mappedPriority] = (questionsPerCategory[mappedPriority] || 0) + 1
+
+      // Grouper les questions par priorité
+      if (!_questionsByPriority[mappedPriority]) {
+        _questionsByPriority[mappedPriority] = []
+      }
+      _questionsByPriority[mappedPriority].push(question)
+    }
+  })
+
+  return { questionsPerCategory, questionsByPriority: _questionsByPriority }
+}
+
+/**
+ * CALCUL D'AFFINITÉ DIRECTE - Question par question avec pondération équilibrée
+ * Système bicéphale : utilisé pour l'affinité pratique (décision de vote)
+ * Différent du calcul de position politique (carte)
+ */
+export function calculateDirectCompatibility(
+  userAnswers: UserAnswers,
+  partyAnswers: UserAnswers,
+  userPriorities: Record<string, number>,
+  questions: Question[]
+): DirectCompatibilityDetails {
+  // Analyser la distribution des questions
+  const { questionsPerCategory } = analyzeQuestionDistribution(questions)
+
+  // Filtrer les questions normales pour le calcul
+  const normalQuestions = questions.filter(q =>
+    q.category !== "Enjeux prioritaires" &&
+    q.responseType !== "priority_ranking"
+  )
+
+  let totalWeightedScore = 0
+  let totalWeight = 0
+  const agreementsByCategory: Record<string, { agreed: number; total: number; percentage: number }> = {}
+  const priorityWeights: Record<string, number> = {}
+  const weightedContributions: Record<string, number> = {}
+
+  // Calculer pour chaque question
+  normalQuestions.forEach(question => {
+    const userAnswer = userAnswers[question.id]
+    const partyAnswer = partyAnswers[question.id]
+
+    // Vérifier que les deux réponses existent et ne sont pas IDK
+    if (!userAnswer || !partyAnswer || userAnswer === 'IDK' || partyAnswer === 'IDK') {
+      return
+    }
+
+    // Calculer la distance et l'accord
+    const userScore = agreementScoreValues[userAnswer]
+    const partyScore = agreementScoreValues[partyAnswer]
+    const distance = Math.abs(userScore - partyScore)
+    const accordPercentage = Math.max(0, (4 - distance) / 4 * 100)
+
+    // Calculer le poids de la question (nouvelle signature avec gestion enjeux spécifiques)
+    const weight = calculateQuestionWeight(question, userPriorities, questionsPerCategory, questions)
+
+    // Déterminer la priorité mappée pour le tracking par catégorie
+    const mappedPriority = question.category.startsWith("Enjeu spécifique")
+      ? extractSpecificPriorityName(question, questions) || question.category
+      : categoryToPriorityMapping[question.category]
+
+    // Ajouter au score total
+    totalWeightedScore += accordPercentage * weight
+    totalWeight += weight
+
+    // Tracking par catégorie
+    if (mappedPriority) {
+      if (!agreementsByCategory[mappedPriority]) {
+        agreementsByCategory[mappedPriority] = { agreed: 0, total: 0, percentage: 0 }
+      }
+
+      agreementsByCategory[mappedPriority].total++
+      if (accordPercentage >= 75) { // Seuil d'accord : 75% et plus
+        agreementsByCategory[mappedPriority].agreed++
+      }
+
+      // Contribution pondérée de cette catégorie
+      if (!weightedContributions[mappedPriority]) {
+        weightedContributions[mappedPriority] = 0
+      }
+      weightedContributions[mappedPriority] += accordPercentage * weight
+
+      // Poids moyen de cette catégorie
+      priorityWeights[mappedPriority] = weight
+    }
+  })
+
+  // Calcul du score final
+  const finalScore = totalWeight > 0 ? Math.round(totalWeightedScore / totalWeight) : 0
+
+  // Calculer les pourcentages par catégorie
+  Object.keys(agreementsByCategory).forEach(category => {
+    const data = agreementsByCategory[category]
+    data.percentage = data.total > 0 ? Math.round((data.agreed / data.total) * 100) : 0
+  })
+
+  // Identifier les priorités partagées
+  const userPriorityList = Object.entries(userPriorities)
+    .sort(([,a], [,b]) => a - b) // Trier par rang (1, 2, 3)
+    .map(([priority]) => priority)
+
+  const sharedPriorities = userPriorityList.filter(priority =>
+    agreementsByCategory[priority] && agreementsByCategory[priority].percentage >= 50
+  )
+
+  // Générer les narratifs
+  const narrative = generateDirectCompatibilityNarrative(
+    finalScore,
+    agreementsByCategory,
+    userPriorityList,
+    sharedPriorities,
+    normalQuestions.length
+  )
+
+  return {
+    finalScore,
+    totalQuestions: normalQuestions.length,
+    agreementsByCategory,
+    priorityWeights,
+    sharedPriorities,
+    weightedContributions,
+    narrative
+  }
+}
+
+/**
+ * Génère les textes narratifs pour l'affinité directe
+ */
+function generateDirectCompatibilityNarrative(
+  finalScore: number,
+  agreementsByCategory: Record<string, { agreed: number; total: number; percentage: number }>,
+  userPriorities: string[],
+  sharedPriorities: string[],
+  _totalQuestions: number
+): DirectCompatibilityDetails['narrative'] {
+  // Score principal
+  let mainScore = ""
+  if (finalScore >= 80) {
+    mainScore = `Vous êtes en accord avec ce parti sur ${finalScore}% des solutions proposées`
+  } else if (finalScore >= 65) {
+    mainScore = `Vous partagez ${finalScore}% des approches de ce parti`
+  } else if (finalScore >= 50) {
+    mainScore = `Vous avez un accord modéré avec ce parti (${finalScore}%)`
+  } else if (finalScore >= 35) {
+    mainScore = `Vous avez des convergences limitées avec ce parti (${finalScore}%)`
+  } else {
+    mainScore = `Vous avez peu d'accord avec ce parti sur les solutions (${finalScore}%)`
+  }
+
+  // Analyse des priorités
+  let priorityAnalysis = ""
+  const prioritiesInCommon = userPriorities.filter(p => Object.keys(agreementsByCategory).includes(p))
+
+  if (prioritiesInCommon.length === 0) {
+    priorityAnalysis = `Vous ne partagez aucune priorité avec ce parti`
+  } else if (sharedPriorities.length === 0 && prioritiesInCommon.length > 0) {
+    priorityAnalysis = `Vous partagez ${prioritiesInCommon.length} priorité(s) avec ce parti, mais vous n'êtes pas d'accord sur les façons de les aborder`
+  } else if (sharedPriorities.length === prioritiesInCommon.length) {
+    priorityAnalysis = `Vous êtes alignés avec ce parti sur vos ${sharedPriorities.length} priorité(s) commune(s)`
+  } else {
+    priorityAnalysis = `Vous partagez ${prioritiesInCommon.length} priorité(s) avec ce parti, mais êtes d'accord sur les approches pour ${sharedPriorities.length} d'entre elles`
+  }
+
+  // Breakdown par catégorie (top 3)
+  const topCategories = Object.entries(agreementsByCategory)
+    .sort(([,a], [,b]) => b.percentage - a.percentage)
+    .slice(0, 3)
+
+  let categoryBreakdown = ""
+  if (topCategories.length > 0) {
+    const breakdownText = topCategories
+      .map(([cat, data]) => `${cat}: ${data.percentage}%`)
+      .join(", ")
+    categoryBreakdown = `Accords les plus forts: ${breakdownText}`
+  }
+
+  // Résumé
+  let summary = ""
+  if (finalScore >= 70) {
+    summary = `Une compatibilité forte qui faciliterait une collaboration`
+  } else if (finalScore >= 50) {
+    summary = `Des bases communes existent mais avec des nuances importantes`
+  } else {
+    summary = `Des divergences importantes sur les approches municipales`
+  }
+
+  return {
+    mainScore,
+    priorityAnalysis,
+    categoryBreakdown,
+    summary
+  }
+}

@@ -63,7 +63,7 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
   const [hoveredParty, setHoveredParty] = useState<string | null>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const router = useRouter();
-  const { priorities: userPriorities } = usePriorities()
+  const { priorities: userPriorities } = usePriorities(municipality)
 
   // Hooks Supabase pour récupérer les données dynamiques
   const { parties, loading: partiesLoading, error: partiesError } = useParties(municipality)
@@ -139,7 +139,6 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
 
           // ✅ UTILISATION DE LA FONCTION UNIFIÉE AVEC DÉTAILS NARRATIFS
           const partyPriorities = await extractPartyPrioritiesSimple(partyId, municipality)
-          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: DB priorities=`, partyPriorities)
 
           const compatibilityDetails = calculateExactCompatibilityWithDetails(
             userPosition,
@@ -148,8 +147,6 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
             partyPriorities
           )
 
-          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: Final compatibility=${compatibilityDetails.finalScore}%`)
-          console.log(`🔍 [COMPASS-DEBUG] ${partyId}: Details=`, compatibilityDetails.narrative)
 
           return {
             party,
@@ -446,7 +443,7 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
               {/* Rectangle background */}
               <rect
                 x={coords.x - rectWidth/2}
-                y={coords.y - (isFullscreenMode ? 45 : 32)}
+                y={coords.y - (isFullscreenMode ? 43 : 29)}
                 width={rectWidth}
                 height={rectHeight}
                 fill="white"
@@ -460,8 +457,9 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
               {/* Texte par-dessus */}
               <text
                 x={coords.x}
-                y={coords.y - (isFullscreenMode ? 35 : 25)}
+                y={coords.y - (isFullscreenMode ? 31 : 20)}
                 textAnchor="middle"
+                dominantBaseline="middle"
                 fontSize={isFullscreenMode ? "14" : "11"}
                 fill="hsl(var(--foreground))"
                 className="font-medium pointer-events-none"
@@ -642,8 +640,8 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
             économique (interventionnisme ↔ libre marché) et social/environnemental (conservateur ↔ progressiste). 
             Les positions des partis sont basées sur leurs programmes publics et déclarations officielles.
             <br />
-            <strong>📊 Calcul de compatibilité :</strong> Le score combine votre positionnement politique (70%) 
-            et l&apos;alignement de vos priorités municipales (30%) pour une évaluation globale plus précise.
+            <strong>📊 Calcul de compatibilité :</strong> Ce score mesure votre alignement politique selon les deux axes
+            de la carte. Pour une évaluation pratique de vote, consultez les scores d&apos;affinité dans la section précédente.
           </div>
         </CardContent>
       </Card>

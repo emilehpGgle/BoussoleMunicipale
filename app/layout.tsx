@@ -196,45 +196,28 @@ export default function RootLayout({
               const isDomainCustom = hostname.includes('boussolemunicipale.com');
               const isVercelDomain = hostname.includes('vercel.app');
               
-              console.log('[DOMAIN DEBUG] Current domain:', hostname);
-              console.log('[DOMAIN DEBUG] Is custom domain:', isDomainCustom);
-              console.log('[DOMAIN DEBUG] Is Vercel domain:', isVercelDomain);
-              console.log('[DOMAIN DEBUG] Viewport size:', window.innerWidth, 'x', window.innerHeight);
-              console.log('[DOMAIN DEBUG] Device pixel ratio:', window.devicePixelRatio);
-              
-              // ADVANCED SCALING DEBUGGING
+              // Debug en mode développement - détection via hostname
+              const isDev = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+
+              // ADVANCED SCALING DEBUGGING - Safe DOM access
               const htmlEl = document.documentElement;
               const bodyEl = document.body;
-              const computedHtml = window.getComputedStyle(htmlEl);
-              const computedBody = window.getComputedStyle(bodyEl);
-              
-              console.log('[SCALE DEBUG] HTML font-size:', computedHtml.fontSize);
-              console.log('[SCALE DEBUG] Body font-size:', computedBody.fontSize);
-              console.log('[SCALE DEBUG] HTML zoom:', computedHtml.zoom || 'undefined');
-              console.log('[SCALE DEBUG] Body zoom:', computedBody.zoom || 'undefined');
-              console.log('[SCALE DEBUG] Window.devicePixelRatio:', window.devicePixelRatio);
-              console.log('[SCALE DEBUG] Screen dimensions:', screen.width, 'x', screen.height);
-              console.log('[SCALE DEBUG] Visual viewport:', window.visualViewport?.width || 'undefined', 'x', window.visualViewport?.height || 'undefined');
               
               // Browser zoom detection et compensation
               const zoomLevel = Math.round(((window.outerWidth / window.innerWidth) * 100) * 100) / 100;
-              console.log('[SCALE DEBUG] Browser zoom level:', zoomLevel + '%');
-              
+              if (isDev) {
+                console.log('[SCALE DEBUG] Browser zoom level:', zoomLevel + '%');
+              }
+
               // Force zoom compensation sur domaine custom
               if (isDomainCustom && zoomLevel !== 100) {
                 const compensationFactor = 100 / zoomLevel;
-                console.log('[SCALE FIX] Applying zoom compensation factor:', compensationFactor);
+                if (isDev) {
+                  console.log('[SCALE FIX] Applying zoom compensation factor:', compensationFactor);
+                }
                 document.body.style.transform = \`scale(\${compensationFactor})\`;
                 document.body.style.transformOrigin = 'top left';
               }
-              
-              // Debug headers présents
-              fetch('/api/debug-headers', { method: 'HEAD' }).then(response => {
-                console.log('[DOMAIN DEBUG] Response headers:');
-                for (let [key, value] of response.headers.entries()) {
-                  console.log('[DOMAIN DEBUG] -', key + ':', value);
-                }
-              }).catch(() => console.log('[DOMAIN DEBUG] Could not fetch debug headers'));
               
               // DOMAIN-SPECIFIC FIXES
               if (isDomainCustom) {
@@ -251,8 +234,10 @@ export default function RootLayout({
                   document.body.style.minWidth = '100vw';
                   document.body.style.maxWidth = '100vw';
                   document.body.style.transform = 'scale(1)';
-                  
-                  console.log('[DOMAIN FIX] Applied aggressive custom domain scaling fix');
+
+                  if (isDev) {
+                    console.log('[DOMAIN] Applied scaling fix');
+                  }
                 }, 100);
               } else {
                 document.documentElement.style.setProperty('--debug-domain', '"vercel"');
@@ -376,10 +361,11 @@ export default function RootLayout({
         
         
         {/* Resource hints optimisés pour performance */}
-        {/* Preload ressources critiques pour réduire LCP */}
-        <link rel="preload" href="/logo-main.svg?v=2025" as="image" type="image/svg+xml" />
-        <link rel="preload" href="/Image_parc_crisp.webp?v=2025" as="image" />
-        <link rel="preload" href="/favicon-32x32.png?v=2025" as="image" />
+        {/* Preload désactivé globalement - ces ressources ne sont pas utilisées sur toutes les pages
+            Pour réactiver sélectivement, ajouter les preload dans les pages spécifiques */}
+        {/* <link rel="preload" href="/logo-main.svg?v=2025" as="image" type="image/svg+xml" /> */}
+        {/* <link rel="preload" href="/Image_parc_crisp.webp?v=2025" as="image" /> */}
+        {/* <link rel="preload" href="/favicon-32x32.png?v=2025" as="image" /> */}
 
         {/* Preconnect analytics et services externes - non-blocking */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />
@@ -412,7 +398,13 @@ export default function RootLayout({
               canonical.href = canonicalUrl;
               document.head.appendChild(canonical);
 
-              console.log('[SEO] Dynamic canonical set to:', canonicalUrl);
+              // Détection mode développement
+              const hostname = window.location.hostname;
+              const isDev = hostname.includes('localhost') || hostname.includes('127.0.0.1');
+
+              if (isDev) {
+                console.log('[SEO] Canonical set to:', canonicalUrl);
+              }
 
               // Municipality-specific metadata optimization
               const pathname = window.location.pathname;
@@ -438,7 +430,9 @@ export default function RootLayout({
                   if (!originalTitle.includes(municipalityName)) {
                     const newTitle = originalTitle.replace(/Test Politique Municipal.*/, \`Test Politique Municipal \${municipalityName}\`);
                     document.title = newTitle;
-                    console.log('[SEO] Updated title for municipality:', municipalityName);
+                    if (isDev) {
+                      console.log('[SEO] Updated title for:', municipalityName);
+                    }
                   }
 
                   // Update Open Graph meta tags dynamically
@@ -463,28 +457,10 @@ export default function RootLayout({
                     twitterDescription.setAttribute('content', \`Boussole electorale gratuite pour les élections municipales 2025 à \${municipalityName}. Découvrez vos affinités avec tous les partis et candidats municipaux.\`);
                   }
 
-                  console.log('[SEO] Updated Open Graph metadata for municipality:', municipalityName);
-                }
-              }
-
-              // Logs de debug pour hydratation
-              if (typeof window !== 'undefined') {
-                console.log('[HYDRATION] Client-side render detected');
-                console.log('[HYDRATION] Current path:', window.location.pathname);
-                console.log('[HYDRATION] Ready state:', document.readyState);
-
-                // Détecter les erreurs d'hydratation React
-                const originalError = console.error;
-                console.error = function(...args) {
-                  if (args[0] && (
-                    args[0].includes('Hydration') ||
-                    args[0].includes('hydration') ||
-                    args[0].includes('did not match')
-                  )) {
-                    console.warn('[HYDRATION WARNING] Détecté:', args[0]);
+                  if (isDev) {
+                    console.log('[SEO] Updated metadata for:', municipalityName);
                   }
-                  originalError.apply(console, args);
-                };
+                }
               }
             })();
           `

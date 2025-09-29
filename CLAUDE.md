@@ -45,10 +45,25 @@ This is a **Boussole Municipale** (Municipal Compass) Next.js 15 application tha
 - Each party has orientation, strengths/weaknesses, priorities, and position on every question
 - Includes leader info, logos, colors, and website URLs
 
-**Political Calculation:**
-- 2D compass: Economic axis (interventionism ↔ free market) and Social axis (conservative ↔ progressive) 
-- Weighted scoring system based on question importance and user answers
-- Distance calculation between user and party positions for compatibility percentage
+**Political Calculation (Bicephalous System):**
+
+**1. Political Position (Educational Map):**
+- 2D compass: Economic axis (interventionism ↔ free market) and Social axis (conservative ↔ progressive)
+- Euclidean distance calculation between user and party positions
+- Used for educational positioning on political map (`political-compass-chart.tsx`)
+- Function: `calculateExactCompatibilityWithDetails()`
+
+**2. Direct Affinity (Voting Decision):**
+- Question-by-question distance calculation using agreement scores (FA=2, PA=1, N=0, PD=-1, FD=-2)
+- Priority-based weighting system with user-selected municipal priorities:
+  - 1st priority: ×2.0 multiplier
+  - 2nd priority: ×1.75 multiplier
+  - 3rd priority: ×1.5 multiplier
+- Scarcity bonus: ×1.5 for single-question categories (tramway, 3rd link) to ensure equity
+- Distance formula: `(4 - |score_user - score_party|) / 4 * 100`
+- Final score: weighted average of all question agreements
+- Used for practical voting decisions (`resultats/page.tsx`)
+- Function: `calculateDirectCompatibility()`
 
 ### UI Components
 
@@ -81,6 +96,55 @@ Uses Supabase for:
 - Share functionality
 
 When working on this codebase, always consider the political neutrality and accuracy of the data, especially when modifying questions or party positions in `boussole-data.ts`.
+
+## Priority Weighting System - Direct Affinity Calculation
+
+### Core Architecture (`/lib/political-map-calculator.ts`)
+
+**Category Mapping System:**
+- Maps database question categories to user-selectable priorities
+- Handles special municipal issues (tramway, 3rd link) with dedicated mapping
+- Excludes priority selection question itself from compatibility calculation
+
+**Weighting Algorithm:**
+```typescript
+// Base multipliers by priority rank
+1st priority: ×2.0 multiplier
+2nd priority: ×1.75 multiplier
+3rd priority: ×1.5 multiplier
+Non-priority questions: ×1.0 (base weight)
+
+// Scarcity bonus for equity
+Single-question categories: ×1.5 additional bonus
+Multi-question categories: ×1.0 (no bonus)
+
+// Final weight calculation
+finalWeight = baseMultiplier × scarcityBonus
+```
+
+**Key Implementation Details:**
+- `categoryToPriorityMapping`: Maps DB categories to priority names
+- `calculateQuestionWeight()`: Applies priority and scarcity bonuses
+- `analyzeQuestionDistribution()`: Counts questions per category for scarcity calculation
+- Weighted average: `totalWeightedScore / totalWeight`
+
+**Equity Considerations:**
+- Municipal-specific issues (tramway, 3rd link) get scarcity bonus to prevent dilution
+- Questions without priority mapping receive base weight (1.0) to remain included
+- System ensures balanced influence across all municipal domains
+
+### Validation and Testing
+
+**Debug Mode Available:**
+- Comprehensive console logging in `calculateDirectCompatibility()`
+- Shows priority mapping, weights, and contribution per question
+- Displays final score calculation breakdown
+
+**Critical Test Scenarios:**
+1. **Priority Impact**: Verify questions in user priorities get correct multipliers
+2. **Scarcity Bonus**: Confirm tramway/3rd link questions get ×1.5 bonus
+3. **Non-Priority Handling**: Ensure unmapped questions still contribute with ×1.0 weight
+4. **Edge Cases**: Test with no priorities selected, single priority, identical priorities
 
 ## Lessons Learned - Next.js 15 Build Errors (Commit df29959)
 

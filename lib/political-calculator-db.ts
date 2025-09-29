@@ -145,15 +145,18 @@ export async function calculateUserPoliticalPosition(
   useCache: boolean = true
 ): Promise<PoliticalPosition> {
   try {
-    console.log(`🔄 [Calculator-DB] Calcul position pour ${municipality}`)
+    // console.log(`🔄 [Calculator-DB] Calcul position pour ${municipality}`)
 
-    // Log détaillé pour débugger
-    console.log(`🔍 [Calculator-DB-DEBUG] userAnswers reçu:`, {
-      count: Object.keys(userAnswers).length,
-      keys: Object.keys(userAnswers),
-      values: Object.values(userAnswers),
-      sample: Object.entries(userAnswers).slice(0, 3).map(([k, v]) => `${k}: ${v}`)
-    })
+    // ⭐ DEBUG SPÉCIAL - Log détaillé pour diagnostiquer le bug de 99%
+    // console.log(`🚨 [BUG-DEBUG] DIAGNOSTIC COMPLET userAnswers:`, {
+    //   municipality,
+    //   totalResponses: Object.keys(userAnswers).length,
+    //   allKeys: Object.keys(userAnswers),
+    //   allValues: Object.values(userAnswers),
+    //   uniqueValues: [...new Set(Object.values(userAnswers))],
+    //   isAllFA: Object.values(userAnswers).every(v => v === 'FA'),
+    //   sampleEntries: Object.entries(userAnswers).slice(0, 5).map(([k, v]) => `${k}: ${v}`)
+    // })
 
     // 1. Récupérer la configuration politique depuis la DB
     const questions = await getPoliticalQuestionsFromDB(municipality, useCache)
@@ -163,8 +166,15 @@ export async function calculateUserPoliticalPosition(
 
       // FALLBACK : Utiliser l'ancien système pour Quebec
       if (municipality === 'quebec' || municipality === 'Quebec') {
-        console.log(`🔄 [Calculator-DB] Fallback vers ancien système pour Quebec`)
-        return legacyCalculateUserPoliticalPosition(userAnswers)
+        // console.log(`🚨 [BUG-DEBUG] FALLBACK ACTIVÉ - Utilisation ancien système hardcodé pour Quebec !`)
+        // console.log(`🚨 [BUG-DEBUG] Raison: Aucune question politique trouvée en DB pour ${municipality}`)
+        // console.log(`🚨 [BUG-DEBUG] UserAnswers passées à l'ancien système:`, {
+        //   isAllFA: Object.values(userAnswers).every(v => v === 'FA'),
+        //   count: Object.keys(userAnswers).length
+        // })
+        const legacyResult = legacyCalculateUserPoliticalPosition(userAnswers)
+        // console.log(`🚨 [BUG-DEBUG] Résultat ancien système:`, legacyResult)
+        return legacyResult
       }
 
       return { x: 0, y: 0 }
@@ -174,19 +184,19 @@ export async function calculateUserPoliticalPosition(
     const economicQuestions = questions.filter(q => q.political_axis === 'economic')
     const socialQuestions = questions.filter(q => q.political_axis === 'social')
 
-    console.log(`📊 [Calculator-DB] Questions trouvées:`, {
-      municipality,
-      total: questions.length,
-      economic: economicQuestions.length,
-      social: socialQuestions.length
-    })
+    // console.log(`📊 [Calculator-DB] Questions trouvées:`, {
+    //   municipality,
+    //   total: questions.length,
+    //   economic: economicQuestions.length,
+    //   social: socialQuestions.length
+    // })
 
     // 3. Calculer chaque axe dynamiquement
     const x = calculateAxisFromDB(userAnswers, economicQuestions, 'economic')
     const y = calculateAxisFromDB(userAnswers, socialQuestions, 'social')
 
     const position = { x, y }
-    console.log(`✅ [Calculator-DB] Position calculée pour ${municipality}:`, position)
+    // console.log(`✅ [Calculator-DB] Position calculée pour ${municipality}:`, position)
 
     return position
 
@@ -195,8 +205,15 @@ export async function calculateUserPoliticalPosition(
 
     // FALLBACK : Utiliser l'ancien système pour Quebec
     if (municipality === 'quebec' || municipality === 'Quebec') {
-      console.log(`🔄 [Calculator-DB] Fallback vers ancien système pour Quebec (erreur)`)
-      return legacyCalculateUserPoliticalPosition(userAnswers)
+      // console.log(`🚨 [BUG-DEBUG] FALLBACK ACTIVÉ (ERREUR) - Utilisation ancien système hardcodé pour Quebec !`)
+      // console.log(`🚨 [BUG-DEBUG] Erreur qui a déclenché le fallback:`, error)
+      // console.log(`🚨 [BUG-DEBUG] UserAnswers passées à l'ancien système:`, {
+      //   isAllFA: Object.values(userAnswers).every(v => v === 'FA'),
+      //   count: Object.keys(userAnswers).length
+      // })
+      const legacyResult = legacyCalculateUserPoliticalPosition(userAnswers)
+      // console.log(`🚨 [BUG-DEBUG] Résultat ancien système (erreur):`, legacyResult)
+      return legacyResult
     }
 
     return { x: 0, y: 0 }
@@ -226,13 +243,13 @@ function calculateAxisFromDB(
 
     // Log détaillé pour débugger
     if (axisType === 'economic' && processedQuestions < 3) {
-      console.log(`🔍 [Calculator-DB-DEBUG] Question ${id}:`, {
-        userAnswer,
-        hasAnswer: userAnswer !== undefined,
-        isIDK: userAnswer === 'IDK',
-        politicalInterpretation: political_interpretation,
-        scoreInversion: score_inversion
-      })
+      // console.log(`🔍 [Calculator-DB-DEBUG] Question ${id}:`, {
+      //   userAnswer,
+      //   hasAnswer: userAnswer !== undefined,
+      //   isIDK: userAnswer === 'IDK',
+      //   politicalInterpretation: political_interpretation,
+      //   scoreInversion: score_inversion
+      // })
     }
 
     if (userAnswer && userAnswer !== 'IDK') {
@@ -253,7 +270,7 @@ function calculateAxisFromDB(
       // NOTE: score_inversion est maintenant géré dans getScoreByInterpretation
       // donc on n'applique plus d'inversion manuelle ici
       if (score_inversion) {
-        console.log(`🔍 [Calculator-DB-DEBUG] Score inversion appliquée pour ${id}: ${score} → ${-score}`)
+        // console.log(`🔍 [Calculator-DB-DEBUG] Score inversion appliquée pour ${id}: ${score} → ${-score}`)
         score = -score
       }
 
@@ -263,7 +280,7 @@ function calculateAxisFromDB(
 
       // Log supplémentaire pour comprendre le calcul
       if (axisType === 'economic' && processedQuestions <= 3) {
-        console.log(`📊 [Calculator-DB-DEBUG] ${id}: ${userAnswer} + ${political_interpretation} = score ${score} (weight: ${political_weight})`)
+        // console.log(`📊 [Calculator-DB-DEBUG] ${id}: ${userAnswer} + ${political_interpretation} = score ${score} (weight: ${political_weight})`)
       }
     }
   })
@@ -277,12 +294,12 @@ function calculateAxisFromDB(
   const normalizedScore = (totalWeightedScore / totalWeight) * 50
   const finalScore = Math.max(-100, Math.min(100, normalizedScore))
 
-  console.log(`📊 [Calculator-DB] Calcul axe ${axisType}:`, {
-    questions: questions.length,
-    processed: processedQuestions,
-    totalWeight,
-    score: finalScore
-  })
+  // console.log(`📊 [Calculator-DB] Calcul axe ${axisType}:`, {
+  //   questions: questions.length,
+  //   processed: processedQuestions,
+  //   totalWeight,
+  //   score: finalScore
+  // })
 
   return finalScore
 }
@@ -311,7 +328,7 @@ async function getPoliticalQuestionsFromDB(
     const now = Date.now()
 
     if (now - cached.timestamp < CACHE_DURATION) {
-      console.log(`🚀 [Calculator-DB] Cache hit pour ${municipality}`)
+      // console.log(`🚀 [Calculator-DB] Cache hit pour ${municipality}`)
       return cached.data
     } else {
       configCache.delete(cacheKey)
@@ -362,7 +379,7 @@ async function getPoliticalQuestionsFromDB(
       })
     }
 
-    console.log(`✅ [Calculator-DB] ${validQuestions.length} questions politiques chargées pour ${municipality}`)
+    // console.log(`✅ [Calculator-DB] ${validQuestions.length} questions politiques chargées pour ${municipality}`)
     return validQuestions
 
   } catch (error) {
@@ -499,7 +516,7 @@ export async function diagnosePoliticalConfiguration(municipality: string): Prom
  */
 export function clearPoliticalConfigCache(): void {
   configCache.clear()
-  console.log('🧹 [Calculator-DB] Cache de configuration vidé')
+  // console.log('🧹 [Calculator-DB] Cache de configuration vidé')
 }
 
 // ==============================================================================

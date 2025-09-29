@@ -20,12 +20,13 @@ import { useQuestions } from "@/hooks/useQuestions"
 import { useParties } from "@/hooks/useParties"
 import { usePartyPositions } from "@/hooks/usePartyPositions"
 import {
-  calculateExactCompatibility,
+  calculateDirectCompatibility,
+  type DirectCompatibilityDetails,
 } from "@/lib/political-map-calculator"
 import {
   calculateUserPoliticalPosition,
 } from "@/lib/political-calculator-db"
-import { extractPartyPrioritiesSimple } from "@/lib/extract-priorities"
+import { transformAllPartyPositionsToUserAnswers } from "@/lib/supabase-transform"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useResults } from "@/hooks/useResults"
 import { useUserResponses } from "@/hooks/useUserResponses"
@@ -36,7 +37,6 @@ import dynamic from "next/dynamic"
 import Head from "next/head"
 import { motion } from 'framer-motion'
 import { ScrollReveal, AnimatedCard, AnimatedCounter } from "@/components/ui/animation-utils"
-import { transformAllPartyPositionsToUserAnswers } from "@/lib/supabase-transform"
 
 const PageWithGlow = dynamic(() => import("@/components/ui/background-glow").then(m => m.PageWithGlow), { ssr: false })
 
@@ -51,6 +51,7 @@ interface CalculatedPartyScore {
   score: number
   rawScore: number
   maxPossibleRawScoreForParty: number
+  compatibilityDetails?: DirectCompatibilityDetails // Nouveau : détails d'affinité directe
   details: Array<{
     question: Question
     userAnswer?: AgreementOptionKey
@@ -185,11 +186,11 @@ export default function ResultsPage() {
     // pour garantir la cohérence des résultats
 
     // Calculer la position politique de l'utilisateur (même logique que la carte)
-    console.log('🔍 [RESULTATS-DEBUG] userAnswers passé à calculateUserPoliticalPosition:', {
-      count: Object.keys(userAnswers).length,
-      sample: Object.entries(userAnswers).slice(0, 5).map(([k, v]) => `${k}: ${v}`)
-    })
-    const userPosition = await calculateUserPoliticalPosition(userAnswers, municipality)
+    // console.log('🔍 [RESULTATS-DEBUG] userAnswers passé à calculateUserPoliticalPosition:', {
+    //   count: Object.keys(userAnswers).length,
+    //   sample: Object.entries(userAnswers).slice(0, 5).map(([k, v]) => `${k}: ${v}`)
+    // })
+    const _userPosition = await calculateUserPoliticalPosition(userAnswers, municipality)
     // console.log('🔍 [DEBUG] Position utilisateur calculée:', userPosition)
 
     // ✅ Transformer les positions depuis Supabase (même logique que l'API /api/results/calculate)
@@ -212,27 +213,32 @@ export default function ResultsPage() {
     const newCalculatedScores = await Promise.all(partiesData.map(async (party, _index) => {
       // console.log(`🔍 [DEBUG] === CALCUL PARTI ${index + 1}: ${party.name} ===`)
 
-      // ✅ UTILISER LA FONCTION UNIFIÉE pour garantir la cohérence parfaite
-      const partyPosition = dynamicPartyPositions[party.id]
+      // 🎯 SYSTÈME BICÉPHALE - Calcul d'affinité directe (question par question)
+      const partyAnswersForThisParty = partyAnswers[party.id]
       let finalScore = 0
+      let compatibilityDetails: DirectCompatibilityDetails | null = null
 
-      if (partyPosition) {
-        // Récupération des priorités du parti
-        const partyPriorities = await extractPartyPrioritiesSimple(party.id, params.municipality as string)
-        console.log(`🔍 [RESULTATS-DEBUG] ${party.id}: DB priorities=`, partyPriorities)
-
-        // ✅ UTILISATION DE LA FONCTION UNIFIÉE - garantit 100% de cohérence avec la carte
-        finalScore = calculateExactCompatibility(
-          userPosition,
-          partyPosition,
+      if (partyAnswersForThisParty && questions) {
+        // ✅ NOUVEAU CALCUL D'AFFINITÉ DIRECTE - question par question avec pondération
+        compatibilityDetails = calculateDirectCompatibility(
+          userAnswers,
+          partyAnswersForThisParty,
           userPriorities || {},
-          partyPriorities
+          questions
         )
-        console.log(`🔍 [RESULTATS-DEBUG] ${party.id}: Final score (unified)=${finalScore}`)
+        finalScore = compatibilityDetails.finalScore
+
+        // console.log(`🎯 [NOUVEAU-CALCUL] ${party.id}: Affinité directe=${finalScore}%`, {
+        //   totalQuestions: compatibilityDetails.totalQuestions,
+        //   topCategories: Object.entries(compatibilityDetails.agreementsByCategory)
+        //     .sort(([,a], [,b]) => b.percentage - a.percentage)
+        //     .slice(0, 3)
+        //     .map(([cat, data]) => `${cat}: ${data.percentage}%`)
+        // })
       } else {
-        // Si pas de position politique définie pour ce parti, score de 0
+        // Si pas de données pour ce parti, score de 0
         finalScore = 0
-        console.warn(`🔍 [RESULTATS-DEBUG] Pas de position politique définie pour le parti: ${party.id}`)
+        // console.warn(`🔍 [RESULTATS-DEBUG] Pas de données disponibles pour le parti: ${party.id}`)
       }
 
       // Calculer les détails pour l'accordéon (utilise la logique question par question pour l'affichage)
@@ -272,9 +278,10 @@ export default function ResultsPage() {
 
       return {
         party,
-        score: finalScore, // Déjà arrondi par calculateExactCompatibility
+        score: finalScore, // Score d'affinité directe
         rawScore: finalScore,
         maxPossibleRawScoreForParty: 100,
+        compatibilityDetails: compatibilityDetails || undefined, // Nouveaux détails narratifs
         details: scoreDetails,
       }
     }))
@@ -488,9 +495,13 @@ export default function ResultsPage() {
             alt={`Logo ${party.name} élections municipales Québec 2025`}
             width={size.width}
             height={size.height}
-            style={{ 
+            style={{
               objectFit: "contain",
-              display: imageLoading ? 'none' : 'block'
+              display: imageLoading ? 'none' : 'block',
+              width: 'auto',
+              height: 'auto',
+              maxWidth: `${size.width}px`,
+              maxHeight: `${size.height}px`
             }}
             onLoad={() => setImageLoading(false)}
             onError={() => {
@@ -714,6 +725,46 @@ export default function ResultsPage() {
           <PoliticalCompassChart userAnswers={userAnswers} municipality={municipality} userImportance={userImportance} />
         </Suspense>
 
+        {/* Nouvelle section : Détails d'affinité avec narratifs */}
+        {calculatedScores.length > 0 && calculatedScores[0].compatibilityDetails && (
+          <Card className="shadow-soft rounded-2xl subtle-glow">
+            <CardHeader>
+              <CardTitle className="text-2xl">Analyse de votre affinité avec {calculatedScores[0].party.name}</CardTitle>
+              <CardDescription>
+                Comprendre votre compatibilité sur les enjeux municipaux
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                <h4 className="font-semibold text-teal-800 mb-2">🎯 Score d&apos;affinité</h4>
+                <p className="text-teal-700">{calculatedScores[0].compatibilityDetails.narrative.mainScore}</p>
+              </div>
+
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-800 mb-2">🤝 Analyse des priorités</h4>
+                <p className="text-blue-700">{calculatedScores[0].compatibilityDetails.narrative.priorityAnalysis}</p>
+              </div>
+
+              {calculatedScores[0].compatibilityDetails.narrative.categoryBreakdown && (
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                  <h4 className="font-semibold text-amber-800 mb-2">📊 Breakdown par catégorie</h4>
+                  <p className="text-amber-700">{calculatedScores[0].compatibilityDetails.narrative.categoryBreakdown}</p>
+                </div>
+              )}
+
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h4 className="font-semibold text-gray-800 mb-2">💡 Résumé</h4>
+                <p className="text-gray-700">{calculatedScores[0].compatibilityDetails.narrative.summary}</p>
+              </div>
+
+              <div className="text-xs text-muted-foreground mt-4 p-3 bg-muted/30 rounded-lg">
+                <p>📈 <strong>Méthode de calcul :</strong> Ce score se base sur l&apos;accord question par question avec pondération selon vos priorités.
+                Les enjeux spécifiques (tramway, 3e lien) reçoivent un poids majoré pour compenser leur rareté.</p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         <Card className="shadow-soft rounded-2xl subtle-glow">
           <CardHeader>
             <CardTitle className="text-2xl">Votre alignement détaillé par enjeu</CardTitle>
@@ -779,14 +830,13 @@ export default function ResultsPage() {
                         </h4>
                         {question.responseType === "priority_ranking" ? (
                           // Affichage spécial pour la question de priorité
-                          calculatedScores.map(({ party }) => {
-                            // Les priorités sont maintenant extraites via extractPartyPrioritiesSimple
-                            // Pour l'affichage, on utilise un état local ou on fait l'appel ici
-                            // Fallback temporaire en attendant une meilleure solution
-                            const partyPriorities: string[] = []
-                            const prioritiesText = partyPriorities.length > 0
-                              ? partyPriorities.slice(0, 3).map((p, i) => `${i + 1}. ${p}`).join(' • ')
-                              : "Priorités chargées depuis la base de données"
+                          calculatedScores.map(({ party, details }) => {
+                            // Trouver la position du parti pour cette question
+                            const detail = details.find((d) => d.question.id === question.id)
+                            const partyPos = detail?.partyPosition
+
+                            // Si nous avons une source pour les priorités, l'afficher
+                            const prioritiesText = partyPos?.source || partyPos?.note || "Priorités définies par le parti"
                             
                             return (
                               <div
@@ -795,6 +845,9 @@ export default function ResultsPage() {
                               >
                                 <span className="font-semibold text-foreground">{party.shortName || party.name}:</span>{" "}
                                 <span className="text-muted-foreground">{prioritiesText}</span>
+                                {partyPos?.source && (
+                                  <em className="block text-gray-500 text-[11px] truncate">Source: {partyPos.source}</em>
+                                )}
                               </div>
                             )
                           })

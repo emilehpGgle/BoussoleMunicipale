@@ -18,21 +18,18 @@ export default function StickyStartButton() {
   const { sessionToken } = useSession()
   const { getResponseCounts, isLoading } = useUserResponses()
 
-  // Masquer le bouton sur certaines pages où il n'est pas pertinent
-  const shouldHide = pathname === '/test-politique-municipal' ||
-                     pathname === '/resultats' ||
-                     pathname === '/profil' ||
-                     pathname.startsWith('/partage/')
+  // Afficher le bouton UNIQUEMENT sur la page d'accueil
+  const shouldShow = pathname === '/'
 
   // Cacher automatiquement après 10 secondes sur la page d'accueil
   useEffect(() => {
-    if (pathname === '/') {
+    if (shouldShow) {
       const timer = setTimeout(() => {
         setIsMinimized(true)
       }, 10000)
       return () => clearTimeout(timer)
     }
-  }, [pathname])
+  }, [shouldShow])
 
   const handleStartQuestionnaire = async () => {
     try {
@@ -61,7 +58,7 @@ export default function StickyStartButton() {
     }
   }
 
-  if (shouldHide) return null
+  if (!shouldShow) return null
 
   return (
     <div className="fixed bottom-4 right-4 z-50 md:hidden">

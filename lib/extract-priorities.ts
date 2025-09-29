@@ -78,7 +78,7 @@ export async function extractPartyPrioritiesSimple(
   try {
     const supabase = createClient()
 
-    console.log(`🔍 [PRIORITIES-DEBUG] Recherche priorités pour ${partyId} dans ${municipalityId}`)
+    // console.log(`🔍 [PRIORITIES-DEBUG] Recherche priorités pour ${partyId} dans ${municipalityId}`)
 
     // Recherche directe avec jointure pour obtenir les priorités
     const { data, error } = await supabase
@@ -100,12 +100,12 @@ export async function extractPartyPrioritiesSimple(
       return []
     }
 
-    console.log(`✅ [PRIORITIES-DEBUG] Données trouvées pour ${partyId}:`, {
-      hasPriorityList: !!data?.priority_list,
-      isArray: Array.isArray(data?.priority_list),
-      isObject: typeof data?.priority_list === 'object' && data?.priority_list !== null && !Array.isArray(data?.priority_list),
-      priorityList: data?.priority_list
-    })
+    // console.log(`✅ [PRIORITIES-DEBUG] Données trouvées pour ${partyId}:`, {
+    //   hasPriorityList: !!data?.priority_list,
+    //   isArray: Array.isArray(data?.priority_list),
+    //   isObject: typeof data?.priority_list === 'object' && data?.priority_list !== null && !Array.isArray(data?.priority_list),
+    //   priorityList: data?.priority_list
+    // })
 
     if (!data?.priority_list) {
       console.warn(`⚠️ [PRIORITIES-DEBUG] priority_list manquant pour ${partyId}`)
@@ -115,17 +115,17 @@ export async function extractPartyPrioritiesSimple(
     // 🔧 CORRECTION: Gérer les deux formats de données
     if (Array.isArray(data.priority_list)) {
       // Format array: ["Priority1", "Priority2", "Priority3"]
-      console.log(`✅ [PRIORITIES-DEBUG] Format array détecté pour ${partyId}`)
+      // console.log(`✅ [PRIORITIES-DEBUG] Format array détecté pour ${partyId}`)
       return data.priority_list as string[]
     }
     else if (typeof data.priority_list === 'object' && data.priority_list !== null) {
       // Format objet de classement: {Priority1: 1, Priority2: 3, Priority3: 2}
-      console.log(`✅ [PRIORITIES-DEBUG] Format objet de classement détecté pour ${partyId}`)
+      // console.log(`✅ [PRIORITIES-DEBUG] Format objet de classement détecté pour ${partyId}`)
       const convertedArray = convertRankingObjectToArray(data.priority_list as Record<string, number>)
-      console.log(`🔄 [PRIORITIES-DEBUG] Conversion pour ${partyId}:`, {
-        original: data.priority_list,
-        converted: convertedArray
-      })
+      // console.log(`🔄 [PRIORITIES-DEBUG] Conversion pour ${partyId}:`, {
+      //   original: data.priority_list,
+      //   converted: convertedArray
+      // })
       return convertedArray
     }
     else {

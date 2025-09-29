@@ -798,7 +798,7 @@ export function ProgressiveResultsModal({
                                 {/* Rectangle background */}
                                 <rect
                                   x={coords.x - rectWidth/2}
-                                  y={coords.y - 32}
+                                  y={coords.y - 29}
                                   width={rectWidth}
                                   height={rectHeight}
                                   fill="white"
@@ -814,6 +814,7 @@ export function ProgressiveResultsModal({
                                   x={coords.x}
                                   y={coords.y - 20}
                                   textAnchor="middle"
+                                  dominantBaseline="middle"
                                   fontSize="10"
                                   fill="#0f172a"
                                   className="font-medium pointer-events-none"
