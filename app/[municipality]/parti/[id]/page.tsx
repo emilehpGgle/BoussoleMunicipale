@@ -10,12 +10,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ExternalLink, FileText, Info, CheckCircle, XCircle, MinusCircle, User, Calendar } from "lucide-react"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
 import type { Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
