@@ -6,40 +6,38 @@
  * Mapping des logos de partis (par ID de parti)
  */
 export const PARTY_LOGOS: Record<string, string> = {
-  // Québec
-  'alliance_citoyenne': '/logos/alliance-citoyenne.png',
-  'equipe_priorite_quebec': '/logos/equipe-priorite-quebec-new.png',
-  'leadership_quebec': '/logos/leadership-quebec-new.png',
-  'quebec_dabord': '/logos/quebec-dabord-new.png',
-  'quebec_forte_et_fiere': '/logos/quebec-forte-et-fiere-new.png',
-  'respect_citoyens': '/logos/respect-citoyens-new.jpg',
-  'transition_quebec': '/logos/transition-quebec-new.png',
-  'parti_du_monde_quebec': '/logos/parti-du-monde.png',
+  // Québec - IDs exacts de la base de données Supabase (format: nom-parti avec tirets)
+  'leadership-quebec': '/logos/leadership-quebec-new.png',
+  'quebec-dabord': '/logos/quebec-dabord-new.png',
+  'quebec-forte-et-fiere': '/logos/quebec-forte-et-fiere-new.png',
+  'respect-citoyens': '/logos/respect-citoyens-new.jpg',
+  'transition-quebec': '/logos/transition-quebec-new.png',
+  'parti-du-monde-quebec': '/logos/parti-du-monde.png',
 
-  // Montréal
-  'projet_montreal': '/logos/projet-montreal.png',
-  'ensemble_montreal': '/logos/ensemble-montreal.png',
-  'futur_montreal': '/logos/futur-montreal.png',
-  'action_montreal': '/logos/action-montreal.png',
-  'transition_montreal': '/logos/transition-montreal.png',
+  // Montréal - IDs exacts de Supabase (tirets, pas de suffixe _mtl)
+  'projet-montreal': '/logos/projet-montreal.png',
+  'ensemble-montreal': '/logos/ensemble-montreal.png',
+  'futur-montreal': '/logos/futur-montreal.png',
+  'action-montreal': '/logos/action-montreal.png',
+  'transition-montreal': '/logos/transition-montreal.png',
 
-  // Laval
-  'mouvement_lavallois': '/logos/mouvement-lavallois.png',
-  'parti_laval': '/logos/parti-laval.png',
-  'action_laval': '/logos/action-laval.png',
+  // Laval - IDs exacts de Supabase (tirets, pas de suffixe _lav)
+  'mouvement-lavallois': '/logos/mouvement-lavallois.png',
+  'parti-laval': '/logos/parti-laval.png',
+  'action-laval': '/logos/action-laval.png',
 
-  // Gatineau
-  'action_gatineau': '/logos/action-gatineau.png',
-  'equipe_mario_aube': '/logos/equipe-mario-aube.png',
+  // Gatineau - IDs exacts de Supabase (tirets, pas de suffixe _gat)
+  'action-gatineau': '/logos/action-gatineau.png',
+  'equipe-mario-aube': '/logos/equipe-mario-aube.png',
 
-  // Longueuil
-  'coalition_longueuil': '/logos/coalition-longueuil.jpg',
-  'option_alliance': '/logos/option-alliance.png',
+  // Longueuil - IDs exacts de Supabase (tirets, pas de suffixe _lng)
+  'coalition-longueuil': '/logos/coalition-longueuil.jpg',
+  'option-alliance': '/logos/option-alliance.png',
 
-  // Lévis
-  'levis_force_10': '/logos/levis-force-10.png',
-  'repensons_levis': '/logos/repensons-levis.png',
-  'prosperite_levis': '/logos/prosperite-levis.png',
+  // Lévis - IDs exacts de Supabase (tirets, pas de suffixe _lev)
+  'levis-force-10': '/logos/levis-force-10.png',
+  'repensons-levis': '/logos/repensons-levis.png',
+  'prosperite-levis': '/logos/prosperite-levis.png',
 }
 
 /**
