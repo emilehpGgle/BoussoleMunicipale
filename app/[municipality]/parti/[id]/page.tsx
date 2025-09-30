@@ -181,7 +181,7 @@ export default function PartyDetailPage() {
             <div className="flex gap-4 flex-shrink-0">
               <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
                 <Image
-                  src={getPartyLogo(party.id)}
+                  src={party.logoUrl || getPartyLogo(party.id)}
                   alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
                   fill
                   style={{ objectFit: "contain" }}
