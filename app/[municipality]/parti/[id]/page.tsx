@@ -10,11 +10,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ExternalLink, FileText, Info, CheckCircle, XCircle, MinusCircle, User, Calendar } from "lucide-react"
-import { boussoleQuestions, getAgreementLabel } from "@/lib/boussole-data"
+import { getAgreementLabel } from "@/lib/boussole-data"
 import type { Question as BoussoleQuestion, PartyPosition } from "@/lib/boussole-data"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { usePriorities } from "@/hooks/usePriorities"
 import { useParty } from "@/hooks/useParties"
+import { useQuestions } from "@/hooks/useQuestions"
 import { getPartyLogo, getLeaderPhoto } from "@/lib/party-assets"
 import type { AgreementOptionKey } from "@/lib/supabase/types"
 
@@ -91,6 +92,9 @@ export default function PartyDetailPage() {
   const { party, loading, error, notFound } = useParty(municipality, partyId)
   const [partyQuestionsMap, setPartyQuestionsMap] = useState<Map<string, PartyPosition>>(new Map())
 
+  // Charger les questions filtrées par municipalité
+  const { questions, isLoading: questionsLoading } = useQuestions(municipality)
+
   // Récupération des réponses de l'utilisateur
   const { responses: userResponses } = useUserResponses(municipality)
   const { priorities: userPriorities } = usePriorities(municipality)
@@ -110,7 +114,7 @@ export default function PartyDetailPage() {
   }, [party])
 
   // État de chargement
-  if (loading) {
+  if (loading || questionsLoading) {
     return (
       <div className="container max-w-4xl py-12 px-4 md:px-6 text-center">
         <p>Chargement des informations du parti...</p>
@@ -325,11 +329,11 @@ export default function PartyDetailPage() {
           )}
         </CardHeader>
         <CardContent className="space-y-6">
-          {boussoleQuestions.map((question: BoussoleQuestion, index: number) => {
+          {questions.map((question: BoussoleQuestion, index: number) => {
             // Afficher séparateur de catégorie si nouvelle catégorie
             const isFirstQuestionOfCategory =
               index === 0 ||
-              (index > 0 && boussoleQuestions[index - 1].category !== question.category)
+              (index > 0 && questions[index - 1].category !== question.category)
 
             // Gestion spéciale pour la question de priorités (Q21)
             if (question.responseType === "priority_ranking") {
@@ -395,18 +399,8 @@ export default function PartyDetailPage() {
             }
 
             // Logique normale pour les autres questions (Q1-Q20)
-            // Ajouter le préfixe de municipalité car la DB utilise "qc_q1_tramway" et non "q1_tramway"
-            // Mapping nom complet -> abréviation utilisée en DB
-            const municipalityPrefixes: Record<string, string> = {
-              'quebec': 'qc',
-              'montreal': 'mtl',
-              'laval': 'lvl',
-              'gatineau': 'gat',
-              'longueuil': 'lng',
-              'levis': 'lev'
-            }
-            const prefix = municipalityPrefixes[municipality] || municipality
-            const partyPos = partyQuestionsMap.get(`${prefix}_${question.id}`)
+            // Les questions du hook useQuestions ont déjà leurs IDs avec préfixe (ex: mtl_q2_pistes_cyclables)
+            const partyPos = partyQuestionsMap.get(question.id)
             const userPos = userResponses.agreement[question.id]
 
             const partyPositionLabel =
