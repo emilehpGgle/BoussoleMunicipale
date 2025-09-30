@@ -103,19 +103,8 @@ export default function PartyDetailPage() {
   // Créer la map des positions quand le parti est chargé
   useEffect(() => {
     if (party && party.positions) {
-      console.log('🔍 [PartyPage] Création de la Map des positions')
-      console.log('🔍 [PartyPage] Nombre de positions reçues:', party.positions.length)
-      console.log('🔍 [PartyPage] Première position:', party.positions[0])
-
       const qMap = new Map<string, PartyPosition>()
-      party.positions.forEach((pos) => {
-        console.log(`🔍 [PartyPage] Ajout position: questionId="${pos.questionId}", position="${pos.position}"`)
-        qMap.set(pos.questionId, pos)
-      })
-
-      console.log('🔍 [PartyPage] Map créée avec', qMap.size, 'entrées')
-      console.log('🔍 [PartyPage] Clés dans la Map:', Array.from(qMap.keys()))
-
+      party.positions.forEach((pos) => qMap.set(pos.questionId, pos))
       setPartyQuestionsMap(qMap)
     }
   }, [party])
@@ -169,7 +158,7 @@ export default function PartyDetailPage() {
   const hasUserResponses = Object.keys(userResponses.agreement).length > 0 || (userPriorities && Object.keys(userPriorities).length > 0)
 
   return (
-    <div className="container max-w-4xl py-12 px-4 md:px-6 space-y-8">
+    <div className="container max-w-7xl py-12 px-4 md:px-6 space-y-8">
       <div>
         <Button asChild variant="outline" className="mb-8 flex items-center gap-2">
           <Link href={isFromSharePage ? `/partage/${shareId}` : `/${municipality}/resultats`}>
@@ -180,104 +169,132 @@ export default function PartyDetailPage() {
       </div>
 
       <Card className="shadow-soft rounded-2xl overflow-hidden">
-        <CardHeader className="relative bg-gradient-to-br from-muted/40 via-muted/30 to-muted/20 p-8">
-          {/* Layout responsive: mobile = colonne, desktop = 3 zones */}
-          <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
+        <CardHeader className="bg-muted/30 p-0">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
+            {/* COLONNE GAUCHE - Informations (60% = 3/5) */}
+            <div className="lg:col-span-3 p-6 lg:p-8 space-y-6">
+              {/* Logo du parti en haut à gauche */}
+              <div className="flex items-start gap-4">
+                <LogoContainer className="w-20 h-20 flex-shrink-0 relative">
+                  <Image
+                    src={party.logoUrl || getPartyLogo(party.id)}
+                    alt={`Logo ${party.name}`}
+                    fill
+                    style={{ objectFit: "contain" }}
+                  />
+                </LogoContainer>
+                <div className="flex-1">
+                  <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-2 leading-tight">{party.name}</h1>
+                  {party.orientation && (
+                    <Badge variant="secondary" className="text-sm">
+                      {party.orientation}
+                    </Badge>
+                  )}
+                </div>
+              </div>
 
-            {/* Zone gauche: Logo du parti */}
-            <div className="flex-shrink-0 order-2 lg:order-1">
-              <LogoContainer className="w-24 h-24 lg:w-32 lg:h-32 relative">
-                <Image
-                  src={party.logoUrl || getPartyLogo(party.id)}
-                  alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
-                  fill
-                  style={{ objectFit: "contain" }}
-                />
-              </LogoContainer>
-            </div>
-
-            {/* Zone centre: Informations du parti */}
-            <div className="flex-1 order-3 lg:order-2">
-              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-3 leading-tight">
-                {party.name}
-              </h1>
+              {/* Leader */}
               {party.leader && (
-                <div className="mb-4">
-                  <p className="text-xl lg:text-2xl font-semibold text-foreground mb-2">
-                    {party.leader}
+                <div className="space-y-2">
+                  <p className="text-xl font-semibold text-foreground">
+                    Dirigé par : {party.leader}
                   </p>
-                  <Link
-                    href={`/${municipality}/leaders/${generateSlug(party.leader)}`}
-                    className="text-sm text-primary hover:underline font-medium inline-flex items-center gap-1.5"
-                  >
-                    <User className="h-4 w-4" />
-                    Voir le profil détaillé du leader
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <User className="h-4 w-4 text-muted-foreground" />
+                    <Link
+                      href={`/${municipality}/leaders/${generateSlug(party.leader)}`}
+                      className="text-sm text-primary hover:underline font-medium"
+                    >
+                      Voir le profil détaillé du leader
+                    </Link>
+                  </div>
                 </div>
               )}
-              {party.orientation && (
-                <Badge variant="secondary" className="text-sm mb-4">
-                  {party.orientation}
-                </Badge>
+
+              {/* Résumé */}
+              <div>
+                <h2 className="text-xl font-semibold text-foreground mb-3">Résumé des idées principales</h2>
+                <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
+                  {party.mainIdeasSummary || "Information non disponible."}
+                </p>
+              </div>
+
+              {/* Forces */}
+              {party.strengths && party.strengths.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Forces</h3>
+                  <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                    {party.strengths.map((strength, i) => (
+                      <li key={i}>{strength}</li>
+                    ))}
+                  </ul>
+                </div>
               )}
-              <div className="flex flex-wrap gap-2">
+
+              {/* Réserves */}
+              {party.reserves && party.reserves.length > 0 && (
+                <div>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Réserves</h3>
+                  <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                    {party.reserves.map((reserve, i) => (
+                      <li key={i}>{reserve}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* Boutons d'action */}
+              <div className="flex flex-wrap gap-3 pt-4">
                 {party.websiteUrl && (
-                  <Button asChild variant="outline" size="sm" className="flex items-center gap-1.5">
+                  <Button asChild size="default" className="flex items-center gap-2">
                     <a href={party.websiteUrl} target="_blank" rel="noopener noreferrer">
-                      Site officiel <ExternalLink className="h-3.5 w-3.5" />
+                      Site officiel <ExternalLink className="h-4 w-4" />
                     </a>
+                  </Button>
+                )}
+                {party.leader && (
+                  <Button asChild variant="outline" size="default" className="flex items-center gap-2">
+                    <Link href={`/${municipality}/leaders/${generateSlug(party.leader)}`}>
+                      <User className="h-4 w-4" />
+                      Profil du leader
+                    </Link>
                   </Button>
                 )}
               </div>
             </div>
 
-            {/* Zone droite: Photo HERO du leader */}
-            {getLeaderPhoto(party.leader) && (
-              <div className="flex-shrink-0 order-1 lg:order-3 w-full lg:w-auto">
-                <div className="relative w-full h-64 sm:h-80 lg:w-96 lg:h-96 bg-white rounded-2xl shadow-2xl overflow-hidden ring-4 ring-white/50">
-                  <Image
-                    src={getLeaderPhoto(party.leader)!}
-                    alt={`Photo de ${party.leader} - Chef de ${party.name}`}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    className="object-center"
-                    priority
-                  />
-                  {/* Overlay gradient subtil pour améliorer la lisibilité si besoin */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
+            {/* COLONNE DROITE - Photo Leader (40% = 2/5) */}
+            <div className="lg:col-span-2 relative bg-gradient-to-br from-muted/20 to-muted/40 p-6 lg:p-8 flex flex-col justify-center">
+              {getLeaderPhoto(party.leader) ? (
+                <div className="space-y-4">
+                  {/* Photo du leader */}
+                  <div className="relative w-full h-[350px] lg:h-[480px] rounded-2xl overflow-hidden shadow-2xl">
+                    <Image
+                      src={getLeaderPhoto(party.leader)!}
+                      alt={`Photo de ${party.leader} - Chef de ${party.name}`}
+                      fill
+                      style={{ objectFit: "cover", objectPosition: "center 20%" }}
+                      priority
+                    />
+                  </div>
+                  {/* Nom du leader en bas (séparé de la photo) */}
+                  <div className="text-center space-y-1 pt-2">
+                    <p className="text-2xl font-bold text-foreground">{party.leader}</p>
+                    <p className="text-sm text-muted-foreground">Chef · {party.name}</p>
+                  </div>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="flex items-center justify-center w-full h-[300px]">
+                  <div className="text-center space-y-3">
+                    <User className="h-24 w-24 text-muted-foreground mx-auto" />
+                    <p className="text-lg font-semibold text-muted-foreground">Photo non disponible</p>
+                    <p className="text-sm text-muted-foreground">{party.leader}</p>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </CardHeader>
-        <CardContent className="p-6 space-y-4">
-          <div>
-            <h2 className="text-xl font-semibold text-foreground mb-2">Résumé des idées principales</h2>
-            <p className="text-muted-foreground whitespace-pre-line">
-              {party.mainIdeasSummary || "Information non disponible."}
-            </p>
-          </div>
-          {party.strengths && party.strengths.length > 0 && (
-            <div>
-              <h3 className="text-md font-semibold text-foreground mb-1">Forces :</h3>
-              <ul className="list-disc list-inside text-muted-foreground text-sm space-y-0.5">
-                {party.strengths.map((strength, i) => (
-                  <li key={i}>{strength}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-          {party.reserves && party.reserves.length > 0 && (
-            <div>
-              <h3 className="text-md font-semibold text-foreground mb-1">Réserves :</h3>
-              <ul className="list-disc list-inside text-muted-foreground text-sm space-y-0.5">
-                {party.reserves.map((reserve, i) => (
-                  <li key={i}>{reserve}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </CardContent>
       </Card>
 
       <Card className="shadow-soft rounded-2xl">
@@ -378,9 +395,18 @@ export default function PartyDetailPage() {
             }
 
             // Logique normale pour les autres questions (Q1-Q20)
-            console.log(`🔍 [PartyPage] Recherche position pour question: id="${question.id}", texte="${question.text.substring(0, 50)}..."`)
-            const partyPos = partyQuestionsMap.get(question.id)
-            console.log(`🔍 [PartyPage] Position trouvée:`, partyPos ? `${partyPos.position}` : 'AUCUNE')
+            // Ajouter le préfixe de municipalité car la DB utilise "qc_q1_tramway" et non "q1_tramway"
+            // Mapping nom complet -> abréviation utilisée en DB
+            const municipalityPrefixes: Record<string, string> = {
+              'quebec': 'qc',
+              'montreal': 'mtl',
+              'laval': 'lvl',
+              'gatineau': 'gat',
+              'longueuil': 'lng',
+              'levis': 'lev'
+            }
+            const prefix = municipalityPrefixes[municipality] || municipality
+            const partyPos = partyQuestionsMap.get(`${prefix}_${question.id}`)
             const userPos = userResponses.agreement[question.id]
 
             const partyPositionLabel =
