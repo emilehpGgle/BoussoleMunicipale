@@ -103,8 +103,19 @@ export default function PartyDetailPage() {
   // Créer la map des positions quand le parti est chargé
   useEffect(() => {
     if (party && party.positions) {
+      console.log('🔍 [PartyPage] Création de la Map des positions')
+      console.log('🔍 [PartyPage] Nombre de positions reçues:', party.positions.length)
+      console.log('🔍 [PartyPage] Première position:', party.positions[0])
+
       const qMap = new Map<string, PartyPosition>()
-      party.positions.forEach((pos) => qMap.set(pos.questionId, pos))
+      party.positions.forEach((pos) => {
+        console.log(`🔍 [PartyPage] Ajout position: questionId="${pos.questionId}", position="${pos.position}"`)
+        qMap.set(pos.questionId, pos)
+      })
+
+      console.log('🔍 [PartyPage] Map créée avec', qMap.size, 'entrées')
+      console.log('🔍 [PartyPage] Clés dans la Map:', Array.from(qMap.keys()))
+
       setPartyQuestionsMap(qMap)
     }
   }, [party])
@@ -169,11 +180,13 @@ export default function PartyDetailPage() {
       </div>
 
       <Card className="shadow-soft rounded-2xl overflow-hidden">
-        <CardHeader className="bg-muted/30 p-6">
-          <div className="flex flex-col sm:flex-row items-start gap-6">
-            {/* Logo et Photo côte à côte */}
-            <div className="flex gap-4 flex-shrink-0">
-              <LogoContainer className="w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0 relative">
+        <CardHeader className="relative bg-gradient-to-br from-muted/40 via-muted/30 to-muted/20 p-8">
+          {/* Layout responsive: mobile = colonne, desktop = 3 zones */}
+          <div className="flex flex-col lg:flex-row items-start gap-6 lg:gap-8">
+
+            {/* Zone gauche: Logo du parti */}
+            <div className="flex-shrink-0 order-2 lg:order-1">
+              <LogoContainer className="w-24 h-24 lg:w-32 lg:h-32 relative">
                 <Image
                   src={party.logoUrl || getPartyLogo(party.id)}
                   alt={`Logo ${party.name} - ${party.leader} - Élections municipales 2025`}
@@ -181,38 +194,29 @@ export default function PartyDetailPage() {
                   style={{ objectFit: "contain" }}
                 />
               </LogoContainer>
-              {getLeaderPhoto(party.leader) && (
-                <div className="w-24 h-24 sm:w-32 sm:h-32 relative bg-white rounded-xl shadow-sm overflow-hidden">
-                  <Image
-                    src={getLeaderPhoto(party.leader)!}
-                    alt={`Photo de ${party.leader} - Chef de ${party.name}`}
-                    fill
-                    style={{ objectFit: "cover" }}
-                    className="rounded-lg"
-                  />
-                </div>
-              )}
             </div>
-            <div className="flex-1">
-              <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{party.name}</h1>
+
+            {/* Zone centre: Informations du parti */}
+            <div className="flex-1 order-3 lg:order-2">
+              <h1 className="text-3xl lg:text-4xl xl:text-5xl font-bold text-foreground mb-3 leading-tight">
+                {party.name}
+              </h1>
               {party.leader && (
-                <div className="mb-3">
-                  <p className="text-lg text-muted-foreground mb-2">
-                    Dirigé par : <span className="font-semibold text-foreground">{party.leader}</span>
+                <div className="mb-4">
+                  <p className="text-xl lg:text-2xl font-semibold text-foreground mb-2">
+                    {party.leader}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4 text-muted-foreground" />
-                    <Link
-                      href={`/${municipality}/leaders/${generateSlug(party.leader)}`}
-                      className="text-sm text-primary hover:underline font-medium"
-                    >
-                      Voir le profil détaillé du leader
-                    </Link>
-                  </div>
+                  <Link
+                    href={`/${municipality}/leaders/${generateSlug(party.leader)}`}
+                    className="text-sm text-primary hover:underline font-medium inline-flex items-center gap-1.5"
+                  >
+                    <User className="h-4 w-4" />
+                    Voir le profil détaillé du leader
+                  </Link>
                 </div>
               )}
               {party.orientation && (
-                <Badge variant="secondary" className="text-sm mb-3">
+                <Badge variant="secondary" className="text-sm mb-4">
                   {party.orientation}
                 </Badge>
               )}
@@ -226,6 +230,24 @@ export default function PartyDetailPage() {
                 )}
               </div>
             </div>
+
+            {/* Zone droite: Photo HERO du leader */}
+            {getLeaderPhoto(party.leader) && (
+              <div className="flex-shrink-0 order-1 lg:order-3 w-full lg:w-auto">
+                <div className="relative w-full h-64 sm:h-80 lg:w-96 lg:h-96 bg-white rounded-2xl shadow-2xl overflow-hidden ring-4 ring-white/50">
+                  <Image
+                    src={getLeaderPhoto(party.leader)!}
+                    alt={`Photo de ${party.leader} - Chef de ${party.name}`}
+                    fill
+                    style={{ objectFit: "cover" }}
+                    className="object-center"
+                    priority
+                  />
+                  {/* Overlay gradient subtil pour améliorer la lisibilité si besoin */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
+                </div>
+              </div>
+            )}
           </div>
         </CardHeader>
         <CardContent className="p-6 space-y-4">
@@ -356,7 +378,9 @@ export default function PartyDetailPage() {
             }
 
             // Logique normale pour les autres questions (Q1-Q20)
+            console.log(`🔍 [PartyPage] Recherche position pour question: id="${question.id}", texte="${question.text.substring(0, 50)}..."`)
             const partyPos = partyQuestionsMap.get(question.id)
+            console.log(`🔍 [PartyPage] Position trouvée:`, partyPos ? `${partyPos.position}` : 'AUCUNE')
             const userPos = userResponses.agreement[question.id]
 
             const partyPositionLabel =
