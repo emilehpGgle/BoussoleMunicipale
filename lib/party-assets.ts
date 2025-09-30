@@ -53,8 +53,15 @@ export const LEADER_PHOTOS: Record<string, string> = {
   'Jackie Smith': '/Leaders/Jackie_Smith.jpg',
   'Anne Guérette': '/Leaders/Anne_Guerette.jpg',
 
+  // Montréal
+  'Soraya Martinez Ferrada': '/Leaders/Soraya_Martinez_Ferrada.jpg',
+  'Jean-François Kacou': '/Leaders/Jean_Francois_Kacou.jpg',
+  'Luc Rabouin': '/Leaders/Luc_Rabouin.jpg',
+  'Craig Sauvé': '/Leaders/Craig_Sauve.jpg',
+  'Gilbert Thibodeau': '/Leaders/Gilbert_Thibodeau.jpg',
+
   // Autres municipalités (à ajouter selon les données disponibles)
-  // Montréal, Laval, Gatineau, Longueuil, Lévis...
+  // Laval, Gatineau, Longueuil, Lévis...
 }
 
 /**
