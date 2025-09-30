@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import type { Party } from '@/lib/boussole-data'
 import { partiesData } from '@/lib/boussole-data'
 import { extractPartyPrioritiesSimple } from '@/lib/extract-priorities'
+import { PARTY_LOGOS } from '@/lib/party-assets'
 
 /**
  * Interface pour les données de parti de la base de données
@@ -66,7 +67,7 @@ export function useParties(municipality?: string, includePositions = false) {
       name: dbParty.name,
       shortName: dbParty.short_name || undefined,
       leader: dbParty.leader,
-      logoUrl: hardcodedParty?.logoUrl || dbParty.logo_url, // Utiliser URL hardcodée en priorité
+      logoUrl: PARTY_LOGOS[dbParty.id] || hardcodedParty?.logoUrl || dbParty.logo_url, // Priorité: party-assets > boussole-data > Supabase
       leaderPhotoUrl: hardcodedParty?.leaderPhotoUrl || dbParty.leader_photo_url || undefined, // Utiliser URL hardcodée en priorité
       color: dbParty.color || '#0066CC', // Couleur par défaut
       websiteUrl: dbParty.website_url || undefined,
@@ -245,7 +246,7 @@ export function useParty(municipality: string, partyId: string) {
       name: dbParty.name,
       shortName: dbParty.short_name || undefined,
       leader: dbParty.leader,
-      logoUrl: hardcodedParty?.logoUrl || dbParty.logo_url, // Utiliser URL hardcodée en priorité
+      logoUrl: PARTY_LOGOS[dbParty.id] || hardcodedParty?.logoUrl || dbParty.logo_url, // Priorité: party-assets > boussole-data > Supabase
       leaderPhotoUrl: hardcodedParty?.leaderPhotoUrl || dbParty.leader_photo_url || undefined, // Utiliser URL hardcodée en priorité
       color: dbParty.color || '#0066CC',
       websiteUrl: dbParty.website_url || undefined,
