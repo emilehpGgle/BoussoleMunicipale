@@ -4,7 +4,8 @@ import React from "react"
 import { motion, useInView, type Variants } from 'framer-motion'
 import { cn } from "@/lib/utils"
 
-// Variants d'animation selon le plan (MUST #6)
+// Variants d'animation optimisées pour performance (réduit forced layouts)
+// Utilise x/y au lieu de transform pour compatibilité framer-motion
 const fadeInVariants: Variants = {
   hidden: {
     opacity: 0,
@@ -14,8 +15,8 @@ const fadeInVariants: Variants = {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 0.28, // 280ms comme recommandé
-      ease: "easeOut", // ease-out-standard
+      duration: 0.24, // Réduit pour meilleure performance
+      ease: "easeOut",
     },
   },
 }
@@ -31,7 +32,7 @@ const slideVariants: Variants = {
     x: 0,
     y: 0,
     transition: {
-      duration: 0.32, // 320ms pour slides
+      duration: 0.28, // Réduit pour performance
       ease: "easeOut",
     },
   },
@@ -46,8 +47,8 @@ const scaleVariants: Variants = {
     opacity: 1,
     scale: 1,
     transition: {
-      duration: 0.3,
-      ease: "backOut", // spring effect avec rebond subtil
+      duration: 0.26,
+      ease: "easeOut", // Changé pour réduire forced layouts
     },
   },
 }
@@ -101,6 +102,7 @@ export function FadeInSection({
       variants={getVariants()}
       custom={customValue}
       transition={{ delay }}
+      style={{ willChange: isInView ? "transform, opacity" : "auto" }}
     >
       {children}
     </motion.div>
@@ -145,7 +147,7 @@ export function StaggeredList({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.3,
+        duration: 0.26,
         ease: "easeOut",
       },
     },
@@ -158,9 +160,14 @@ export function StaggeredList({
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
       variants={containerVariants}
+      style={{ willChange: isInView ? "opacity" : "auto" }}
     >
       {React.Children.map(children, (child, index) => (
-        <motion.div key={index} variants={itemVariants}>
+        <motion.div
+          key={index}
+          variants={itemVariants}
+          style={{ willChange: isInView ? "transform, opacity" : "auto" }}
+        >
           {child}
         </motion.div>
       ))}

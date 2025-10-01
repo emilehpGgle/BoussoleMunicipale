@@ -9,6 +9,12 @@ const nextConfig = {
     // Only ignore TypeScript errors during builds in development
     ignoreBuildErrors: process.env.NODE_ENV === 'development',
   },
+  // Modern JavaScript compilation
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production' ? {
+      exclude: ['error', 'warn'],
+    } : false,
+  },
   experimental: {
     // CSS Performance Optimizations
     cssChunking: 'strict', // Améliore l'ordre d'import pour chunking optimal

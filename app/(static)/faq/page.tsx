@@ -3,15 +3,27 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
 import { AccordionClient as Accordion, AccordionContentClient as AccordionContent, AccordionItemClient as AccordionItem, AccordionTriggerClient as AccordionTrigger } from "@/components/ui/accordion-client"
-import { HelpCircle, CheckCircle, MessageSquare } from "lucide-react"
+import { MessageSquare } from "lucide-react"
 import { Breadcrumbs, breadcrumbConfigs } from "@/components/breadcrumbs"
 import {
   AnimatedSection,
-  AnimatedGrid,
   AnimatedTitle,
   AnimatedCTA
 } from "@/components/ui/animated-wrappers"
+
+// Import Hugeicons - using lucide-react alternatives
+import {
+  Compass,
+  Calendar,
+  Users,
+  Settings,
+  Target,
+  HelpCircle,
+  Menu,
+  CheckCircle2
+} from 'lucide-react'
 
 export const metadata: Metadata = {
   title: "FAQ | Questions Fréquentes - Boussole Électorale Municipale Québec 2025",
@@ -136,6 +148,39 @@ export default function FAQPage() {
     }
   ]
 
+  // Configuration des catégories avec Hugeicons
+  const categoryConfig: Record<string, {
+    iconData: React.ComponentType<{ className?: string }>;
+    color: string;
+    bgColor: string;
+  }> = {
+    "La Boussole": {
+      iconData: Compass,
+      color: "text-midnight-green",
+      bgColor: "bg-azure-web/40"
+    },
+    "Calendrier Électoral 2025": {
+      iconData: Calendar,
+      color: "text-teal-main-700",
+      bgColor: "bg-teal-main-100/40"
+    },
+    "Partis et Leaders Politiques": {
+      iconData: Users,
+      color: "text-midnight-green",
+      bgColor: "bg-teal-main-200/40"
+    },
+    "Méthodologie et Fonctionnement": {
+      iconData: Settings,
+      color: "text-teal-main-800",
+      bgColor: "bg-teal-main-300/40"
+    },
+    "Test Politique et Political Compass": {
+      iconData: Target,
+      color: "text-teal-main-900",
+      bgColor: "bg-teal-main-400/40"
+    }
+  }
+
   // Génère le balisage FAQ JSON-LD pour les questions les plus recherchées
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -200,6 +245,8 @@ export default function FAQPage() {
     ]
   }
 
+  const totalQuestions = faqs.reduce((acc, cat) => acc + cat.questions.length, 0)
+
   return (
     <React.Fragment>
       {/* Balisage FAQ JSON-LD pour SEO Rich Snippets */}
@@ -208,35 +255,108 @@ export default function FAQPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <div className="container max-w-4xl mx-auto py-8 px-4">
-          {/* Breadcrumbs avec structured data */}
-          <Breadcrumbs items={breadcrumbConfigs.faq} />
+      <div className="container max-w-5xl mx-auto py-12 px-4">
+        {/* Breadcrumbs avec structured data */}
+        <Breadcrumbs items={breadcrumbConfigs.faq} />
+
         {/* En-tête SEO optimisé */}
         <AnimatedTitle>
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">
+          <div className="text-center mb-16">
+            <h1 className="text-5xl lg:text-6xl font-black mb-6">
               Questions Fréquentes sur la Boussole Électorale 2025
             </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto">
               Tout ce que vous devez savoir sur notre boussole électorale pour les élections municipales de Québec 2025.
             </p>
           </div>
         </AnimatedTitle>
 
+        {/* Statistiques visuelles */}
+        <AnimatedSection delay={0.1}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <Card className="text-center p-6 bg-gradient-to-br from-azure-web to-white border-midnight-green/20">
+              <div className="text-5xl font-black text-midnight-green mb-2">
+                {totalQuestions}
+              </div>
+              <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                Questions Répondues
+              </div>
+            </Card>
+            <Card className="text-center p-6 bg-gradient-to-br from-teal-main-50 to-white border-midnight-green/20">
+              <div className="text-5xl font-black text-midnight-green mb-2">
+                {faqs.length}
+              </div>
+              <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                Catégories Couvertes
+              </div>
+            </Card>
+            <Card className="text-center p-6 bg-gradient-to-br from-teal-main-100 to-white border-midnight-green/20">
+              <div className="text-5xl font-black text-midnight-green mb-2">
+                100%
+              </div>
+              <div className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                Gratuité &amp; Anonymat
+              </div>
+            </Card>
+          </div>
+        </AnimatedSection>
+
+        {/* Table des matières - Navigation rapide */}
+        <AnimatedSection delay={0.15}>
+          <Card className="bg-azure-web/30 border-midnight-green/20 mb-12">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3 text-2xl lg:text-3xl">
+                <Menu className="w-7 h-7 text-midnight-green" />
+                Navigation Rapide
+              </CardTitle>
+              <CardDescription className="text-base">
+                Accédez directement à la catégorie qui vous intéresse
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                {faqs.map((cat, idx) => {
+                  const config = categoryConfig[cat.category]
+                  return (
+                    <Button
+                      key={idx}
+                      variant="outline"
+                      asChild
+                      className="justify-start gap-3 h-auto py-3 px-4 hover:bg-midnight-green/5 hover:border-midnight-green/40 transition-all"
+                    >
+                      <a href={`#category-${idx}`}>
+                        <div className={`p-2 rounded-lg bg-white shadow-sm ${config.color}`}>
+                          {React.createElement(config.iconData, { className: "w-5 h-5" })}
+                        </div>
+                        <span className="truncate flex-1 text-left font-medium">
+                          {cat.category}
+                        </span>
+                        <Badge variant="secondary" className="ml-auto shrink-0">
+                          {cat.questions.length}
+                        </Badge>
+                      </a>
+                    </Button>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </AnimatedSection>
+
         {/* Introduction */}
         <AnimatedSection delay={0.2}>
-          <Card className="mb-8">
+          <Card className="mb-10 border-l-4 border-l-midnight-green shadow-sm">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <HelpCircle className="h-6 w-6 text-primary" />
+              <CardTitle className="flex items-center gap-3 text-2xl">
+                <HelpCircle className="w-7 h-7 text-primary" />
                 Aide et Support
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-base">
                 Trouvez rapidement les réponses à vos questions sur la boussole électorale
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground leading-relaxed">
                 Cette page répond aux questions les plus fréquentes sur notre <strong>boussole électorale</strong> pour les
                 <strong> élections municipales 2025</strong>. Si vous ne trouvez pas votre réponse,
                 n&apos;hésitez pas à nous contacter.
@@ -246,104 +366,147 @@ export default function FAQPage() {
         </AnimatedSection>
 
         {/* FAQ par catégorie */}
-        <AnimatedGrid staggerDelay={0.15}>
-        {faqs.map((category, categoryIndex) => (
-            <Card key={categoryIndex} className="mb-6">
-              <CardHeader>
-                <CardTitle className="text-xl">{category.category}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Accordion type="single" collapsible className="w-full">
-                  {category.questions.map((item, index) => (
-                    <AccordionItem key={index} value={`item-${categoryIndex}-${index}`}>
-                      <AccordionTrigger className="text-left">
-                        {item.q}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-muted-foreground">
-                        {item.a}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </CardContent>
-            </Card>
-        ))}
-        </AnimatedGrid>
+        <div className="space-y-10">
+          {faqs.map((category, categoryIndex) => {
+            const config = categoryConfig[category.category]
+
+            return (
+              <AnimatedSection key={categoryIndex} delay={0.25 + categoryIndex * 0.05}>
+                <Card
+                  id={`category-${categoryIndex}`}
+                  className="border-l-4 border-l-midnight-green/60 shadow-md"
+                >
+                  <CardHeader className={`${config.bgColor} pb-6`}>
+                    <div className="flex items-center justify-between flex-wrap gap-4">
+                      <div className="flex items-center gap-4">
+                        <div className={`p-3 rounded-xl bg-white shadow-sm ${config.color}`}>
+                          {React.createElement(config.iconData, { className: "w-7 h-7" })}
+                        </div>
+                        <div>
+                          <CardTitle className="text-2xl lg:text-3xl font-bold mb-2">
+                            {category.category}
+                          </CardTitle>
+                          <CardDescription className="text-base">
+                            {category.questions.length} {category.questions.length === 1 ? 'question fréquente' : 'questions fréquentes'}
+                          </CardDescription>
+                        </div>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className="text-lg px-4 py-2 bg-white border-midnight-green/30 text-midnight-green font-semibold"
+                      >
+                        {category.questions.length}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-6">
+                    <Accordion type="single" collapsible className="space-y-3">
+                      {category.questions.map((item, index) => (
+                        <AccordionItem
+                          key={index}
+                          value={`item-${categoryIndex}-${index}`}
+                          className="border rounded-lg px-4 transition-all duration-200 hover:border-midnight-green/40 hover:shadow-sm focus-within:border-midnight-green focus-within:ring-2 focus-within:ring-midnight-green/20 data-[state=open]:bg-azure-web/20 data-[state=open]:border-midnight-green/60"
+                        >
+                          <AccordionTrigger className="text-left hover:no-underline py-5 group">
+                            <div className="flex items-start gap-3 w-full pr-4">
+                              <Badge
+                                variant="outline"
+                                className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full bg-midnight-green text-white font-semibold border-0"
+                              >
+                                {index + 1}
+                              </Badge>
+                              <span className="text-base lg:text-lg font-semibold text-foreground group-hover:text-midnight-green transition-colors">
+                                {item.q}
+                              </span>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="text-base leading-relaxed text-muted-foreground pl-11 pr-4 pb-5">
+                            {item.a}
+                          </AccordionContent>
+                        </AccordionItem>
+                      ))}
+                    </Accordion>
+                  </CardContent>
+                </Card>
+              </AnimatedSection>
+            )
+          })}
+        </div>
 
         {/* Section d'aide */}
         <AnimatedSection delay={0.4}>
-          <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="h-6 w-6 text-primary" />
-            <h2>Besoin d&apos;aide ?</h2>
-          </CardTitle>
-          <CardDescription>
-            Ressources supplémentaires pour vous aider
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium mb-1">Besoin d&apos;aide supplémentaire ?</h3>
-                <p className="text-sm text-muted-foreground">
-                  Consultez notre page <Link href="/a-propos" className="text-primary hover:underline">À Propos</Link> pour 
-                  comprendre la méthodologie complète de la boussole électorale.
-                </p>
+          <Card className="mt-10 border-l-4 border-l-midnight-green shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-3 text-2xl lg:text-3xl">
+                <MessageSquare className="h-7 w-7 text-primary" strokeWidth={2} />
+                <h2>Besoin d&apos;aide ?</h2>
+              </CardTitle>
+              <CardDescription className="text-base">
+                Ressources supplémentaires pour vous aider
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-1 text-base">Besoin d&apos;aide supplémentaire ?</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Consultez notre page <Link href="/a-propos" className="text-primary hover:underline font-medium">À Propos</Link> pour
+                      comprendre la méthodologie complète de la boussole électorale.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-1 text-base">Profils des Leaders</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Découvrez les <Link href="/leaders" className="text-primary hover:underline font-medium">profils détaillés des leaders</Link> politiques
+                      municipaux : biographies, expérience et vision pour 2025.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <CheckCircle2 className="w-6 h-6 text-green-500 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-semibold mb-1 text-base">Questionnaire Politique</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      Commencez dès maintenant votre <Link href="/test-politique-municipal" className="text-primary hover:underline font-medium">questionnaire gratuit</Link> pour
+                      découvrir vos affinités avec les partis municipaux.
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-            
-            <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium mb-1">Profils des Leaders</h3>
-                <p className="text-sm text-muted-foreground">
-                  Découvrez les <Link href="/leaders" className="text-primary hover:underline">profils détaillés des leaders</Link> politiques 
-                  municipaux : biographies, expérience et vision pour 2025.
-                </p>
-              </div>
-            </div>
-            
-            <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-              <div>
-                <h3 className="font-medium mb-1">Questionnaire Politique</h3>
-                <p className="text-sm text-muted-foreground">
-                  Commencez dès maintenant votre <Link href="/test-politique-municipal" className="text-primary hover:underline">questionnaire gratuit</Link> pour 
-                  découvrir vos affinités avec les partis municipaux.
-                </p>
-              </div>
-            </div>
-          </div>
             </CardContent>
           </Card>
         </AnimatedSection>
 
         {/* Call to Action final */}
-        <AnimatedCTA delay={0.5} className="text-center">
-          <Card>
-            <CardContent className="pt-6">
-              <h2 className="text-2xl font-bold mb-4">
+        <AnimatedCTA delay={0.5} className="text-center mt-10">
+          <Card className="border-2 border-midnight-green/20 shadow-lg">
+            <CardContent className="pt-8 pb-8">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-4">
                 Prêt à découvrir vos affinités politiques ?
               </h2>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-base lg:text-lg text-muted-foreground mb-6 leading-relaxed max-w-2xl mx-auto">
                 Utilisez notre <strong>boussole électorale</strong> pour identifier quel parti municipal de Québec
                 partage le mieux vos idées pour les <strong>élections 2025</strong>.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
+                <Button asChild size="lg" className="bg-primary hover:bg-primary/90 text-base">
                   <Link href="/test-politique-municipal">
                     Commencer le Questionnaire
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="lg">
+                <Button asChild variant="outline" size="lg" className="text-base">
                   <Link href="/a-propos">
                     En Savoir Plus
                   </Link>
                 </Button>
-                <Button asChild variant="ghost" size="lg">
+                <Button asChild variant="ghost" size="lg" className="text-base">
                   <Link href="/resultats">
                     Voir les résultats boussole électorale municipale
                   </Link>
@@ -356,7 +519,7 @@ export default function FAQPage() {
         {/* Lien retour vers l'accueil */}
         <AnimatedSection delay={0.6}>
           <div className="text-center mt-8">
-            <Link href="/" className="text-primary underline hover:text-primary/80 text-base">
+            <Link href="/" className="text-primary underline hover:text-primary/80 text-base font-medium">
               Retour à la boussole électorale municipale
             </Link>
           </div>
@@ -364,4 +527,4 @@ export default function FAQPage() {
       </div>
     </React.Fragment>
   )
-} 
+}

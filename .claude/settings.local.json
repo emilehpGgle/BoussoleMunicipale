@@ -19,7 +19,15 @@
       "WebFetch(domain:fr.wikipedia.org)",
       "WebFetch(domain:partilaval.com)",
       "mcp__exa__get_code_context_exa",
-      "WebFetch(domain:mclmedialaval.com)"
+      "WebFetch(domain:mclmedialaval.com)",
+      "Bash(pnpm run:*)",
+      "WebFetch(domain:www.futurmontreal.ca)",
+      "WebFetch(domain:projetmontreal.org)",
+      "WebFetch(domain:www.transitionmtl.org)",
+      "mcp__hugeicons-mcp-server__search_icons",
+      "Read(//mnt/c/Users/EPelletier/Desktop/**)",
+      "Bash(du:*)",
+      "Bash(cd:*)"
     ],
     "deny": []
   },

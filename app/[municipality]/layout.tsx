@@ -12,6 +12,9 @@ export async function generateStaticParams() {
   }))
 }
 
+// Force static generation only - block unknown municipalities at build time
+export const dynamicParams = false
+
 export default async function MunicipalityLayout({
   children,
   params,

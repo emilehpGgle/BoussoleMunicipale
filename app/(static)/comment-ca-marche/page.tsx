@@ -26,27 +26,28 @@ export const metadata: Metadata = {
 
 export default function CommentCaMarchePage() {
   return (
-    <div className="container max-w-4xl py-8 px-4 md:px-6">
-      <div className="mb-6">
-        <Button variant="ghost" asChild className="mb-4 w-fit">
+    <div className="container max-w-4xl py-12 md:py-16 px-4 md:px-6">
+      {/* Hero section with gradient background */}
+      <div className="-mx-4 md:-mx-6 mb-12 md:mb-16 px-4 md:px-6 py-8 md:py-12 bg-gradient-to-br from-azure-web to-isabelline rounded-2xl">
+        <Button variant="ghost" asChild className="mb-6 w-fit">
           <Link href="/" className="flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" />
             Retour à l&apos;accueil
           </Link>
         </Button>
-        
+
         <AnimatedTitle>
-          <h1 className="text-3xl font-bold text-foreground mb-4">
+          <h1 className="text-fluid-hero font-black text-foreground mb-6 md:mb-8 leading-tight">
             Comment ça marche
           </h1>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-fluid-lg text-muted-foreground max-w-2xl">
             Découvrez votre compatibilité politique municipale en 4 étapes simples.
           </p>
         </AnimatedTitle>
       </div>
 
       {/* Processus en étapes */}
-      <AnimatedSection delay={0.2} className="space-y-8 mb-12">
+      <AnimatedSection delay={0.2} className="space-y-12 md:space-y-16 mb-16 md:mb-20">
         <AnimatedGrid className="card-grid-standard">
           <StepCard
             step={1}
@@ -72,19 +73,19 @@ export default function CommentCaMarchePage() {
       </AnimatedSection>
 
       {/* Fonctionnement détaillé */}
-      <AnimatedSection delay={0.4} className="space-y-8">
+      <AnimatedSection delay={0.4} className="space-y-12 md:space-y-16">
         <section>
           <AnimatedTitle delay={0.1}>
-            <h2 className="text-2xl font-bold mb-6">Fonctionnement détaillé</h2>
+            <h2 className="text-fluid-3xl font-bold mb-8 md:mb-12 text-eerie-black">Fonctionnement détaillé</h2>
           </AnimatedTitle>
           
           <div className="space-y-6">
             {/* Le questionnaire */}
-            <Card className="p-6">
+            <Card className="p-6 md:p-8 hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start space-x-4">
                 <CheckCircle className="w-6 h-6 text-midnight-green mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Le questionnaire municipal</h3>
+                  <h3 className="text-fluid-2xl font-bold mb-4 text-foreground">Le questionnaire municipal</h3>
                   <p className="text-muted-foreground mb-4">
                     Notre questionnaire couvre <strong>6 domaines clés</strong> de la politique municipale :
                   </p>
@@ -117,11 +118,11 @@ export default function CommentCaMarchePage() {
             </Card>
 
             {/* L'analyse */}
-            <Card className="p-6">
+            <Card className="p-6 md:p-8 hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start space-x-4">
                 <BarChart3 className="w-6 h-6 text-midnight-green mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">L&apos;analyse scientifique</h3>
+                  <h3 className="text-fluid-2xl font-bold mb-4 text-foreground">L&apos;analyse scientifique</h3>
                   <p className="text-muted-foreground mb-4">
                     Nos algorithmes analysent vos réponses selon plusieurs dimensions :
                   </p>
@@ -139,11 +140,11 @@ export default function CommentCaMarchePage() {
             </Card>
 
             {/* Les résultats */}
-            <Card className="p-6">
+            <Card className="p-6 md:p-8 hover:shadow-md transition-shadow duration-200">
               <div className="flex items-start space-x-4">
                 <Users className="w-6 h-6 text-midnight-green mt-1 flex-shrink-0" />
                 <div>
-                  <h3 className="text-xl font-semibold mb-3">Vos résultats personnalisés</h3>
+                  <h3 className="text-fluid-2xl font-bold mb-4 text-foreground">Vos résultats personnalisés</h3>
                   <p className="text-muted-foreground mb-4">
                     À la fin du processus, vous recevez :
                   </p>
@@ -163,7 +164,7 @@ export default function CommentCaMarchePage() {
         {/* Fiabilité et objectivité */}
         <section>
           <AnimatedTitle delay={0.3}>
-            <h2 className="text-2xl font-bold mb-6">Notre engagement</h2>
+            <h2 className="text-fluid-3xl font-bold mb-8 md:mb-12 text-eerie-black">Notre engagement</h2>
           </AnimatedTitle>
 
           <AnimatedGrid staggerDelay={0.15} className="card-grid-two-cols">
@@ -188,8 +189,8 @@ export default function CommentCaMarchePage() {
 
         {/* Call to action */}
         <AnimatedCTA delay={0.5} className="text-center py-8">
-          <h2 className="text-2xl font-bold mb-4">Prêt à découvrir vos affinités ?</h2>
-          <p className="text-muted-foreground mb-6">
+          <h2 className="text-fluid-3xl font-bold mb-6 text-foreground">Prêt à découvrir vos affinités ?</h2>
+          <p className="text-fluid-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             Le processus complet prend environ 10 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
