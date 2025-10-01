@@ -124,16 +124,38 @@ export default function CommentCaMarchePage() {
                 <div>
                   <h3 className="text-fluid-2xl font-bold mb-4 text-foreground">L&apos;analyse scientifique</h3>
                   <p className="text-muted-foreground mb-4">
-                    Nos algorithmes analysent vos réponses selon plusieurs dimensions :
+                    Notre système utilise une <strong>double approche</strong> pour vous offrir une vision complète :
                   </p>
-                  <ul className="list-disc list-inside text-muted-foreground space-y-2 mb-4">
-                    <li><strong>Compatibilité par enjeu</strong> : comparaison directe avec les positions des partis</li>
-                    <li><strong>Pondération d&apos;importance</strong> : vos priorités influencent le calcul</li>
-                    <li><strong>Position politique globale</strong> : votre place sur la boussole économique/sociale</li>
-                    <li><strong>Distance idéologique</strong> : proximité avec chaque formation politique</li>
-                  </ul>
+
+                  <div className="space-y-4 mb-4">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-blue-900 mb-2">📍 Carte politique (Positionnement idéologique)</h4>
+                      <ul className="list-disc list-inside text-blue-800 space-y-1 text-sm">
+                        <li>Analyse votre position sur deux axes : économique et social</li>
+                        <li>Calcule la distance pure entre vous et chaque parti</li>
+                        <li>Outil éducatif pour comprendre le paysage politique</li>
+                        <li><strong>Sans influence de vos priorités personnelles</strong></li>
+                      </ul>
+                    </div>
+
+                    <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
+                      <h4 className="font-semibold text-teal-900 mb-2">🎯 Scores d&apos;affinité (Décision de vote)</h4>
+                      <ul className="list-disc list-inside text-teal-800 space-y-1 text-sm">
+                        <li>Comparaison question par question avec chaque parti</li>
+                        <li><strong>Pondération selon VOS 3 priorités sélectionnées :</strong>
+                          <ul className="list-none ml-6 mt-1 space-y-0.5">
+                            <li>→ 1ère priorité : poids ×2.0</li>
+                            <li>→ 2ème priorité : poids ×1.75</li>
+                            <li>→ 3ème priorité : poids ×1.5</li>
+                          </ul>
+                        </li>
+                        <li>Les résultats s&apos;adaptent aux enjeux qui comptent le plus pour vous</li>
+                      </ul>
+                    </div>
+                  </div>
+
                   <p className="text-muted-foreground">
-                    Le résultat : un pourcentage d&apos;affinité précis avec chaque parti municipal.
+                    Le résultat : <strong>deux perspectives complémentaires</strong> pour un choix éclairé.
                   </p>
                 </div>
               </div>
