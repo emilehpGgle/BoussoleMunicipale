@@ -587,61 +587,75 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
             </div>
           </div>
 
-          {/* Parti le plus proche avec détails narratifs */}
-          {partyDistances.length > 0 && partyDistances[0].details && (
+          {/* Partis les plus proches sur le spectre politique */}
+          {partyDistances.length > 0 && (
             <div className="bg-teal-50 rounded-lg p-4 border border-teal-200">
-              <h4 className="font-semibold text-black mb-3">🎯 Parti le plus compatible :</h4>
-              <div className="space-y-3">
-                {/* En-tête avec logo et nom */}
-                <div className="flex items-center gap-3">
-                  {partyDistances[0].party?.logoUrl && (
-                    <div className="bg-white rounded-lg p-2 shadow-sm">
-                      <Image
-                        src={partyDistances[0].party.logoUrl}
-                        alt={`Logo ${partyDistances[0].party.name}`}
-                        width={32}
-                        height={32}
-                        style={{ objectFit: "contain" }}
-                      />
-                    </div>
-                  )}
-                  <div>
-                    <p className="font-medium text-black text-lg">
-                      {partyDistances[0].party?.name}
-                    </p>
-                    <p className="text-md font-semibold text-teal-700">
-                      Compatibilité : {partyDistances[0].compatibility}%
-                    </p>
-                  </div>
-                </div>
+              <h4 className="font-semibold text-black mb-3">🎯 Partis les plus proches de vous sur le spectre politique</h4>
+              <p className="text-sm text-gray-700 mb-3">
+                Basé sur la similarité idéologique (position sur la carte uniquement)
+              </p>
+              <div className="space-y-2">
+                {partyDistances.slice(0, 3).map(({ party, distance }, index) => {
+                  // Interpréter la proximité
+                  let proximityLabel = ""
+                  let proximityColor = ""
+                  if (distance < 30) {
+                    proximityLabel = "Très proche idéologiquement"
+                    proximityColor = "text-green-700"
+                  } else if (distance < 60) {
+                    proximityLabel = "Proche idéologiquement"
+                    proximityColor = "text-teal-700"
+                  } else if (distance < 100) {
+                    proximityLabel = "Relativement proche"
+                    proximityColor = "text-blue-700"
+                  } else {
+                    proximityLabel = "Éloigné idéologiquement"
+                    proximityColor = "text-gray-600"
+                  }
 
-                {/* Détails narratifs */}
-                <div className="bg-white/60 rounded-md p-3 space-y-2 text-sm">
-                  <div className="flex items-start gap-2">
-                    <span className="text-green-600 font-medium">✅</span>
-                    <span className="text-gray-800">{partyDistances[0].details.narrative.agreement}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-blue-600 font-medium">🤝</span>
-                    <span className="text-gray-800">{partyDistances[0].details.narrative.priorities}</span>
-                  </div>
-                  <div className="flex items-start gap-2">
-                    <span className="text-purple-600 font-medium">💡</span>
-                    <span className="text-gray-800">{partyDistances[0].details.narrative.summary}</span>
-                  </div>
-                </div>
+                  return (
+                    <div key={party.id} className="bg-white/60 rounded-md p-3 flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-sm font-bold">
+                        {index + 1}
+                      </div>
+                      {party.logoUrl && (
+                        <div className="bg-white rounded-lg p-1 shadow-sm">
+                          <Image
+                            src={party.logoUrl}
+                            alt={`Logo ${party.name}`}
+                            width={24}
+                            height={24}
+                            style={{ objectFit: "contain" }}
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <p className="font-medium text-black text-sm">
+                          {party.name}
+                        </p>
+                        <p className={`text-xs ${proximityColor}`}>
+                          {proximityLabel} • Distance: {distance.toFixed(1)}
+                        </p>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
 
           {/* Note méthodologique */}
-          <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
-            <strong>Note :</strong> Cette carte positionne votre profil politique selon deux axes principaux : 
-            économique (interventionnisme ↔ libre marché) et social/environnemental (conservateur ↔ progressiste). 
-            Les positions des partis sont basées sur leurs programmes publics et déclarations officielles.
-            <br />
-            <strong>📊 Calcul de compatibilité :</strong> Ce score mesure votre alignement politique selon les deux axes
-            de la carte. Pour une évaluation pratique de vote, consultez les scores d&apos;affinité dans la section précédente.
+          <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3 space-y-2">
+            <p>
+              <strong>Note :</strong> Cette carte positionne votre profil politique selon deux axes indépendants :
+              économique (interventionnisme ↔ libre marché) et social/environnemental (conservateur ↔ progressiste).
+              La proximité géographique indique une similarité idéologique pure, <strong>sans tenir compte de vos priorités</strong>.
+            </p>
+            <p>
+              <strong>📊 Pour vos scores d&apos;affinité :</strong> Consultez la section précédente qui calcule l&apos;accord
+              question par question en pondérant selon <strong>VOS 3 priorités sélectionnées</strong>
+              (1ère ×2.0, 2ème ×1.75, 3ème ×1.5). Les résultats s&apos;adaptent aux enjeux que vous avez choisis.
+            </p>
           </div>
         </CardContent>
       </Card>

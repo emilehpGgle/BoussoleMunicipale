@@ -856,20 +856,33 @@ export default function ResultsPage() {
             </CardHeader>
             <CardContent className="text-sm text-muted-foreground space-y-4">
               <div>
-                <h4 className="font-semibold text-foreground mb-1">📍 Positionnement politique</h4>
+                <h4 className="font-semibold text-foreground mb-1">📍 Carte politique (Positionnement idéologique)</h4>
                 <p>
-                  Chacune des 20 questions influence votre score sur deux axes indépendants (économique et social). Votre position finale est la somme de ces influences, pondérée par l&apos;importance que vous accordez à chaque question.
+                  Calcule votre position sur deux axes indépendants basés sur vos réponses : économique (interventionnisme ↔ libre marché) et social (conservateur ↔ progressiste).
+                  La distance géographique entre vous et les partis indique une similarité idéologique <strong>pure</strong>, sans tenir compte de vos priorités.
+                  Outil éducatif pour comprendre le paysage politique municipal.
                 </p>
               </div>
               <div>
-                <h4 className="font-semibold text-foreground mb-1">📊 Calcul des affinités</h4>
+                <h4 className="font-semibold text-foreground mb-1">🎯 Scores d&apos;affinité (Décision de vote)</h4>
                 <p>
-                  L&apos;affinité est calculée à partir de la distance qui vous sépare de chaque parti sur la carte politique. Plus un parti est proche de vous, plus l&apos;affinité est élevée. La formule a été ajustée pour que les partis éloignés soient plus sévèrement pénalisés, rendant le score plus intuitif.
+                  Calcul question par question de votre accord avec chaque parti. <strong>Les résultats s&apos;adaptent selon VOS 3 priorités sélectionnées</strong> :
+                </p>
+                <ul className="list-disc list-inside mt-2 space-y-1 ml-2">
+                  <li>1ère priorité : <strong>×2.0</strong> (poids doublé)</li>
+                  <li>2ème priorité : <strong>×1.75</strong></li>
+                  <li>3ème priorité : <strong>×1.5</strong></li>
+                  <li>Autres questions : ×1.0 (poids de base)</li>
+                  <li>Enjeux spécifiques (tramway, 3e lien) : <strong>bonus ×1.5</strong> pour compenser leur rareté</li>
+                </ul>
+                <p className="mt-2">
+                  Les scores reflètent donc votre accord pratique avec les partis <strong>sur les enjeux qui comptent le plus pour vous</strong>.
                 </p>
               </div>
               <div>
                 <p className="text-xs italic pt-2 border-t border-muted-foreground/10">
-                  <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l&apos;analyse de leurs programmes et déclarations publiques. Cette méthode scientifique garantit une représentation équitable du paysage politique municipal.
+                  <strong>Note méthodologique :</strong> Les positions des partis sont basées sur l&apos;analyse de leurs programmes et déclarations publiques.
+                  Cette double approche (position idéologique + affinité pratique) garantit une représentation complète et équitable du paysage politique municipal.
                 </p>
               </div>
             </CardContent>
