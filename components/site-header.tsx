@@ -118,7 +118,7 @@ export default function SiteHeader() {
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
             <div className="relative h-full w-36 sm:w-40 md:w-44">
                                 <Image
-                    src="/logo-main.svg"
+                    src="/logo-main.png"
                     alt="Boussole Municipale Logo"
                     fill
                     sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, 190px"
@@ -189,7 +189,7 @@ export default function SiteHeader() {
                       <Link href="/" className="block h-[50px]">
                         <div className="relative h-full w-36 sm:w-40">
                           <Image
-                            src="/logo-main.svg"
+                            src="/logo-main.png"
                             alt="Boussole Municipale Logo"
                             fill
                             style={{ objectFit: "contain" }}
