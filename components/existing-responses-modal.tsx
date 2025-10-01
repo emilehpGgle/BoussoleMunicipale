@@ -12,25 +12,25 @@ import {
 } from "@/components/ui/dialog"
 import { RotateCcw, Play, FileText, BarChart3 } from "lucide-react"
 import { useUserResponses } from "@/hooks/useUserResponses"
-import { useRouter, useParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { boussoleQuestions } from "@/lib/boussole-data"
 
 interface ContinueOrRestartModalProps {
   isOpen: boolean
   onClose: () => void
   targetPath?: string // "/" par défaut pour l'accueil, mais peut être "/test-politique-municipal" etc.
+  municipality?: string // ID de la municipalité (ex: "quebec", "montreal") pour multi-municipalité
 }
 
-export default function ContinueOrRestartModal({ 
-  isOpen, 
-  onClose, 
-  targetPath = "/" 
+export default function ContinueOrRestartModal({
+  isOpen,
+  onClose,
+  targetPath = "/",
+  municipality
 }: ContinueOrRestartModalProps) {
   const [isClearing, setIsClearing] = useState(false)
   const { clearAllResponses, getResponseCounts, responses } = useUserResponses()
   const router = useRouter()
-  const params = useParams()
-  const municipality = params.municipality as string
   
   const responseCounts = getResponseCounts
   const hasResponses = responseCounts.total > 0
@@ -70,22 +70,20 @@ export default function ContinueOrRestartModal({
 
   const handleContinueQuestionnaire = () => {
     onClose()
-    // Si municipality est undefined (ex: depuis page d'accueil), utiliser la route legacy
-    if (!municipality || municipality === 'undefined') {
-      router.push('/test-politique-municipal')
-    } else {
-      router.push(`/${municipality}/test-politique-municipal`)
-    }
+    // Construire l'URL selon la municipalité fournie
+    const url = municipality
+      ? `/${municipality}/test-politique-municipal`
+      : '/test-politique-municipal'
+    router.push(url)
   }
 
   const handleViewResults = () => {
     onClose()
-    // Si municipality est undefined (ex: depuis page d'accueil), utiliser la route legacy
-    if (!municipality || municipality === 'undefined') {
-      router.push('/resultats')
-    } else {
-      router.push(`/${municipality}/resultats`)
-    }
+    // Construire l'URL selon la municipalité fournie
+    const url = municipality
+      ? `/${municipality}/resultats`
+      : '/resultats'
+    router.push(url)
   }
 
   const handleRestartFromScratch = async () => {

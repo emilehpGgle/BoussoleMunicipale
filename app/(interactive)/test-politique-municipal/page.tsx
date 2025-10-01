@@ -76,6 +76,9 @@ export default function QuestionnairePage() {
 
   useResults()
 
+  // Hook pour accéder au profil utilisateur et vérifier le consentement
+  const { profile } = _useProfile()
+
   // ✅ Hook pour gérer les priorités (simplifié)
   const { 
     priorities: selectedPriorities, 
@@ -389,6 +392,22 @@ export default function QuestionnairePage() {
         </div>
       )}
 
+      {/* Bandeau si l'utilisateur n'a pas donné son consentement email */}
+      {!profile.emailConsent && (
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 bg-azure-web/40 border-2 border-midnight-green/30 text-midnight-green px-4 py-2 rounded-lg text-sm z-50 shadow-md max-w-md">
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-midnight-green/10 rounded-full">
+              <span className="text-base">💡</span>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-midnight-green">Vos réponses ne seront pas sauvegardées</p>
+              <p className="text-xs text-midnight-green/80">
+                Pour conserver vos résultats, vous devez accepter de recevoir vos résultats par courriel.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Contenu principal optimisé pour l&apos;espace vertical */}
       <div className="container max-w-4xl py-4 md:py-6 px-4 md:px-6 mobile-content-overlay section-contained flex flex-col questionnaire-compact">
