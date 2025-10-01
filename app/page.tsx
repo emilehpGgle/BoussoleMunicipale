@@ -135,7 +135,7 @@ export default function HomePage() {
                   fetchPriority="high"
                   loading="eager"
                   quality={85}
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 428px, 50vw"
                   style={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)" }}
                 />
               </div>

@@ -20,6 +20,21 @@ const nextConfig = {
     cssChunking: 'strict', // Améliore l'ordre d'import pour chunking optimal
     inlineCss: true, // Inline CSS critique dans <head> pour réduire render blocking
     // useLightningcss: true, // Disabled - conflicts with PostCSS plugins
+
+    // JavaScript Performance Optimizations - MOBILE BUNDLE SIZE
+    optimizePackageImports: [
+      'lucide-react',
+      'recharts',
+      'framer-motion',
+      'date-fns',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-popover',
+      '@radix-ui/react-select',
+      '@radix-ui/react-toast',
+      '@radix-ui/react-tooltip',
+    ],
   },
   images: {
     // Configuration optimisée pour la qualité d'images
@@ -55,6 +70,53 @@ const nextConfig = {
           {
             key: 'X-Robots-Tag',
             value: 'noindex',
+          },
+        ],
+      },
+      // Cache-Control headers for static assets - MOBILE PERFORMANCE OPTIMIZATION
+      {
+        source: '/_next/static/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/_next/image/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/logo-main.svg',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        source: '/:all*(svg|jpg|jpeg|png|webp|avif|gif|ico)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      // HTML pages - no cache but allow stale-while-revalidate for better perceived performance
+      {
+        source: '/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate, stale-while-revalidate=60',
           },
         ],
       },

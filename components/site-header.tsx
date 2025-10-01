@@ -120,6 +120,8 @@ export default function SiteHeader() {
                     sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, 190px"
                     style={{ objectFit: "contain", objectPosition: "left center" }}
                     priority
+                    fetchPriority="high"
+                    loading="eager"
                     quality={95}
                     className="transition-opacity duration-200"
                   />

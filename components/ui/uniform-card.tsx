@@ -128,6 +128,9 @@ const FeatureCard = React.forwardRef<HTMLDivElement, {
                 width={200}
                 height={200}
                 className="w-full h-full object-cover"
+                sizes="200px"
+                loading="lazy"
+                quality={75}
               />
             </div>
           </div>
