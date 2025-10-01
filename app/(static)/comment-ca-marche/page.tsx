@@ -128,9 +128,9 @@ export default function CommentCaMarchePage() {
                   </p>
 
                   <div className="space-y-4 mb-4">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-blue-900 mb-2">📍 Carte politique (Positionnement idéologique)</h4>
-                      <ul className="list-disc list-inside text-blue-800 space-y-1 text-sm">
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-2">📍 Carte politique (Positionnement idéologique)</h4>
+                      <ul className="list-disc list-inside text-muted-foreground space-y-1">
                         <li>Analyse votre position sur deux axes : économique et social</li>
                         <li>Calcule la distance pure entre vous et chaque parti</li>
                         <li>Outil éducatif pour comprendre le paysage politique</li>
@@ -138,12 +138,12 @@ export default function CommentCaMarchePage() {
                       </ul>
                     </div>
 
-                    <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                      <h4 className="font-semibold text-teal-900 mb-2">🎯 Scores d&apos;affinité (Décision de vote)</h4>
-                      <ul className="list-disc list-inside text-teal-800 space-y-1 text-sm">
+                    <div>
+                      <h4 className="font-semibold text-foreground mb-2">🎯 Scores d&apos;affinité (Décision de vote)</h4>
+                      <ul className="list-disc list-inside text-muted-foreground space-y-1">
                         <li>Comparaison question par question avec chaque parti</li>
                         <li><strong>Pondération selon VOS 3 priorités sélectionnées :</strong>
-                          <ul className="list-none ml-6 mt-1 space-y-0.5">
+                          <ul className="list-none ml-6 mt-1 space-y-0.5 text-sm">
                             <li>→ 1ère priorité : poids ×2.0</li>
                             <li>→ 2ème priorité : poids ×1.75</li>
                             <li>→ 3ème priorité : poids ×1.5</li>
