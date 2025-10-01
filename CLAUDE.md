@@ -387,3 +387,38 @@ export default function PageName() {
 - Maximum developer flexibility
 
 This hybrid architecture is now the standard for all new animated pages in the application.
+
+## Design System - Palette de Couleurs
+
+### Palette Stricte (palette2.0.scss)
+
+**RÈGLE ABSOLUE** : Utiliser UNIQUEMENT les couleurs de `/public/palettes/palette2.0.scss`
+
+**Couleurs disponibles** :
+- `midnight-green` (#04454A) - Couleur principale, accents
+- `azure-web` (#EAFCFC) - Arrière-plans clairs
+- `eerie-black` (#222222) - Texte foncé
+- `isabelline` (#FCF7F3) - Arrière-plans chauds
+- `white` (#FFFEFE) - Blanc
+
+**Classes Tailwind autorisées** :
+- `text-midnight-green`, `bg-midnight-green`, `border-midnight-green`
+- `text-foreground`, `text-muted-foreground` (mappées sur la palette via globals.css)
+- `bg-muted`, `border-muted` (mappées sur la palette via globals.css)
+- Modificateurs d'opacité : `/10`, `/20`, `/30`, `/50`, `/60`
+
+**❌ ABSOLUMENT INTERDIT** :
+- Couleurs Tailwind hors palette : `blue-*`, `teal-*`, `green-*`, `red-*`, `purple-*`, `amber-*`, etc.
+- Couleurs hardcodées en hex ou RGB non définies dans palette2.0.scss
+- Couleurs custom non documentées
+
+**Workflow avant d'ajouter des couleurs** :
+1. Vérifier si une classe standard existe (`text-foreground`, `text-muted-foreground`, `bg-muted`)
+2. Utiliser `midnight-green` pour les accents et éléments d'emphase
+3. Si besoin absolu d'une nouvelle couleur :
+   - Ajouter à `/public/palettes/palette2.0.scss`
+   - Mapper dans `globals.css`
+   - Documenter ici
+   - ENSUITE utiliser dans le code
+
+**Vérification** : Avant chaque commit, scanner le code pour détecter les couleurs non autorisées (blue-, teal-, green-, red-, etc.)

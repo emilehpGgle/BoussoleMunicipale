@@ -589,33 +589,28 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
 
           {/* Partis les plus proches sur le spectre politique */}
           {partyDistances.length > 0 && (
-            <div className="bg-teal-50 rounded-lg p-4 border border-teal-200">
-              <h4 className="font-semibold text-black mb-3">🎯 Partis les plus proches de vous sur le spectre politique</h4>
-              <p className="text-sm text-gray-700 mb-3">
+            <div className="bg-muted/30 rounded-lg p-4 border border-muted-foreground/20">
+              <h4 className="font-semibold text-foreground mb-3">🎯 Partis les plus proches de vous sur le spectre politique</h4>
+              <p className="text-sm text-muted-foreground mb-3">
                 Basé sur la similarité idéologique (position sur la carte uniquement)
               </p>
               <div className="space-y-2">
                 {partyDistances.slice(0, 3).map(({ party, distance }, index) => {
                   // Interpréter la proximité
                   let proximityLabel = ""
-                  let proximityColor = ""
                   if (distance < 30) {
                     proximityLabel = "Très proche idéologiquement"
-                    proximityColor = "text-green-700"
                   } else if (distance < 60) {
                     proximityLabel = "Proche idéologiquement"
-                    proximityColor = "text-teal-700"
                   } else if (distance < 100) {
                     proximityLabel = "Relativement proche"
-                    proximityColor = "text-blue-700"
                   } else {
                     proximityLabel = "Éloigné idéologiquement"
-                    proximityColor = "text-gray-600"
                   }
 
                   return (
                     <div key={party.id} className="bg-white/60 rounded-md p-3 flex items-center gap-3">
-                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-sm font-bold">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-midnight-green text-white flex items-center justify-center text-sm font-bold">
                         {index + 1}
                       </div>
                       {party.logoUrl && (
@@ -630,10 +625,10 @@ export default function PoliticalCompassChart({ userAnswers, municipality }: Pol
                         </div>
                       )}
                       <div className="flex-1">
-                        <p className="font-medium text-black text-sm">
+                        <p className="font-medium text-foreground text-sm">
                           {party.name}
                         </p>
-                        <p className={`text-xs ${proximityColor}`}>
+                        <p className="text-xs text-muted-foreground">
                           {proximityLabel} • Distance: {distance.toFixed(1)}
                         </p>
                       </div>
