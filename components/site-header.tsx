@@ -2,15 +2,19 @@
 import React from "react"
 import Link from "next/link"
 import Image from "next/image"
+import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
 import { PrimaryButton } from "@/components/ui/primary-button"
-import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
-import ContinueOrRestartModal from "@/components/existing-responses-modal"
 import { useState, useEffect } from "react"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { usePathname } from "next/navigation"
 import { useUserResponses } from "@/hooks/useUserResponses"
+
+// Dynamic imports pour code splitting - Réduction bundle size
+const EnhancedPostalCodeModal = dynamic(() => import("@/components/enhanced-postal-code-modal"))
+const ContinueOrRestartModal = dynamic(() => import("@/components/existing-responses-modal"))
+
 // Imports pour futures améliorations
 // import { StickyNavbar } from "@/components/ui/sticky-navbar"
 // import { MotionButton } from "@/components/ui/motion-button"

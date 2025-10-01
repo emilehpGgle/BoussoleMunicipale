@@ -272,7 +272,7 @@ export default function FAQPage() {
         </AnimatedTitle>
 
         {/* Statistiques visuelles */}
-        <AnimatedSection delay={0.1}>
+        <AnimatedSection delay={0}>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card className="text-center p-6 bg-gradient-to-br from-azure-web to-white border-midnight-green/20">
               <div className="text-5xl font-black text-midnight-green mb-2">
@@ -302,7 +302,7 @@ export default function FAQPage() {
         </AnimatedSection>
 
         {/* Table des matières - Navigation rapide */}
-        <AnimatedSection delay={0.15}>
+        <AnimatedSection delay={0}>
           <Card className="bg-azure-web/30 border-midnight-green/20 mb-12">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl lg:text-3xl">
@@ -344,7 +344,7 @@ export default function FAQPage() {
         </AnimatedSection>
 
         {/* Introduction */}
-        <AnimatedSection delay={0.2}>
+        <AnimatedSection delay={0}>
           <Card className="mb-10 border-l-4 border-l-midnight-green shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl">
@@ -371,7 +371,7 @@ export default function FAQPage() {
             const config = categoryConfig[category.category]
 
             return (
-              <AnimatedSection key={categoryIndex} delay={0.25 + categoryIndex * 0.05}>
+              <AnimatedSection key={categoryIndex} delay={0}>
                 <Card
                   id={`category-${categoryIndex}`}
                   className="border-l-4 border-l-midnight-green/60 shadow-md"
@@ -434,7 +434,7 @@ export default function FAQPage() {
         </div>
 
         {/* Section d'aide */}
-        <AnimatedSection delay={0.4}>
+        <AnimatedSection delay={0}>
           <Card className="mt-10 border-l-4 border-l-midnight-green shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-2xl lg:text-3xl">
@@ -485,7 +485,7 @@ export default function FAQPage() {
         </AnimatedSection>
 
         {/* Call to Action final */}
-        <AnimatedCTA delay={0.5} className="text-center mt-10">
+        <AnimatedCTA delay={0} className="text-center mt-10">
           <Card className="border-2 border-midnight-green/20 shadow-lg">
             <CardContent className="pt-8 pb-8">
               <h2 className="text-3xl lg:text-4xl font-bold mb-4">
@@ -517,7 +517,7 @@ export default function FAQPage() {
         </AnimatedCTA>
 
         {/* Lien retour vers l'accueil */}
-        <AnimatedSection delay={0.6}>
+        <AnimatedSection delay={0}>
           <div className="text-center mt-8">
             <Link href="/" className="text-primary underline hover:text-primary/80 text-base font-medium">
               Retour à la boussole électorale municipale

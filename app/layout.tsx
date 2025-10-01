@@ -364,8 +364,16 @@ export default function RootLayout({
         {/* Preload désactivé globalement - ces ressources ne sont pas utilisées sur toutes les pages
             Pour réactiver sélectivement, ajouter les preload dans les pages spécifiques */}
         {/* <link rel="preload" href="/logo-main.svg?v=2025" as="image" type="image/svg+xml" /> */}
-        {/* <link rel="preload" href="/Image_parc_crisp.webp?v=2025" as="image" /> */}
         {/* <link rel="preload" href="/favicon-32x32.png?v=2025" as="image" /> */}
+
+        {/* CRITICAL: Preload hero image pour homepage LCP - MOBILE PERFORMANCE FIX */}
+        <link
+          rel="preload"
+          as="image"
+          href="/Image_parc_crisp.webp"
+          imageSrcSet="/_next/image?url=%2FImage_parc_crisp.webp&w=428&q=85 428w, /_next/image?url=%2FImage_parc_crisp.webp&w=640&q=85 640w, /_next/image?url=%2FImage_parc_crisp.webp&w=750&q=85 750w"
+          imageSizes="(max-width: 768px) 428px, 50vw"
+        />
 
         {/* Preconnect analytics et services externes - non-blocking */}
         <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="" />

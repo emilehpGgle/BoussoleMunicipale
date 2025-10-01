@@ -48,8 +48,8 @@ export default function PourquoiImportantPage() {
       </div>
 
       {/* Impact direct */}
-      <AnimatedSection delay={0.2} className="mb-16 md:mb-20">
-        <AnimatedTitle delay={0.1}>
+      <AnimatedSection delay={0.05} className="mb-16 md:mb-20">
+        <AnimatedTitle delay={0}>
           <h2 className="text-3xl md:text-4xl font-bold mb-8 md:mb-10">
             La municipalité : votre gouvernement le plus proche
           </h2>
@@ -118,7 +118,7 @@ export default function PourquoiImportantPage() {
           />
         </AnimatedGrid>
 
-        <AnimatedStats delay={0.4}>
+        <AnimatedStats delay={0.1}>
           <Card className="p-8 md:p-10 bg-gradient-to-br from-midnight-green/10 via-midnight-green/5 to-transparent border-2 border-midnight-green/20">
             <div className="flex items-start space-x-6">
               <Users className="w-12 h-12 md:w-14 md:h-14 text-midnight-green mt-1 flex-shrink-0" />
@@ -138,14 +138,14 @@ export default function PourquoiImportantPage() {
       </AnimatedSection>
 
       {/* Statistiques participation - Enhanced Visual Impact */}
-      <AnimatedSection delay={0.5} className="mb-16 md:mb-20">
-        <AnimatedTitle delay={0.1}>
+      <AnimatedSection delay={0.05} className="mb-16 md:mb-20">
+        <AnimatedTitle delay={0}>
           <h2 className="text-3xl md:text-4xl font-bold mb-8 md:mb-10">
             La réalité de la participation
           </h2>
         </AnimatedTitle>
 
-        <AnimatedGrid staggerDelay={0.2} className="grid md:grid-cols-2 gap-8">
+        <AnimatedGrid staggerDelay={0.1} className="grid md:grid-cols-2 gap-8">
           <Card className="p-8 md:p-10 shadow-lg">
             <h3 className="text-xl md:text-2xl font-bold mb-6">Taux de participation historique</h3>
             <div className="space-y-6">
@@ -220,14 +220,14 @@ export default function PourquoiImportantPage() {
       </AnimatedSection>
 
       {/* Impact de votre vote - Hero Statistics */}
-      <AnimatedSection delay={0.7} className="mb-16 md:mb-20">
-        <AnimatedTitle delay={0.1}>
+      <AnimatedSection delay={0.05} className="mb-16 md:mb-20">
+        <AnimatedTitle delay={0}>
           <h2 className="text-3xl md:text-4xl font-bold mb-8 md:mb-10">
             Votre vote compte vraiment
           </h2>
         </AnimatedTitle>
 
-        <AnimatedStats delay={0.2}>
+        <AnimatedStats delay={0.1}>
           <Card className="p-8 md:p-12 mb-10 bg-gradient-to-br from-midnight-green/5 to-transparent shadow-xl">
             <div className="grid md:grid-cols-3 gap-8 md:gap-10">
               <div className="text-center">
@@ -258,7 +258,7 @@ export default function PourquoiImportantPage() {
           </Card>
         </AnimatedStats>
 
-        <AnimatedGrid staggerDelay={0.15} className="grid md:grid-cols-2 gap-8">
+        <AnimatedGrid staggerDelay={0.08} className="grid md:grid-cols-2 gap-8">
           <Card className="p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
             <TrendingUp className="w-10 h-10 md:w-12 md:h-12 text-midnight-green mb-6" />
             <h3 className="text-xl md:text-2xl font-bold mb-5">Exemples d&apos;impact direct</h3>
@@ -304,7 +304,7 @@ export default function PourquoiImportantPage() {
       <div className="h-px bg-gradient-to-r from-transparent via-midnight-green/30 to-transparent mb-16 md:mb-20" />
 
       {/* Call to action - Enhanced */}
-      <AnimatedCTA delay={0.9} className="text-center pb-8">
+      <AnimatedCTA delay={0.1} className="text-center pb-8">
         <Card className="p-10 md:p-14 bg-gradient-to-br from-midnight-green/10 via-midnight-green/5 to-transparent border-2 border-midnight-green/20 shadow-2xl">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-foreground">
             Votez en connaissance de cause

@@ -49,7 +49,7 @@ export default function CentreAidePage() {
       </div>
 
       {/* Barre de recherche */}
-      <AnimatedSection delay={0.2}>
+      <AnimatedSection delay={0.1}>
         <Card className="p-6 mb-8 bg-gradient-to-r from-white via-secondary/5 to-white shadow-soft-md border-2 border-primary/10">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-primary/60" />
@@ -101,10 +101,10 @@ export default function CentreAidePage() {
       </AnimatedGrid>
 
       {/* FAQ détaillée */}
-      <AnimatedSection delay={0.4} className="space-y-12">
+      <AnimatedSection delay={0.1} className="space-y-12">
         {/* Section Général */}
         <section id="generale" className="bg-secondary/20 -mx-4 md:-mx-6 px-4 md:px-6 py-12 rounded-2xl">
-          <AnimatedTitle delay={0.1}>
+          <AnimatedTitle delay={0}>
             <h2 className="text-fluid-3xl font-bold mb-8 md:mb-12 text-eerie-black flex items-center gap-3">
               <MessageSquare className="w-10 h-10 text-midnight-green" />
               Questions générales
@@ -148,7 +148,7 @@ export default function CentreAidePage() {
 
         {/* Section Questionnaire */}
         <section id="questionnaire" className="py-12">
-          <AnimatedTitle delay={0.2}>
+          <AnimatedTitle delay={0}>
             <h2 className="text-fluid-3xl font-bold mb-8 md:mb-12 text-eerie-black flex items-center gap-3">
               <BarChart3 className="w-10 h-10 text-midnight-green" />
               Le questionnaire
@@ -202,7 +202,7 @@ export default function CentreAidePage() {
 
         {/* Section Résultats */}
         <section id="resultats" className="bg-gradient-to-br from-teal-main-50/30 to-azure-web/50 -mx-4 md:-mx-6 px-4 md:px-6 py-12 rounded-2xl">
-          <AnimatedTitle delay={0.3}>
+          <AnimatedTitle delay={0}>
             <h2 className="text-fluid-3xl font-bold mb-8 md:mb-12 text-eerie-black flex items-center gap-3">
               <Users className="w-10 h-10 text-midnight-green" />
               Comprendre vos résultats
@@ -261,7 +261,7 @@ export default function CentreAidePage() {
 
         {/* Section Confidentialité */}
         <section id="confidentialite" className="py-12">
-          <AnimatedTitle delay={0.4}>
+          <AnimatedTitle delay={0}>
             <h2 className="text-fluid-3xl font-bold mb-8 md:mb-12 text-eerie-black flex items-center gap-3">
               <Shield className="w-10 h-10 text-midnight-green" />
               Confidentialité et sécurité
@@ -316,7 +316,7 @@ export default function CentreAidePage() {
       </AnimatedSection>
 
       {/* Contact pour plus d'aide */}
-      <AnimatedCTA delay={0.5} className="mt-16">
+      <AnimatedCTA delay={0.1} className="mt-16">
         <Card className="p-8 text-center bg-gradient-to-br from-primary/5 via-white to-secondary/20 border-2 border-primary/20 shadow-primary-glow">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
             <Mail className="w-8 h-8 text-primary" />

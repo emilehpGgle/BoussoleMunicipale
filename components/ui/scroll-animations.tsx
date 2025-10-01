@@ -71,11 +71,16 @@ export function FadeInSection({
   className,
   delay = 0,
   once = true,
-  amount = 0.3,
+  amount = 0.1, // Réduit de 0.3 à 0.1 pour trigger plus tôt
   variant = "fade",
 }: ScrollAnimationProps) {
   const ref = React.useRef(null)
-  const isInView = useInView(ref, { once, amount })
+  // Ajoute margin négative pour trigger avant que l'élément soit visible
+  const isInView = useInView(ref, {
+    once,
+    amount,
+    margin: "0px 0px -150px 0px" // Trigger 150px avant d'être visible
+  })
 
   const getVariants = () => {
     switch (variant) {
@@ -125,7 +130,12 @@ export function StaggeredList({
   once?: boolean
 }) {
   const ref = React.useRef(null)
-  const isInView = useInView(ref, { once, amount: 0.2 })
+  // Trigger plus tôt avec margin négative
+  const isInView = useInView(ref, {
+    once,
+    amount: 0.1, // Réduit de 0.2 à 0.1
+    margin: "0px 0px -100px 0px" // Trigger 100px avant
+  })
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
