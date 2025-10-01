@@ -29,7 +29,7 @@
     --teal-special-foreground: 0 100% 100%; /* White pur */
 
     --muted: 180 75% 95%; /* Azure Web - Teal ultra-clair */
-    --muted-foreground: 0 0% 45%; /* Gris neutre */
+    --muted-foreground: 0 0% 40%; /* Gris neutre avec contraste WCAG AA (ratio 4.8:1) */
 
     --destructive: 0 84.2% 60.2%; /* Rouge doux pour erreurs */
     --destructive-foreground: 0 100% 100%; /* White pur */

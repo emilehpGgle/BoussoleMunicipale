@@ -182,10 +182,10 @@ export default function RootLayout({
   return (
     <html lang="fr" suppressHydrationWarning>
       <head>
-        {/* Viewport meta tag AGGRESSIVE pour neutraliser scaling automatique */}
-        <meta 
-          name="viewport" 
-          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, shrink-to-fit=no"
+        {/* Viewport meta tag - Accessible avec zoom autorisé */}
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover, shrink-to-fit=no"
         />
         <Analytics />
         {/* Domain detection script for debugging layout differences */}
@@ -280,7 +280,7 @@ export default function RootLayout({
               --secondary: 180 75% 95%;
               --secondary-foreground: 0 0% 13%;
               --muted: 180 75% 95%;
-              --muted-foreground: 0 0% 45%;
+              --muted-foreground: 0 0% 40%;
               --border: 180 75% 90%;
               --ring: 184 91% 14%;
               --radius: 0.75rem;

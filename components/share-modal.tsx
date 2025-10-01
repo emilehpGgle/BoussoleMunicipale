@@ -274,31 +274,31 @@ export default function ShareModal({
           <div className="text-center">
             <h3 className="text-xl font-semibold mb-4">Partager via</h3>
             <div className="flex justify-center gap-4 mt-2">
-              <button onClick={handleFacebookShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+              <button onClick={handleFacebookShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group" aria-label="Partager sur Facebook">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-midnight-green text-white transition-transform group-hover:scale-110">
                   <Facebook className="w-7 h-7" />
                 </div>
                 <span className="text-xs">Facebook</span>
               </button>
-              <button onClick={handleTwitterShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+              <button onClick={handleTwitterShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group" aria-label="Partager sur X (Twitter)">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-black text-white transition-transform group-hover:scale-110 overflow-hidden">
                   <Image src="/X.png" alt="X Logo" width={48} height={48} loading="lazy" />
                 </div>
                 <span className="text-xs">X</span>
               </button>
-              <button onClick={handleMessengerShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+              <button onClick={handleMessengerShare} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group" aria-label="Partager sur Messenger">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-midnight-green text-white transition-transform group-hover:scale-110">
                   <MessageCircle className="w-7 h-7" />
                 </div>
                 <span className="text-xs">Messenger</span>
               </button>
-              <button onClick={handleCopyLink} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+              <button onClick={handleCopyLink} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group" aria-label="Copier le lien de partage">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-600 text-white transition-transform group-hover:scale-110">
                   <LinkIcon className="w-7 h-7" />
                 </div>
                 <span className="text-xs">Copier le lien</span>
               </button>
-              <button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group">
+              <button onClick={() => setIsEmailModalOpen(true)} disabled={isSharing} className="flex flex-col items-center text-center gap-1 group" aria-label="Envoyer par email">
                 <div className="w-12 h-12 flex items-center justify-center rounded-full bg-teal-600 text-white transition-transform group-hover:scale-110">
                   <Mail className="w-7 h-7" />
                 </div>

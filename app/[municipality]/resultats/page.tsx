@@ -725,45 +725,6 @@ export default function ResultsPage() {
           <PoliticalCompassChart userAnswers={userAnswers} municipality={municipality} userImportance={userImportance} />
         </Suspense>
 
-        {/* Nouvelle section : Détails d'affinité avec narratifs */}
-        {calculatedScores.length > 0 && calculatedScores[0].compatibilityDetails && (
-          <Card className="shadow-soft rounded-2xl subtle-glow">
-            <CardHeader>
-              <CardTitle className="text-2xl">Analyse de votre affinité avec {calculatedScores[0].party.name}</CardTitle>
-              <CardDescription>
-                Comprendre votre compatibilité sur les enjeux municipaux
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-                <h4 className="font-semibold text-teal-800 mb-2">🎯 Score d&apos;affinité</h4>
-                <p className="text-teal-700">{calculatedScores[0].compatibilityDetails.narrative.mainScore}</p>
-              </div>
-
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h4 className="font-semibold text-blue-800 mb-2">🤝 Analyse des priorités</h4>
-                <p className="text-blue-700">{calculatedScores[0].compatibilityDetails.narrative.priorityAnalysis}</p>
-              </div>
-
-              {calculatedScores[0].compatibilityDetails.narrative.categoryBreakdown && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                  <h4 className="font-semibold text-amber-800 mb-2">📊 Breakdown par catégorie</h4>
-                  <p className="text-amber-700">{calculatedScores[0].compatibilityDetails.narrative.categoryBreakdown}</p>
-                </div>
-              )}
-
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <h4 className="font-semibold text-gray-800 mb-2">💡 Résumé</h4>
-                <p className="text-gray-700">{calculatedScores[0].compatibilityDetails.narrative.summary}</p>
-              </div>
-
-              <div className="text-xs text-muted-foreground mt-4 p-3 bg-muted/30 rounded-lg">
-                <p>📈 <strong>Méthode de calcul :</strong> Ce score se base sur l&apos;accord question par question avec pondération selon vos priorités.
-                Les enjeux spécifiques (tramway, 3e lien) reçoivent un poids majoré pour compenser leur rareté.</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         <Card className="shadow-soft rounded-2xl subtle-glow">
           <CardHeader>

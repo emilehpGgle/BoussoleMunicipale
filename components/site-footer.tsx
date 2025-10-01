@@ -18,13 +18,13 @@ export default function SiteFooter() {
               Votre boussole pour découvrir vos affinités politiques municipales et faire un choix éclairé.
             </p>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button variant="ghost" size="sm" className="p-2" aria-label="Suivez-nous sur Facebook">
                 <Facebook className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button variant="ghost" size="sm" className="p-2" aria-label="Suivez-nous sur X (Twitter)">
                 <Twitter className="w-5 h-5" />
               </Button>
-              <Button variant="ghost" size="sm" className="p-2">
+              <Button variant="ghost" size="sm" className="p-2" aria-label="Suivez-nous sur Instagram">
                 <Instagram className="w-5 h-5" />
               </Button>
             </div>

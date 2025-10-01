@@ -261,18 +261,20 @@ export function calculateExactCompatibilityWithDetails(
 
   // 5. Génération du texte narratif
   const generateNarrative = () => {
-    // Texte de similarité politique (position globale, pas accord direct)
+    const roundedScore = Math.round(finalScore)
+
+    // Texte de compatibilité globale (position + priorités)
     let agreementText = ""
-    if (politicalScore >= 90) {
-      agreementText = `Votre position politique est très similaire à celle de ce parti (${politicalScore}%)`
-    } else if (politicalScore >= 75) {
-      agreementText = `Votre position politique est proche de celle de ce parti (${politicalScore}%)`
-    } else if (politicalScore >= 60) {
-      agreementText = `Votre position politique rejoint celle de ce parti à ${politicalScore}%`
-    } else if (politicalScore >= 40) {
-      agreementText = `Votre position politique converge partiellement avec ce parti (${politicalScore}%)`
+    if (roundedScore >= 90) {
+      agreementText = `Votre position politique est très similaire à celle de ce parti (${roundedScore}%)`
+    } else if (roundedScore >= 75) {
+      agreementText = `Votre position politique est proche de celle de ce parti (${roundedScore}%)`
+    } else if (roundedScore >= 60) {
+      agreementText = `Votre position politique rejoint celle de ce parti à ${roundedScore}%`
+    } else if (roundedScore >= 40) {
+      agreementText = `Votre position politique converge partiellement avec ce parti (${roundedScore}%)`
     } else {
-      agreementText = `Votre position politique diverge significativement de ce parti (${politicalScore}%)`
+      agreementText = `Votre position politique diverge significativement de ce parti (${roundedScore}%)`
     }
 
     // Texte des priorités
@@ -290,7 +292,6 @@ export function calculateExactCompatibilityWithDetails(
 
     // Texte de résumé
     let summaryText = ""
-    const roundedScore = Math.round(finalScore)
     if (roundedScore >= 80) {
       summaryText = `C'est pourquoi vous avez une excellente compatibilité de ${roundedScore}%`
     } else if (roundedScore >= 65) {
