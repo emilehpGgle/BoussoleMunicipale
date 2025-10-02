@@ -347,8 +347,11 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
 
   return (
     <>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
+      )}
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl bg-white border-2 border-primary/20">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
             <MapPin className="h-6 w-6 text-midnight-green" />
@@ -463,7 +466,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                     />
                   </SelectTrigger>
                   <SelectContent
-                    className="bg-background border border-border shadow-lg max-h-60 overflow-y-auto"
+                    className="bg-background border border-border shadow-lg max-h-60 overflow-y-auto z-[10000]"
                     position="popper"
                     sideOffset={4}
                   >
