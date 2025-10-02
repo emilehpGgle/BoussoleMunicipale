@@ -210,14 +210,16 @@ export default function RootLayout({
               }
 
               // Force zoom compensation sur domaine custom
-              if (isDomainCustom && zoomLevel !== 100) {
-                const compensationFactor = 100 / zoomLevel;
-                if (isDev) {
-                  console.log('[SCALE FIX] Applying zoom compensation factor:', compensationFactor);
-                }
-                document.body.style.transform = \`scale(\${compensationFactor})\`;
-                document.body.style.transformOrigin = 'top left';
-              }
+              // ⚠️ COMMENTED OUT - Causes Radix Portal stacking context issues on mobile
+              // The transform on body breaks Dialog Portal positioning on mobile devices
+              // if (isDomainCustom && zoomLevel !== 100) {
+              //   const compensationFactor = 100 / zoomLevel;
+              //   if (isDev) {
+              //     console.log('[SCALE FIX] Applying zoom compensation factor:', compensationFactor);
+              //   }
+              //   document.body.style.transform = \`scale(\${compensationFactor})\`;
+              //   document.body.style.transformOrigin = 'top left';
+              // }
               
               // DOMAIN-SPECIFIC FIXES
               if (isDomainCustom) {
@@ -233,7 +235,8 @@ export default function RootLayout({
                   document.body.style.zoom = '1';
                   document.body.style.minWidth = '100vw';
                   document.body.style.maxWidth = '100vw';
-                  document.body.style.transform = 'scale(1)';
+                  // ⚠️ COMMENTED OUT - Causes Radix Portal stacking context issues on mobile
+                  // document.body.style.transform = 'scale(1)';
 
                   if (isDev) {
                     console.log('[DOMAIN] Applied scaling fix');
