@@ -224,34 +224,32 @@ export default function SiteHeader() {
                   
                   {/* Navigation conditionnelle pour mobile aussi */}
                   {!shouldHideStartButton ? (
-                    <PrimaryButton
-                      onClick={() => {
-                        // Fermer le sheet d'abord
-                        const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
-                        closeButton?.click()
-                        // Puis gérer le commencement
-                        setTimeout(() => handleStartQuestionnaire(), 100)
-                      }}
-                      className="w-full mt-4"
-                      size="md"
-                      showCompass
-                    >
-                      Commencer
-                    </PrimaryButton>
+                    <SheetClose asChild>
+                      <PrimaryButton
+                        onClick={() => {
+                          // Délai pour laisser le Sheet se fermer proprement avant d'ouvrir le modal
+                          setTimeout(() => handleStartQuestionnaire(), 150)
+                        }}
+                        className="w-full mt-4"
+                        size="md"
+                        showCompass
+                      >
+                        Commencer
+                      </PrimaryButton>
+                    </SheetClose>
                   ) : (
-                    <Button
-                      onClick={() => {
-                        // Fermer le sheet d'abord
-                        const closeButton = document.querySelector('[data-sheet-close]') as HTMLButtonElement
-                        closeButton?.click()
-                        // Puis aller à l'accueil (simple)
-                        setTimeout(() => handleGoHome(), 100)
-                      }}
-                      variant="outline"
-                      className="w-full border-primary/20 text-foreground hover:bg-primary/10 hover:text-primary rounded-xl py-3 text-base font-medium mt-4"
-                    >
-                      Retour à l&apos;accueil
-                    </Button>
+                    <SheetClose asChild>
+                      <Button
+                        onClick={() => {
+                          // Délai pour laisser le Sheet se fermer proprement
+                          setTimeout(() => handleGoHome(), 150)
+                        }}
+                        variant="outline"
+                        className="w-full border-primary/20 text-foreground hover:bg-primary/10 hover:text-primary rounded-xl py-3 text-base font-medium mt-4"
+                      >
+                        Retour à l&apos;accueil
+                      </Button>
+                    </SheetClose>
                   )}
                 </nav>
               </SheetContent>
