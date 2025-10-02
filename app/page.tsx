@@ -1,4 +1,3 @@
-import dynamic from "next/dynamic"
 import { Button } from "@/components/ui/button"
 import { FileText, BarChart3, Users, Compass, Share2, HelpCircle } from "lucide-react"
 import Image from "next/image"
@@ -17,11 +16,7 @@ import {
   AnimatedCTA
 } from "@/components/ui/animated-wrappers"
 import { Metadata } from "next"
-
-// Dynamic import pour code splitting - Réduction bundle size homepage
-const StartQuestionnaireButton = dynamic(
-  () => import("@/components/start-questionnaire-button").then(mod => ({ default: mod.StartQuestionnaireButton }))
-)
+import { StartQuestionnaireButton } from "@/components/start-questionnaire-button"
 
 export const metadata: Metadata = {
   title: "Boussole Électorale Municipale | Test Politique Québec 2025",
