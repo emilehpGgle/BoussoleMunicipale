@@ -6,7 +6,6 @@ import { useProfile } from "@/hooks/useProfile"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ContinueOrRestartModal from "./existing-responses-modal"
-import EmailConsentRequiredModal from "./email-consent-required-modal"
 import {
   Dialog,
   DialogContent,
@@ -58,7 +57,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
   const [districtTerminology, setDistrictTerminology] = useState<string>('arrondissement')
   const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
-  const [isEmailConsentRequiredModalOpen, setIsEmailConsentRequiredModalOpen] = useState(false)
 
   // États pour le consentement
   const [analyticsConsent] = useState(true) // Toujours vrai, obligatoire
@@ -72,7 +70,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const router = useRouter()
 
   // Intégration des hooks
-  const { profile, updateProfileFields, isSaving } = useProfile()
+  const { updateProfileFields, isSaving } = useProfile()
   const { getResponseCounts, isLoading: responsesLoading, responses } = useUserResponses()
   const { isSessionValid } = useSession()
 
@@ -283,18 +281,10 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
             const counts = getResponseCounts
             console.log('🔍 Vérification des réponses existantes:', counts)
 
-            // Si l'utilisateur a déjà des réponses, vérifier le consentement email
+            // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
             if (counts.total > 0) {
-              console.log('📋 Réponses existantes détectées:', counts.total)
-
-              // Vérifier si l'utilisateur a donné son consentement email
-              if (profile.emailConsent === true) {
-                console.log('✅ Email consent donné, ouverture du modal de choix')
-                setIsExistingResponsesModalOpen(true)
-              } else {
-                console.log('❌ Pas de email consent, demande de consentement requise')
-                setIsEmailConsentRequiredModalOpen(true)
-              }
+              console.log('📋 Réponses existantes détectées, ouverture du modal de choix')
+              setIsExistingResponsesModalOpen(true)
               return
             }
 
@@ -347,8 +337,11 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
 
   return (
     <>
+      {isOpen && (
+        <div className="fixed inset-0 bg-black/50 z-[9998]" onClick={onClose} />
+      )}
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999]">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-y-auto rounded-xl shadow-2xl bg-white border-2 border-primary/20 z-[9999] fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
         <DialogHeader>
           <DialogTitle className="text-2xl font-semibold text-foreground flex items-center gap-2">
             <MapPin className="h-6 w-6 text-midnight-green" />
@@ -462,7 +455,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                       className="text-foreground"
                     />
                   </SelectTrigger>
-                  <SelectContent
+                  <SelectContent 
                     className="bg-background border border-border shadow-lg max-h-60 overflow-y-auto z-[10000]"
                     position="popper"
                     sideOffset={4}
@@ -572,15 +565,12 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 {/* Effet glow inspiré du RainbowButton */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-midnight-green/20 via-azure-web/30 to-midnight-green/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                <div
-                  className="relative p-4 bg-gradient-to-br from-azure-web/20 to-azure-web/40 rounded-lg border-2 border-midnight-green/30 hover:border-midnight-green/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
-                  onClick={() => setEmailConsent(!emailConsent)}
-                >
+                <div className="relative p-4 bg-gradient-to-br from-azure-web/20 to-azure-web/40 rounded-lg border-2 border-midnight-green/30 hover:border-midnight-green/50 hover:shadow-lg transition-all duration-300">
                   <span className="absolute top-3 right-3 text-xs sm:text-xs bg-midnight-green/10 text-midnight-green px-2 py-0.5 rounded-full font-medium">
                     Optionnel
                   </span>
                   <div className="flex items-start gap-3">
-                    <div className="mt-1" onClick={(e) => e.stopPropagation()}>
+                    <div className="mt-1">
                       <Checkbox
                         checked={emailConsent}
                         onCheckedChange={(checked) => setEmailConsent(checked as boolean)}
@@ -867,30 +857,6 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       isOpen={isExistingResponsesModalOpen}
       onClose={() => setIsExistingResponsesModalOpen(false)}
       targetPath={detectedMunicipality?.id ? `/${detectedMunicipality.id}/test-politique-municipal` : "/test-politique-municipal"}
-      municipality={detectedMunicipality?.id}
-    />
-
-    {/* Modal pour demander le consentement email si réponses trouvées sans consentement */}
-    <EmailConsentRequiredModal
-      isOpen={isEmailConsentRequiredModalOpen}
-      onClose={() => setIsEmailConsentRequiredModalOpen(false)}
-      onConsentGiven={() => {
-        // Une fois le consentement donné, fermer ce modal et ouvrir le modal normal
-        setIsEmailConsentRequiredModalOpen(false)
-        setIsExistingResponsesModalOpen(true)
-      }}
-      onContinueAnonymously={async () => {
-        // Recommencer anonymement : effacer les réponses et redémarrer
-        setIsEmailConsentRequiredModalOpen(false)
-        onClose()
-
-        // Rediriger vers le questionnaire
-        const targetUrl = detectedMunicipality?.id
-          ? `/${detectedMunicipality.id}/test-politique-municipal`
-          : "/test-politique-municipal"
-        router.push(targetUrl)
-      }}
-      responsesCount={getResponseCounts.total}
     />
 
     </>

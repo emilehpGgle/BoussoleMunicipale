@@ -4,14 +4,13 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { PrimaryButton } from "@/components/ui/primary-button"
+import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
+import ContinueOrRestartModal from "@/components/existing-responses-modal"
 import { useState, useEffect } from "react"
 import { Menu } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet"
 import { usePathname } from "next/navigation"
 import { useUserResponses } from "@/hooks/useUserResponses"
-import EnhancedPostalCodeModal from "@/components/enhanced-postal-code-modal"
-import ContinueOrRestartModal from "@/components/existing-responses-modal"
-
 // Imports pour futures améliorations
 // import { StickyNavbar } from "@/components/ui/sticky-navbar"
 // import { MotionButton } from "@/components/ui/motion-button"
@@ -115,14 +114,12 @@ export default function SiteHeader() {
           <Link href="/" className="flex items-center shrink-0 h-[56px]">
             <div className="relative h-full w-36 sm:w-40 md:w-44">
                                 <Image
-                    src="/logo-main.png"
+                    src="/logo-main.svg"
                     alt="Boussole Municipale Logo"
                     fill
                     sizes="(max-width: 640px) 144px, (max-width: 768px) 176px, 190px"
                     style={{ objectFit: "contain", objectPosition: "left center" }}
                     priority
-                    fetchPriority="high"
-                    loading="eager"
                     quality={95}
                     className="transition-opacity duration-200"
                   />
@@ -186,7 +183,7 @@ export default function SiteHeader() {
                       <Link href="/" className="block h-[50px]">
                         <div className="relative h-full w-36 sm:w-40">
                           <Image
-                            src="/logo-main.png"
+                            src="/logo-main.svg"
                             alt="Boussole Municipale Logo"
                             fill
                             style={{ objectFit: "contain" }}
