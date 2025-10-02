@@ -6,6 +6,7 @@ import { useProfile } from "@/hooks/useProfile"
 import { useUserResponses } from "@/hooks/useUserResponses"
 import { useSession } from "@/hooks/useSession"
 import ContinueOrRestartModal from "./existing-responses-modal"
+import EmailConsentRequiredModal from "./email-consent-required-modal"
 import {
   Dialog,
   DialogContent,
@@ -57,6 +58,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const [availableDistricts, setAvailableDistricts] = useState<string[]>([])
   const [districtTerminology, setDistrictTerminology] = useState<string>('arrondissement')
   const [isExistingResponsesModalOpen, setIsExistingResponsesModalOpen] = useState(false)
+  const [isEmailConsentRequiredModalOpen, setIsEmailConsentRequiredModalOpen] = useState(false)
 
   // États pour le consentement
   const [analyticsConsent] = useState(true) // Toujours vrai, obligatoire
@@ -70,7 +72,7 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
   const router = useRouter()
 
   // Intégration des hooks
-  const { updateProfileFields, isSaving } = useProfile()
+  const { profile, updateProfileFields, isSaving } = useProfile()
   const { getResponseCounts, isLoading: responsesLoading, responses } = useUserResponses()
   const { isSessionValid } = useSession()
 
@@ -281,10 +283,18 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
             const counts = getResponseCounts
             console.log('🔍 Vérification des réponses existantes:', counts)
 
-            // Si l'utilisateur a déjà des réponses, ouvrir le modal de choix
+            // Si l'utilisateur a déjà des réponses, vérifier le consentement email
             if (counts.total > 0) {
-              console.log('📋 Réponses existantes détectées, ouverture du modal de choix')
-              setIsExistingResponsesModalOpen(true)
+              console.log('📋 Réponses existantes détectées:', counts.total)
+
+              // Vérifier si l'utilisateur a donné son consentement email
+              if (profile.emailConsent === true) {
+                console.log('✅ Email consent donné, ouverture du modal de choix')
+                setIsExistingResponsesModalOpen(true)
+              } else {
+                console.log('❌ Pas de email consent, demande de consentement requise')
+                setIsEmailConsentRequiredModalOpen(true)
+              }
               return
             }
 
@@ -857,6 +867,30 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
       isOpen={isExistingResponsesModalOpen}
       onClose={() => setIsExistingResponsesModalOpen(false)}
       targetPath={detectedMunicipality?.id ? `/${detectedMunicipality.id}/test-politique-municipal` : "/test-politique-municipal"}
+      municipality={detectedMunicipality?.id}
+    />
+
+    {/* Modal pour demander le consentement email si réponses trouvées sans consentement */}
+    <EmailConsentRequiredModal
+      isOpen={isEmailConsentRequiredModalOpen}
+      onClose={() => setIsEmailConsentRequiredModalOpen(false)}
+      onConsentGiven={() => {
+        // Une fois le consentement donné, fermer ce modal et ouvrir le modal normal
+        setIsEmailConsentRequiredModalOpen(false)
+        setIsExistingResponsesModalOpen(true)
+      }}
+      onContinueAnonymously={async () => {
+        // Recommencer anonymement : effacer les réponses et redémarrer
+        setIsEmailConsentRequiredModalOpen(false)
+        onClose()
+
+        // Rediriger vers le questionnaire
+        const targetUrl = detectedMunicipality?.id
+          ? `/${detectedMunicipality.id}/test-politique-municipal`
+          : "/test-politique-municipal"
+        router.push(targetUrl)
+      }}
+      responsesCount={getResponseCounts.total}
     />
 
     </>
