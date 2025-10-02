@@ -24,7 +24,8 @@ export function middleware(request: NextRequest) {
     '/comment-ca-marche',
     '/pourquoi-important',
     '/faq',
-    '/centre-aide'
+    '/centre-aide',
+    '/elections-municipales-2025'
   ]
 
   if (staticPages.includes(pathname)) {
@@ -54,7 +55,6 @@ export function middleware(request: NextRequest) {
       'confidentialite',
       'contact',
       'donnees-protegees',
-      'elections-municipales-2025-quebec',
       'leaders',
       'partage',
       'preferences'

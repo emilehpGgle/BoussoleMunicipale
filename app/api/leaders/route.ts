@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
         .from('leaders')
         .select(`
           *,
-          party:parties(
+          party:parties!leaders_party_id_fkey(
             id,
             name,
             short_name,
@@ -79,7 +79,7 @@ export async function GET(request: NextRequest) {
       .from('leaders')
       .select(`
         *,
-        party:parties(
+        party:parties!leaders_party_id_fkey(
           id,
           name,
           short_name,

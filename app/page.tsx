@@ -119,7 +119,7 @@ export default function HomePage() {
                   </StartQuestionnaireButton>
                   <span className="text-xs text-muted-foreground text-center sm:text-left">⏱️ Test politique rapide • 5 minutes • 21 questions</span>
                   <div className="flex flex-col sm:flex-row gap-2 mt-2 text-center sm:text-left">
-                    <Link href="/elections-municipales-2025-quebec" className="text-sm text-midnight-green underline hover:text-midnight-green/80">
+                    <Link href="/elections-municipales-2025" className="text-sm text-midnight-green underline hover:text-midnight-green/80">
                       📅 Guide Élections 2025
                     </Link>
                     <Link href="/faq" className="text-sm text-midnight-green underline hover:text-midnight-green/80">
