@@ -575,12 +575,15 @@ export default function EnhancedPostalCodeModal({ isOpen, onClose }: PostalCodeM
                 {/* Effet glow inspiré du RainbowButton */}
                 <div className="absolute -inset-0.5 bg-gradient-to-r from-midnight-green/20 via-azure-web/30 to-midnight-green/20 rounded-lg blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-                <div className="relative p-4 bg-gradient-to-br from-azure-web/20 to-azure-web/40 rounded-lg border-2 border-midnight-green/30 hover:border-midnight-green/50 hover:shadow-lg transition-all duration-300">
+                <div
+                  className="relative p-4 bg-gradient-to-br from-azure-web/20 to-azure-web/40 rounded-lg border-2 border-midnight-green/30 hover:border-midnight-green/50 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                  onClick={() => setEmailConsent(!emailConsent)}
+                >
                   <span className="absolute top-3 right-3 text-xs sm:text-xs bg-midnight-green/10 text-midnight-green px-2 py-0.5 rounded-full font-medium">
                     Optionnel
                   </span>
                   <div className="flex items-start gap-3">
-                    <div className="mt-1">
+                    <div className="mt-1" onClick={(e) => e.stopPropagation()}>
                       <Checkbox
                         checked={emailConsent}
                         onCheckedChange={(checked) => setEmailConsent(checked as boolean)}
