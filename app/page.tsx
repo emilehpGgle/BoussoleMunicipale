@@ -323,7 +323,7 @@ export default function HomePage() {
                 variant="outline"
                 className="inline-flex items-center px-4 md:px-8 py-4 text-sm md:text-base font-medium border-2 border-midnight-green text-midnight-green hover:bg-midnight-green hover:text-white transition-all duration-200 rounded-xl w-full sm:w-auto justify-center"
               >
-                <Link href="/confidentialite" className="text-center">Lire notre politique de confidentialité</Link>
+                <a href="https://boussolemunicipale.com/confidentialite" className="text-center">Lire notre politique de confidentialité</a>
               </Button>
             </div>
           </div>
