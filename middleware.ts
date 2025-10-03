@@ -25,7 +25,8 @@ export function middleware(request: NextRequest) {
     '/pourquoi-important',
     '/faq',
     '/centre-aide',
-    '/elections-municipales-2025'
+    '/elections-municipales-2025',
+    '/confidentialite'
   ]
 
   if (staticPages.includes(pathname)) {
