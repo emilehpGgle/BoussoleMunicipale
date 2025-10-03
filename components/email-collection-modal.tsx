@@ -398,7 +398,7 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
                             Qu&apos;est-ce que cela implique ?
                           </button>
                           <a
-                            href="/politique-confidentialite"
+                            href="/confidentialite"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 text-xs text-amber-700 hover:text-amber-800 underline"
@@ -549,7 +549,7 @@ export function EmailCollectionModal({ isOpen, onClose, onSuccess }: EmailCollec
 
                 <div className="flex items-center justify-between pt-4 border-t">
                   <a
-                    href="/politique-confidentialite"
+                    href="/confidentialite"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-1 text-sm text-midnight-green hover:text-midnight-green/80 underline"
