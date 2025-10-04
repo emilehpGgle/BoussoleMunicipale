@@ -16,6 +16,6 @@ export const metadata: Metadata = {
     description: "Découvrez vos affinités avec les partis municipaux de Québec ! Résultats personnalisés sur les enjeux locaux qui vous touchent."
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/resultats"
+    canonical: "https://boussolemunicipale.com/resultats"
   }
 } 

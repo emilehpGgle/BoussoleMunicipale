@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       title: "Parti non trouvé - Boussole Électorale Municipale Québec",
       description: "Le parti politique recherché n'existe pas dans notre base de données.",
       alternates: {
-        canonical: `https://boussole-municipale.vercel.app/parti/${partyId}`
+        canonical: `https://boussolemunicipale.com/parti/${partyId}`
       }
     }
   }
@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       description: `Positions de ${party.name} sur les enjeux municipaux de Québec. Découvrez leurs propositions et comparez avec vos opinions.`
     },
     alternates: {
-      canonical: `https://boussole-municipale.vercel.app/parti/${partyId}`
+      canonical: `https://boussolemunicipale.com/parti/${partyId}`
     }
   }
 }

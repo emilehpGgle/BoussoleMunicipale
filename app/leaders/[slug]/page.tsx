@@ -189,7 +189,7 @@ export default async function LeaderPage({ params }: { params: Promise<{ slug: s
       "name": leader.party.name,
       "url": leader.party.websiteUrl
     },
-    "url": `https://boussole-municipale.vercel.app/leaders/${leader.slug}`,
+    "url": `https://boussolemunicipale.com/leaders/${leader.slug}`,
     "image": leader.party.logoUrl,
     "knowsAbout": [
       "Politique municipale",
@@ -393,7 +393,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       ]
     },
     alternates: {
-      canonical: `https://boussole-municipale.vercel.app/leaders/${slug}`
+      canonical: `https://boussolemunicipale.com/leaders/${slug}`
     }
   }
 }

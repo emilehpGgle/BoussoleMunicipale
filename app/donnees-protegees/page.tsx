@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/donnees-protegees"
+    canonical: "https://boussolemunicipale.com/donnees-protegees"
   }
 }
 
@@ -203,6 +203,12 @@ export default function DonneesProtegeesPage() {
                 Vous pouvez exercer ces droits à tout moment, gratuitement et sans justification.
               </p>
               <div className="space-y-3">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto" asChild>
+                  <Link href="/preferences" className="flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Gérer mes préférences
+                  </Link>
+                </Button>
                 <Button variant="outline" size="sm" className="w-full sm:w-auto" asChild>
                   <Link href="/profil" className="flex items-center gap-2">
                     <Database className="w-4 h-4" />

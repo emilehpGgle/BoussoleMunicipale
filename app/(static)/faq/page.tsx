@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     description: "Toutes vos questions sur notre boussole électorale spécialisée pour les élections municipales de Québec. Découvrez la différence avec les boussoles provinciales."
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/faq"
+    canonical: "https://boussolemunicipale.com/faq"
   }
 }
 

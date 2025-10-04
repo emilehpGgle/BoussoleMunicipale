@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     ]
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/leaders"
+    canonical: "https://boussolemunicipale.com/leaders"
   }
 }
 
@@ -60,7 +60,7 @@ export default function LeadersIndexPage() {
     "@type": "ItemList",
     "name": "Leaders Politiques Municipaux - Élections Québec 2025",
     "description": "Liste des chefs de parti pour les élections municipales de Québec 2025",
-    "url": "https://boussole-municipale.vercel.app/leaders",
+    "url": "https://boussolemunicipale.com/leaders",
     "numberOfItems": partiesData.length,
     "itemListElement": partiesData.map((party, index) => ({
       "@type": "ListItem",
@@ -73,7 +73,7 @@ export default function LeadersIndexPage() {
           "@type": "PoliticalParty",
           "name": party.name
         },
-        "url": `https://boussole-municipale.vercel.app/leaders/${generateSlug(party.leader)}`
+        "url": `https://boussolemunicipale.com/leaders/${generateSlug(party.leader)}`
       }
     }))
   }

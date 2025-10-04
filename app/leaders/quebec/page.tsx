@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     ]
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/leaders/quebec"
+    canonical: "https://boussolemunicipale.com/leaders/quebec"
   }
 }
 
@@ -164,7 +164,7 @@ export default function LeadersQuebecPage() {
     "@type": "CollectionPage",
     "name": "Leaders Politiques de Québec - Actuels et Marquants",
     "description": "Collection complète des leaders politiques municipaux de Québec : candidats actuels pour 2025 et figures historiques marquantes",
-    "url": "https://boussole-municipale.vercel.app/leaders/quebec",
+    "url": "https://boussolemunicipale.com/leaders/quebec",
     "mainEntity": {
       "@type": "ItemList",
       "numberOfItems": partiesData.length + historicalLeaders.length,

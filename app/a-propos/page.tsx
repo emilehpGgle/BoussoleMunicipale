@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     description: "Méthodologie transparente de notre test politique pour les élections municipales. Découvrez comment nous calculons vos affinités avec les partis politiques."
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/a-propos"
+    canonical: "https://boussolemunicipale.com/a-propos"
   }
 }
 
@@ -32,8 +32,8 @@ export default function AboutPage() {
     "@type": "Organization",
     "name": "Boussole Électorale Québec",
     "description": "Boussole électorale spécialisée pour les élections municipales de Québec 2025. Outil gratuit et anonyme par défaut pour découvrir vos affinités avec les partis politiques municipaux.",
-    "url": "https://boussole-municipale.vercel.app",
-    "logo": "https://boussole-municipale.vercel.app/logo-main.webp",
+    "url": "https://boussolemunicipale.com",
+    "logo": "https://boussolemunicipale.com/logo-main.webp",
     "foundingDate": "2025-01-01",
     "contactPoint": {
       "@type": "ContactPoint",
@@ -48,7 +48,7 @@ export default function AboutPage() {
       "addressCountry": "CA"
     },
     "sameAs": [
-      "https://boussole-municipale.vercel.app"
+      "https://boussolemunicipale.com"
     ],
     "knowsAbout": [
       "élections municipales Québec",

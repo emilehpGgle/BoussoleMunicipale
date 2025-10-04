@@ -10,6 +10,6 @@ export const metadata: Metadata = {
     "contexte municipal québec"
   ],
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/profil"
+    canonical: "https://boussolemunicipale.com/profil"
   }
 } 

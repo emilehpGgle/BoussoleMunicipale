@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/conditions"
+    canonical: "https://boussolemunicipale.com/conditions"
   }
 }
 

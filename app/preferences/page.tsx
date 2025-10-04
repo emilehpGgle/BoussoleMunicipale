@@ -352,13 +352,19 @@ export default function PreferencesPage() {
                   Dernier consentement donné le : {consentStatus.consentDate.toLocaleDateString('fr-CA')}
                 </p>
               )}
-              <p>
+              <p className="mb-3">
                 Pour toute question, consultez notre{' '}
                 <Link href="/confidentialite" className="text-midnight-green hover:underline">
                   politique de confidentialité
                 </Link>{' '}
                 ou contactez-nous.
               </p>
+              <div className="pt-3 border-t">
+                <Link href="/donnees-protegees" className="inline-flex items-center gap-2 text-sm text-midnight-green hover:underline font-medium">
+                  <Shield className="w-4 h-4" />
+                  En savoir plus sur nos mesures de sécurité technique
+                </Link>
+              </div>
             </div>
           </CardContent>
         </Card>

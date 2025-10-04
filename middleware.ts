@@ -26,7 +26,12 @@ export function middleware(request: NextRequest) {
     '/faq',
     '/centre-aide',
     '/elections-municipales-2025',
-    '/confidentialite'
+    '/confidentialite',
+    '/a-propos',
+    '/conditions',
+    '/contact',
+    '/donnees-protegees',
+    '/preferences'
   ]
 
   if (staticPages.includes(pathname)) {
@@ -50,15 +55,8 @@ export function middleware(request: NextRequest) {
       'test-politique-municipal',
       'resultats',
       'parti',
-      'a-propos',
-      'aide',
-      'conditions',
-      'confidentialite',
-      'contact',
-      'donnees-protegees',
       'leaders',
-      'partage',
-      'preferences'
+      'partage'
     ]
 
     // Si c'est un chemin legacy, rediriger vers quebec par défaut

@@ -126,3 +126,6 @@ playwright/.cache/
 ~*.xlsx
 ~*.docx
 ~*.pptx
+
+# Supabase rebuild directory (development/migration work)
+supabase/rebuild/

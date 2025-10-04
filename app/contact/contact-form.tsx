@@ -145,7 +145,7 @@ function ContactContent() {
                 aux questions les plus courantes.
               </p>
               <Button variant="outline" asChild>
-                <Link href="/aide">
+                <Link href="/centre-aide">
                   Voir l&apos;aide
                 </Link>
               </Button>

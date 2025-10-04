@@ -17,6 +17,6 @@ export const metadata: Metadata = {
     description: "Test politique gratuit et anonyme pour découvrir vos affinités avec les partis municipaux de Québec. 21 questions sur les enjeux locaux en 5 minutes."
   },
   alternates: {
-    canonical: "https://boussole-municipale.vercel.app/test-politique-municipal"
+    canonical: "https://boussolemunicipale.com/test-politique-municipal"
   }
 } 
