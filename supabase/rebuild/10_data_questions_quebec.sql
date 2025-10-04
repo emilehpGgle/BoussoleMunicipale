@@ -17,7 +17,7 @@ INSERT INTO questions (
 ) VALUES
 
 -- Q1 - Tramway (SPÉCIFIQUE QUÉBEC)
-('qc_q_01_tramway',
+('qc_q1_tramway',
  'La municipalité devrait investir davantage dans le projet de tramway, même si cela implique une hausse des taxes municipales.',
  'Enjeu spécifique 1',
  'agreement',
@@ -32,7 +32,7 @@ INSERT INTO questions (
  false),    -- Progressiste (pas d'inversion)
 
 -- Q2 - Pistes cyclables (GÉNÉRIQUE)
-('qc_q_02_pistes_cyclables',
+('qc_q2_pistes_cyclables',
  'La municipalité devrait développer davantage les pistes cyclables, même si cela réduit l''espace pour les voitures.',
  'Mobilité et transport',
  'agreement',
@@ -47,7 +47,7 @@ INSERT INTO questions (
  false),
 
 -- Q3 - Troisième lien (SPÉCIFIQUE QUÉBEC)
-('qc_spec_troisieme_lien',
+('qc_q3_troisieme_lien',
  'La Ville de Québec devrait activement soutenir la réalisation d''un troisième lien routier entre Québec et Lévis.',
  'Enjeu spécifique 2',
  'agreement',
@@ -62,7 +62,7 @@ INSERT INTO questions (
  true),     -- Conservateur (avec inversion)
 
 -- Q4 - Priorité mobilité active (GÉNÉRIQUE)
-('qc_q_04_priorite_mobilite_active',
+('qc_q4_priorite_mobilite_active',
  'Pour améliorer l''attractivité du centre-ville, la priorité devrait être donnée aux piétons, cyclistes et au transport collectif, même si cela implique de réduire l''espace dédié à l''automobile (stationnements, voies de circulation, etc.).',
  'Mobilité et transport',
  'agreement',
@@ -77,7 +77,7 @@ INSERT INTO questions (
  false),
 
 -- Q5 - Quotas logements abordables (GÉNÉRIQUE)
-('qc_q_05_logements_abordables',
+('qc_q5_quotas_logements_abordables',
  'La municipalité devrait imposer des quotas de logements abordables dans tous les nouveaux projets de développement résidentiel.',
  'Logement et aménagement',
  'agreement',
@@ -92,7 +92,7 @@ INSERT INTO questions (
  true),     -- Interventionniste (avec inversion)
 
 -- Q6 - Réduction dépenses et taxes (GÉNÉRIQUE)
-('qc_q_06_reduction_depenses',
+('qc_q6_reduction_depenses_taxes',
  'La municipalité devrait prioriser la réduction des taxes et des dépenses plutôt que d''augmenter les services offerts aux citoyens.',
  'Finances et fiscalité',
  'agreement',
@@ -107,7 +107,7 @@ INSERT INTO questions (
  false),    -- Libre marché (pas d'inversion)
 
 -- Q7 - Immeubles grande hauteur (GÉNÉRIQUE)
-('qc_q_07_immeubles_hauteur',
+('qc_q7_immeubles_grande_hauteur',
  'La municipalité devrait autoriser davantage d''immeubles de grande hauteur pour densifier les quartiers existants.',
  'Logement et aménagement',
  'agreement',
@@ -122,7 +122,7 @@ INSERT INTO questions (
  false),
 
 -- Q8 - Interdire essence centre-ville (GÉNÉRIQUE)
-('qc_q_08_interdire_essence',
+('qc_q8_interdire_essence_centre_ville',
  'La municipalité devrait interdire la circulation des véhicules à essence dans le centre-ville d''ici 2030.',
  'Environnement et développement durable',
  'agreement',
@@ -137,7 +137,7 @@ INSERT INTO questions (
  false),
 
 -- Q9 - Protection espaces verts (GÉNÉRIQUE)
-('qc_q_09_espaces_verts',
+('qc_q9_protection_espaces_verts',
  'La protection des espaces verts devrait toujours primer sur le développement immobilier, même si cela limite la construction de nouveaux logements.',
  'Environnement et développement durable',
  'agreement',
@@ -152,7 +152,7 @@ INSERT INTO questions (
  false),
 
 -- Q10 - Transition carboneutre (GÉNÉRIQUE)
-('qc_q_10_transition_carbone',
+('qc_q10_transition_carboneutre',
  'La municipalité devrait accélérer la transition vers la carboneutralité, même si cela implique des coûts importants à court terme.',
  'Environnement et développement durable',
  'agreement',
@@ -167,7 +167,7 @@ INSERT INTO questions (
  false),
 
 -- Q11 - Réduction déchets (GÉNÉRIQUE)
-('qc_q_11_reduction_dechets',
+('qc_q11_reduction_dechets',
  'La municipalité devrait imposer des règlements plus stricts pour la réduction des déchets et l''augmentation du recyclage et du compostage.',
  'Environnement et développement durable',
  'agreement',
@@ -182,7 +182,7 @@ INSERT INTO questions (
  false),
 
 -- Q12 - Augmentation taxes (GÉNÉRIQUE)
-('qc_q_12_taxes',
+('qc_q12_augmentation_taxes',
  'La municipalité devrait être prête à augmenter les taxes si cela permet d''améliorer la qualité des services publics.',
  'Finances et fiscalité',
  'agreement',
@@ -197,7 +197,7 @@ INSERT INTO questions (
  true),     -- Interventionniste FORT (avec inversion)
 
 -- Q13 - Pouvoir conseils quartier (GÉNÉRIQUE)
-('qc_q_13_pouvoir_quartiers',
+('qc_q13_pouvoir_conseils_quartier',
  'Les conseils de quartier devraient avoir plus de pouvoir décisionnel sur le développement de leur secteur.',
  'Gouvernance et participation',
  'agreement',
@@ -212,7 +212,7 @@ INSERT INTO questions (
  false),
 
 -- Q14 - Réduction dette (GÉNÉRIQUE)
-('qc_q_14_reduction_dette',
+('qc_q14_reduction_dette',
  'La municipalité devrait se concentrer davantage sur la réduction de la dette municipale plutôt que sur de nouveaux investissements.',
  'Finances et fiscalité',
  'agreement',
@@ -227,7 +227,7 @@ INSERT INTO questions (
  false),
 
 -- Q15 - Avantages fiscaux entreprises (GÉNÉRIQUE)
-('qc_q_15_avantages_fiscaux',
+('qc_q15_avantages_fiscaux_entreprises',
  'La municipalité devrait offrir davantage d''avantages fiscaux aux entreprises pour stimuler l''économie locale.',
  'Développement économique',
  'agreement',
@@ -242,7 +242,7 @@ INSERT INTO questions (
  false),
 
 -- Q16 - Limitation touristes (GÉNÉRIQUE)
-('qc_q_16_limitation_touristes',
+('qc_q16_limitation_touristes',
  'La municipalité devrait limiter le nombre de touristes dans certains quartiers pour préserver la qualité de vie des résidents.',
  'Développement économique',
  'agreement',
@@ -257,7 +257,7 @@ INSERT INTO questions (
  false),
 
 -- Q17 - Soutien organismes communautaires (GÉNÉRIQUE)
-('qc_q_17_organismes_communautaires',
+('qc_q17_soutien_organismes_communautaires',
  'La municipalité devrait augmenter le financement des organismes communautaires, même si cela nécessite d''augmenter les taxes.',
  'Services sociaux et communautaires',
  'agreement',
@@ -272,7 +272,7 @@ INSERT INTO questions (
  true),
 
 -- Q18 - Augmentation effectifs policiers (GÉNÉRIQUE)
-('qc_q_18_effectifs_policiers',
+('qc_q18_augmentation_effectifs_policiers',
  'La municipalité devrait augmenter les effectifs policiers pour améliorer la sécurité publique.',
  'Sécurité publique',
  'agreement',
@@ -287,7 +287,7 @@ INSERT INTO questions (
  false),
 
 -- Q19 - Investissement infrastructures loisirs sportives (GÉNÉRIQUE)
-('qc_q_19_infrastructures_loisirs',
+('qc_q19_investissement_infrastructures_loisirs_sportives',
  'La municipalité devrait investir davantage dans les infrastructures de loisirs et sportives, même si cela nécessite d''augmenter les taxes.',
  'Services sociaux et communautaires',
  'agreement',
@@ -302,7 +302,7 @@ INSERT INTO questions (
  false),
 
 -- Q20 - Protection patrimoine (GÉNÉRIQUE)
-('qc_q_20_patrimoine',
+('qc_q20_protection_patrimoine',
  'La municipalité devrait imposer des règles plus strictes pour protéger le patrimoine architectural, même si cela limite les possibilités de rénovation pour les propriétaires.',
  'Patrimoine et culture',
  'agreement',
@@ -317,7 +317,7 @@ INSERT INTO questions (
  false),
 
 -- Q21 - Priorités municipales (QUESTION DE PRIORITÉ)
-('qc_q_21_priorites',
+('qc_q21_enjeux_prioritaires',
  'Classez par ordre d''importance les enjeux suivants pour votre municipalité',
  'Enjeux spécifiques',
  'priority_ranking',
@@ -352,7 +352,7 @@ ON CONFLICT (id) DO UPDATE SET
 -- 8 enjeux universels + 2 enjeux spécifiques Québec (Tramway, Troisième lien)
 UPDATE questions SET
   priority_options = '["Transport et mobilité", "Logement abordable", "Environnement et espaces verts", "Sécurité publique", "Gestion des finances municipales", "Services municipaux", "Lutte aux changements climatiques", "Patrimoine et identité", "Tramway", "Troisième lien"]'::jsonb
-WHERE id = 'qc_q_21_priorites' AND municipality_id = 'quebec';
+WHERE id = 'qc_q21_enjeux_prioritaires' AND municipality_id = 'quebec';
 
 -- ========================================================================
 -- VÉRIFICATION DES DONNÉES

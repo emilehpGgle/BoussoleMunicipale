@@ -1,7 +1,7 @@
 # 📊 Suivi de l'Avancement - Reconstruction Supabase
 
 **Date de début:** 2025-10-03
-**Statut global:** 🔄 En cours (11/25 fichiers créés - 44%)
+**Statut global:** 🔄 En cours (21/30 fichiers créés - 70%)
 
 ---
 
@@ -11,10 +11,10 @@
 |-------|----------|--------|-------------|
 | **Structure** | 3 fichiers | ✅ Complété | 100% (3/3) |
 | **RLS Policies** | 5 fichiers | ✅ Complété | 100% (5/5) |
-| **Données** | 13 fichiers | 🔄 En cours | 23% (3/13) |
+| **Données** | 17 fichiers | 🔄 En cours | 76% (13/17) |
 | **Performance** | 1 fichier | ⏳ À faire | 0% (0/1) |
 | **Documentation** | 3 fichiers | ⏳ À faire | 0% (0/3) |
-| **TOTAL** | **25 fichiers** | **🔄 En cours** | **44% (11/25)** |
+| **TOTAL** | **30 fichiers** | **🔄 En cours** | **70% (21/30)** |
 
 ---
 
@@ -87,7 +87,7 @@
 
 ---
 
-## 📊 Phase 3: Données (🔄 EN COURS - 3/13)
+## 📊 Phase 3: Données (🔄 EN COURS - 13/17)
 
 ### ✅ Fichier 09: `09_data_municipalities.sql`
 - **Statut:** ✅ Créé et vérifié
@@ -116,64 +116,131 @@
   - Q3 (Autonomie arrondissements) : catégorie "Enjeu spécifique 2"
 - **Q21 priorités:** 8 universels + 2 spécifiques MTL = 10 priorités
 
-### ⏳ Fichier 12: `12_data_questions_laval.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** 21 questions Laval
+### ✅ Fichier 12: `12_data_questions_laval.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 377
+- **Données:** 21 questions Laval
+- **IDs standardisés:** lav_q_XX (génériques), lav_spec_XX (spécifiques)
 - **Enjeux spécifiques:**
-  - Enjeu 1: SRB et transport vers Montréal
-  - Enjeu 2: Équilibre développement/espaces verts
+  - Q1 (SRB transport) : catégorie "Enjeu spécifique 1"
+  - Q3 (Équilibre développement) : catégorie "Enjeu spécifique 2"
 - **Q21 priorités:** 8 universels + 2 spécifiques Laval = 10 priorités
 
-### ⏳ Fichier 13: `13_data_questions_gatineau.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** 21 questions Gatineau
+### ✅ Fichier 13: `13_data_questions_gatineau.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 379
+- **Données:** 21 questions Gatineau
+- **IDs standardisés:** gat_q_XX (génériques), gat_spec_XX (spécifiques)
 - **Enjeux spécifiques:**
-  - Enjeu 1: Services bilingues (identité unique Gatineau)
-  - Enjeu 2: Transport interprovincial (ponts, transit Ottawa)
+  - Q1 (Services bilingues) : catégorie "Enjeu spécifique 1"
+  - Q3 (Transport interprovincial) : catégorie "Enjeu spécifique 2"
 - **Q21 priorités:** 8 universels + 2 spécifiques Gatineau = 10 priorités
 
-### ⏳ Fichier 14: `14_data_questions_longueuil.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** 21 questions Longueuil
+### ✅ Fichier 14: `14_data_questions_longueuil.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 383
+- **Données:** 21 questions Longueuil
+- **IDs standardisés:** lon_q_XX (génériques), lon_spec_XX (spécifiques)
 - **Enjeux spécifiques:**
-  - Enjeu 1: Transport métropolitain
-  - Enjeu 2: Développement aéroportuaire et qualité de vie
+  - Q1 (Transport métropolitain) : catégorie "Enjeu spécifique 1"
+  - Q3 (Développement aéroportuaire) : catégorie "Enjeu spécifique 2"
 - **Q21 priorités:** 8 universels + 2 spécifiques Longueuil = 10 priorités
 
-### ⏳ Fichier 15: `15_data_questions_levis.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** 21 questions Lévis
+### ✅ Fichier 15: `15_data_questions_levis.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 378
+- **Données:** 21 questions Lévis
+- **IDs standardisés:** lev_q_XX (génériques), lev_spec_XX (spécifiques)
 - **Enjeux spécifiques:**
-  - Enjeu 1: Troisième lien routier
-  - Enjeu 2: Traverse Québec-Lévis
+  - Q1 (Troisième lien routier) : catégorie "Enjeu spécifique 1"
+  - Q3 (Traverse Québec-Lévis) : catégorie "Enjeu spécifique 2"
 - **Q21 priorités:** 8 universels + 2 spécifiques Lévis = 10 priorités
 
-### ⏳ Fichier 16: `16_data_parties.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** ~30 partis (6 villes)
-  - Québec: 6 partis
-  - Montréal: 5 partis
-  - Laval: À vérifier
-  - Gatineau: À vérifier
-  - Longueuil: À vérifier
-  - Lévis: À vérifier
+### ✅ Fichier 16: `16_data_parties_quebec.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 130
+- **Données:** 6 partis Quebec
+- **Contenu:**
+  - **Leadership Québec (LQ)** - Sam Hamad
+  - **Parti du Monde (PDM)** - Anne Guérette
+  - **Québec d'abord (QD)** - Claude Villeneuve
+  - **Québec forte et fière (QFF)** - Bruno Marchand
+  - **Respect citoyens (RC)** - Stéphane Lachance
+  - **Transition Québec (TQ)** - Jackie Smith
+- **IDs standardisés:** {parti}_qc
+- **Colonnes complètes:** orientation, main_ideas_summary, strengths, reserves (JSONB)
 
-### ⏳ Fichier 17: `17_data_positions_quebec.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** ~400 lignes (6 partis × 21 questions)
-- **Inclut:** position, source, note, quote, priority_list
+### ✅ Fichier 17: `17_data_parties_montreal.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 100
+- **Données:** 5 partis Montreal
+- **Contenu:**
+  - **Action Montréal (AM)** - Gilbert Thibodeau
+  - **Ensemble Montréal (EM)** - Soraya Martinez Ferrada
+  - **Futur Montréal (FM)** - Jean-François Kacou
+  - **Projet Montréal (PM)** - Luc Rabouin
+  - **Transition Montréal (TM)** - Craig Sauvé
+- **IDs standardisés:** {parti}_mtl
+- **Colonnes complètes:** orientation, main_ideas_summary, strengths, reserves (JSONB)
 
-### ⏳ Fichier 18: `18_data_positions_montreal.sql`
-- **Statut:** ⏳ À créer
-- **Données prévues:** ~400 lignes (5 partis × 21 questions)
+### ✅ Fichier 18: `18_data_parties_laval.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 87
+- **Données:** 3 partis Laval
+- **Contenu:**
+  - **Mouvement lavallois (ML)** - Stéphane Boyer
+  - **Parti Laval (PL)** - Claude Larochelle
+  - **Action Laval (AL)** - Frédéric Mayer/Achille Cifelli
+- **IDs standardisés:** {parti}_lav
+- **Colonnes complètes:** orientation, main_ideas_summary, strengths, reserves (JSONB)
 
-### ⏳ Fichier 19: `19_data_positions_autres_villes.sql`
+### ✅ Fichier 19: `19_data_parties_gatineau.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 74
+- **Données:** 2 partis Gatineau
+- **Contenu:**
+  - **Action Gatineau (AG)** - Maude Marquis-Bissonnette
+  - **Équipe Mario Aubé (ÉMA)** - Mario Aubé
+- **IDs standardisés:** {parti}_gat
+- **Colonnes complètes:** orientation, main_ideas_summary, strengths, reserves (JSONB)
+
+### ✅ Fichier 20: `20_data_parties_longueuil.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 71
+- **Données:** 2 partis Longueuil
+- **Contenu:**
+  - **Coalition Longueuil (CL)** - Catherine Fournier
+  - **Option Alliance (OA)** - Susan Rasmussen
+- **IDs standardisés:** {parti}_lng
+- **Colonnes complètes:** orientation, main_ideas_summary, strengths, reserves (JSONB)
+
+### ✅ Fichier 21: `21_data_parties_levis.sql`
+- **Statut:** ✅ Créé et vérifié
+- **Lignes:** 87
+- **Données:** 3 partis Lévis
+- **Contenu:**
+  - **Lévis Force 10 (LF10)** - Isabelle Demers
+  - **Repensons Lévis (RL)** - Serge Bonin
+  - **Prospérité Lévis (PL)** - Steven Blaney
+- **IDs standardisés:** {parti}_lev
+- **Colonnes complètes:** orientation, main_ideas_summary, strengths, reserves (JSONB)
+
+### ⏳ Fichier 22: `22_data_positions_quebec.sql`
+- **Statut:** ⏳ À créer
+- **Données prévues:** ~126 lignes (6 partis × 21 questions)
+- **Inclut:** position, source, note, quote
+
+### ⏳ Fichier 23: `23_data_positions_montreal.sql`
+- **Statut:** ⏳ À créer
+- **Données prévues:** ~105 lignes (5 partis × 21 questions)
+
+### ⏳ Fichier 24: `24_data_positions_autres_villes.sql`
 - **Statut:** ⏳ À créer
 - **Données prévues:** Positions pour Laval, Gatineau, Longueuil, Lévis
 
-### ⏳ Fichier 20: `20_data_leaders.sql`
+### ⏳ Fichier 25: `25_data_leaders.sql`
 - **Statut:** ⏳ À créer
-- **Données prévues:** 11 leaders (6 Québec + 5 Montréal)
+- **Données prévues:** Tous les leaders (6 villes)
 - **Inclut:** Biographies complètes, liens bidirectionnels parti ↔ leader
 
 ---
@@ -212,13 +279,14 @@
 
 ## 🔄 Prochaine Étape
 
-**Fichier 12:** `12_data_questions_laval.sql` - Insertion questions Laval
+**Fichier 22:** `22_data_positions_quebec.sql` - Insertion positions partis Québec (6 partis × 21 questions)
 
 **Actions requises:**
-1. Créer les 4 fichiers de questions restants (Laval, Gatineau, Longueuil, Lévis)
-2. Utiliser catégories "Enjeu spécifique 1" et "Enjeu spécifique 2"
-3. Inclure colonnes politiques complètes
-4. Q21 avec 10 priorités (8 universels + 2 spécifiques par ville)
+1. ✅ ~~Créer fichiers partis pour 4 autres villes (Laval, Gatineau, Longueuil, Lévis)~~ - COMPLÉTÉ
+2. Créer fichiers positions (Quebec, Montreal, autres villes)
+3. Créer fichier leaders avec biographies complètes
+4. Créer fichier performance indexes
+5. Créer fichiers documentation (README, VALIDATION, leaders.md)
 
 ---
 
@@ -265,11 +333,16 @@
 - [x] Données municipalités insérées
 - [x] Questions Québec insérées (catégories corrigées)
 - [x] Questions Montréal insérées (catégories corrigées)
-- [ ] Questions Laval insérées
-- [ ] Questions Gatineau insérées
-- [ ] Questions Longueuil insérées
-- [ ] Questions Lévis insérées
-- [ ] Partis insérés
+- [x] Questions Laval insérées
+- [x] Questions Gatineau insérées
+- [x] Questions Longueuil insérées
+- [x] Questions Lévis insérées
+- [x] Partis Quebec insérés (6 partis)
+- [x] Partis Montreal insérés (5 partis)
+- [x] Partis Laval insérés (3 partis)
+- [x] Partis Gatineau insérés (2 partis)
+- [x] Partis Longueuil insérés (2 partis)
+- [x] Partis Lévis insérés (3 partis)
 - [ ] Positions partis insérées
 - [ ] Leaders insérés
 - [ ] Indexes performance créés
@@ -277,6 +350,8 @@
 
 ---
 
-**Dernière mise à jour:** 2025-10-03 - Fichiers 1-11 créés et vérifiés, catégories enjeux spécifiques corrigées
-**Plan révisé:** 25 fichiers total (13 fichiers données au lieu de 7)
+**Dernière mise à jour:** 2025-10-03 - Fichiers 1-21 créés et vérifiés (70% complété)
+**Plan révisé:** 30 fichiers total (17 fichiers données: 1 municipalities + 6 questions + 6 partis + 3 positions + 1 leaders)
+**Toutes les questions:** 6 municipalités × 21 questions = 126 questions insérées
+**Tous les partis:** 6 municipalités, 21 partis insérés (Québec: 6, Montréal: 5, Laval: 3, Gatineau: 2, Longueuil: 2, Lévis: 3)
 **Enjeux Gatineau:** Services bilingues + Transport interprovincial (Option B confirmée)

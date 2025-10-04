@@ -27,7 +27,13 @@
       "mcp__hugeicons-mcp-server__search_icons",
       "Read(//mnt/c/Users/EPelletier/Desktop/**)",
       "Bash(du:*)",
-      "Bash(cd:*)"
+      "Bash(cd:*)",
+      "Bash(for i in {1..9})",
+      "Bash(do sed -i \"s/gat_q_0$i_/gat_q$i_/g\" 13_data_questions_gatineau.sql)",
+      "Bash(done)",
+      "Bash(do sed -i \"s/lon_q_0$i_/lon_q$i_/g\" 14_data_questions_longueuil.sql)",
+      "Bash(for i in {10..20})",
+      "Bash(do sed -i \"s/qc_q_$i_/qc_q$i_/g\" 10_data_questions_quebec.sql)"
     ],
     "deny": []
   },

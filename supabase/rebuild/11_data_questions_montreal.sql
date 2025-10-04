@@ -16,7 +16,7 @@ INSERT INTO questions (
 ) VALUES
 
 -- Q1 - Extension métro et REM (SPÉCIFIQUE MONTRÉAL)
-('mtl_spec_metro_rem',
+('mtl_q1_metro_rem',
  'Faut-il poursuivre l''extension du métro et du REM pour améliorer le transport structurant ?',
  'Enjeu spécifique 1',
  'agreement',
@@ -31,7 +31,7 @@ INSERT INTO questions (
  false),
 
 -- Q2 - Pistes cyclables (GÉNÉRIQUE)
-('mtl_q_02_pistes_cyclables',
+('mtl_q2_pistes_cyclables',
  'Faut-il prioriser le développement des pistes cyclables même si cela réduit l''espace pour l''automobile ?',
  'Mobilité et transport',
  'agreement',
@@ -46,7 +46,7 @@ INSERT INTO questions (
  false),
 
 -- Q3 - Autonomie des arrondissements (SPÉCIFIQUE MONTRÉAL)
-('mtl_spec_autonomie_arrondissements',
+('mtl_q3_autonomie_arrondissements',
  'Faut-il donner plus d''autonomie aux arrondissements plutôt que de privilégier la coordination centralisée ?',
  'Enjeu spécifique 2',
  'agreement',
@@ -61,7 +61,7 @@ INSERT INTO questions (
  false),
 
 -- Q4 - Priorité mobilité active (GÉNÉRIQUE)
-('mtl_q_04_mobilite_active',
+('mtl_q4_priorite_mobilite_active',
  'La ville devrait-elle donner la priorité à la mobilité active (vélo, marche) au centre-ville, même si cela signifie réduire les stationnements ?',
  'Mobilité et transport',
  'agreement',
@@ -76,7 +76,7 @@ INSERT INTO questions (
  false),
 
 -- Q5 - Quotas logements abordables (GÉNÉRIQUE)
-('mtl_q_05_logements_abordables',
+('mtl_q5_quotas_logements_abordables',
  'La ville devrait-elle imposer des quotas obligatoires de logements abordables dans les nouveaux développements ?',
  'Logement et aménagement',
  'agreement',
@@ -91,7 +91,7 @@ INSERT INTO questions (
  true),
 
 -- Q6 - Réduction dépenses et taxes (GÉNÉRIQUE)
-('mtl_q_06_reduction_depenses',
+('mtl_q6_reduction_depenses_taxes',
  'La ville devrait-elle réduire ses dépenses et ses taxes pour respecter la capacité de payer des citoyens ?',
  'Finances et fiscalité',
  'agreement',
@@ -106,7 +106,7 @@ INSERT INTO questions (
  false),
 
 -- Q7 - Immeubles grande hauteur (GÉNÉRIQUE)
-('mtl_q_07_immeubles_hauteur',
+('mtl_q7_immeubles_grande_hauteur',
  'Faut-il encourager la construction d''immeubles de grande hauteur pour optimiser l''utilisation des terrains ?',
  'Logement et aménagement',
  'agreement',
@@ -121,7 +121,7 @@ INSERT INTO questions (
  false),
 
 -- Q8 - Interdire essence centre-ville (GÉNÉRIQUE)
-('mtl_q_08_interdire_essence',
+('mtl_q8_interdire_essence_centre_ville',
  'La ville devrait-elle interdire les véhicules à essence au centre-ville d''ici 2035 ?',
  'Environnement et développement durable',
  'agreement',
@@ -136,7 +136,7 @@ INSERT INTO questions (
  false),
 
 -- Q9 - Protection espaces verts (GÉNÉRIQUE)
-('mtl_q_09_espaces_verts',
+('mtl_q9_protection_espaces_verts',
  'Faut-il protéger davantage les espaces verts, même si cela limite le développement immobilier ?',
  'Environnement et développement durable',
  'agreement',
@@ -151,7 +151,7 @@ INSERT INTO questions (
  false),
 
 -- Q10 - Transition carboneutre (GÉNÉRIQUE)
-('mtl_q_10_transition_carbone',
+('mtl_q10_transition_carboneutre',
  'La ville devrait-elle exiger que tous les nouveaux bâtiments soient carboneutres, même si cela augmente les coûts ?',
  'Environnement et développement durable',
  'agreement',
@@ -166,7 +166,7 @@ INSERT INTO questions (
  false),
 
 -- Q11 - Collecte ordures (GÉNÉRIQUE)
-('mtl_q_11_collecte_ordures',
+('mtl_q11_reduction_dechets',
  'Faut-il améliorer la fréquence de collecte des ordures plutôt que la réduire pour des raisons environnementales ?',
  'Environnement et développement durable',
  'agreement',
@@ -181,7 +181,7 @@ INSERT INTO questions (
  true),
 
 -- Q12 - Augmentation taxes projets écoresponsables (GÉNÉRIQUE)
-('mtl_q_12_taxes_ecoresponsables',
+('mtl_q12_augmentation_taxes',
  'Accepteriez-vous une augmentation de taxes pour financer des projets écoresponsables ?',
  'Finances et fiscalité',
  'agreement',
@@ -196,7 +196,7 @@ INSERT INTO questions (
  true),
 
 -- Q13 - Pouvoir conseils quartier (GÉNÉRIQUE)
-('mtl_q_13_pouvoir_quartiers',
+('mtl_q13_pouvoir_conseils_quartier',
  'Les conseils de quartier devraient-ils avoir plus de pouvoir décisionnel sur les projets locaux ?',
  'Gouvernance et participation',
  'agreement',
@@ -211,7 +211,7 @@ INSERT INTO questions (
  false),
 
 -- Q14 - Services essentiels vs projets avenir (GÉNÉRIQUE)
-('mtl_q_14_services_essentiels',
+('mtl_q14_reduction_dette',
  'La ville devrait-elle prioriser le maintien des services essentiels plutôt que d''investir dans des projets d''avenir ?',
  'Finances et fiscalité',
  'agreement',
@@ -226,7 +226,7 @@ INSERT INTO questions (
  false),
 
 -- Q15 - Avantages fiscaux entreprises (GÉNÉRIQUE)
-('mtl_q_15_avantages_fiscaux',
+('mtl_q15_avantages_fiscaux_entreprises',
  'La ville devrait-elle offrir plus d''avantages fiscaux pour attirer les entreprises ?',
  'Développement économique',
  'agreement',
@@ -241,7 +241,7 @@ INSERT INTO questions (
  false),
 
 -- Q16 - Limitation touristes (GÉNÉRIQUE)
-('mtl_q_16_limitation_touristes',
+('mtl_q16_limitation_touristes',
  'Faut-il limiter le nombre de touristes pour préserver la qualité de vie des résidents ?',
  'Développement économique',
  'agreement',
@@ -256,7 +256,7 @@ INSERT INTO questions (
  false),
 
 -- Q17 - Financement organismes communautaires (GÉNÉRIQUE)
-('mtl_q_17_organismes_communautaires',
+('mtl_q17_soutien_organismes_communautaires',
  'La ville devrait-elle augmenter le financement des organismes communautaires ?',
  'Services sociaux et communautaires',
  'agreement',
@@ -271,7 +271,7 @@ INSERT INTO questions (
  true),
 
 -- Q18 - Effectifs policiers (GÉNÉRIQUE)
-('mtl_q_18_effectifs_policiers',
+('mtl_q18_augmentation_effectifs_policiers',
  'Faut-il augmenter les effectifs policiers pour améliorer la sécurité ?',
  'Sécurité publique',
  'agreement',
@@ -286,7 +286,7 @@ INSERT INTO questions (
  false),
 
 -- Q19 - Infrastructures loisirs sportives (GÉNÉRIQUE)
-('mtl_q_19_infrastructures_loisirs',
+('mtl_q19_investissement_infrastructures_loisirs_sportives',
  'La ville devrait-elle investir davantage dans les infrastructures de loisirs et sportives ?',
  'Services sociaux et communautaires',
  'agreement',
@@ -301,7 +301,7 @@ INSERT INTO questions (
  false),
 
 -- Q20 - Protection patrimoine (GÉNÉRIQUE)
-('mtl_q_20_patrimoine',
+('mtl_q20_protection_patrimoine',
  'Faut-il renforcer les règles de protection du patrimoine, même si cela limite le développement ?',
  'Patrimoine et culture',
  'agreement',
@@ -316,7 +316,7 @@ INSERT INTO questions (
  false),
 
 -- Q21 - Priorités municipales (QUESTION DE PRIORITÉ)
-('mtl_q_21_priorites',
+('mtl_q21_enjeux_prioritaires',
  'Classez par ordre d''importance les enjeux suivants pour votre municipalité',
  'Enjeux spécifiques',
  'priority_ranking',
@@ -351,7 +351,7 @@ ON CONFLICT (id) DO UPDATE SET
 -- 8 enjeux universels + 2 enjeux spécifiques Montréal (Métro/REM, Arrondissements)
 UPDATE questions SET
   priority_options = '["Transport et mobilité", "Logement abordable", "Environnement et espaces verts", "Sécurité publique", "Gestion des finances municipales", "Services municipaux", "Lutte aux changements climatiques", "Patrimoine et identité", "Extension du métro et REM", "Autonomie des arrondissements"]'::jsonb
-WHERE id = 'mtl_q_21_priorites' AND municipality_id = 'montreal';
+WHERE id = 'mtl_q21_enjeux_prioritaires' AND municipality_id = 'montreal';
 
 -- ========================================================================
 -- VÉRIFICATION DES DONNÉES
