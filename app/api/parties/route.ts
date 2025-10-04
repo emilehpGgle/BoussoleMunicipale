@@ -81,6 +81,7 @@ export async function GET(request: NextRequest) {
     console.log('[🔍 API PARTIES DIAGNOSTIC] Début requête parties pour municipality:', municipality, 'includePositions:', includePositions)
 
     // Récupérer les partis pour la municipalité donnée (optimisé pour performance)
+    // Filtrer uniquement les partis actifs (exclut les tombstones)
     const { data: parties, error: partiesError } = await supabase
       .from('parties')
       .select(`
@@ -95,9 +96,11 @@ export async function GET(request: NextRequest) {
         main_ideas_summary,
         strengths,
         reserves,
-        municipality_id
+        municipality_id,
+        is_active
       `)
       .eq('municipality_id', municipality)
+      .eq('is_active', true)
       .order('name', { ascending: true })
 
     console.log('[🔍 API PARTIES DIAGNOSTIC] Query parties terminée')

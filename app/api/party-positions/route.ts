@@ -18,6 +18,7 @@ interface SupabasePartyPositionResponse {
     leader: string
     logo_url: string | null
     municipality_id: string
+    is_active: boolean
   } | null
   questions: {
     id: string
@@ -64,13 +65,14 @@ export async function GET(request: NextRequest) {
         note,
         quote,
         created_at,
-        parties (
+        parties!inner (
           id,
           name,
           short_name,
           leader,
           logo_url,
-          municipality_id
+          municipality_id,
+          is_active
         ),
         questions (
           id,
@@ -81,6 +83,8 @@ export async function GET(request: NextRequest) {
           municipality_id
         )
       `)
+      // Filtrer uniquement les partis actifs
+      .eq('parties.is_active', true)
 
     // Filtrer par party_id si fourni
     if (partyId) {
@@ -89,11 +93,12 @@ export async function GET(request: NextRequest) {
 
     // Filtrer par municipalité si fournie (approche en 2 étapes comme API parties)
     if (municipality) {
-      // D'abord récupérer les party_ids de cette municipalité
+      // D'abord récupérer les party_ids de cette municipalité (uniquement actifs)
       const { data: municipalityParties, error: partiesError } = await supabase
         .from('parties')
         .select('id')
         .eq('municipality_id', municipality)
+        .eq('is_active', true)
 
       if (partiesError) {
         console.error('[API Party Positions] Erreur récupération partis:', partiesError)

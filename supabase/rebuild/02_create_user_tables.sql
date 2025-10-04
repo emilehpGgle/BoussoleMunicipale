@@ -170,5 +170,8 @@ BEGIN
   RAISE NOTICE '';
   RAISE NOTICE '✨ Script idempotent: peut être réexécuté sans erreur';
   RAISE NOTICE '📋 Prochaine étape: Exécuter 03_create_additional_tables.sql';
+  RAISE NOTICE '';
+  RAISE NOTICE 'ℹ️  Pour migrer user_results vers structure normalisée avec party_id:';
+  RAISE NOTICE '    → Exécuter 27_migration_user_results_normalization.sql';
 END
 $$;
